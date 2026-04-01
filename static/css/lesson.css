@@ -37,6 +37,7 @@
     color: var(--el-text-color-secondary);
     transition: color 0.2s;
 }
+
 .breadcrumb:hover {
     color: var(--el-color-primary);
 }
@@ -75,6 +76,7 @@
     background-color: var(--el-color-primary);
     color: white;
 }
+
 .progress-step.active {
     color: var(--el-color-primary);
     font-weight: 500;
@@ -84,6 +86,7 @@
     background-color: var(--el-color-success);
     color: white;
 }
+
 .progress-step.completed {
     color: var(--el-color-success);
 }
@@ -311,9 +314,21 @@
     background-color: var(--el-fill-color);
     color: var(--el-text-color-secondary);
 }
-.step-badge--primary { background-color: var(--el-color-primary-light-9); color: var(--el-color-primary); }
-.step-badge--success { background-color: #f0f9eb; color: var(--el-color-success); }
-.step-badge--warning { background-color: #fdf6ec; color: var(--el-color-warning); }
+
+.step-badge--primary {
+    background-color: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+}
+
+.step-badge--success {
+    background-color: #f0f9eb;
+    color: var(--el-color-success);
+}
+
+.step-badge--warning {
+    background-color: #fdf6ec;
+    color: var(--el-color-warning);
+}
 
 .step-subtitle {
     font-size: 13px;
@@ -379,7 +394,7 @@
     margin-left: auto;
     font-size: 12px;
     font-weight: 400;
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     padding: 2px 8px;
     border-radius: 10px;
 }
@@ -403,15 +418,25 @@
     margin: 16px 0 8px;
     line-height: 1.4;
 }
-.panel-body-md h1 { font-size: 20px; }
-.panel-body-md h2 { font-size: 17px; }
-.panel-body-md h3 { font-size: 15px; }
+
+.panel-body-md h1 {
+    font-size: 20px;
+}
+
+.panel-body-md h2 {
+    font-size: 17px;
+}
+
+.panel-body-md h3 {
+    font-size: 15px;
+}
 
 .panel-body-md p {
     margin-bottom: 10px;
 }
 
-.panel-body-md ul, .panel-body-md ol {
+.panel-body-md ul,
+.panel-body-md ol {
     padding-left: 20px;
     margin-bottom: 10px;
 }
@@ -564,11 +589,29 @@
 }
 
 /* 多轮对话中的 Markdown */
-.chat-resp-body h1, .chat-resp-body h2, .chat-resp-body h3 { color: var(--el-text-color-primary); margin: 12px 0 6px; }
-.chat-resp-body h2 { font-size: 16px; }
-.chat-resp-body h3 { font-size: 14px; }
-.chat-resp-body ul, .chat-resp-body ol { padding-left: 18px; }
-.chat-resp-body p { margin-bottom: 8px; }
+.chat-resp-body h1,
+.chat-resp-body h2,
+.chat-resp-body h3 {
+    color: var(--el-text-color-primary);
+    margin: 12px 0 6px;
+}
+
+.chat-resp-body h2 {
+    font-size: 16px;
+}
+
+.chat-resp-body h3 {
+    font-size: 14px;
+}
+
+.chat-resp-body ul,
+.chat-resp-body ol {
+    padding-left: 18px;
+}
+
+.chat-resp-body p {
+    margin-bottom: 8px;
+}
 
 .chat-input-area {
     margin-top: 12px;
@@ -763,7 +806,7 @@
     background: var(--el-color-primary-light-9);
 }
 
-.likert-item input:checked + .likert-btn {
+.likert-item input:checked+.likert-btn {
     border-color: var(--el-color-primary);
     background: var(--el-color-primary);
     color: white;
@@ -843,6 +886,181 @@
     color: var(--el-color-primary);
 }
 
+/* ---------- 历史记录页 ---------- */
+.history-page-header {
+    margin-bottom: 16px;
+}
+
+.lesson-history-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.lesson-history-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.history-filter-btn {
+    border: 1px solid var(--el-border-color);
+    background: #fff;
+    color: var(--el-text-color-regular);
+    border-radius: var(--el-border-radius-round);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.history-filter-btn:hover {
+    border-color: var(--el-color-primary-light-5);
+    color: var(--el-color-primary);
+}
+
+.history-filter-btn.active {
+    border-color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+}
+
+.lesson-history-stats {
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+}
+
+.lesson-history-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+}
+
+.lesson-history-card {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 12px;
+    padding: 14px;
+    transition: all 0.22s;
+    color: inherit;
+}
+
+.lesson-history-card:hover {
+    border-color: var(--el-color-primary-light-5);
+    box-shadow: 0 6px 18px rgba(64, 158, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+.lesson-history-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.history-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.history-status.status--debating {
+    background: #fff7e6;
+    color: #d97706;
+}
+
+.history-status.status--pending {
+    background: #ecf5ff;
+    color: #409eff;
+}
+
+.history-status.status--annotated {
+    background: #f0f9eb;
+    color: #67c23a;
+}
+
+.lesson-history-date {
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+}
+
+.lesson-history-title {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--el-text-color-primary);
+}
+
+.lesson-history-prompt {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--el-text-color-regular);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.lesson-history-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    margin-top: 12px;
+}
+
+.lesson-history-info-grid .info-label {
+    display: block;
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+}
+
+.lesson-history-info-grid .info-value {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    margin-top: 1px;
+}
+
+.lesson-history-card-footer {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--el-color-primary);
+    font-weight: 600;
+}
+
+.lesson-history-empty {
+    text-align: center;
+    border: 1px dashed var(--el-border-color);
+    border-radius: 12px;
+    background: #fff;
+    padding: 30px 20px;
+}
+
+.lesson-history-empty p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--el-text-color-primary);
+}
+
+.lesson-history-empty span {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+}
+
 /* ---------- Loading spinner ---------- */
 .loading-spinner {
     width: 18px;
@@ -856,7 +1074,7 @@
 }
 
 .loading-spinner--white {
-    border-color: rgba(255,255,255,0.3);
+    border-color: rgba(255, 255, 255, 0.3);
     border-top-color: white;
 }
 
@@ -869,7 +1087,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ---------- 响应式 ---------- */
@@ -894,6 +1114,19 @@
 @media (max-width: 768px) {
     .lesson-container {
         padding: 0 16px;
+    }
+
+    .lesson-history-list {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-history-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-history-card-top {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .lesson-form {

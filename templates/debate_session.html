@@ -9,7 +9,10 @@
         <!-- 顶部信息栏 -->
         <div class="debate-topbar">
             <a href="/app/debate" class="breadcrumb">
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
                 返回辩题列表
             </a>
             <div class="debate-progress">
@@ -53,23 +56,39 @@
             <div class="stance-selector">
                 <div class="stance-option" data-side="side_a" id="opt-side-a">
                     <div class="stance-icon stance-icon--a">
-                        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#409eff" opacity="0.15"/><path d="M10 16l4 4 8-8" stroke="#409eff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
+                            <circle cx="16" cy="16" r="14" fill="#409eff" opacity="0.15" />
+                            <path d="M10 16l4 4 8-8" stroke="#409eff" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </div>
                     <div class="stance-label">正方</div>
                     <div class="stance-text">{{ topic.side_a }}</div>
                     <div class="stance-check">
-                        <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="10" r="9" stroke="#409eff" stroke-width="1.5"/><path d="M6 10l3 3 5-5" stroke="#409eff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+                            <circle cx="10" cy="10" r="9" stroke="#409eff" stroke-width="1.5" />
+                            <path d="M6 10l3 3 5-5" stroke="#409eff" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </div>
                 </div>
                 <div class="stance-vs">VS</div>
                 <div class="stance-option" data-side="side_b" id="opt-side-b">
                     <div class="stance-icon stance-icon--b">
-                        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#f56c6c" opacity="0.15"/><path d="M10 10l12 12M22 10L10 22" stroke="#f56c6c" stroke-width="2" stroke-linecap="round"/></svg>
+                        <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
+                            <circle cx="16" cy="16" r="14" fill="#f56c6c" opacity="0.15" />
+                            <path d="M10 10l12 12M22 10L10 22" stroke="#f56c6c" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
                     </div>
                     <div class="stance-label">反方</div>
                     <div class="stance-text">{{ topic.side_b }}</div>
                     <div class="stance-check">
-                        <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="10" r="9" stroke="#f56c6c" stroke-width="1.5"/><path d="M6 10l3 3 5-5" stroke="#f56c6c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+                            <circle cx="10" cy="10" r="9" stroke="#f56c6c" stroke-width="1.5" />
+                            <path d="M6 10l3 3 5-5" stroke="#f56c6c" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -91,14 +110,18 @@
                 </div>
                 <div class="input-group">
                     <label class="input-label">你的辩论观点 <span class="required">*</span></label>
-                    <textarea id="teacher-argument" class="textarea-input" rows="6" placeholder="请详细阐述你的观点和论据……"></textarea>
+                    <textarea id="teacher-argument" class="textarea-input" rows="6"
+                        placeholder="请详细阐述你的观点和论据……"></textarea>
                     <div class="input-hint">请尽量详细地阐述你的观点，包括理论依据和实际案例。</div>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-outline" onclick="goToStep(1)">上一步</button>
                     <button class="btn btn-primary" id="btn-submit-argument">
                         提交观点并开始辩论
-                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -122,11 +145,15 @@
             <!-- 新一轮输入区域（反驳完成后显示） -->
             <div class="next-round-area hidden" id="next-round-area">
                 <div class="next-round-prompt">
-                    <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="M10 2v16M2 10h16" stroke="var(--el-color-primary)" stroke-width="2" stroke-linecap="round"/></svg>
+                    <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                        <path d="M10 2v16M2 10h16" stroke="var(--el-color-primary)" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
                     <span>针对 AI 的反驳，你想继续辩论吗？</span>
                 </div>
                 <div class="input-group">
-                    <textarea id="next-round-argument" class="textarea-input" rows="4" placeholder="请输入你的新一轮辩论观点，针对 AI 的反驳进行回应……"></textarea>
+                    <textarea id="next-round-argument" class="textarea-input" rows="4"
+                        placeholder="请输入你的新一轮辩论观点，针对 AI 的反驳进行回应……"></textarea>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-outline" id="btn-end-debate">
@@ -134,7 +161,10 @@
                     </button>
                     <button class="btn btn-primary" id="btn-next-round">
                         提交新一轮观点
-                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -156,8 +186,9 @@
                     <div class="annotation-option" data-value="false" id="ann-no-change">
                         <div class="ann-icon ann-icon--keep">
                             <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
-                                <circle cx="20" cy="20" r="18" fill="#67c23a" opacity="0.12"/>
-                                <path d="M14 20l4 4 8-8" stroke="#67c23a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="20" cy="20" r="18" fill="#67c23a" opacity="0.12" />
+                                <path d="M14 20l4 4 8-8" stroke="#67c23a" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </div>
                         <div class="ann-label">立场未改变</div>
@@ -166,8 +197,9 @@
                     <div class="annotation-option" data-value="true" id="ann-changed">
                         <div class="ann-icon ann-icon--change">
                             <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
-                                <circle cx="20" cy="20" r="18" fill="#e6a23c" opacity="0.12"/>
-                                <path d="M14 14l12 12M14 26l12-12" stroke="#e6a23c" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="20" cy="20" r="18" fill="#e6a23c" opacity="0.12" />
+                                <path d="M14 14l12 12M14 26l12-12" stroke="#e6a23c" stroke-width="2.5"
+                                    stroke-linecap="round" />
                             </svg>
                         </div>
                         <div class="ann-label">立场已改变</div>
@@ -176,11 +208,15 @@
                 </div>
                 <div class="input-group" style="margin-top: 20px;">
                     <label class="input-label">备注说明（选填）</label>
-                    <textarea id="annotation-note" class="textarea-input" rows="3" placeholder="可以补充说明你的想法变化……"></textarea>
+                    <textarea id="annotation-note" class="textarea-input" rows="3"
+                        placeholder="可以补充说明你的想法变化……"></textarea>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-primary btn-lg" id="btn-submit-annotation" disabled>
-                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                            <path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                         提交标注
                     </button>
                 </div>
@@ -192,9 +228,10 @@
             <div class="done-area">
                 <div class="done-icon">
                     <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
-                        <circle cx="40" cy="40" r="36" fill="#67c23a" opacity="0.12"/>
-                        <circle cx="40" cy="40" r="28" fill="#67c23a" opacity="0.2"/>
-                        <path d="M24 40l10 10 22-22" stroke="#67c23a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="40" cy="40" r="36" fill="#67c23a" opacity="0.12" />
+                        <circle cx="40" cy="40" r="28" fill="#67c23a" opacity="0.2" />
+                        <path d="M24 40l10 10 22-22" stroke="#67c23a" stroke-width="4" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </div>
                 <h2 class="done-title">辩论测评完成！</h2>
@@ -214,119 +251,124 @@
 {% block scripts %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
 <script>
-(function() {
-    // ====== 状态 ======
-    const topicId = "{{ topic.topic_id }}";
-    let currentStep = 1;
-    let chosenSide = null;
-    let sessionId = null;
-    let stanceChanged = null;
-    let currentRound = 0;
-    let refuteModelName = '';
+    (function () {
+        // ====== 状态 ======
+        const topicId = "{{ topic.topic_id }}";
+        let currentStep = 1;
+        let chosenSide = null;
+        let sessionId = null;
+        let stanceChanged = null;
+        let currentRound = 0;
+        let refuteModelName = '';
 
-    // ====== DOM 元素 ======
-    const steps = {
-        1: document.getElementById('step-1'),
-        2: document.getElementById('step-2'),
-        3: document.getElementById('step-3'),
-        4: document.getElementById('step-4'),
-        done: document.getElementById('step-done'),
-    };
-
-    // ====== 切换步骤 ======
-    window.goToStep = function(n) {
-        Object.values(steps).forEach(el => el.classList.add('hidden'));
-        steps[n].classList.remove('hidden');
-        currentStep = n;
-        updateProgress(n);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    function updateProgress(step) {
-        for (let i = 1; i <= 4; i++) {
-            const el = document.getElementById('prog-' + i);
-            el.classList.remove('completed', 'active');
-            if (i < step) el.classList.add('completed');
-            else if (i === step) el.classList.add('active');
-        }
-    }
-
-    // ====== Step 1: 选择立场 ======
-    document.querySelectorAll('.stance-option').forEach(opt => {
-        opt.addEventListener('click', function() {
-            document.querySelectorAll('.stance-option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            chosenSide = this.dataset.side;
-
-            const sideLabel = chosenSide === 'side_a' ? '正方' : '反方';
-            const sideText = chosenSide === 'side_a'
-                ? "{{ topic.side_a }}"
-                : "{{ topic.side_b }}";
-            const display = document.getElementById('chosen-stance-display');
-            const tagClass = chosenSide === 'side_a' ? 'tag--primary' : 'tag--danger';
-            display.innerHTML = `<span class="stance-tag ${tagClass}">${sideLabel}: ${sideText}</span>`;
-
-            setTimeout(() => goToStep(2), 300);
-        });
-    });
-
-    // ====== Step 2: 提交观点 ======
-    document.getElementById('btn-submit-argument').addEventListener('click', async function() {
-        const argument = document.getElementById('teacher-argument').value.trim();
-        if (!argument) {
-            alert('请输入你的辩论观点');
-            return;
+        function getRefuteModelDisplayName() {
+            const name = (refuteModelName || '').trim();
+            return name || '未命名模型';
         }
 
-        const teacherName = document.getElementById('teacher-name').value.trim();
-        this.disabled = true;
-        this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+        // ====== DOM 元素 ======
+        const steps = {
+            1: document.getElementById('step-1'),
+            2: document.getElementById('step-2'),
+            3: document.getElementById('step-3'),
+            4: document.getElementById('step-4'),
+            done: document.getElementById('step-done'),
+        };
 
-        try {
-            // 创建会话（包含第一轮观点）
-            const resp = await fetch('/api/debate/sessions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    topic_id: topicId,
-                    teacher_name: teacherName,
-                    chosen_side: chosenSide,
-                    teacher_argument: argument,
-                }),
+        // ====== 切换步骤 ======
+        window.goToStep = function (n) {
+            Object.values(steps).forEach(el => el.classList.add('hidden'));
+            steps[n].classList.remove('hidden');
+            currentStep = n;
+            updateProgress(n);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function updateProgress(step) {
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('prog-' + i);
+                el.classList.remove('completed', 'active');
+                if (i < step) el.classList.add('completed');
+                else if (i === step) el.classList.add('active');
+            }
+        }
+
+        // ====== Step 1: 选择立场 ======
+        document.querySelectorAll('.stance-option').forEach(opt => {
+            opt.addEventListener('click', function () {
+                document.querySelectorAll('.stance-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                chosenSide = this.dataset.side;
+
+                const sideLabel = chosenSide === 'side_a' ? '正方' : '反方';
+                const sideText = chosenSide === 'side_a'
+                    ? "{{ topic.side_a }}"
+                    : "{{ topic.side_b }}";
+                const display = document.getElementById('chosen-stance-display');
+                const tagClass = chosenSide === 'side_a' ? 'tag--primary' : 'tag--danger';
+                display.innerHTML = `<span class="stance-tag ${tagClass}">${sideLabel}: ${sideText}</span>`;
+
+                setTimeout(() => goToStep(2), 300);
             });
-            const data = await resp.json();
-            if (data.code !== 0) {
-                alert(data.msg || '创建会话失败');
+        });
+
+        // ====== Step 2: 提交观点 ======
+        document.getElementById('btn-submit-argument').addEventListener('click', async function () {
+            const argument = document.getElementById('teacher-argument').value.trim();
+            if (!argument) {
+                alert('请输入你的辩论观点');
                 return;
             }
-            sessionId = data.data.session_id;
-            currentRound = data.data.round_number;
-            refuteModelName = data.data.refute_model;
 
-            // 进入 Step 3 多轮辩论
-            goToStep(3);
+            const teacherName = document.getElementById('teacher-name').value.trim();
+            this.disabled = true;
+            this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
 
-            // 添加第一轮并自动开始加持
-            addRoundToChat(currentRound, argument);
-            await doEnhance(currentRound);
-        } catch (e) {
-            alert('网络错误：' + e.message);
-        } finally {
-            this.disabled = false;
-            this.innerHTML = '提交观点并开始辩论 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        }
-    });
+            try {
+                // 创建会话（包含第一轮观点）
+                const resp = await fetch('/api/debate/sessions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic_id: topicId,
+                        teacher_name: teacherName,
+                        chosen_side: chosenSide,
+                        teacher_argument: argument,
+                    }),
+                });
+                const data = await resp.json();
+                if (data.code !== 0) {
+                    alert(data.msg || '创建会话失败');
+                    return;
+                }
+                sessionId = data.data.session_id;
+                currentRound = data.data.round_number;
+                refuteModelName = data.data.refute_model;
 
-    // ====== 多轮辩论核心逻辑 ======
+                // 进入 Step 3 多轮辩论
+                goToStep(3);
 
-    function addRoundToChat(roundNum, teacherArg) {
-        const chatFlow = document.getElementById('debate-chat-flow');
-        document.getElementById('round-indicator').textContent = `第 ${roundNum} 轮`;
+                // 添加第一轮并自动开始加持
+                addRoundToChat(currentRound, argument);
+                await doEnhance(currentRound);
+            } catch (e) {
+                alert('网络错误：' + e.message);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '提交观点并开始辩论 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            }
+        });
 
-        const roundDiv = document.createElement('div');
-        roundDiv.className = 'chat-round';
-        roundDiv.id = `round-${roundNum}`;
-        roundDiv.innerHTML = `
+        // ====== 多轮辩论核心逻辑 ======
+
+        function addRoundToChat(roundNum, teacherArg) {
+            const chatFlow = document.getElementById('debate-chat-flow');
+            document.getElementById('round-indicator').textContent = `第 ${roundNum} 轮`;
+
+            const roundDiv = document.createElement('div');
+            roundDiv.className = 'chat-round';
+            roundDiv.id = `round-${roundNum}`;
+            roundDiv.innerHTML = `
             <div class="chat-round-header">
                 <span class="chat-round-badge">第 ${roundNum} 轮</span>
             </div>
@@ -385,10 +427,10 @@
                     <div class="panel-avatar panel-avatar--ai-rebut">
                         <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.8"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <span class="panel-label">反驳模型 · 反驳观点</span>
+                    <span class="panel-label">反驳模型（${escapeHtml(getRefuteModelDisplayName())}）· 反驳观点</span>
                     <div class="panel-loading hidden" id="rebut-loading-${roundNum}">
                         <div class="loading-spinner loading-spinner--danger"></div>
-                        <span>AI 正在反驳中…</span>
+                        <span>AI（${escapeHtml(getRefuteModelDisplayName())}）正在反驳中…</span>
                     </div>
                     <button class="btn-retry btn-retry--danger hidden" id="btn-retry-rebut-${roundNum}" onclick="retryRebut(${roundNum})">
                         <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M2 8a6 6 0 0 1 10.3-4.2M14 8a6 6 0 0 1-10.3 4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 1v3.5h-3.5M4 15v-3.5h3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -400,299 +442,299 @@
                 </div>
             </div>
         `;
-        chatFlow.appendChild(roundDiv);
+            chatFlow.appendChild(roundDiv);
 
-        // 滚动到新轮次
-        roundDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+            // 滚动到新轮次
+            roundDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
-    async function doEnhance(roundNum) {
-        // 隐藏新一轮输入区域
-        document.getElementById('next-round-area').classList.add('hidden');
+        async function doEnhance(roundNum) {
+            // 隐藏新一轮输入区域
+            document.getElementById('next-round-area').classList.add('hidden');
 
-        const enhanceLoading = document.getElementById(`enhance-loading-${roundNum}`);
-        const enhanceDisplay = document.getElementById(`display-enhanced-${roundNum}`);
-        const retryBtn = document.getElementById(`btn-retry-enhance-${roundNum}`);
+            const enhanceLoading = document.getElementById(`enhance-loading-${roundNum}`);
+            const enhanceDisplay = document.getElementById(`display-enhanced-${roundNum}`);
+            const retryBtn = document.getElementById(`btn-retry-enhance-${roundNum}`);
 
-        // 重置状态：显示 loading，隐藏重试按钮、编辑按钮、操作栏
-        enhanceLoading.classList.remove('hidden');
-        retryBtn.classList.add('hidden');
-        document.getElementById(`btn-edit-enhanced-${roundNum}`).classList.add('hidden');
-        document.getElementById(`enhanced-actions-${roundNum}`).classList.add('hidden');
-        enhanceDisplay.innerHTML = '<div class="panel-placeholder">AI 正在润色中，请稍候…</div>';
-        document.getElementById(`display-enhanced-${roundNum}`).classList.remove('hidden');
-        document.getElementById(`edit-enhanced-${roundNum}`).classList.add('hidden');
+            // 重置状态：显示 loading，隐藏重试按钮、编辑按钮、操作栏
+            enhanceLoading.classList.remove('hidden');
+            retryBtn.classList.add('hidden');
+            document.getElementById(`btn-edit-enhanced-${roundNum}`).classList.add('hidden');
+            document.getElementById(`enhanced-actions-${roundNum}`).classList.add('hidden');
+            enhanceDisplay.innerHTML = '<div class="panel-placeholder">AI 正在润色中，请稍候…</div>';
+            document.getElementById(`display-enhanced-${roundNum}`).classList.remove('hidden');
+            document.getElementById(`edit-enhanced-${roundNum}`).classList.add('hidden');
 
-        try {
-            const resp = await fetch(`/api/debate/sessions/${sessionId}/enhance`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await resp.json();
-            if (data.code === 0) {
-                enhanceDisplay.textContent = data.data.enhanced_argument;
-                enhanceLoading.classList.add('hidden');
+            try {
+                const resp = await fetch(`/api/debate/sessions/${sessionId}/enhance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    enhanceDisplay.textContent = data.data.enhanced_argument;
+                    enhanceLoading.classList.add('hidden');
 
-                // 显示「修改」按钮和操作按钮栏
-                document.getElementById(`btn-edit-enhanced-${roundNum}`).classList.remove('hidden');
-                document.getElementById(`enhanced-actions-${roundNum}`).classList.remove('hidden');
+                    // 显示「修改」按钮和操作按钮栏
+                    document.getElementById(`btn-edit-enhanced-${roundNum}`).classList.remove('hidden');
+                    document.getElementById(`enhanced-actions-${roundNum}`).classList.remove('hidden');
 
-                // 滚动到按钮区域
-                document.getElementById(`enhanced-actions-${roundNum}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                enhanceDisplay.innerHTML = `<div class="panel-error">加持失败: ${data.msg}</div>`;
+                    // 滚动到按钮区域
+                    document.getElementById(`enhanced-actions-${roundNum}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    enhanceDisplay.innerHTML = `<div class="panel-error">加持失败: ${data.msg}</div>`;
+                    enhanceLoading.classList.add('hidden');
+                    retryBtn.classList.remove('hidden');
+                }
+            } catch (e) {
+                enhanceDisplay.innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
                 enhanceLoading.classList.add('hidden');
                 retryBtn.classList.remove('hidden');
             }
-        } catch (e) {
-            enhanceDisplay.innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
-            enhanceLoading.classList.add('hidden');
-            retryBtn.classList.remove('hidden');
-        }
-    }
-
-    // 重试加持
-    window.retryEnhance = function(roundNum) {
-        doEnhance(roundNum);
-    };
-
-    function syncEnhancedTextareaHeight(textareaEl, baseHeight = 0) {
-        textareaEl.style.height = 'auto';
-        textareaEl.style.height = `${Math.max(textareaEl.scrollHeight, baseHeight, 200)}px`;
-    }
-
-    // 切换编辑模式：点击「修改」按钮后，panel-body 变成 textarea 原地编辑
-    window.toggleEditEnhanced = function(roundNum) {
-        const displayEl = document.getElementById(`display-enhanced-${roundNum}`);
-        const editEl = document.getElementById(`edit-enhanced-${roundNum}`);
-        const textareaEl = document.getElementById(`edit-textarea-${roundNum}`);
-        const editBtn = document.getElementById(`btn-edit-enhanced-${roundNum}`);
-
-        const isEditing = !editEl.classList.contains('hidden');
-
-        if (isEditing) {
-            // 退出编辑：把 textarea 的内容同步回显示区域
-            displayEl.textContent = textareaEl.value;
-            displayEl.classList.remove('hidden');
-            editEl.classList.add('hidden');
-            textareaEl.oninput = null;
-            editBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" width="13" height="13"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> 修改';
-        } else {
-            // 进入编辑：把显示内容填入 textarea
-            textareaEl.value = displayEl.textContent;
-            const displayHeight = displayEl.scrollHeight;
-            displayEl.classList.add('hidden');
-            editEl.classList.remove('hidden');
-            syncEnhancedTextareaHeight(textareaEl, displayHeight);
-            textareaEl.oninput = () => syncEnhancedTextareaHeight(textareaEl, displayHeight);
-            textareaEl.focus();
-            editBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" width="13" height="13"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 完成修改';
-        }
-    };
-
-    // 确认观点并开始反驳
-    window.confirmEnhancedAndRebut = async function(roundNum) {
-        const displayEl = document.getElementById(`display-enhanced-${roundNum}`);
-        const editEl = document.getElementById(`edit-enhanced-${roundNum}`);
-        const textareaEl = document.getElementById(`edit-textarea-${roundNum}`);
-        const confirmBtn = document.getElementById(`btn-confirm-enhanced-${roundNum}`);
-        const editBtn = document.getElementById(`btn-edit-enhanced-${roundNum}`);
-
-        // 如果正在编辑模式，先取出 textarea 内容
-        let finalText;
-        if (!editEl.classList.contains('hidden')) {
-            finalText = textareaEl.value.trim();
-        } else {
-            finalText = displayEl.textContent.trim();
         }
 
-        if (!finalText) {
-            alert('观点内容不能为空');
-            return;
+        // 重试加持
+        window.retryEnhance = function (roundNum) {
+            doEnhance(roundNum);
+        };
+
+        function syncEnhancedTextareaHeight(textareaEl, baseHeight = 0) {
+            textareaEl.style.height = 'auto';
+            textareaEl.style.height = `${Math.max(textareaEl.scrollHeight, baseHeight, 200)}px`;
         }
 
-        confirmBtn.disabled = true;
-        confirmBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+        // 切换编辑模式：点击「修改」按钮后，panel-body 变成 textarea 原地编辑
+        window.toggleEditEnhanced = function (roundNum) {
+            const displayEl = document.getElementById(`display-enhanced-${roundNum}`);
+            const editEl = document.getElementById(`edit-enhanced-${roundNum}`);
+            const textareaEl = document.getElementById(`edit-textarea-${roundNum}`);
+            const editBtn = document.getElementById(`btn-edit-enhanced-${roundNum}`);
 
-        // 如果内容被修改过，先保存到后端
-        const originalText = displayEl.textContent.trim();
-        if (finalText !== originalText) {
-            try {
-                const resp = await fetch(`/api/debate/sessions/${sessionId}/update-enhanced`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ enhanced_argument: finalText }),
-                });
-                const data = await resp.json();
-                if (data.code !== 0) {
-                    alert(data.msg || '更新失败');
+            const isEditing = !editEl.classList.contains('hidden');
+
+            if (isEditing) {
+                // 退出编辑：把 textarea 的内容同步回显示区域
+                displayEl.textContent = textareaEl.value;
+                displayEl.classList.remove('hidden');
+                editEl.classList.add('hidden');
+                textareaEl.oninput = null;
+                editBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" width="13" height="13"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> 修改';
+            } else {
+                // 进入编辑：把显示内容填入 textarea
+                textareaEl.value = displayEl.textContent;
+                const displayHeight = displayEl.scrollHeight;
+                displayEl.classList.add('hidden');
+                editEl.classList.remove('hidden');
+                syncEnhancedTextareaHeight(textareaEl, displayHeight);
+                textareaEl.oninput = () => syncEnhancedTextareaHeight(textareaEl, displayHeight);
+                textareaEl.focus();
+                editBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" width="13" height="13"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 完成修改';
+            }
+        };
+
+        // 确认观点并开始反驳
+        window.confirmEnhancedAndRebut = async function (roundNum) {
+            const displayEl = document.getElementById(`display-enhanced-${roundNum}`);
+            const editEl = document.getElementById(`edit-enhanced-${roundNum}`);
+            const textareaEl = document.getElementById(`edit-textarea-${roundNum}`);
+            const confirmBtn = document.getElementById(`btn-confirm-enhanced-${roundNum}`);
+            const editBtn = document.getElementById(`btn-edit-enhanced-${roundNum}`);
+
+            // 如果正在编辑模式，先取出 textarea 内容
+            let finalText;
+            if (!editEl.classList.contains('hidden')) {
+                finalText = textareaEl.value.trim();
+            } else {
+                finalText = displayEl.textContent.trim();
+            }
+
+            if (!finalText) {
+                alert('观点内容不能为空');
+                return;
+            }
+
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+
+            // 如果内容被修改过，先保存到后端
+            const originalText = displayEl.textContent.trim();
+            if (finalText !== originalText) {
+                try {
+                    const resp = await fetch(`/api/debate/sessions/${sessionId}/update-enhanced`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ enhanced_argument: finalText }),
+                    });
+                    const data = await resp.json();
+                    if (data.code !== 0) {
+                        alert(data.msg || '更新失败');
+                        confirmBtn.disabled = false;
+                        confirmBtn.innerHTML = '确认观点，开始 AI 反驳 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        return;
+                    }
+                } catch (e) {
+                    alert('网络错误：' + e.message);
                     confirmBtn.disabled = false;
                     confirmBtn.innerHTML = '确认观点，开始 AI 反驳 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                     return;
                 }
+            }
+
+            // 切回显示模式，锁定内容
+            displayEl.textContent = finalText;
+            displayEl.classList.remove('hidden');
+            editEl.classList.add('hidden');
+            // 隐藏修改按钮和操作栏
+            editBtn.classList.add('hidden');
+            document.getElementById(`enhanced-actions-${roundNum}`).classList.add('hidden');
+
+            // 显示反驳面板并开始反驳
+            await doRebut(roundNum);
+        };
+
+        async function doRebut(roundNum) {
+            const rebuttalPanel = document.getElementById(`rebuttal-panel-${roundNum}`);
+            rebuttalPanel.classList.remove('hidden');
+
+            const rebutLoading = document.getElementById(`rebut-loading-${roundNum}`);
+            const rebutDisplay = document.getElementById(`display-rebuttal-${roundNum}`);
+            const retryBtn = document.getElementById(`btn-retry-rebut-${roundNum}`);
+
+            // 重置状态
+            rebutLoading.classList.remove('hidden');
+            retryBtn.classList.add('hidden');
+            rebutDisplay.innerHTML = `<div class="panel-placeholder">AI（${escapeHtml(getRefuteModelDisplayName())}）正在反驳中，请稍候…</div>`;
+
+            // 隐藏新一轮输入区域（重试时需要重新隐藏）
+            document.getElementById('next-round-area').classList.add('hidden');
+
+            let success = false;
+            try {
+                const resp = await fetch(`/api/debate/sessions/${sessionId}/rebut`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    rebutDisplay.textContent = data.data.rebuttal_argument;
+                    success = true;
+                } else {
+                    rebutDisplay.innerHTML = `<div class="panel-error">反驳失败: ${data.msg}</div>`;
+                    retryBtn.classList.remove('hidden');
+                }
+            } catch (e) {
+                rebutDisplay.innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
+                retryBtn.classList.remove('hidden');
+            } finally {
+                rebutLoading.classList.add('hidden');
+            }
+
+            if (success) {
+                // 反驳成功，显示新一轮输入区域
+                document.getElementById('next-round-area').classList.remove('hidden');
+                document.getElementById('next-round-argument').value = '';
+                document.getElementById('next-round-argument').focus();
+            }
+        }
+
+        // 重试反驳
+        window.retryRebut = function (roundNum) {
+            doRebut(roundNum);
+        };
+
+        // ====== 新一轮辩论 ======
+        document.getElementById('btn-next-round').addEventListener('click', async function () {
+            const argument = document.getElementById('next-round-argument').value.trim();
+            if (!argument) {
+                alert('请输入你的新一轮辩论观点');
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+
+            try {
+                const resp = await fetch(`/api/debate/sessions/${sessionId}/next-round`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teacher_argument: argument }),
+                });
+                const data = await resp.json();
+                if (data.code !== 0) {
+                    alert(data.msg || '提交失败');
+                    return;
+                }
+
+                currentRound = data.data.round_number;
+                addRoundToChat(currentRound, argument);
+                await doEnhance(currentRound);
             } catch (e) {
                 alert('网络错误：' + e.message);
-                confirmBtn.disabled = false;
-                confirmBtn.innerHTML = '确认观点，开始 AI 反驳 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-                return;
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '提交新一轮观点 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             }
-        }
-
-        // 切回显示模式，锁定内容
-        displayEl.textContent = finalText;
-        displayEl.classList.remove('hidden');
-        editEl.classList.add('hidden');
-        // 隐藏修改按钮和操作栏
-        editBtn.classList.add('hidden');
-        document.getElementById(`enhanced-actions-${roundNum}`).classList.add('hidden');
-
-        // 显示反驳面板并开始反驳
-        await doRebut(roundNum);
-    };
-
-    async function doRebut(roundNum) {
-        const rebuttalPanel = document.getElementById(`rebuttal-panel-${roundNum}`);
-        rebuttalPanel.classList.remove('hidden');
-
-        const rebutLoading = document.getElementById(`rebut-loading-${roundNum}`);
-        const rebutDisplay = document.getElementById(`display-rebuttal-${roundNum}`);
-        const retryBtn = document.getElementById(`btn-retry-rebut-${roundNum}`);
-
-        // 重置状态
-        rebutLoading.classList.remove('hidden');
-        retryBtn.classList.add('hidden');
-        rebutDisplay.innerHTML = '<div class="panel-placeholder">AI 正在反驳中，请稍候…</div>';
-
-        // 隐藏新一轮输入区域（重试时需要重新隐藏）
-        document.getElementById('next-round-area').classList.add('hidden');
-
-        let success = false;
-        try {
-            const resp = await fetch(`/api/debate/sessions/${sessionId}/rebut`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await resp.json();
-            if (data.code === 0) {
-                rebutDisplay.textContent = data.data.rebuttal_argument;
-                success = true;
-            } else {
-                rebutDisplay.innerHTML = `<div class="panel-error">反驳失败: ${data.msg}</div>`;
-                retryBtn.classList.remove('hidden');
-            }
-        } catch (e) {
-            rebutDisplay.innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
-            retryBtn.classList.remove('hidden');
-        } finally {
-            rebutLoading.classList.add('hidden');
-        }
-
-        if (success) {
-            // 反驳成功，显示新一轮输入区域
-            document.getElementById('next-round-area').classList.remove('hidden');
-            document.getElementById('next-round-argument').value = '';
-            document.getElementById('next-round-argument').focus();
-        }
-    }
-
-    // 重试反驳
-    window.retryRebut = function(roundNum) {
-        doRebut(roundNum);
-    };
-
-    // ====== 新一轮辩论 ======
-    document.getElementById('btn-next-round').addEventListener('click', async function() {
-        const argument = document.getElementById('next-round-argument').value.trim();
-        if (!argument) {
-            alert('请输入你的新一轮辩论观点');
-            return;
-        }
-
-        this.disabled = true;
-        this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
-
-        try {
-            const resp = await fetch(`/api/debate/sessions/${sessionId}/next-round`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ teacher_argument: argument }),
-            });
-            const data = await resp.json();
-            if (data.code !== 0) {
-                alert(data.msg || '提交失败');
-                return;
-            }
-
-            currentRound = data.data.round_number;
-            addRoundToChat(currentRound, argument);
-            await doEnhance(currentRound);
-        } catch (e) {
-            alert('网络错误：' + e.message);
-        } finally {
-            this.disabled = false;
-            this.innerHTML = '提交新一轮观点 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        }
-    });
-
-    // ====== 结束辩论 ======
-    document.getElementById('btn-end-debate').addEventListener('click', function() {
-        document.getElementById('total-rounds-display').textContent = currentRound;
-        goToStep(4);
-    });
-
-    // ====== Step 4: 标注 ======
-    document.querySelectorAll('.annotation-option').forEach(opt => {
-        opt.addEventListener('click', function() {
-            document.querySelectorAll('.annotation-option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            stanceChanged = this.dataset.value === 'true';
-            document.getElementById('btn-submit-annotation').disabled = false;
         });
-    });
 
-    document.getElementById('btn-submit-annotation').addEventListener('click', async function() {
-        if (stanceChanged === null) {
-            alert('请选择立场是否改变');
-            return;
-        }
+        // ====== 结束辩论 ======
+        document.getElementById('btn-end-debate').addEventListener('click', function () {
+            document.getElementById('total-rounds-display').textContent = currentRound;
+            goToStep(4);
+        });
 
-        this.disabled = true;
-        this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
-
-        try {
-            const note = document.getElementById('annotation-note').value.trim();
-            const resp = await fetch(`/api/debate/sessions/${sessionId}/annotate`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    stance_changed: stanceChanged,
-                    annotation_note: note,
-                }),
+        // ====== Step 4: 标注 ======
+        document.querySelectorAll('.annotation-option').forEach(opt => {
+            opt.addEventListener('click', function () {
+                document.querySelectorAll('.annotation-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                stanceChanged = this.dataset.value === 'true';
+                document.getElementById('btn-submit-annotation').disabled = false;
             });
-            const data = await resp.json();
-            if (data.code === 0) {
-                showDone();
-            } else {
-                alert(data.msg || '标注失败');
+        });
+
+        document.getElementById('btn-submit-annotation').addEventListener('click', async function () {
+            if (stanceChanged === null) {
+                alert('请选择立场是否改变');
+                return;
             }
-        } catch (e) {
-            alert('网络错误：' + e.message);
-        } finally {
-            this.disabled = false;
-            this.innerHTML = '<svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 提交标注';
-        }
-    });
 
-    function showDone() {
-        Object.values(steps).forEach(el => el.classList.add('hidden'));
-        steps.done.classList.remove('hidden');
-        updateProgress(5); // 全部完成
+            this.disabled = true;
+            this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
 
-        const sideLabel = chosenSide === 'side_a' ? '正方' : '反方';
-        const changedText = stanceChanged ? '是 — 立场已改变' : '否 — 立场未改变';
-        const changedClass = stanceChanged ? 'summary-changed' : 'summary-kept';
+            try {
+                const note = document.getElementById('annotation-note').value.trim();
+                const resp = await fetch(`/api/debate/sessions/${sessionId}/annotate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        stance_changed: stanceChanged,
+                        annotation_note: note,
+                    }),
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    showDone();
+                } else {
+                    alert(data.msg || '标注失败');
+                }
+            } catch (e) {
+                alert('网络错误：' + e.message);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '<svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 提交标注';
+            }
+        });
 
-        document.getElementById('done-summary').innerHTML = `
+        function showDone() {
+            Object.values(steps).forEach(el => el.classList.add('hidden'));
+            steps.done.classList.remove('hidden');
+            updateProgress(5); // 全部完成
+
+            const sideLabel = chosenSide === 'side_a' ? '正方' : '反方';
+            const changedText = stanceChanged ? '是 — 立场已改变' : '否 — 立场未改变';
+            const changedClass = stanceChanged ? 'summary-changed' : 'summary-kept';
+
+            document.getElementById('done-summary').innerHTML = `
             <div class="summary-row"><span class="summary-label">辩题</span><span class="summary-value">{{ topic.title }}</span></div>
             <div class="summary-row"><span class="summary-label">选择立场</span><span class="summary-value">${sideLabel}</span></div>
             <div class="summary-row"><span class="summary-label">辩论轮数</span><span class="summary-value">${currentRound} 轮</span></div>
@@ -700,17 +742,17 @@
             <div class="summary-row"><span class="summary-label">立场变化</span><span class="summary-value ${changedClass}">${changedText}</span></div>
             <div class="summary-row"><span class="summary-label">会话ID</span><span class="summary-value summary-id">${sessionId}</span></div>
         `;
-    }
+        }
 
-    // ====== 工具函数 ======
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+        // ====== 工具函数 ======
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-    // 初始化
-    updateProgress(1);
-})();
+        // 初始化
+        updateProgress(1);
+    })();
 </script>
 {% endblock %}

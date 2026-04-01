@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import pymysql
-from flask import Flask, render_template, jsonify, request, abort, redirect, Response, stream_with_context
+from flask import Flask, render_template, jsonify, request, abort, redirect, Response, stream_with_context, make_response
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -37,6 +37,56 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = config.SQLALCHEMY_ENGINE_OPTIONS
 app.config["JSON_AS_ASCII"] = False
 
 db = SQLAlchemy(app)
+
+
+VISITOR_COOKIE_NAME = "open_arena_visitor_id"
+
+
+def _get_or_create_visitor_id() -> str:
+    """获取当前访客 ID；若不存在则生成新的 UUID。"""
+    visitor_id = request.cookies.get(VISITOR_COOKIE_NAME, "").strip()
+    if visitor_id:
+        return visitor_id
+    return str(uuid.uuid4())
+
+
+def _set_visitor_cookie(resp: Response, visitor_id: str) -> Response:
+    """将访客 ID 写入 Cookie，供后续请求做轻量隔离。"""
+    if request.cookies.get(VISITOR_COOKIE_NAME) != visitor_id:
+        resp.set_cookie(
+            VISITOR_COOKIE_NAME,
+            visitor_id,
+            max_age=60 * 60 * 24 * 365,
+            httponly=True,
+            samesite="Lax",
+        )
+    return resp
+
+
+def _assert_session_owner(session_id: str, visitor_id: str, allow_auto_bind: bool = False) -> None:
+    """校验会话归属；未命中归属时可按需自动绑定到当前访客。"""
+    owner = DebateSessionOwner.query.filter_by(session_id=session_id).first()
+    if owner is None:
+        if allow_auto_bind:
+            db.session.add(DebateSessionOwner(session_id=session_id, visitor_id=visitor_id))
+            db.session.commit()
+            return
+        abort(404)
+    if owner.visitor_id != visitor_id:
+        abort(404)
+
+
+def _assert_lesson_session_owner(session_id: str, visitor_id: str, allow_auto_bind: bool = False) -> None:
+    """校验教案会话归属；未命中归属时可按需自动绑定到当前访客。"""
+    owner = LessonSessionOwner.query.filter_by(session_id=session_id).first()
+    if owner is None:
+        if allow_auto_bind:
+            db.session.add(LessonSessionOwner(session_id=session_id, visitor_id=visitor_id))
+            db.session.commit()
+            return
+        abort(404)
+    if owner.visitor_id != visitor_id:
+        abort(404)
 
 
 
@@ -77,6 +127,20 @@ class DebateRound(db.Model):
     enhanced_argument_raw = db.Column(db.Text, comment="加持模型原始润色结果（AI生成）")
     enhanced_argument = db.Column(db.Text, comment="最终用于反驳的加持观点（可能经用户修改）")
     rebuttal_argument = db.Column(db.Text, comment="反驳模型的反驳内容")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class DebateSessionOwner(db.Model):
+    """辩论会话归属表 —— 轻量按访客隔离历史记录"""
+
+    __tablename__ = "debate_session_owners"
+    session_id = db.Column(
+        db.String(36),
+        db.ForeignKey("debate_sessions.session_id", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    visitor_id = db.Column(db.String(36), nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -125,6 +189,20 @@ class LessonChatRound(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class LessonSessionOwner(db.Model):
+    """教案会话归属表 —— 轻量按访客隔离历史记录"""
+
+    __tablename__ = "lesson_session_owners"
+    session_id = db.Column(
+        db.String(36),
+        db.ForeignKey("lesson_sessions.session_id", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    visitor_id = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 # ===================== 首页应用列表 =====================
 AI_APPS = [
     {
@@ -149,7 +227,7 @@ AI_APPS = [
     },
     {
         "id": "Q003",
-        "title": "多智能体教学地图",
+        "title": "教学导航仪",
         "description": "基于 LangGraph 的多智能体协作应用，自动生成结构化教学地图，支持过程追踪与历史回溯。",
         "icon": "multi_agent",
         "tag": "多智能体",
@@ -226,8 +304,23 @@ def index():
 @app.route("/app/debate")
 def debate_home():
     """辩论平台首页 —— 展示辩题列表（从 topics.py 读取）"""
+    visitor_id = _get_or_create_visitor_id()
     topics = get_all_topics()
-    return render_template("debate.html", topics=topics)
+    # 每次进入/刷新辩题页时随机打乱顺序
+    if topics:
+        topics = random.sample(topics, len(topics))
+    resp = make_response(render_template("debate.html", topics=topics))
+    return _set_visitor_cookie(resp, visitor_id)
+
+
+@app.route("/app/debate/random")
+def debate_random_topic():
+    """随机抽取一个辩题并跳转到该辩题页"""
+    topics = get_all_topics()
+    if not topics:
+        return redirect("/app/debate")
+    picked = random.choice(topics)
+    return redirect(f"/app/debate/{picked['topic_id']}")
 
 
 @app.route("/app/multi-agent-teaching")
@@ -244,26 +337,33 @@ def multi_agent_teaching_page():
 @app.route("/app/debate/history")
 def debate_history_page():
     """历史辩论记录列表页"""
-    return render_template("debate_history.html")
+    visitor_id = _get_or_create_visitor_id()
+    resp = make_response(render_template("debate_history.html"))
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 @app.route("/app/debate/history/<session_id>")
 def debate_history_detail_page(session_id):
     """查看某次辩论的详细记录"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
     topic = get_topic_by_id(session.topic_id)
     if not topic:
         abort(404)
-    return render_template("debate_history_detail.html", session=session, topic=topic)
+    resp = make_response(render_template("debate_history_detail.html", session=session, topic=topic))
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 @app.route("/app/debate/<topic_id>")
 def debate_session_page(topic_id):
     """进入某个辩题的辩论页面"""
+    visitor_id = _get_or_create_visitor_id()
     topic = get_topic_by_id(topic_id)
     if not topic:
         abort(404)
-    return render_template("debate_session.html", topic=topic)
+    resp = make_response(render_template("debate_session.html", topic=topic))
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 # ===================== API 接口 =====================
@@ -320,6 +420,8 @@ def api_create_session():
     # 随机选取反驳模型并锁定到本次会话
     refute_model = _pick_refute_model()
 
+    visitor_id = _get_or_create_visitor_id()
+
     session_id = str(uuid.uuid4())
     session = DebateSession(
         session_id=session_id,
@@ -331,6 +433,7 @@ def api_create_session():
         status="debating",
     )
     db.session.add(session)
+    db.session.add(DebateSessionOwner(session_id=session_id, visitor_id=visitor_id))
 
     # 创建第一轮
     round1 = DebateRound(
@@ -341,7 +444,7 @@ def api_create_session():
     db.session.add(round1)
     db.session.commit()
 
-    return jsonify({
+    resp = jsonify({
         "code": 0,
         "msg": "辩论会话创建成功",
         "data": {
@@ -350,11 +453,14 @@ def api_create_session():
             "round_number": 1,
         },
     })
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 @app.route("/api/debate/sessions/<session_id>/enhance", methods=["POST"])
 def api_enhance_argument(session_id):
     """加持模型 API —— 润色当前轮次的教师观点（含历史上下文）"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
 
     topic = get_topic_by_id(session.topic_id)
@@ -412,6 +518,8 @@ def api_update_enhanced(session_id):
         "enhanced_argument": "修改后的观点内容"
     }
     """
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
 
     data = request.get_json()
@@ -445,6 +553,8 @@ def api_update_enhanced(session_id):
 @app.route("/api/debate/sessions/<session_id>/rebut", methods=["POST"])
 def api_rebut_argument(session_id):
     """反驳模型 API —— 反驳当前轮次加持后的观点（含历史上下文，使用锁定的模型）"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
 
     topic = get_topic_by_id(session.topic_id)
@@ -501,6 +611,8 @@ def api_next_round(session_id):
         "teacher_argument": "针对你的反驳，我认为……"
     }
     """
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
 
     if session.status != "debating":
@@ -549,6 +661,8 @@ def api_annotate_session(session_id):
         "annotation_note": "备注信息"
     }
     """
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
     data = request.get_json()
 
@@ -567,6 +681,8 @@ def api_annotate_session(session_id):
 @app.route("/api/debate/sessions/<session_id>", methods=["GET"])
 def api_get_session(session_id):
     """获取单个辩论会话详情（含所有轮次）"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = DebateSession.query.filter_by(session_id=session_id).first_or_404()
     topic = get_topic_by_id(session.topic_id)
 
@@ -604,8 +720,14 @@ def api_get_session(session_id):
 @app.route("/api/debate/sessions", methods=["GET"])
 def api_list_sessions():
     """获取辩论会话列表（支持按辩题筛选）"""
+    visitor_id = _get_or_create_visitor_id()
     topic_id = request.args.get("topic_id")
-    query = DebateSession.query
+    owner_query = DebateSessionOwner.query.filter_by(visitor_id=visitor_id)
+    owned_session_ids = [o.session_id for o in owner_query.all()]
+    if not owned_session_ids:
+        return jsonify({"code": 0, "data": []})
+
+    query = DebateSession.query.filter(DebateSession.session_id.in_(owned_session_ids))
     if topic_id:
         query = query.filter_by(topic_id=topic_id)
     sessions = query.order_by(DebateSession.created_at.desc()).all()
@@ -631,19 +753,78 @@ def api_list_sessions():
 @app.route("/app/lesson-arena")
 def lesson_arena_home():
     """教案竞技场首页 —— 填写提示词模板表单"""
+    visitor_id = _get_or_create_visitor_id()
     fields = get_prompt_fields()
-    return render_template("lesson_arena.html", fields=fields, prompt_template=PROMPT_TEMPLATE)
+    resp = make_response(render_template("lesson_arena.html", fields=fields, prompt_template=PROMPT_TEMPLATE))
+    return _set_visitor_cookie(resp, visitor_id)
+
+
+@app.route("/app/lesson-arena/history")
+def lesson_arena_history_page():
+    """教案竞技场历史记录页"""
+    visitor_id = _get_or_create_visitor_id()
+    resp = make_response(render_template("lesson_history.html"))
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 @app.route("/app/lesson-arena/session/<session_id>")
 def lesson_arena_session_page(session_id):
     """教案竞技场会话页 —— 对比两模型回答、投票、评分、多轮对话"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
     dimensions = get_rating_dimensions()
-    return render_template("lesson_session.html", session=session, dimensions=dimensions)
+    resp = make_response(render_template("lesson_session.html", session=session, dimensions=dimensions))
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 # ===================== 教案设计竞技场 - API =====================
+@app.route("/api/lesson/sessions", methods=["GET"])
+def api_lesson_list_sessions():
+    """获取教案竞技场会话列表（用于历史记录展示）"""
+    visitor_id = _get_or_create_visitor_id()
+    owner_query = LessonSessionOwner.query.filter_by(visitor_id=visitor_id)
+    owned_session_ids = [o.session_id for o in owner_query.all()]
+    if not owned_session_ids:
+        resp = jsonify({"code": 0, "data": []})
+        return _set_visitor_cookie(resp, visitor_id)
+
+    sessions = LessonSession.query.filter(
+        LessonSession.session_id.in_(owned_session_ids)
+    ).order_by(LessonSession.created_at.desc()).all()
+
+    result = []
+    for s in sessions:
+        lesson_focus = ""
+        try:
+            form_data = json.loads(s.form_data) if s.form_data else {}
+            lesson_focus = (
+                form_data.get("knowledge_point")
+                or form_data.get("grade_subject")
+                or form_data.get("teaching_stage")
+                or ""
+            )
+        except Exception:
+            lesson_focus = ""
+
+        result.append({
+            "session_id": s.session_id,
+            "teacher_name": s.teacher_name or "匿名",
+            "status": s.status,
+            "winner": s.winner,
+            "current_round": s.current_round,
+            "model_a_name": s.model_a_name,
+            "model_b_name": s.model_b_name,
+            "lesson_focus": lesson_focus,
+            "prompt_preview": (s.prompt_text or "")[:120],
+            "created_at": s.created_at.isoformat() if s.created_at else None,
+            "updated_at": s.updated_at.isoformat() if s.updated_at else None,
+        })
+
+    resp = jsonify({"code": 0, "data": result})
+    return _set_visitor_cookie(resp, visitor_id)
+
+
 @app.route("/api/lesson/sessions", methods=["POST"])
 def api_lesson_create_session():
     """
@@ -669,6 +850,7 @@ def api_lesson_create_session():
 
     picked = random.sample(models, 2)
     model_a, model_b = picked[0], picked[1]
+    visitor_id = _get_or_create_visitor_id()
 
     session_id = str(uuid.uuid4())
     lesson_session = LessonSession(
@@ -681,17 +863,21 @@ def api_lesson_create_session():
         status="generating",
     )
     db.session.add(lesson_session)
+    db.session.add(LessonSessionOwner(session_id=session_id, visitor_id=visitor_id))
     db.session.commit()
 
-    return jsonify({
+    resp = jsonify({
         "code": 0,
         "data": {"session_id": session_id},
     })
+    return _set_visitor_cookie(resp, visitor_id)
 
 
 @app.route("/api/lesson/sessions/<session_id>/generate", methods=["POST"])
 def api_lesson_generate(session_id):
     """调用两个模型并行生成教案（由前端在进入会话页后调用）"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
 
     if session.model_a_response and session.model_b_response:
@@ -747,6 +933,8 @@ def api_lesson_generate(session_id):
 @app.route("/api/lesson/sessions/<session_id>/vote", methods=["POST"])
 def api_lesson_vote(session_id):
     """用户投票选择哪个模型更好"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
     data = request.get_json()
 
@@ -779,6 +967,8 @@ def api_lesson_rate(session_id):
     多维度评分（5分李克特量表）
     请求体: { "ratings_a": {"executable":5,...}, "ratings_b": {"executable":3,...} }
     """
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
     data = request.get_json()
 
@@ -819,6 +1009,8 @@ def api_lesson_chat(session_id):
     多轮对话 —— 用户追问，两个模型分别回答
     请求体: { "message": "请把导入环节改为游戏化方式" }
     """
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
     data = request.get_json()
 
@@ -896,6 +1088,8 @@ def api_lesson_chat(session_id):
 @app.route("/api/lesson/sessions/<session_id>", methods=["GET"])
 def api_lesson_get_session(session_id):
     """获取教案竞技场会话详情"""
+    visitor_id = _get_or_create_visitor_id()
+    _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
 
     chat_rounds = []

@@ -8,9 +8,12 @@
 
         <!-- 顶部信息栏 -->
         <div class="lesson-topbar">
-            <a href="/app/lesson-arena" class="breadcrumb">
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                返回重新填写
+            <a href="/app/lesson-arena/history" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                返回历史记录
             </a>
             <div class="lesson-progress">
                 <div class="progress-step active" id="prog-1">
@@ -53,7 +56,10 @@
                 <div class="compare-panel" id="panel-a">
                     <div class="panel-header-bar panel-header-bar--a">
                         <span class="panel-title-icon">
-                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                    font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text>
+                            </svg>
                         </span>
                         <span class="panel-title-text">模型 A</span>
                         <span class="model-name-reveal hidden" id="model-a-name"></span>
@@ -70,7 +76,10 @@
                 <div class="compare-panel" id="panel-b">
                     <div class="panel-header-bar panel-header-bar--b">
                         <span class="panel-title-icon">
-                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                    font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text>
+                            </svg>
                         </span>
                         <span class="panel-title-text">模型 B</span>
                         <span class="model-name-reveal hidden" id="model-b-name"></span>
@@ -89,10 +98,13 @@
                 <div class="chat-history" id="chat-history"></div>
                 <div class="chat-input-area">
                     <div class="chat-input-group">
-                        <textarea class="chat-textarea" id="chat-input" rows="2" placeholder="继续追问或提出修改要求，两个模型将分别回答…"></textarea>
+                        <textarea class="chat-textarea" id="chat-input" rows="2"
+                            placeholder="继续追问或提出修改要求，两个模型将分别回答…"></textarea>
                         <button class="btn btn-primary" id="btn-send-chat">
                             发送
-                            <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l12-6-4 6 4 6-12-6z" fill="currentColor"/></svg>
+                            <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                                <path d="M2 8l12-6-4 6 4 6-12-6z" fill="currentColor" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -103,7 +115,10 @@
                 <div class="step-actions">
                     <button class="btn btn-primary btn-lg" id="btn-go-vote">
                         开始投票与评分
-                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -124,14 +139,20 @@
                 <div class="compare-panel vote-panel" id="vote-panel-a" data-winner="model_a">
                     <div class="panel-header-bar panel-header-bar--a">
                         <span class="panel-title-icon">
-                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                    font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text>
+                            </svg>
                         </span>
                         <span class="panel-title-text">模型 A</span>
                     </div>
                     <div class="panel-body-md" id="vote-response-a"></div>
                     <div class="vote-panel-footer">
                         <button class="btn btn-vote btn-vote--a" data-winner="model_a">
-                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                                <path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8L10 2z"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                            </svg>
                             选择模型 A
                         </button>
                     </div>
@@ -139,14 +160,20 @@
                 <div class="compare-panel vote-panel" id="vote-panel-b" data-winner="model_b">
                     <div class="panel-header-bar panel-header-bar--b">
                         <span class="panel-title-icon">
-                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                    font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text>
+                            </svg>
                         </span>
                         <span class="panel-title-text">模型 B</span>
                     </div>
                     <div class="panel-body-md" id="vote-response-b"></div>
                     <div class="vote-panel-footer">
                         <button class="btn btn-vote btn-vote--b" data-winner="model_b">
-                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                                <path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9 5.5-.8L10 2z"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                            </svg>
                             选择模型 B
                         </button>
                     </div>
@@ -156,13 +183,16 @@
             <div class="step-actions" style="margin-top: 24px;">
                 <button class="btn btn-primary btn-lg" id="btn-submit-vote" disabled>
                     提交投票
-                    <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
                 </button>
             </div>
         </div>
 
         <!-- Step 3: 多维度评分 -->
-        <div class="lesson-step hidden" id="step-3">
+        <div class="lesson-step hidden" id="step-3" data-dim-count="{{ dimensions|length }}">
             <div class="step-header">
                 <h3 class="step-title">
                     <span class="step-badge step-badge--warning">Step 3</span>
@@ -178,7 +208,10 @@
                     <div class="compare-panel">
                         <div class="panel-header-bar panel-header-bar--a">
                             <span class="panel-title-icon">
-                                <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text></svg>
+                                <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                    <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                        font-size="11" font-weight="bold" fill="white" text-anchor="middle">A</text>
+                                </svg>
                             </span>
                             <span class="panel-title-text">模型 A</span>
                             <span class="model-name-in-header" id="rating-model-a-name"></span>
@@ -210,7 +243,10 @@
                     <div class="compare-panel">
                         <div class="panel-header-bar panel-header-bar--b">
                             <span class="panel-title-icon">
-                                <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" fill="white" opacity="0.3"/><text x="10" y="14" font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text></svg>
+                                <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+                                    <circle cx="10" cy="10" r="8" fill="white" opacity="0.3" /><text x="10" y="14"
+                                        font-size="11" font-weight="bold" fill="white" text-anchor="middle">B</text>
+                                </svg>
                             </span>
                             <span class="panel-title-text">模型 B</span>
                             <span class="model-name-in-header" id="rating-model-b-name"></span>
@@ -240,7 +276,10 @@
 
             <div class="step-actions" style="margin-top: 24px;">
                 <button class="btn btn-primary btn-lg" id="btn-submit-rating" disabled>
-                    <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg viewBox="0 0 16 16" fill="none" class="btn-icon">
+                        <path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
                     提交评分
                 </button>
             </div>
@@ -251,9 +290,10 @@
             <div class="done-area">
                 <div class="done-icon">
                     <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
-                        <circle cx="40" cy="40" r="36" fill="#67c23a" opacity="0.12"/>
-                        <circle cx="40" cy="40" r="28" fill="#67c23a" opacity="0.2"/>
-                        <path d="M24 40l10 10 22-22" stroke="#67c23a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="40" cy="40" r="36" fill="#67c23a" opacity="0.12" />
+                        <circle cx="40" cy="40" r="28" fill="#67c23a" opacity="0.2" />
+                        <path d="M24 40l10 10 22-22" stroke="#67c23a" stroke-width="4" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </div>
                 <h2 class="done-title">评估完成！</h2>
@@ -275,109 +315,109 @@
 <!-- marked.js for Markdown rendering -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-(function() {
-    const sessionId = "{{ session.session_id }}";
-    let chosenWinner = null;
+    (function () {
+        const sessionId = "{{ session.session_id }}";
+        let chosenWinner = null;
 
-    // ====== Markdown 渲染 ======
-    marked.setOptions({
-        breaks: true,
-        gfm: true,
-    });
+        // ====== Markdown 渲染 ======
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+        });
 
-    function renderMarkdown(text) {
-        if (!text) return '<div class="panel-error">内容为空</div>';
-        return marked.parse(text);
-    }
-
-    // ====== 步骤管理 ======
-    const steps = {
-        1: document.getElementById('step-1'),
-        2: document.getElementById('step-2'),
-        3: document.getElementById('step-3'),
-        done: document.getElementById('step-done'),
-    };
-
-    function goToStep(n) {
-        Object.values(steps).forEach(el => el.classList.add('hidden'));
-        steps[n].classList.remove('hidden');
-        updateProgress(n);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function updateProgress(step) {
-        for (let i = 1; i <= 4; i++) {
-            const el = document.getElementById('prog-' + i);
-            if (!el) continue;
-            el.classList.remove('completed', 'active');
-            if (i < step || step === 'done') el.classList.add('completed');
-            else if (i === step) el.classList.add('active');
+        function renderMarkdown(text) {
+            if (!text) return '<div class="panel-error">内容为空</div>';
+            return marked.parse(text);
         }
-        if (step === 'done') {
+
+        // ====== 步骤管理 ======
+        const steps = {
+            1: document.getElementById('step-1'),
+            2: document.getElementById('step-2'),
+            3: document.getElementById('step-3'),
+            done: document.getElementById('step-done'),
+        };
+
+        function goToStep(n) {
+            Object.values(steps).forEach(el => el.classList.add('hidden'));
+            steps[n].classList.remove('hidden');
+            updateProgress(n);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgress(step) {
             for (let i = 1; i <= 4; i++) {
-                document.getElementById('prog-' + i).classList.add('completed');
+                const el = document.getElementById('prog-' + i);
+                if (!el) continue;
+                el.classList.remove('completed', 'active');
+                if (i < step || step === 'done') el.classList.add('completed');
+                else if (i === step) el.classList.add('active');
+            }
+            if (step === 'done') {
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById('prog-' + i).classList.add('completed');
+                }
             }
         }
-    }
 
-    // ====== Step 1: 生成教案 ======
-    async function generateResponses() {
-        try {
-            const resp = await fetch(`/api/lesson/sessions/${sessionId}/generate`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await resp.json();
-            if (data.code === 0) {
-                if (data.data.model_a_response) {
-                    document.getElementById('response-a').innerHTML = renderMarkdown(data.data.model_a_response);
+        // ====== Step 1: 生成教案 ======
+        async function generateResponses() {
+            try {
+                const resp = await fetch(`/api/lesson/sessions/${sessionId}/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    if (data.data.model_a_response) {
+                        document.getElementById('response-a').innerHTML = renderMarkdown(data.data.model_a_response);
+                    } else {
+                        document.getElementById('response-a').innerHTML = '<div class="panel-error">模型 A 生成失败</div>';
+                    }
+                    if (data.data.model_b_response) {
+                        document.getElementById('response-b').innerHTML = renderMarkdown(data.data.model_b_response);
+                    } else {
+                        document.getElementById('response-b').innerHTML = '<div class="panel-error">模型 B 生成失败</div>';
+                    }
+                    document.getElementById('chat-section').classList.remove('hidden');
+                    document.getElementById('vote-entry').classList.remove('hidden');
                 } else {
-                    document.getElementById('response-a').innerHTML = '<div class="panel-error">模型 A 生成失败</div>';
+                    document.getElementById('response-a').innerHTML = `<div class="panel-error">${data.msg}</div>`;
+                    document.getElementById('response-b').innerHTML = `<div class="panel-error">${data.msg}</div>`;
                 }
-                if (data.data.model_b_response) {
-                    document.getElementById('response-b').innerHTML = renderMarkdown(data.data.model_b_response);
-                } else {
-                    document.getElementById('response-b').innerHTML = '<div class="panel-error">模型 B 生成失败</div>';
-                }
-                document.getElementById('chat-section').classList.remove('hidden');
-                document.getElementById('vote-entry').classList.remove('hidden');
-            } else {
-                document.getElementById('response-a').innerHTML = `<div class="panel-error">${data.msg}</div>`;
-                document.getElementById('response-b').innerHTML = `<div class="panel-error">${data.msg}</div>`;
+            } catch (e) {
+                document.getElementById('response-a').innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
+                document.getElementById('response-b').innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
             }
-        } catch (e) {
-            document.getElementById('response-a').innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
-            document.getElementById('response-b').innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
         }
-    }
 
-    generateResponses();
+        generateResponses();
 
-    // ====== 多轮对话 ======
-    const chatBtn = document.getElementById('btn-send-chat');
-    const chatInput = document.getElementById('chat-input');
-    const chatHistory = document.getElementById('chat-history');
+        // ====== 多轮对话 ======
+        const chatBtn = document.getElementById('btn-send-chat');
+        const chatInput = document.getElementById('chat-input');
+        const chatHistory = document.getElementById('chat-history');
 
-    chatBtn.addEventListener('click', sendChat);
-    chatInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendChat();
-        }
-    });
+        chatBtn.addEventListener('click', sendChat);
+        chatInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChat();
+            }
+        });
 
-    async function sendChat() {
-        const msg = chatInput.value.trim();
-        if (!msg) return;
+        async function sendChat() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
 
-        chatBtn.disabled = true;
-        chatBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 发送中…';
-        chatInput.value = '';
+            chatBtn.disabled = true;
+            chatBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 发送中…';
+            chatInput.value = '';
 
-        // 添加用户消息气泡
-        const userBubble = document.createElement('div');
-        userBubble.className = 'chat-round-item';
-        userBubble.innerHTML = `
+            // 添加用户消息气泡
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-round-item';
+            userBubble.innerHTML = `
             <div class="chat-user-msg">
                 <div class="chat-user-label">你的追问</div>
                 <div class="chat-user-text">${escapeHtml(msg)}</div>
@@ -393,161 +433,164 @@
                 </div>
             </div>
         `;
-        chatHistory.appendChild(userBubble);
-        userBubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            chatHistory.appendChild(userBubble);
+            userBubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
 
-        try {
-            const resp = await fetch(`/api/lesson/sessions/${sessionId}/chat`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: msg }),
-            });
-            const data = await resp.json();
-            const respBodies = userBubble.querySelectorAll('.chat-resp-body');
-            if (data.code === 0) {
-                respBodies[0].innerHTML = data.data.model_a_response
-                    ? renderMarkdown(data.data.model_a_response)
-                    : '<div class="panel-error">模型 A 回复失败</div>';
-                respBodies[1].innerHTML = data.data.model_b_response
-                    ? renderMarkdown(data.data.model_b_response)
-                    : '<div class="panel-error">模型 B 回复失败</div>';
-            } else {
-                respBodies[0].innerHTML = `<div class="panel-error">${data.msg}</div>`;
-                respBodies[1].innerHTML = `<div class="panel-error">${data.msg}</div>`;
+            try {
+                const resp = await fetch(`/api/lesson/sessions/${sessionId}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg }),
+                });
+                const data = await resp.json();
+                const respBodies = userBubble.querySelectorAll('.chat-resp-body');
+                if (data.code === 0) {
+                    respBodies[0].innerHTML = data.data.model_a_response
+                        ? renderMarkdown(data.data.model_a_response)
+                        : '<div class="panel-error">模型 A 回复失败</div>';
+                    respBodies[1].innerHTML = data.data.model_b_response
+                        ? renderMarkdown(data.data.model_b_response)
+                        : '<div class="panel-error">模型 B 回复失败</div>';
+                } else {
+                    respBodies[0].innerHTML = `<div class="panel-error">${data.msg}</div>`;
+                    respBodies[1].innerHTML = `<div class="panel-error">${data.msg}</div>`;
+                }
+            } catch (e) {
+                const respBodies = userBubble.querySelectorAll('.chat-resp-body');
+                respBodies[0].innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
+                respBodies[1].innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
+            } finally {
+                chatBtn.disabled = false;
+                chatBtn.innerHTML = '发送 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l12-6-4 6 4 6-12-6z" fill="currentColor"/></svg>';
             }
-        } catch (e) {
-            const respBodies = userBubble.querySelectorAll('.chat-resp-body');
-            respBodies[0].innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
-            respBodies[1].innerHTML = `<div class="panel-error">网络错误: ${e.message}</div>`;
-        } finally {
-            chatBtn.disabled = false;
-            chatBtn.innerHTML = '发送 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l12-6-4 6 4 6-12-6z" fill="currentColor"/></svg>';
         }
-    }
 
-    // ====== 进入投票 ======
-    document.getElementById('btn-go-vote').addEventListener('click', function() {
-        // 将 Step 1 的回答内容复制到投票页面
-        document.getElementById('vote-response-a').innerHTML = document.getElementById('response-a').innerHTML;
-        document.getElementById('vote-response-b').innerHTML = document.getElementById('response-b').innerHTML;
-        goToStep(2);
-    });
-
-    // ====== Step 2: 投票（点击面板底部按钮选择） ======
-    document.querySelectorAll('.btn-vote').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.vote-panel').forEach(p => p.classList.remove('vote-selected'));
-            document.querySelectorAll('.btn-vote').forEach(b => b.classList.remove('active'));
-            const winner = this.dataset.winner;
-            const panelId = winner === 'model_a' ? 'vote-panel-a' : 'vote-panel-b';
-            document.getElementById(panelId).classList.add('vote-selected');
-            this.classList.add('active');
-            chosenWinner = winner;
-            document.getElementById('btn-submit-vote').disabled = false;
+        // ====== 进入投票 ======
+        document.getElementById('btn-go-vote').addEventListener('click', function () {
+            // 将 Step 1 的回答内容复制到投票页面
+            document.getElementById('vote-response-a').innerHTML = document.getElementById('response-a').innerHTML;
+            document.getElementById('vote-response-b').innerHTML = document.getElementById('response-b').innerHTML;
+            goToStep(2);
         });
-    });
 
-    document.getElementById('btn-submit-vote').addEventListener('click', async function() {
-        if (!chosenWinner) return;
-
-        this.disabled = true;
-        this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
-
-        try {
-            const resp = await fetch(`/api/lesson/sessions/${sessionId}/vote`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ winner: chosenWinner }),
+        // ====== Step 2: 投票（点击面板底部按钮选择） ======
+        document.querySelectorAll('.btn-vote').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.vote-panel').forEach(p => p.classList.remove('vote-selected'));
+                document.querySelectorAll('.btn-vote').forEach(b => b.classList.remove('active'));
+                const winner = this.dataset.winner;
+                const panelId = winner === 'model_a' ? 'vote-panel-a' : 'vote-panel-b';
+                document.getElementById(panelId).classList.add('vote-selected');
+                this.classList.add('active');
+                chosenWinner = winner;
+                document.getElementById('btn-submit-vote').disabled = false;
             });
-            const data = await resp.json();
-            if (data.code === 0) {
-                // 揭晓模型身份
-                document.getElementById('model-a-name').textContent = data.data.model_a_name;
-                document.getElementById('model-a-name').classList.remove('hidden');
-                document.getElementById('model-b-name').textContent = data.data.model_b_name;
-                document.getElementById('model-b-name').classList.remove('hidden');
-                // 将回答内容和模型名复制到评分页面
-                document.getElementById('rating-response-a').innerHTML = document.getElementById('response-a').innerHTML;
-                document.getElementById('rating-response-b').innerHTML = document.getElementById('response-b').innerHTML;
-                document.getElementById('rating-model-a-name').textContent = data.data.model_a_name;
-                document.getElementById('rating-model-b-name').textContent = data.data.model_b_name;
+        });
 
-                goToStep(3);
-            } else {
-                alert(data.msg || '投票失败');
+        document.getElementById('btn-submit-vote').addEventListener('click', async function () {
+            if (!chosenWinner) return;
+
+            this.disabled = true;
+            this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+
+            try {
+                const resp = await fetch(`/api/lesson/sessions/${sessionId}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ winner: chosenWinner }),
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    // 揭晓模型身份
+                    document.getElementById('model-a-name').textContent = data.data.model_a_name;
+                    document.getElementById('model-a-name').classList.remove('hidden');
+                    document.getElementById('model-b-name').textContent = data.data.model_b_name;
+                    document.getElementById('model-b-name').classList.remove('hidden');
+                    // 将回答内容和模型名复制到评分页面
+                    document.getElementById('rating-response-a').innerHTML = document.getElementById('response-a').innerHTML;
+                    document.getElementById('rating-response-b').innerHTML = document.getElementById('response-b').innerHTML;
+                    document.getElementById('rating-model-a-name').textContent = data.data.model_a_name;
+                    document.getElementById('rating-model-b-name').textContent = data.data.model_b_name;
+
+                    goToStep(3);
+                } else {
+                    alert(data.msg || '投票失败');
+                }
+            } catch (e) {
+                alert('网络错误：' + e.message);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '提交投票 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             }
-        } catch (e) {
-            alert('网络错误：' + e.message);
-        } finally {
-            this.disabled = false;
-            this.innerHTML = '提交投票 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        }
-    });
-
-    // ====== Step 3: 多维评分 ======
-    const ratingInputs = document.querySelectorAll('.likert-group input[type="radio"]');
-    ratingInputs.forEach(input => {
-        input.addEventListener('change', checkAllRated);
-    });
-
-    function checkAllRated() {
-        const totalDimensions = {{ dimensions|length }};
-        let ratedA = 0, ratedB = 0;
-        document.querySelectorAll('.likert-group[data-model="a"]').forEach(g => {
-            if (g.querySelector('input:checked')) ratedA++;
-        });
-        document.querySelectorAll('.likert-group[data-model="b"]').forEach(g => {
-            if (g.querySelector('input:checked')) ratedB++;
-        });
-        document.getElementById('btn-submit-rating').disabled = !(ratedA === totalDimensions && ratedB === totalDimensions);
-    }
-
-    document.getElementById('btn-submit-rating').addEventListener('click', async function() {
-        const ratingsA = {};
-        const ratingsB = {};
-
-        document.querySelectorAll('.likert-group[data-model="a"]').forEach(g => {
-            const checked = g.querySelector('input:checked');
-            if (checked) ratingsA[g.dataset.dim] = parseInt(checked.value);
-        });
-        document.querySelectorAll('.likert-group[data-model="b"]').forEach(g => {
-            const checked = g.querySelector('input:checked');
-            if (checked) ratingsB[g.dataset.dim] = parseInt(checked.value);
         });
 
-        this.disabled = true;
-        this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+        // ====== Step 3: 多维评分 ======
+        const ratingInputs = document.querySelectorAll('.likert-group input[type="radio"]');
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', checkAllRated);
+        });
 
-        try {
-            const resp = await fetch(`/api/lesson/sessions/${sessionId}/rate`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ratings_a: ratingsA, ratings_b: ratingsB }),
+        function checkAllRated() {
+            const totalDimensions = Number(document.getElementById('step-3').dataset.dimCount || '0');
+            let ratedA = 0, ratedB = 0;
+
+            document.querySelectorAll('.likert-group[data-model="a"]').forEach(g => {
+                if (g.querySelector('input:checked')) ratedA++;
             });
-            const data = await resp.json();
-            if (data.code === 0) {
-                showDone(ratingsA, ratingsB);
-            } else {
-                alert(data.msg || '评分提交失败');
-            }
-        } catch (e) {
-            alert('网络错误：' + e.message);
-        } finally {
-            this.disabled = false;
-            this.innerHTML = '<svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 提交评分';
+            document.querySelectorAll('.likert-group[data-model="b"]').forEach(g => {
+                if (g.querySelector('input:checked')) ratedB++;
+            });
+
+            document.getElementById('btn-submit-rating').disabled =
+                !(ratedA === totalDimensions && ratedB === totalDimensions);
         }
-    });
 
-    function showDone(ratingsA, ratingsB) {
-        goToStep('done');
-        const modelA = document.getElementById('rating-model-a-name').textContent;
-        const modelB = document.getElementById('rating-model-b-name').textContent;
-        const winnerText = chosenWinner === 'model_a' ? `模型 A (${modelA})` : `模型 B (${modelB})`;
+        document.getElementById('btn-submit-rating').addEventListener('click', async function () {
+            const ratingsA = {};
+            const ratingsB = {};
 
-        const avgA = Object.values(ratingsA).reduce((s, v) => s + v, 0) / Object.values(ratingsA).length;
-        const avgB = Object.values(ratingsB).reduce((s, v) => s + v, 0) / Object.values(ratingsB).length;
+            document.querySelectorAll('.likert-group[data-model="a"]').forEach(g => {
+                const checked = g.querySelector('input:checked');
+                if (checked) ratingsA[g.dataset.dim] = parseInt(checked.value);
+            });
+            document.querySelectorAll('.likert-group[data-model="b"]').forEach(g => {
+                const checked = g.querySelector('input:checked');
+                if (checked) ratingsB[g.dataset.dim] = parseInt(checked.value);
+            });
 
-        document.getElementById('done-summary').innerHTML = `
+            this.disabled = true;
+            this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+
+            try {
+                const resp = await fetch(`/api/lesson/sessions/${sessionId}/rate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ratings_a: ratingsA, ratings_b: ratingsB }),
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    showDone(ratingsA, ratingsB);
+                } else {
+                    alert(data.msg || '评分提交失败');
+                }
+            } catch (e) {
+                alert('网络错误：' + e.message);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '<svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 提交评分';
+            }
+        });
+
+        function showDone(ratingsA, ratingsB) {
+            goToStep('done');
+            const modelA = document.getElementById('rating-model-a-name').textContent;
+            const modelB = document.getElementById('rating-model-b-name').textContent;
+            const winnerText = chosenWinner === 'model_a' ? `模型 A (${modelA})` : `模型 B (${modelB})`;
+
+            const avgA = Object.values(ratingsA).reduce((s, v) => s + v, 0) / Object.values(ratingsA).length;
+            const avgB = Object.values(ratingsB).reduce((s, v) => s + v, 0) / Object.values(ratingsB).length;
+
+            document.getElementById('done-summary').innerHTML = `
             <div class="summary-row"><span class="summary-label">模型 A</span><span class="summary-value summary-id">${modelA}</span></div>
             <div class="summary-row"><span class="summary-label">模型 B</span><span class="summary-value summary-id">${modelB}</span></div>
             <div class="summary-row"><span class="summary-label">你的选择</span><span class="summary-value summary-highlight">${winnerText}</span></div>
@@ -555,15 +598,15 @@
             <div class="summary-row"><span class="summary-label">模型 B 平均分</span><span class="summary-value">${avgB.toFixed(1)} / 5</span></div>
             <div class="summary-row"><span class="summary-label">会话 ID</span><span class="summary-value summary-id">${sessionId}</span></div>
         `;
-    }
+        }
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-    updateProgress(1);
-})();
+        updateProgress(1);
+    })();
 </script>
 {% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}教案竞技场历史记录 - Open Arena{% endblock %}
+
+{% block content %}
+<section class="lesson-page">
+    <div class="lesson-container lesson-container--wide">
+
+        <div class="lesson-topbar">
+            <a href="/app/lesson-arena" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                返回教案竞技场
+            </a>
+        </div>
+
+        <div class="history-page-header">
+            <h1 class="lesson-hero-title" style="margin-bottom: 8px;">教案历史记录</h1>
+            <p class="lesson-hero-desc" style="margin: 0; max-width: none;">查看已创建的教案会话，并可继续进入会话页面查看生成结果与评分。</p>
+        </div>
+
+        <div class="lesson-history-toolbar">
+            <div class="lesson-history-filters" id="history-filters">
+                <button class="history-filter-btn active" data-status="all">全部</button>
+                <button class="history-filter-btn" data-status="generating">生成中</button>
+                <button class="history-filter-btn" data-status="ready">已生成</button>
+                <button class="history-filter-btn" data-status="voted">已投票</button>
+                <button class="history-filter-btn" data-status="completed">已完成</button>
+            </div>
+            <div class="lesson-history-stats" id="lesson-history-stats">加载中…</div>
+        </div>
+
+        <div class="lesson-history-list" id="lesson-history-list">
+            <div class="generating-placeholder">
+                <div class="loading-spinner"></div>
+                <span>正在加载历史记录…</span>
+            </div>
+        </div>
+
+        <div class="lesson-history-empty hidden" id="lesson-history-empty">
+            <p>暂无历史记录</p>
+            <span>先去创建一个教案会话吧。</span>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">
+<script>
+    (function () {
+        let allSessions = [];
+        let currentStatus = 'all';
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        function formatDate(iso) {
+            if (!iso) return '-';
+            const d = new Date(iso);
+            if (Number.isNaN(d.getTime())) return '-';
+            return d.toLocaleString('zh-CN', { hour12: false });
+        }
+
+        function statusMeta(status) {
+            if (status === 'generating') return { label: '生成中', cls: 'status--debating' };
+            if (status === 'ready') return { label: '已生成', cls: 'status--pending' };
+            if (status === 'voted') return { label: '已投票', cls: 'status--pending' };
+            if (status === 'completed') return { label: '已完成', cls: 'status--annotated' };
+            return { label: status || '未知', cls: 'status--pending' };
+        }
+
+        async function loadHistory() {
+            try {
+                const resp = await fetch('/api/lesson/sessions');
+                const data = await resp.json();
+                if (data.code !== 0) {
+                    throw new Error(data.msg || '加载失败');
+                }
+                allSessions = data.data || [];
+                renderList();
+            } catch (e) {
+                document.getElementById('lesson-history-list').innerHTML =
+                    '<div class="panel-error">加载失败：' + escapeHtml(e.message) + '</div>';
+                document.getElementById('lesson-history-stats').textContent = '加载失败';
+            }
+        }
+
+        function renderList() {
+            const listEl = document.getElementById('lesson-history-list');
+            const emptyEl = document.getElementById('lesson-history-empty');
+            const statsEl = document.getElementById('lesson-history-stats');
+
+            const filtered = allSessions.filter(s => currentStatus === 'all' ? true : s.status === currentStatus);
+            statsEl.textContent = `共 ${filtered.length} 条记录`;
+
+            if (!filtered.length) {
+                listEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+
+            listEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+
+            listEl.innerHTML = filtered.map(s => {
+                const meta = statusMeta(s.status);
+                const winner = s.winner === 'model_a'
+                    ? `模型A（${escapeHtml(s.model_a_name || '-')})`
+                    : s.winner === 'model_b'
+                        ? `模型B（${escapeHtml(s.model_b_name || '-')})`
+                        : '未投票';
+
+                return `
+                <a class="lesson-history-card" href="/app/lesson-arena/session/${encodeURIComponent(s.session_id)}">
+                    <div class="lesson-history-card-top">
+                        <span class="history-status ${meta.cls}">${meta.label}</span>
+                        <span class="lesson-history-date">${formatDate(s.created_at)}</span>
+                    </div>
+                    <h3 class="lesson-history-title">${escapeHtml(s.lesson_focus || '教案会话')}</h3>
+                    <p class="lesson-history-prompt">${escapeHtml(s.prompt_preview || '')}</p>
+                    <div class="lesson-history-info-grid">
+                        <div><span class="info-label">教师</span><span class="info-value">${escapeHtml(s.teacher_name || '匿名')}</span></div>
+                        <div><span class="info-label">轮次</span><span class="info-value">${escapeHtml(String(s.current_round || 0))}</span></div>
+                        <div><span class="info-label">获胜</span><span class="info-value">${winner}</span></div>
+                        <div><span class="info-label">更新时间</span><span class="info-value">${formatDate(s.updated_at)}</span></div>
+                    </div>
+                    <div class="lesson-history-card-footer">查看会话详情 →</div>
+                </a>
+            `;
+            }).join('');
+        }
+
+        document.querySelectorAll('.history-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.history-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentStatus = this.dataset.status;
+                renderList();
+            });
+        });
+
+        loadHistory();
+    })();
+</script>
+{% endblock %}

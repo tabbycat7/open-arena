@@ -9,7 +9,10 @@
         <!-- 顶部导航 -->
         <div class="debate-topbar">
             <a href="/app/debate/history" class="breadcrumb">
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
                 返回历史记录
             </a>
         </div>
@@ -60,7 +63,8 @@
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">创建时间</span>
-                    <span class="meta-value">{{ session.created_at.strftime('%Y-%m-%d %H:%M:%S') if session.created_at else '-' }}</span>
+                    <span class="meta-value">{{ session.created_at.strftime('%Y-%m-%d %H:%M:%S') if session.created_at
+                        else '-' }}</span>
                 </div>
                 {% if session.stance_changed is not none %}
                 <div class="meta-item meta-item--full">
@@ -97,6 +101,42 @@
             </div>
         </div>
 
+        {% if session.status != 'annotated' %}
+        <div class="debate-step">
+            <div class="step-header">
+                <h3 class="step-title">
+                    <span class="step-badge step-badge--warning">标注</span>
+                    为本次会话标注立场变化
+                </h3>
+            </div>
+            <div class="annotation-area">
+                <p class="annotation-prompt">
+                    请标注：<strong>这次辩论后，教师立场是否发生变化？</strong>
+                </p>
+                <div class="annotation-options">
+                    <div class="annotation-option" data-value="false" id="history-ann-no-change">
+                        <div class="ann-label">立场未改变</div>
+                        <div class="ann-desc">仍坚持最初立场</div>
+                    </div>
+                    <div class="annotation-option" data-value="true" id="history-ann-changed">
+                        <div class="ann-label">立场已改变</div>
+                        <div class="ann-desc">接受了对立观点影响</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-top: 20px;">
+                    <label class="input-label">标注备注（选填）</label>
+                    <textarea id="history-annotation-note" class="textarea-input" rows="3"
+                        placeholder="可补充这次标注的判断依据……"></textarea>
+                </div>
+                <div class="step-actions">
+                    <button class="btn btn-primary" id="btn-history-submit-annotation" disabled>
+                        提交标注
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- 底部操作 -->
         <div class="history-detail-actions">
             <a href="/app/debate/history" class="btn btn-outline btn-lg">返回历史列表</a>
@@ -110,8 +150,11 @@
 {% block scripts %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
 <script>
-(function() {
-    const sessionId = "{{ session.session_id }}";
+    (function () {
+        const sessionId = "{{ session.session_id }}";
+        const canAnnotateHere = {{ 'true' if session.status != 'annotated' else 'false'
+    }};
+    let historyStanceChanged = null;
 
     function escapeHtml(text) {
         const div = document.createElement('div');
@@ -211,7 +254,58 @@
         }).join('');
     }
 
+    function initAnnotationPanel() {
+        if (!canAnnotateHere) return;
+
+        const submitBtn = document.getElementById('btn-history-submit-annotation');
+        const noteEl = document.getElementById('history-annotation-note');
+        const options = document.querySelectorAll('.annotation-option');
+
+        options.forEach(opt => {
+            opt.addEventListener('click', function () {
+                options.forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                historyStanceChanged = this.dataset.value === 'true';
+                submitBtn.disabled = false;
+            });
+        });
+
+        submitBtn.addEventListener('click', async function () {
+            if (historyStanceChanged === null) {
+                alert('请先选择立场是否改变');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
+
+            try {
+                const resp = await fetch(`/api/debate/sessions/${sessionId}/annotate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        stance_changed: historyStanceChanged,
+                        annotation_note: (noteEl?.value || '').trim(),
+                    }),
+                });
+                const data = await resp.json();
+                if (data.code === 0) {
+                    alert('标注提交成功');
+                    location.reload();
+                    return;
+                }
+                alert(data.msg || '标注提交失败');
+            } catch (e) {
+                alert('网络错误: ' + e.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交标注';
+            }
+        });
+    }
+
     loadSessionDetail();
-})();
+    initAnnotationPanel();
+}) ();
 </script>
 {% endblock %}

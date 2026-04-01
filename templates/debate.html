@@ -72,15 +72,29 @@
     <div class="section-inner">
         <div class="section-title-row">
             <h2 class="section-title" style="margin-bottom: 0;">选择辩题</h2>
-            <a href="/app/debate/history" class="btn btn-outline">
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"
-                    style="vertical-align: -2px; margin-right: 4px;">
-                    <path d="M8 1v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
-                </svg>
-                历史辩论记录
-            </a>
+            <div class="section-title-actions">
+                <a href="/app/debate/random" class="btn btn-primary">
+                    <svg viewBox="0 0 16 16" fill="none" width="14" height="14"
+                        style="vertical-align: -2px; margin-right: 4px;">
+                        <path d="M2 4h3.5L8 6.5M2 12h3.5L8 9.5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 4h-2.5M14 12h-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M11.5 2.5L14 4l-2.5 1.5M11.5 10.5L14 12l-2.5 1.5" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    随机抽题
+                </a>
+                <a href="/app/debate/history" class="btn btn-outline">
+                    <svg viewBox="0 0 16 16" fill="none" width="14" height="14"
+                        style="vertical-align: -2px; margin-right: 4px;">
+                        <path d="M8 1v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    历史辩论记录
+                </a>
+            </div>
         </div>
         <div class="topics-grid">
             {% for topic in topics %}
