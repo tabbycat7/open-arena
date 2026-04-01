@@ -1278,6 +1278,10 @@
     font-size: 13px;
 }
 
+.history-empty-action {
+    margin-top: 16px;
+}
+
 /* ---------- 历史详情页 ---------- */
 .history-detail-meta {
     background-color: var(--el-bg-color);

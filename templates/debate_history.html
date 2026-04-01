@@ -7,7 +7,10 @@
     <div class="section-inner">
         <div class="debate-hero-content">
             <a href="/app/debate" class="breadcrumb">
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
                 返回辩题列表
             </a>
             <h1 class="debate-hero-title">历史辩论记录</h1>
@@ -42,12 +45,14 @@
         <!-- 空状态 -->
         <div class="history-empty hidden" id="history-empty">
             <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
-                <circle cx="40" cy="40" r="36" fill="#f5f7fa" stroke="#e4e7ed" stroke-width="2"/>
-                <path d="M28 32h24M28 40h18M28 48h22" stroke="#c0c4cc" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="40" cy="40" r="36" fill="#f5f7fa" stroke="#e4e7ed" stroke-width="2" />
+                <path d="M28 32h24M28 40h18M28 48h22" stroke="#c0c4cc" stroke-width="2" stroke-linecap="round" />
             </svg>
             <p>暂无辩论记录</p>
             <span>完成一次辩论后，记录将显示在这里</span>
-            <a href="/app/debate" class="btn btn-primary" style="margin-top: 16px;">去辩论</a>
+            <div class="history-empty-action">
+                <a href="/app/debate" class="btn btn-primary">去辩论</a>
+            </div>
         </div>
     </div>
 </section>
@@ -56,67 +61,67 @@
 {% block scripts %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
 <script>
-(function() {
-    let allSessions = [];
-    let currentFilter = 'all';
+    (function () {
+        let allSessions = [];
+        let currentFilter = 'all';
 
-    async function loadSessions() {
-        try {
-            const resp = await fetch('/api/debate/sessions');
-            const data = await resp.json();
-            if (data.code === 0) {
-                allSessions = data.data;
-                renderList();
+        async function loadSessions() {
+            try {
+                const resp = await fetch('/api/debate/sessions');
+                const data = await resp.json();
+                if (data.code === 0) {
+                    allSessions = data.data;
+                    renderList();
+                }
+            } catch (e) {
+                document.getElementById('history-list').innerHTML =
+                    '<div class="history-error">加载失败: ' + e.message + '</div>';
             }
-        } catch (e) {
-            document.getElementById('history-list').innerHTML =
-                '<div class="history-error">加载失败: ' + e.message + '</div>';
         }
-    }
 
-    function renderList() {
-        const list = document.getElementById('history-list');
-        const empty = document.getElementById('history-empty');
+        function renderList() {
+            const list = document.getElementById('history-list');
+            const empty = document.getElementById('history-empty');
 
-        const filtered = currentFilter === 'all'
-            ? allSessions
-            : allSessions.filter(s => s.status === currentFilter);
+            const filtered = currentFilter === 'all'
+                ? allSessions
+                : allSessions.filter(s => s.status === currentFilter);
 
-        document.getElementById('history-count').textContent = `共 ${filtered.length} 条记录`;
+            document.getElementById('history-count').textContent = `共 ${filtered.length} 条记录`;
 
-        if (filtered.length === 0) {
-            list.innerHTML = '';
-            empty.classList.remove('hidden');
-            return;
-        }
-        empty.classList.add('hidden');
-
-        list.innerHTML = filtered.map(s => {
-            const sideLabel = s.chosen_side === 'side_a' ? '正方' : '反方';
-            const sideClass = s.chosen_side === 'side_a' ? 'tag--primary' : 'tag--danger';
-
-            let statusLabel, statusClass;
-            if (s.status === 'annotated') {
-                statusLabel = '已标注';
-                statusClass = 'status--annotated';
-            } else if (s.status === 'debating') {
-                statusLabel = '进行中';
-                statusClass = 'status--debating';
-            } else {
-                statusLabel = '待处理';
-                statusClass = 'status--pending';
+            if (filtered.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
             }
+            empty.classList.add('hidden');
 
-            let stanceText = '';
-            if (s.stance_changed === true) {
-                stanceText = '<span class="stance-result stance-result--changed">立场已改变</span>';
-            } else if (s.stance_changed === false) {
-                stanceText = '<span class="stance-result stance-result--kept">立场未改变</span>';
-            }
+            list.innerHTML = filtered.map(s => {
+                const sideLabel = s.chosen_side === 'side_a' ? '正方' : '反方';
+                const sideClass = s.chosen_side === 'side_a' ? 'tag--primary' : 'tag--danger';
 
-            const dateStr = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '未知时间';
+                let statusLabel, statusClass;
+                if (s.status === 'annotated') {
+                    statusLabel = '已标注';
+                    statusClass = 'status--annotated';
+                } else if (s.status === 'debating') {
+                    statusLabel = '进行中';
+                    statusClass = 'status--debating';
+                } else {
+                    statusLabel = '待处理';
+                    statusClass = 'status--pending';
+                }
 
-            return `
+                let stanceText = '';
+                if (s.stance_changed === true) {
+                    stanceText = '<span class="stance-result stance-result--changed">立场已改变</span>';
+                } else if (s.stance_changed === false) {
+                    stanceText = '<span class="stance-result stance-result--kept">立场未改变</span>';
+                }
+
+                const dateStr = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '未知时间';
+
+                return `
                 <a href="/app/debate/history/${s.session_id}" class="history-card">
                     <div class="history-card-top">
                         <div class="history-card-meta">
@@ -154,26 +159,26 @@
                     </div>
                 </a>
             `;
-        }).join('');
-    }
+            }).join('');
+        }
 
-    // 筛选按钮
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            currentFilter = this.dataset.status;
-            renderList();
+        // 筛选按钮
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.status;
+                renderList();
+            });
         });
-    });
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-    loadSessions();
-})();
+        loadSessions();
+    })();
 </script>
 {% endblock %}
