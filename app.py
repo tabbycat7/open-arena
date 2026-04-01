@@ -16,7 +16,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 import config
 from topics import get_all_topics, get_topic_by_id
-from llm_api import enhance_argument, refute_argument
+from debate_llm_api import enhance_argument, refute_argument
 from lesson_fields import get_prompt_fields, get_rating_dimensions, build_prompt, PROMPT_TEMPLATE
 from lesson_llm_api import generate_lesson_plan
 
