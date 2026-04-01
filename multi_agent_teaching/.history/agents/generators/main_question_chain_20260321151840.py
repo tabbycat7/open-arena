@@ -1,0 +1,152 @@
+"""Agent 2.1.2 — 主干问题链构建Agent"""
+
+import json
+import os
+from agents.llm import get_llm
+
+PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "main_question_chain.txt")
+
+
+def _format_validation_feedback(state: dict) -> str:
+    """从验证结果中提取结构化反馈，格式化为LLM可理解的修改指令"""
+    feedback_parts = []
+    validator_meta = {
+        "cognitive_alignment": ("认知对齐检验", 8),
+        "goal_alignment": ("教学目标对齐检验", 6),
+        "teaching_logic_alignment": ("教学逻辑检验", 10),
+    }
+
+    for vr in state.get("validation_results", []):
+        validator = vr.get("validator", "")
+        if validator not in validator_meta:
+            continue
+        if vr.get("passed", True):
+            continue
+
+        validator_name, max_score = validator_meta[validator]
+        total_score = vr.get("total_score", "?")
+        overall = vr.get("overall_assessment", "")
+
+        feedback_parts.append("=" * 50)
+        feedback_parts.append("## 上一轮【%s】反馈（得分：%s/%s）" % (validator_name, total_score, max_score))
+        if overall:
+            feedback_parts.append("总体评价：%s" % overall)
+
+        structure_adjustment = vr.get("structure_adjustment", {})
+        if not structure_adjustment and isinstance(vr.get("raw_result"), dict):
+            structure_adjustment = vr.get("raw_result", {}).get("structure_adjustment", {})
+        if isinstance(structure_adjustment, dict) and structure_adjustment.get("allow_increase_main_questions"):
+            suggested_count = structure_adjustment.get("suggested_main_question_count", "")
+            insertion_after = structure_adjustment.get("insertion_after_node")
+            new_node_function = structure_adjustment.get("new_node_function") or structure_adjustment.get("new_node_focus")
+            reason = structure_adjustment.get("reason", "")
+
+            feedback_parts.append("\n### 【结构调整建议】")
+            if suggested_count:
+                feedback_parts.append("- 建议主干问题总数调整为：%s" % suggested_count)
+            if insertion_after:
+                feedback_parts.append("- 建议插入位置：在 %s 之后新增节点" % insertion_after)
+            if new_node_function:
+                feedback_parts.append("- 新增节点功能/聚焦：%s" % new_node_function)
+            if reason:
+                feedback_parts.append("- 调整原因：%s" % reason)
+
+        feedback = vr.get("feedback", {})
+
+        must_fix = feedback.get("must_fix", [])
+        if must_fix:
+            feedback_parts.append("\n### 【必须修复】以下问题必须改正：")
+            for i, item in enumerate(must_fix, 1):
+                node_id = item.get("node_id", "未知")
+                action = item.get("action", "")
+                direction = item.get("rewrite_direction", "")
+                feedback_parts.append("%d. 节点 %s：" % (i, node_id))
+                if action:
+                    feedback_parts.append("   - 问题：%s" % action)
+                if direction:
+                    feedback_parts.append("   - 修改方向：%s" % direction)
+
+        should_fix = feedback.get("should_fix", [])
+        if should_fix:
+            feedback_parts.append("\n### 【建议修复】以下问题建议改正：")
+            for i, item in enumerate(should_fix, 1):
+                node_id = item.get("node_id", item.get("target_node", "未知"))
+                action = item.get("action", "")
+                direction = item.get("direction", item.get("rewrite_direction", ""))
+                feedback_parts.append("%d. 节点 %s：" % (i, node_id))
+                if action:
+                    feedback_parts.append("   - 问题：%s" % action)
+                if direction:
+                    feedback_parts.append("   - 修改方向：%s" % direction)
+
+        issues = vr.get("issues", [])
+        if issues and not must_fix:
+            feedback_parts.append("\n### 发现的问题：")
+            for issue in issues[:5]:
+                qid = issue.get("question_id", "")
+                severity = issue.get("severity", "")
+                desc = issue.get("description", "")
+                suggestion = issue.get("suggestion", "")
+                feedback_parts.append("- [%s] %s: %s" % (severity.upper(), qid, desc))
+                if suggestion:
+                    feedback_parts.append("  建议：%s" % suggestion)
+
+        feedback_parts.append("")
+
+    if feedback_parts:
+        feedback_parts.insert(0, "\n" + "=" * 50)
+        feedback_parts.insert(1, "# 重要：请根据以下校验反馈修改主干问题")
+        feedback_parts.append("请在生成时严格按照上述反馈进行修改，确保所有【必须修复】的问题都得到解决。")
+        feedback_parts.append("=" * 50 + "\n")
+
+    return "\n".join(feedback_parts)
+
+
+def main_question_chain_node(state: dict) -> dict:
+    with open(PROMPT_PATH, "r", encoding="utf-8") as f:
+        prompt_template = f.read()
+
+    # 优先从专用暂存字段读取（bump_main_retry 在清空 validation_results 前保存到此）
+    feedback_source = {"validation_results": state.get("main_validation_feedback") or state.get("validation_results", [])}
+    validation_feedback = _format_validation_feedback(feedback_source)
+    retry_count = state.get("main_retry_count", 0)
+    previous_main_questions = state.get("main_questions", []) if retry_count > 0 else []
+
+    map_logic = state.get("map_construction_logic", {})
+    main_chain_plan = map_logic.get("main_question_chain", [])
+
+    prompt = prompt_template.replace("{subject}", state.get("subject", ""))
+    prompt = prompt.replace("{grade}", state.get("grade", ""))
+    prompt = prompt.replace("{teaching_goals}", state.get("teaching_goals", ""))
+    prompt = prompt.replace("{student_profile}", state.get("student_profile", ""))
+    prompt = prompt.replace("{language_style}", state.get("language_style", ""))
+    prompt = prompt.replace("{main_question_plan}", json.dumps(main_chain_plan, ensure_ascii=False, indent=2))
+    prompt = prompt.replace("{previous_questions}", json.dumps(previous_main_questions, ensure_ascii=False, indent=2))
+    prompt = prompt.replace("{validation_feedback}", validation_feedback)
+
+    llm = get_llm(temperature=0.7)
+    response = llm.invoke(prompt)
+    content = response.content
+
+    try:
+        json_str = content
+        if "```json" in json_str:
+            json_str = json_str.split("```json")[1].split("```")[0]
+        elif "```" in json_str:
+            json_str = json_str.split("```")[1].split("```")[0]
+        main_questions = json.loads(json_str.strip())
+    except (json.JSONDecodeError, IndexError):
+        main_questions = []
+
+    for q in main_questions:
+        q["question_type"] = "main"
+        q.setdefault("parent_id", None)
+
+    msg = "[主干问题链构建Agent] 生成了 %d 个主干问题" % len(main_questions)
+    if retry_count > 0:
+        msg += "（第 %d 次重试）" % retry_count
+
+    return {
+        "main_questions": main_questions,
+        "progress_messages": [msg],
+    }

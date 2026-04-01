@@ -1,0 +1,1015 @@
+{
+    "analysis_result": {
+        "goal_situation_alignment": {
+            "cognitive_gap_assessment": "整体落差适中但内部分化大。学生已具备学习指数函数所需的函数与图像基础（记忆/理解层次），教学的核心任务是将认知层次提升至“应用”和“分析”（如运用单调性解决问题）。主要挑战在于：1）部分学生因指数运算漏洞（KP2）导致在“应用”描点法时受阻；2）从具体函数（一次、二次）到抽象指数函数的建模思维跨越；3）学困生在“理解”抽象定义和“应用”性质上存在显著障碍。",
+            "differentiation_targets": {
+                "advanced": "在牢固掌握定义、图像、单调性的基础上，能够分析不同底数指数函数图像的异同与位置关系，尝试解释其背后的代数原理；能设计简单的实际问题建立指数函数模型，并利用性质进行预测或决策（贴近评价/创造）。",
+                "average": "准确理解指数函数定义，能规范画出两类图像，掌握单调性并能够独立应用于比较同底幂的大小和解简单指数不等式（达成理解、应用、部分分析）。",
+                "struggling": "能记住指数函数的标准形式及底数条件；在教师引导或工具辅助下，能完成特定指数函数的描点作图；能从图像上直观判断函数的增减性，并在简单模仿下完成最基本的单调性应用问题（如比较具体数值的大小）（达成记忆、理解、初步应用）。"
+            },
+            "recommended_teaching_sequence": [
+                {
+                    "knowledge_point": "KP2",
+                    "rationale": "前置性补缺与激活。快速回顾关键指数运算（特别是负指数、分数指数），为后续准确计算函数值扫清障碍，同时激活与“幂”相关的先备知识。",
+                    "step": 1
+                },
+                {
+                    "knowledge_point": "KP1",
+                    "rationale": "概念形成。在具体实例（如细胞分裂）引入后，给出定义。重点讨论底数 a 的限制条件，利用反例深化理解，奠定全课知识基础。",
+                    "step": 2
+                },
+                {
+                    "knowledge_point": "KP3 & KP4",
+                    "rationale": "数形结合，直观建构。利用描点法（KP3）这一通用工具，以两个具体函数（如 y=2^x, y=(1/2)^x）为例，引导学生动手画出图像，观察并总结图像特征（KP4）。这是从“数”到“形”，从抽象到直观的关键桥梁。",
+                    "step": 3
+                },
+                {
+                    "knowledge_point": "KP5",
+                    "rationale": "性质归纳与应用。基于已画出的图像（KP4），自然引导学生归纳出单调性（KP5），并用数学语言描述。随后立即进行分层例题与练习，将性质应用于比较大小和解不等式，实现从“形”到“数”的回归与应用。",
+                    "step": 4
+                }
+            ]
+        },
+        "knowledge_graph": {
+            "edges": [
+                {
+                    "bridge_needed": true,
+                    "bridge_reason": "从抽象的函数解析式到具体的函数图像，存在认知跳跃。需要借助描点法（KP3）作为“脚手架”，通过具体计算和操作将定义可视化，帮助学生建立从“数”到“形”的联系。",
+                    "cognitive_gap": "中",
+                    "from": "KP1",
+                    "relation_type": "因果",
+                    "to": "KP4"
+                },
+                {
+                    "bridge_needed": false,
+                    "bridge_reason": "",
+                    "cognitive_gap": "小",
+                    "from": "KP3",
+                    "relation_type": "延伸",
+                    "to": "KP4"
+                },
+                {
+                    "bridge_needed": true,
+                    "bridge_reason": "描点作图需要准确计算函数值。如果指数运算不熟练，将直接导致列表错误，进而画出错误图像，干扰对正确性质的归纳。需要在作图前进行针对性复习或提供计算支持。",
+                    "cognitive_gap": "中",
+                    "from": "KP2",
+                    "relation_type": "前置",
+                    "to": "KP3"
+                },
+                {
+                    "bridge_needed": false,
+                    "bridge_reason": "",
+                    "cognitive_gap": "小",
+                    "from": "KP4",
+                    "relation_type": "因果",
+                    "to": "KP5"
+                },
+                {
+                    "bridge_needed": true,
+                    "bridge_reason": "从函数定义直接推理出单调性，对高一学生而言认知跨度极大。必须依赖图像（KP4）作为直观桥梁，实现从“解析式定义”到“代数性质”的过渡。缺少图像观察环节，学生难以真正理解单调性的来源。",
+                    "cognitive_gap": "大",
+                    "from": "KP1",
+                    "relation_type": "因果",
+                    "to": "KP5"
+                }
+            ],
+            "nodes": [
+                {
+                    "bloom_levels_required": [
+                        "记忆",
+                        "理解"
+                    ],
+                    "description": "理解形如 y = a^x (a>0, a≠1) 的函数叫做指数函数，其中 x 是自变量，定义域为 R。",
+                    "difficulty": "中等",
+                    "error_prone_reason": "学生常忽略底数 a 的限制条件 (a>0, a≠1)，原因在于对 a≤0 或 a=1 时函数性质的异常情况缺乏认知，或对定义的理解停留在形式记忆。",
+                    "is_difficult_point": true,
+                    "is_error_prone": true,
+                    "is_key_point": true,
+                    "kp_id": "KP1",
+                    "name": "指数函数的定义"
+                },
+                {
+                    "bloom_levels_required": [
+                        "应用"
+                    ],
+                    "description": "能够准确、快速地进行指数运算，特别是负指数幂、分数指数幂的计算。",
+                    "difficulty": "较难",
+                    "error_prone_reason": "学生对负指数、分数指数的运算法则记忆模糊或应用生疏，导致在列表计算函数值或比较大小时出现计算错误，从而影响对函数图像和性质的正确感知。",
+                    "is_difficult_point": false,
+                    "is_error_prone": true,
+                    "is_key_point": false,
+                    "kp_id": "KP2",
+                    "name": "指数运算的熟练度"
+                },
+                {
+                    "bloom_levels_required": [
+                        "记忆",
+                        "应用"
+                    ],
+                    "description": "掌握通过“列表（计算函数值）、描点（在坐标系中标点）、连线（用平滑曲线连接）”三步绘制函数图像的方法。",
+                    "difficulty": "基础",
+                    "error_prone_reason": "学生可能点取得过少或位置不当，导致图像失真；连线时可能用折线段连接而非光滑曲线。原因在于对函数图像的连续性、趋势性缺乏直观理解，或作图习惯不规范。",
+                    "is_difficult_point": false,
+                    "is_error_prone": true,
+                    "is_key_point": false,
+                    "kp_id": "KP3",
+                    "name": "描点法作图步骤"
+                },
+                {
+                    "bloom_levels_required": [
+                        "理解"
+                    ],
+                    "description": "通过描点法绘制出 a>1 和 0<a<1 两类指数函数的图像，观察并总结其共性：过定点 (0,1)，位于 x 轴上方，从左向右看，a>1 时图像上升，0<a<1 时图像下降。",
+                    "difficulty": "中等",
+                    "error_prone_reason": "",
+                    "is_difficult_point": false,
+                    "is_error_prone": false,
+                    "is_key_point": true,
+                    "kp_id": "KP4",
+                    "name": "指数函数的图像特征"
+                },
+                {
+                    "bloom_levels_required": [
+                        "理解",
+                        "应用"
+                    ],
+                    "description": "基于图像特征，归纳并掌握指数函数的单调性：当 a>1 时，是增函数；当 0<a<1 时，是减函数。并能将此性质应用于比较幂的大小和解简单不等式。",
+                    "difficulty": "中等",
+                    "error_prone_reason": "在应用单调性时，学生容易忽略“同底”的前提条件，直接比较不同底的指数幂；或者在解不等式时，忘记考虑底数 a 的大小对不等式方向的影响。原因在于对性质成立的条件理解不深刻，应用步骤不清晰。",
+                    "is_difficult_point": true,
+                    "is_error_prone": true,
+                    "is_key_point": true,
+                    "kp_id": "KP5",
+                    "name": "指数函数的单调性"
+                }
+            ]
+        },
+        "student_profile_analysis": {
+            "knowledge_gaps": [
+                {
+                    "cause": "初中阶段对指数运算的练习以正整数指数为主，负指数和分数指数是新学内容，应用情境少，未能达到自动化熟练程度。",
+                    "gap": "指数运算不熟练，特别是负指数幂和分数指数幂。",
+                    "manifestation": "计算 y=a^x 在 x 为分数或负数时的函数值速度慢、错误率高。"
+                }
+            ],
+            "overall_cognitive_level": "具备函数的基本概念和初步的数形结合思想，能从具体函数案例中观察归纳，但处理抽象概念和复杂代数推理时存在分层。",
+            "prior_knowledge_summary": [
+                "函数的概念、定义域、值域",
+                "函数的三种表示方法（解析法、列表法、图像法）",
+                "一次函数、二次函数的图像与性质（增减性）",
+                "平面直角坐标系与描点作图的基本技能",
+                "指数运算的基本法则（正整数指数幂）"
+            ],
+            "student_groups": {
+                "advanced": {
+                    "characteristics": "思维敏捷，能快速理解抽象定义，善于从特例中自主归纳一般规律，并乐于探究性质背后的原因。",
+                    "cognitive_strengths": [
+                        "抽象概括能力强",
+                        "观察归纳能力突出",
+                        "学习迁移意愿高"
+                    ],
+                    "estimated_proportion": "约 30%",
+                    "potential_challenges": [
+                        "探究底数 a 的取值对函数图像影响的深层原因（如导数）超出当前范围；设计复杂情境下的综合应用问题可能缺乏经验。"
+                    ],
+                    "target_bloom_levels": [
+                        "评价",
+                        "创造"
+                    ]
+                },
+                "average": {
+                    "characteristics": "能跟随教学节奏，理解课堂讲授的基本概念和步骤，但在需要自主分析、综合应用知识解决变式问题时，需要明确的指引和示范。",
+                    "estimated_proportion": "约 50%",
+                    "potential_challenges": [
+                        "从图像到单调性符号语言的精确转化；应用单调性解决含参数的比较大小或不等式问题时，分析思路可能不清晰。"
+                    ],
+                    "target_bloom_levels": [
+                        "理解",
+                        "应用",
+                        "分析"
+                    ]
+                },
+                "struggling": {
+                    "characteristics": "在函数概念理解和代数运算上存在双重困难，将指数运算与函数结合时容易混淆。学习信心不足，需要更直观、更缓慢、步骤更细化的教学支持。",
+                    "cognitive_barriers": [
+                        {
+                            "barrier": "概念理解障碍",
+                            "description": "对“y=a^x”作为一个整体的函数符号理解困难，容易将其与“a*x”等乘法形式混淆。原因在于抽象符号表征能力较弱。"
+                        },
+                        {
+                            "barrier": "运算与推理脱节",
+                            "description": "在进行描点列表时，因指数计算错误导致图像错误，进而无法正确归纳性质，形成连锁认知挫折。"
+                        }
+                    ],
+                    "estimated_proportion": "约 20%",
+                    "support_needs": [
+                        "需要提供指数运算的回顾性脚手架（如计算模板、公式卡）",
+                        "需要分步拆解的作图任务单和详细的步骤示范",
+                        "需要更多基于图像的直观问答和简单模仿性练习来建立信心"
+                    ],
+                    "target_bloom_levels": [
+                        "记忆",
+                        "理解",
+                        "应用"
+                    ]
+                }
+            }
+        },
+        "subject_grade": {
+            "grade": "高一",
+            "inferred_topic": "指数函数的概念、图像与性质（单调性）",
+            "subject": "数学"
+        },
+        "teaching_focus": {
+            "difficult_points": [
+                {
+                    "point": "对指数函数定义中底数 a 限制条件的深刻理解",
+                    "reason": "涉及对 a 取不同值时函数存在性与性质的讨论，较为抽象，学生缺乏相关认知经验。",
+                    "suggested_approach": "采用反例讨论法，让学生尝试计算或画出 a=1, a=-2 等情况的“图像”，在认知冲突中理解限制的必要性。"
+                },
+                {
+                    "point": "从具体图像到抽象单调性（尤其是符号语言描述）的归纳与表达",
+                    "reason": "学生容易停留在直观的“上升”“下降”描述，上升到严格的数学符号语言表述存在思维跨度。",
+                    "suggested_approach": "设计从图像语言到文字语言，再到符号语言的渐进式引导问题链，并辅以正反例辨析。"
+                }
+            ],
+            "error_prone_points": [
+                {
+                    "common_error": "解不等式 (0.5)^x > (0.5)^3 时，错误地得到 x > 3。",
+                    "correction_strategy": "强化“先判底数（a>1 还是 0<a<1），再定方向”的两步法，并设计成对练习进行对比强化。",
+                    "point": "应用单调性时忽略底数范围对不等式方向的影响"
+                },
+                {
+                    "common_error": "仅取 x=0,1,2 三个点，导致画出的图像像折线或无法体现渐近趋势。",
+                    "correction_strategy": "明确要求取包含负数、0、正数在内的至少5个点，并强调函数图像的“连续”与“光滑”特性。",
+                    "point": "描点作图时点选取过少或连线不光滑"
+                }
+            ],
+            "key_points": [
+                {
+                    "point": "指数函数的定义（形式与限制条件）",
+                    "reason": "是整个指数函数知识体系的逻辑起点和核心概念，后续的图像与性质均由此衍生。"
+                },
+                {
+                    "point": "指数函数的图像特征与单调性",
+                    "reason": "是刻画指数函数变化规律的核心性质，是“数形结合”思想的集中体现，也是解决比较大小、不等式等问题的主要工具。"
+                }
+            ]
+        },
+        "teaching_goals_breakdown": [
+            {
+                "goal_id": "G1",
+                "original_text": "让学生理解指数函数的定义",
+                "sub_goals": [
+                    {
+                        "bloom_level": "记忆",
+                        "description": "能识别并准确写出指数函数的标准形式 y = a^x (a>0, a≠1)。",
+                        "knowledge_points_covered": [
+                            "KP1"
+                        ],
+                        "measurable_behavior": "学生能够在给出的多个代数式中，正确选出指数函数；能根据给定底数 a 的条件，独立写出对应的指数函数表达式。",
+                        "sub_goal_id": "G1-1"
+                    },
+                    {
+                        "bloom_level": "理解",
+                        "description": "解释指数函数定义中底数 a 的取值范围 (a>0, a≠1) 的原因。",
+                        "knowledge_points_covered": [
+                            "KP1"
+                        ],
+                        "measurable_behavior": "学生能够举例说明当 a=1，a=0，a<0 时，y=a^x 在定义域和函数性质上出现的问题，从而解释限制条件的必要性。",
+                        "sub_goal_id": "G1-2"
+                    },
+                    {
+                        "bloom_level": "理解",
+                        "description": "能根据具体情境，判断两个变量间的关系是否构成指数函数模型。",
+                        "knowledge_points_covered": [
+                            "KP1"
+                        ],
+                        "measurable_behavior": "学生能针对给定的简单实际问题（如细胞分裂、复利计算），判断其数量关系是否满足指数函数定义，并说明理由。",
+                        "sub_goal_id": "G1-3"
+                    }
+                ]
+            },
+            {
+                "goal_id": "G2",
+                "original_text": "会用描点法画出图像",
+                "sub_goals": [
+                    {
+                        "bloom_level": "记忆",
+                        "description": "陈述利用描点法绘制函数图像的基本步骤。",
+                        "knowledge_points_covered": [
+                            "KP3"
+                        ],
+                        "measurable_behavior": "学生能口头或书面复述描点法“列表、描点、连线”的三个关键步骤。",
+                        "sub_goal_id": "G2-1"
+                    },
+                    {
+                        "bloom_level": "应用",
+                        "description": "针对给定的具体指数函数（如 y=2^x， y=(1/2)^x），能正确列出若干关键点的坐标 (x, y)。",
+                        "knowledge_points_covered": [
+                            "KP1",
+                            "KP2",
+                            "KP3"
+                        ],
+                        "measurable_behavior": "学生能选取合适的 x 值（包括负值、0、正值），通过计算（或复习指数运算）得到对应的 y 值，完成函数值对应表。",
+                        "sub_goal_id": "G2-2"
+                    },
+                    {
+                        "bloom_level": "应用",
+                        "description": "在坐标系中准确描点，并用平滑曲线连接各点，画出指定指数函数的草图。",
+                        "knowledge_points_covered": [
+                            "KP3",
+                            "KP4"
+                        ],
+                        "measurable_behavior": "学生能在坐标纸上或白板上，根据所列出的点，规范地描点并画出图像草图。",
+                        "sub_goal_id": "G2-3"
+                    }
+                ]
+            },
+            {
+                "goal_id": "G3",
+                "original_text": "掌握指数函数的单调性",
+                "sub_goals": [
+                    {
+                        "bloom_level": "理解",
+                        "description": "通过观察不同底数 a>1 和 0<a<1 的图像，归纳出指数函数的单调性规律。",
+                        "knowledge_points_covered": [
+                            "KP4",
+                            "KP5"
+                        ],
+                        "measurable_behavior": "学生能指出 y=2^x 的图像从左到右逐渐上升（递增），y=(1/2)^x 的图像从左到右逐渐下降（递减）。",
+                        "sub_goal_id": "G3-1"
+                    },
+                    {
+                        "bloom_level": "理解",
+                        "description": "能用准确的数学语言（文字和符号）描述指数函数的单调性。",
+                        "knowledge_points_covered": [
+                            "KP5"
+                        ],
+                        "measurable_behavior": "学生能表述：“当 a>1 时，指数函数 y=a^x 在 R 上是增函数；当 0<a<1 时，指数函数 y=a^x 在 R 上是减函数”，并能用“若 x1<x2，则 f(x1) < f(x2)”等符号语言进行说明。",
+                        "sub_goal_id": "G3-2"
+                    },
+                    {
+                        "bloom_level": "应用",
+                        "description": "能利用指数函数的单调性比较两个同底指数幂的大小。",
+                        "knowledge_points_covered": [
+                            "KP5"
+                        ],
+                        "measurable_behavior": "学生能比较如 1.5^2.3 与 1.5^2.4 的大小，并清晰写出基于单调性的推理过程。",
+                        "sub_goal_id": "G3-3"
+                    },
+                    {
+                        "bloom_level": "应用",
+                        "description": "能利用指数函数的单调性解简单的指数不等式。",
+                        "knowledge_points_covered": [
+                            "KP5"
+                        ],
+                        "measurable_behavior": "学生能解决如 2^x > 2^3 或 (0.5)^x < (0.5)^2 这样的不等式，并得出 x 的取值范围。",
+                        "sub_goal_id": "G3-4"
+                    }
+                ]
+            }
+        ]
+    },
+    "attachment": "",
+    "grade": "高一",
+    "language_style": "启发引导",
+    "main_checks_done": -999,
+    "main_questions": [
+        {
+            "bloom_level": "评价",
+            "cognitive_hook": "对比冲突",
+            "content": "我们来看两个变化过程：一个细胞1变2，2变4，不断分裂；一份放射性物质每过一天质量就减半。你发现了什么？它们的变化方式，有什么深刻的共同点吗？",
+            "design_intent": "提供细胞分裂（数量倍增）和放射性物质衰减（质量减半）两个一增一减的熟悉情境，让学生对比其数量变化规律的异同。期待激活学生对‘恒定比例变化’这一指数函数核心特征的直观感知，并引发‘如何用统一数学模型描述这两种看似相反的现象’的认知挑战。",
+            "difficulty": 0.6,
+            "id": "M1",
+            "knowledge_points": [
+                "KP1"
+            ],
+            "parent_id": null,
+            "question_type": "main",
+            "teaching_function": "认知锚定"
+        },
+        {
+            "bloom_level": "分析",
+            "cognitive_hook": "悖论反例",
+            "content": "我们把这种关系写成函数y=a^x。但为什么课本要规定a>0且a≠1？如果a=1会怎样？如果a=-2，当x是1/2时，函数值还有意义吗？",
+            "design_intent": "在给出指数函数标准形式 y=a^x 后，不直接告知底数限制，而是抛出‘为什么 a 不能等于1？为什么 a 要大于0？如果 a=-2，函数 y=(-2)^x 会怎样？’等系列追问。期待激活学生的批判性思维，通过计算和讨论反例（如a=1时函数退化为常函数，a=-2时x取1/2无实数解），在认知冲突中深刻建构对定义限制条件的理解，而非机械记忆。",
+            "difficulty": 0.65,
+            "id": "M2",
+            "knowledge_points": [
+                "KP1",
+                "KP2"
+            ],
+            "parent_id": null,
+            "question_type": "main",
+            "teaching_function": "核心建构"
+        },
+        {
+            "bloom_level": "应用",
+            "cognitive_hook": "意外发现",
+            "content": "现在，请大家分组画出y=2^x和y=(1/2)^x的图像。画好后请对比，你们的图像都经过了哪个特殊的点？为什么这两个图像一个向上跑，一个向下跑，却都碰不到x轴呢？",
+            "design_intent": "让学生分组分别用描点法绘制 y=2^x 和 y=(1/2)^x 的图像。在此过程中，期待暴露两个关键点：1) 因指数计算（KP2）不熟导致的列表错误；2) 因取点过少或不当导致的图像失真（如未体现渐近线趋势）。通过对比正确与错误的图像，引导学生自主发现并修正错误，深化对描点法要点和指数函数图像‘恒过定点(0,1)’、‘位于x轴上方’等核心特征的理解。",
+            "difficulty": 0.75,
+            "id": "M3",
+            "knowledge_points": [
+                "KP2",
+                "KP3",
+                "KP4"
+            ],
+            "parent_id": null,
+            "question_type": "main",
+            "teaching_function": "认知冲突/深化"
+        },
+        {
+            "bloom_level": "应用",
+            "cognitive_hook": "开放边界",
+            "content": "现在有两个数(0.3)^(-0.5)和(0.3)^0.2，你们能直接看出谁大谁小吗？如果底数不是0.3而是a，要解a^x > a^3，是不是直接就能得到x>3？",
+            "design_intent": "提供一个需要综合运用单调性的问题链：1) 比较 (0.3)^(-0.5) 与 (0.3)^0.2 的大小；2) 解不等式 a^x > a^3 （a为常数，但未指明范围）。期待学生在解决问题1时，能完整书写基于单调性的推理过程；在解决问题2时，能暴露出‘忽略讨论底数a范围’这一典型错误，从而驱动他们主动整合之前所学（底数分类），形成严谨的解题步骤：‘先判底数，再定方向’。",
+            "difficulty": 0.8,
+            "id": "M4",
+            "knowledge_points": [
+                "KP4",
+                "KP5"
+            ],
+            "parent_id": null,
+            "question_type": "main",
+            "teaching_function": "迁移整合"
+        }
+    ],
+    "main_retry_count": 0,
+    "main_validation_feedback": [],
+    "map_construction_logic": {
+        "_thinking_process": [
+            "1. 盘点所有 KP 和 Sub-goal，标记重点难点和易错点。KP1（定义）、KP4（图像特征）、KP5（单调性）是重点，其中KP1和KP5是难点。KP1、KP2、KP3、KP5是易错点。学情分析明确要求覆盖所有 sub_goal_id 和 kp_id，并且对易错点安排'认知冲突'节点。",
+            "2. 构思教学叙事（锚定 -> 建构 -> 冲突 -> 整合）。结合推荐的教学序列和知识图谱的前置关系，叙事逻辑为：从熟悉的'增长/衰减'现象（锚定）抽象出指数模型并定义（建构）-> 通过动手画图和质疑底数限制，打破对定义和图像的浅层认知（冲突/深化） -> 基于图像观察归纳出单调性（建构） -> 应用单调性解决综合问题，并反思前提条件（整合）。这形成了4个主干节点（M1-M4）的链条。",
+            "3. 将 KP 分配入节点，确保易错点对应到冲突节点，无遗漏。M1: KP1(部分)。M2: KP1, KP2。M3: KP2, KP3, KP4。M4: KP4, KP5。检查覆盖：KP1-KP5全部覆盖；G1-1到G3-4所有子目标均能在主干链中找到对应活动（M1对应G1-3，M2对应G1-1,G1-2，M3对应G2-1,G2-2,G2-3,G3-1，M4对应G3-2,G3-3,G3-4）。易错点处理：M2通过追问底数限制条件处理KP1易错点；M3通过具体画图任务暴露KP3（点少、线不光滑）和KP2（计算错误）的易错点；M4通过含参比较和解不等式暴露KP5（忽略底数范围）的易错点。",
+            "4. 检查难度梯度是否单调不递减，跨度是否合规。设定M1难度0.60（评价生活情境），M2难度0.65（分析定义条件），M3难度0.75（应用画图并归纳），M4难度0.80（应用与迁移）。序列：0.60 -> 0.65 -> 0.75 -> 0.80，单调递增，最大跳跃0.10（M2到M3），小于0.25，合规。M1难度在0.55-0.70之间，合规。",
+            "5. 检查过渡动机是否自然流畅，规划支架位置。M1->M2：现象需要数学化定义。M2->M3：抽象定义需要可视化理解。M3->M4：图像规律需要代数应用。过渡均自然。在M1->M2之间，学困生可能无法从现象抽象模型，需支架S1。在M2->M3之间，学困生计算（KP2）和步骤记忆（KP3）有困难，需支架S2。在M3->M4之间，学困生从图像到符号语言归纳有困难，需支架S3。",
+            "6. 规划变式问题。为每个主干节点设计1-2个变式，采用情景替换、反例追问、条件变换等策略，确保围绕同一核心认知规律展开，服务于分层教学。",
+            "7. 最终检查：认知层次（主干为应用至评价，支架为理解或记忆）、目标全覆盖、前置关系（KP2在KP3前处理，KP4在KP5前出现）、易错点专项处理均已满足强制约束。"
+        ],
+        "main_question_chain": [
+            {
+                "bloom_level": "评价",
+                "cognitive_hook": "对比冲突",
+                "connection_to_next": {
+                    "cognitive_gap": "中",
+                    "scaffold_needed": true,
+                    "transition_motivation": "学生能识别出两类情境中‘下一阶段数量总是当前数量的固定倍数’这一共性，但尚不知其数学名称与精确表达。这种从具体现象中提炼统一数学模型的需求，自然导向对指数函数形式化定义的探究（M2）。"
+                },
+                "design_intent": "提供细胞分裂（数量倍增）和放射性物质衰减（质量减半）两个一增一减的熟悉情境，让学生对比其数量变化规律的异同。期待激活学生对‘恒定比例变化’这一指数函数核心特征的直观感知，并引发‘如何用统一数学模型描述这两种看似相反的现象’的认知挑战。",
+                "difficulty": 0.6,
+                "node_id": "M1",
+                "sequence": 1,
+                "target_knowledge_points": [
+                    "KP1"
+                ],
+                "target_sub_goals": [
+                    "G1-3"
+                ],
+                "teaching_function": "认知锚定"
+            },
+            {
+                "bloom_level": "分析",
+                "cognitive_hook": "悖论反例",
+                "connection_to_next": {
+                    "cognitive_gap": "大",
+                    "scaffold_needed": true,
+                    "transition_motivation": "学生虽然从代数层面理解了定义，但函数是‘形’与‘数’的结合体。对于 y=2^x 和 y=(1/2)^x 这样抽象的关系式，它们到底长什么样？如何变化？这种对函数图像的好奇与探究欲望，是驱动从‘数’到‘形’认知跨越的天然动力，导向描点法作图（M3）。"
+                },
+                "design_intent": "在给出指数函数标准形式 y=a^x 后，不直接告知底数限制，而是抛出‘为什么 a 不能等于1？为什么 a 要大于0？如果 a=-2，函数 y=(-2)^x 会怎样？’等系列追问。期待激活学生的批判性思维，通过计算和讨论反例（如a=1时函数退化为常函数，a=-2时x取1/2无实数解），在认知冲突中深刻建构对定义限制条件的理解，而非机械记忆。",
+                "difficulty": 0.65,
+                "node_id": "M2",
+                "sequence": 2,
+                "target_knowledge_points": [
+                    "KP1",
+                    "KP2"
+                ],
+                "target_sub_goals": [
+                    "G1-1",
+                    "G1-2"
+                ],
+                "teaching_function": "核心建构"
+            },
+            {
+                "bloom_level": "应用",
+                "cognitive_hook": "意外发现",
+                "connection_to_next": {
+                    "cognitive_gap": "中",
+                    "scaffold_needed": true,
+                    "transition_motivation": "面对亲手画出的两幅图像，学生能直观说出一个‘上升’，一个‘下降’。这种直观的‘变化趋势’描述，如何转化为精确的数学语言？又如何利用这种规律去解决实际的数学问题（比如比较 2^3 和 2^π 谁大）？从直观感知到性质归纳与应用的需求，自然引出对单调性的深入研究（M4）。"
+                },
+                "design_intent": "让学生分组分别用描点法绘制 y=2^x 和 y=(1/2)^x 的图像。在此过程中，期待暴露两个关键点：1) 因指数计算（KP2）不熟导致的列表错误；2) 因取点过少或不当导致的图像失真（如未体现渐近线趋势）。通过对比正确与错误的图像，引导学生自主发现并修正错误，深化对描点法要点和指数函数图像‘恒过定点(0,1)’、‘位于x轴上方’等核心特征的理解。",
+                "difficulty": 0.75,
+                "node_id": "M3",
+                "sequence": 3,
+                "target_knowledge_points": [
+                    "KP2",
+                    "KP3",
+                    "KP4"
+                ],
+                "target_sub_goals": [
+                    "G2-1",
+                    "G2-2",
+                    "G2-3",
+                    "G3-1"
+                ],
+                "teaching_function": "认知冲突/深化"
+            },
+            {
+                "bloom_level": "应用",
+                "cognitive_hook": "开放边界",
+                "connection_to_next": {
+                    "cognitive_gap": null,
+                    "scaffold_needed": false,
+                    "transition_motivation": "（此为链条终点）"
+                },
+                "design_intent": "提供一个需要综合运用单调性的问题链：1) 比较 (0.3)^(-0.5) 与 (0.3)^0.2 的大小；2) 解不等式 a^x > a^3 （a为常数，但未指明范围）。期待学生在解决问题1时，能完整书写基于单调性的推理过程；在解决问题2时，能暴露出‘忽略讨论底数a范围’这一典型错误，从而驱动他们主动整合之前所学（底数分类），形成严谨的解题步骤：‘先判底数，再定方向’。",
+                "difficulty": 0.8,
+                "node_id": "M4",
+                "sequence": 4,
+                "target_knowledge_points": [
+                    "KP4",
+                    "KP5"
+                ],
+                "target_sub_goals": [
+                    "G3-2",
+                    "G3-3",
+                    "G3-4"
+                ],
+                "teaching_function": "迁移整合"
+            }
+        ],
+        "scaffold_question_plans": [
+            {
+                "bloom_level": "理解",
+                "cognitive_fracture": "学困生可能能从例子中看出‘翻倍’或‘减半’，但难以将‘每期都是前一期固定倍数’这一文字描述，抽象为‘y = a * 前一期值’的递推关系，更难以进一步转化为‘y = a^x’的显函数形式。",
+                "design_intent": "提供细胞分裂的逐步数据表（第0代1个，第1代2个，第2代4个…），通过填空引导（第x代数量 = __ * 第(x-1)代数量 = __^x），帮助学生将具体数值规律翻译成数学符号表达式，搭建从现象到模型的桥梁。",
+                "difficulty": 0.4,
+                "from_main": "M1",
+                "knowledge_focus": "KP1（从具体数值关系到抽象表达式）",
+                "scaffold_id": "S1-1",
+                "sequence": 1,
+                "to_main": "M2"
+            },
+            {
+                "bloom_level": "记忆",
+                "cognitive_fracture": "学困生对 2^(-1), 2^(1/2) 等运算不熟，导致在M3列表计算第一步就卡住，无法进行后续作图。",
+                "design_intent": "在正式画图前，提供“指数运算热身卡”，回顾 a^(-n)=1/(a^n)， a^(m/n)=n√(a^m) 等法则，并附带计算 2^(-2), 2^(-1), 2^0, 2^(1/2), 2^1, 2^2 的填空练习，为准确列表扫清计算障碍。",
+                "difficulty": 0.35,
+                "from_main": "M2",
+                "knowledge_focus": "KP2（负指数、分数指数运算）",
+                "scaffold_id": "S2-1",
+                "sequence": 1,
+                "to_main": "M3"
+            },
+            {
+                "bloom_level": "理解",
+                "cognitive_fracture": "学困生可能遗忘或混淆描点法的具体操作步骤，导致动手时不知所措。",
+                "design_intent": "提供带有明确步骤提示的“作图任务单”：第一步（列表）：计算x=-2,-1,0,1,2时的y值；第二步（描点）：将数对(x,y)标在坐标系中；第三步（连线）：用平滑的曲线按x从小到大的顺序连接各点。通过结构化任务分解降低认知负荷。",
+                "difficulty": 0.3,
+                "from_main": "M2",
+                "knowledge_focus": "KP3（描点法步骤）",
+                "scaffold_id": "S2-2",
+                "sequence": 2,
+                "to_main": "M3"
+            },
+            {
+                "bloom_level": "理解",
+                "cognitive_fracture": "学困生能看图说出“上升”、“下降”，但无法将其转化为“增函数”、“减函数”的数学术语，更无法用严格的数学符号（如 x1<x2 => f(x1)<f(x2)）进行描述。",
+                "design_intent": "在图像上标注两个任意的点 x1 和 x2 (x1<x2)，并画出它们对应的函数值 f(x1) 和 f(x2)。通过提问引导：“在 y=2^x 图像上，x1<x2，那么点 (x1, f(x1)) 和 (x2, f(x2)) 谁高谁低？这意味着 f(x1) 和 f(x2) 谁大谁小？” 帮助学生建立“图像上升”与“函数值随x增大而增大”之间的等价关系，完成语言转化。",
+                "difficulty": 0.45,
+                "from_main": "M3",
+                "knowledge_focus": "KP5（从图像语言到符号语言）",
+                "scaffold_id": "S3-1",
+                "sequence": 1,
+                "to_main": "M4"
+            }
+        ],
+        "variant_question_plans": [
+            {
+                "bloom_level": "分析",
+                "change_description": "将“细胞分裂”替换为“社交媒体信息裂变式传播”（一条消息被每人转发给2个新用户）。",
+                "design_intent": "将生物学背景替换为更贴近学生生活的网络情境，检验学生能否在不同背景下识别出“指数增长”模型的核心特征（每轮新增人数与当前总人数成固定比例）。",
+                "difficulty": 0.62,
+                "for_main_node": "M1",
+                "strategy": "情景替换",
+                "variant_id": "V1-1"
+            },
+            {
+                "bloom_level": "评价",
+                "change_description": "追问：函数 y=1^x 是指数函数吗？它的图像是什么样子？这与我们限制 a≠1 有什么联系？",
+                "design_intent": "深化对 a≠1 的理解。让学生通过特例发现，当a=1时函数失去“变化”的特性，从而理解将其排除在指数函数外是为了保证研究的是有变化规律的一类函数。",
+                "difficulty": 0.7,
+                "for_main_node": "M2",
+                "strategy": "反例追问",
+                "variant_id": "V2-1"
+            },
+            {
+                "bloom_level": "评价",
+                "change_description": "要求学生尝试用描点法画 y=3^x 的图像，但只给 x = 0, 1, 2 三个点。画完后与标准图像对比，讨论可能产生误导的地方（如看不到x<0时图像快速逼近x轴的特点）。",
+                "design_intent": "故意设置取点不足的条件，让学生亲身体验并评价由此导致的图像失真，从而深刻理解描点法中“取点要具有代表性（需包含负数）”的重要性，针对性纠正易错点。",
+                "difficulty": 0.72,
+                "for_main_node": "M3",
+                "strategy": "条件变换",
+                "variant_id": "V3-1"
+            },
+            {
+                "bloom_level": "分析",
+                "change_description": "并列两个问题：①比较 1.7^0.3 与 1.7^0.4的大小；②比较 0.4^0.3 与 0.4^0.4的大小。要求学生不计算具体值，仅用单调性判断，并观察解题过程的异同。",
+                "design_intent": "通过对比底数大于1和小于1的两种情况，强化“应用单调性必须先判断底数范围”的步骤。让学生分析两种情况下推理的逻辑一致性（都是利用单调性）和结论的差异性（增减性不同导致大小关系相反）。",
+                "difficulty": 0.78,
+                "for_main_node": "M4",
+                "strategy": "对比冲突",
+                "variant_id": "V4-1"
+            }
+        ]
+    },
+    "scaffold_questions": [],
+    "scaffold_retry_count": 0,
+    "scaffold_validation_feedback": [],
+    "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+    "subject": "数学",
+    "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性\r\n\r\n",
+    "teaching_map": {
+        "edges": [],
+        "nodes": []
+    },
+    "validation_results": [
+        {
+            "feedback": {
+                "can_optimize": [],
+                "must_fix": [
+                    {
+                        "action": "重组教学顺序，确保‘指数运算（KP2）’的激活/复习先于‘指数函数定义（KP1）’的正式学习与讨论。",
+                        "direction": "调整M1与M2的定位或内容，或在前端增加专门针对指数运算（KP2）的预热问题。",
+                        "target_node": "整体顺序"
+                    },
+                    {
+                        "action": "增加明确覆盖子目标G1-1、G2-1、G2-2、G3-2的主干问题或教学环节。",
+                        "direction": "需设计新问题，用于：1）明确写出标准形式；2）回顾描点法步骤；3）指导列表计算；4）引导用数学语言描述单调性。",
+                        "target_node": "多个位置"
+                    }
+                ],
+                "should_fix": [
+                    {
+                        "action": "平衡KP1与KP5的覆盖深度，在定义学习后设计基础性巩固问题，在单调性应用前设计过渡性归纳问题。",
+                        "direction": "考虑在M2后增加一个巩固定义和初步感知图像的问题，在M3后增加一个归纳单调性数学表述的问题。",
+                        "target_node": "M2之后，M4之前"
+                    }
+                ]
+            },
+            "issues": [
+                {
+                    "description": "G1-1（识别与写出标准形式）、G2-1（陈述描点法步骤）、G2-2（正确列表计算）、G3-2（用符号语言描述单调性）四个子目标未被主干链实质覆盖。这些是达成学困生和中等生‘底线目标’（如记住形式、规范作图步骤）的关键环节，其缺失可能导致教学流程‘跳步’，基础不牢。",
+                    "dimension": "D2_subgoal_coverage",
+                    "issue_type": "子目标缺失",
+                    "related_nodes": [],
+                    "severity": "major",
+                    "suggestion": "需增加或调整问题节点，明确包含‘写出标准形式’、‘回顾描点法三步’、‘指导列表计算’以及‘归纳并书写单调性数学语言’的教学活动。"
+                },
+                {
+                    "description": "教学顺序与推荐逻辑不符。学情分析明确指出学生存在‘指数运算不熟练’的缺口，建议先复习KP2再学习KP1。但主干链在M1引入情境（已隐含KP1），M2才涉及KP2的讨论，颠倒了这一支撑关系。",
+                    "dimension": "D3_balance_and_order",
+                    "issue_type": "前置关系颠倒",
+                    "related_nodes": [
+                        "M1",
+                        "M2"
+                    ],
+                    "severity": "major",
+                    "suggestion": "重组问题链顺序，确保在正式引入和讨论指数函数定义（KP1）前，有环节专门激活或复习必要的指数运算知识（KP2）。"
+                },
+                {
+                    "description": "核心知识点覆盖权重失衡。KP1（核心定义）仅在M2中通过反例讨论，缺乏正面建构和形式识别的练习；而KP5（单调性应用）在M4中被直接推向高难度的综合应用（含参数讨论）。对于中等及以下学生，从定义到高阶应用的阶梯搭建不足。",
+                    "dimension": "D3_balance_and_order",
+                    "issue_type": "覆盖不均衡",
+                    "related_nodes": [
+                        "M2",
+                        "M4"
+                    ],
+                    "severity": "minor",
+                    "suggestion": "在定义学习后、单调性应用前，增加过渡性问题，巩固对定义的理解并进行单调性的初步归纳与表述。"
+                }
+            ],
+            "overall_assessment": "主干链在核心知识点（D1）上实现了全覆盖，但在子目标覆盖（D2）和顺序与均衡性（D3）上存在严重问题。三个维度均未达标，总分2分，主干链结构需要重组。主要问题在于：1）多个基础性子目标（G1-1, G2-1, G2-2, G3-2）未被实质触及，学困生与中等生的底线学习路径缺失；2）教学顺序未遵循推荐的‘先补运算（KP2），再学定义（KP1）’的逻辑，颠倒了关键的前置关系，可能造成认知障碍；3）知识点覆盖权重明显向单调性应用倾斜，定义与作图等基础建构环节相对薄弱。",
+            "passed": false,
+            "raw_result": {
+                "dimension_scores": {
+                    "D1_kp_coverage": {
+                        "all_kp_ids_in_baseline": [
+                            "KP1",
+                            "KP2",
+                            "KP3",
+                            "KP4",
+                            "KP5"
+                        ],
+                        "covered_kps": [
+                            "KP1",
+                            "KP2",
+                            "KP3",
+                            "KP4",
+                            "KP5"
+                        ],
+                        "max": 2,
+                        "missing_kps": [],
+                        "score": 2
+                    },
+                    "D2_subgoal_coverage": {
+                        "all_subgoal_ids_in_baseline": [
+                            "G1-1",
+                            "G1-2",
+                            "G1-3",
+                            "G2-1",
+                            "G2-2",
+                            "G2-3",
+                            "G3-1",
+                            "G3-2",
+                            "G3-3",
+                            "G3-4"
+                        ],
+                        "covered_subgoals": [
+                            "G1-2",
+                            "G1-3",
+                            "G2-3",
+                            "G3-1",
+                            "G3-3",
+                            "G3-4"
+                        ],
+                        "max": 2,
+                        "missing_subgoals": [
+                            "G1-1",
+                            "G2-1",
+                            "G2-2",
+                            "G3-2"
+                        ],
+                        "score": 0
+                    },
+                    "D3_balance_and_order": {
+                        "max": 2,
+                        "note": "存在前置关系颠倒（KP2应前置于KP1）。KP1（核心定义）仅在M2中覆盖，而KP5（单调性应用）在M4中深度覆盖，分布不均衡。",
+                        "score": 0
+                    }
+                },
+                "feedback": {
+                    "can_optimize": [],
+                    "must_fix": [
+                        {
+                            "action": "重组教学顺序，确保‘指数运算（KP2）’的激活/复习先于‘指数函数定义（KP1）’的正式学习与讨论。",
+                            "direction": "调整M1与M2的定位或内容，或在前端增加专门针对指数运算（KP2）的预热问题。",
+                            "target_node": "整体顺序"
+                        },
+                        {
+                            "action": "增加明确覆盖子目标G1-1、G2-1、G2-2、G3-2的主干问题或教学环节。",
+                            "direction": "需设计新问题，用于：1）明确写出标准形式；2）回顾描点法步骤；3）指导列表计算；4）引导用数学语言描述单调性。",
+                            "target_node": "多个位置"
+                        }
+                    ],
+                    "should_fix": [
+                        {
+                            "action": "平衡KP1与KP5的覆盖深度，在定义学习后设计基础性巩固问题，在单调性应用前设计过渡性归纳问题。",
+                            "direction": "考虑在M2后增加一个巩固定义和初步感知图像的问题，在M3后增加一个归纳单调性数学表述的问题。",
+                            "target_node": "M2之后，M4之前"
+                        }
+                    ]
+                },
+                "issues": [
+                    {
+                        "description": "G1-1（识别与写出标准形式）、G2-1（陈述描点法步骤）、G2-2（正确列表计算）、G3-2（用符号语言描述单调性）四个子目标未被主干链实质覆盖。这些是达成学困生和中等生‘底线目标’（如记住形式、规范作图步骤）的关键环节，其缺失可能导致教学流程‘跳步’，基础不牢。",
+                        "dimension": "D2_subgoal_coverage",
+                        "issue_type": "子目标缺失",
+                        "related_nodes": [],
+                        "severity": "major",
+                        "suggestion": "需增加或调整问题节点，明确包含‘写出标准形式’、‘回顾描点法三步’、‘指导列表计算’以及‘归纳并书写单调性数学语言’的教学活动。"
+                    },
+                    {
+                        "description": "教学顺序与推荐逻辑不符。学情分析明确指出学生存在‘指数运算不熟练’的缺口，建议先复习KP2再学习KP1。但主干链在M1引入情境（已隐含KP1），M2才涉及KP2的讨论，颠倒了这一支撑关系。",
+                        "dimension": "D3_balance_and_order",
+                        "issue_type": "前置关系颠倒",
+                        "related_nodes": [
+                            "M1",
+                            "M2"
+                        ],
+                        "severity": "major",
+                        "suggestion": "重组问题链顺序，确保在正式引入和讨论指数函数定义（KP1）前，有环节专门激活或复习必要的指数运算知识（KP2）。"
+                    },
+                    {
+                        "description": "核心知识点覆盖权重失衡。KP1（核心定义）仅在M2中通过反例讨论，缺乏正面建构和形式识别的练习；而KP5（单调性应用）在M4中被直接推向高难度的综合应用（含参数讨论）。对于中等及以下学生，从定义到高阶应用的阶梯搭建不足。",
+                        "dimension": "D3_balance_and_order",
+                        "issue_type": "覆盖不均衡",
+                        "related_nodes": [
+                            "M2",
+                            "M4"
+                        ],
+                        "severity": "minor",
+                        "suggestion": "在定义学习后、单调性应用前，增加过渡性问题，巩固对定义的理解并进行单调性的初步归纳与表述。"
+                    }
+                ],
+                "kp_coverage_matrix": [
+                    {
+                        "coverage_status": "覆盖但不充分（仅探讨限制条件，未涉及标准形式的识别与写出）",
+                        "covered_by_nodes": [
+                            "M2"
+                        ],
+                        "is_difficult_point": true,
+                        "is_key_point": true,
+                        "kp_id": "KP1",
+                        "name": "指数函数的定义"
+                    },
+                    {
+                        "coverage_status": "在错误情境中暴露（M2讨论a=-2时涉及，但非正式训练）",
+                        "covered_by_nodes": [
+                            "M2",
+                            "M3"
+                        ],
+                        "is_difficult_point": false,
+                        "is_key_point": false,
+                        "kp_id": "KP2",
+                        "name": "指数运算的熟练度"
+                    },
+                    {
+                        "coverage_status": "隐含覆盖（要求画图，但未明确陈述或强调步骤）",
+                        "covered_by_nodes": [
+                            "M3"
+                        ],
+                        "is_difficult_point": false,
+                        "is_key_point": false,
+                        "kp_id": "KP3",
+                        "name": "描点法作图步骤"
+                    },
+                    {
+                        "coverage_status": "完整覆盖（通过绘图和对比问题触及）",
+                        "covered_by_nodes": [
+                            "M3"
+                        ],
+                        "is_difficult_point": false,
+                        "is_key_point": true,
+                        "kp_id": "KP4",
+                        "name": "指数函数的图像特征"
+                    },
+                    {
+                        "coverage_status": "深度覆盖（直接应用于比较大小和解不等式）",
+                        "covered_by_nodes": [
+                            "M4"
+                        ],
+                        "is_difficult_point": true,
+                        "is_key_point": true,
+                        "kp_id": "KP5",
+                        "name": "指数函数的单调性"
+                    }
+                ],
+                "overall_assessment": "主干链在核心知识点（D1）上实现了全覆盖，但在子目标覆盖（D2）和顺序与均衡性（D3）上存在严重问题。三个维度均未达标，总分2分，主干链结构需要重组。主要问题在于：1）多个基础性子目标（G1-1, G2-1, G2-2, G3-2）未被实质触及，学困生与中等生的底线学习路径缺失；2）教学顺序未遵循推荐的‘先补运算（KP2），再学定义（KP1）’的逻辑，颠倒了关键的前置关系，可能造成认知障碍；3）知识点覆盖权重明显向单调性应用倾斜，定义与作图等基础建构环节相对薄弱。",
+                "passed": false,
+                "prerequisite_order_check": [
+                    {
+                        "from_kp": "KP2",
+                        "kp1_first_node": "M2",
+                        "kp2_first_node": "M3",
+                        "order_correct": true,
+                        "relation": "前置",
+                        "to_kp": "KP3"
+                    },
+                    {
+                        "from_kp": "KP1",
+                        "kp1_first_node": "M2",
+                        "kp2_first_node": "M3",
+                        "order_correct": true,
+                        "relation": "因果",
+                        "to_kp": "KP4"
+                    },
+                    {
+                        "from_kp": "KP4",
+                        "kp1_first_node": "M3",
+                        "kp2_first_node": "M4",
+                        "order_correct": true,
+                        "relation": "因果",
+                        "to_kp": "KP5"
+                    },
+                    {
+                        "from_kp": "KP2",
+                        "kp1_first_node": "M2",
+                        "kp2_first_node": "M1",
+                        "note": "依据‘推荐教学顺序’，KP2（指数运算补缺）应在前，KP1（定义形成）在后。但主干链中M1（情境引入，涉及KP1）先于M2（讨论限制，涉及KP2）。这可能导致学生在理解定义（尤其涉及负指数、分数指数时）的计算基础不牢，增加了认知负荷。",
+                        "order_correct": false,
+                        "relation": "",
+                        "to_kp": "KP1"
+                    }
+                ],
+                "structure_adjustment": {
+                    "allow_increase_main_questions": true,
+                    "insertion_after_node": "M2",
+                    "new_node_focus": "KP2（指数运算复习）、KP3（描点法步骤明确）、G1-1（写出标准形式）、G2-1/G2-2（规范列表计算）",
+                    "reason": "当前4个主干问题数量不足以同时满足：1）修复颠倒的前置顺序（需提前处理KP2）；2）覆盖缺失的多个基础性子目标（G1-1， G2-1， G2-2）；3）搭建从定义到性质应用的平缓阶梯。建议增加至6个问题，以容纳必要的复习、规范指导和应用过渡环节。",
+                    "suggested_main_question_count": 6
+                },
+                "subgoal_coverage_matrix": [
+                    {
+                        "bloom_required": "记忆",
+                        "coverage_status": "未覆盖",
+                        "covered_by_nodes": [],
+                        "depth_adequate": false,
+                        "description": "能识别并准确写出指数函数的标准形式 y = a^x (a>0, a≠1)。",
+                        "sub_goal_id": "G1-1"
+                    },
+                    {
+                        "bloom_required": "理解",
+                        "coverage_status": "完整覆盖（通过反例讨论）",
+                        "covered_by_nodes": [
+                            "M2"
+                        ],
+                        "depth_adequate": true,
+                        "description": "解释指数函数定义中底数 a 的取值范围 (a>0, a≠1) 的原因。",
+                        "sub_goal_id": "G1-2"
+                    },
+                    {
+                        "bloom_required": "理解",
+                        "coverage_status": "完整覆盖（通过情境对比）",
+                        "covered_by_nodes": [
+                            "M1"
+                        ],
+                        "depth_adequate": true,
+                        "description": "能根据具体情境，判断两个变量间的关系是否构成指数函数模型。",
+                        "sub_goal_id": "G1-3"
+                    },
+                    {
+                        "bloom_required": "记忆",
+                        "coverage_status": "未覆盖",
+                        "covered_by_nodes": [],
+                        "depth_adequate": false,
+                        "description": "陈述利用描点法绘制函数图像的基本步骤。",
+                        "sub_goal_id": "G2-1"
+                    },
+                    {
+                        "bloom_required": "应用",
+                        "coverage_status": "未直接覆盖（M3要求画图，隐含此行为，但非明确任务）",
+                        "covered_by_nodes": [],
+                        "depth_adequate": false,
+                        "description": "针对给定的具体指数函数，能正确列出若干关键点的坐标 (x, y)。",
+                        "sub_goal_id": "G2-2"
+                    },
+                    {
+                        "bloom_required": "应用",
+                        "coverage_status": "完整覆盖（分组画图任务）",
+                        "covered_by_nodes": [
+                            "M3"
+                        ],
+                        "depth_adequate": true,
+                        "description": "在坐标系中准确描点，并用平滑曲线连接各点，画出指定指数函数的草图。",
+                        "sub_goal_id": "G2-3"
+                    },
+                    {
+                        "bloom_required": "理解",
+                        "coverage_status": "完整覆盖（通过图像对比引导发现）",
+                        "covered_by_nodes": [
+                            "M3"
+                        ],
+                        "depth_adequate": true,
+                        "description": "通过观察不同底数 a>1 和 0<a<1 的图像，归纳出指数函数的单调性规律。",
+                        "sub_goal_id": "G3-1"
+                    },
+                    {
+                        "bloom_required": "理解",
+                        "coverage_status": "未覆盖（问题链停留在直观描述层面）",
+                        "covered_by_nodes": [],
+                        "depth_adequate": false,
+                        "description": "能用准确的数学语言（文字和符号）描述指数函数的单调性。",
+                        "sub_goal_id": "G3-2"
+                    },
+                    {
+                        "bloom_required": "应用",
+                        "coverage_status": "完整覆盖",
+                        "covered_by_nodes": [
+                            "M4"
+                        ],
+                        "depth_adequate": true,
+                        "description": "能利用指数函数的单调性比较两个同底指数幂的大小。",
+                        "sub_goal_id": "G3-3"
+                    },
+                    {
+                        "bloom_required": "应用",
+                        "coverage_status": "完整覆盖",
+                        "covered_by_nodes": [
+                            "M4"
+                        ],
+                        "depth_adequate": true,
+                        "description": "能利用指数函数的单调性解简单的指数不等式。",
+                        "sub_goal_id": "G3-4"
+                    }
+                ],
+                "total_score": 2
+            },
+            "structure_adjustment": {
+                "allow_increase_main_questions": true,
+                "insertion_after_node": "M2",
+                "new_node_focus": "KP2（指数运算复习）、KP3（描点法步骤明确）、G1-1（写出标准形式）、G2-1/G2-2（规范列表计算）",
+                "reason": "当前4个主干问题数量不足以同时满足：1）修复颠倒的前置顺序（需提前处理KP2）；2）覆盖缺失的多个基础性子目标（G1-1， G2-1， G2-2）；3）搭建从定义到性质应用的平缓阶梯。建议增加至6个问题，以容纳必要的复习、规范指导和应用过渡环节。",
+                "suggested_main_question_count": 6
+            },
+            "total_score": 2,
+            "validator": "goal_alignment"
+        }
+    ],
+    "variant_questions": [],
+    "variant_retry_count": 0,
+    "variant_validation_feedback": []
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教学地图生成系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>多智能体教学地图生成系统</h1>
+            <p class="subtitle">基于 LangGraph 的结构化教案自动生成</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel: Input Form + History -->
+            <section class="panel input-panel" id="inputPanel">
+                <!-- Tab switcher -->
+                <div class="left-tabs">
+                    <button class="left-tab active" data-target="formTab">新建教案</button>
+                    <button class="left-tab" data-target="historyTab">历史记录</button>
+                </div>
+
+                <!-- Form tab -->
+                <div id="formTab" class="left-tab-content active">
+                    <form id="generateForm">
+                        <div class="form-group">
+                            <label for="subject">学科</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">请选择学科</option>
+                                <option value="数学">数学</option>
+                                <option value="语文">语文</option>
+                                <option value="英语">英语</option>
+                                <option value="物理">物理</option>
+                                <option value="化学">化学</option>
+                                <option value="生物">生物</option>
+                                <option value="历史">历史</option>
+                                <option value="地理">地理</option>
+                                <option value="政治">政治</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="grade">年级</label>
+                            <select id="grade" name="grade" required>
+                                <option value="">请选择年级</option>
+                                <option value="一年级">一年级</option>
+                                <option value="二年级">二年级</option>
+                                <option value="三年级">三年级</option>
+                                <option value="四年级">四年级</option>
+                                <option value="五年级">五年级</option>
+                                <option value="六年级">六年级</option>
+                                <option value="七年级">七年级</option>
+                                <option value="八年级">八年级</option>
+                                <option value="九年级">九年级</option>
+                                <option value="高一">高一</option>
+                                <option value="高二">高二</option>
+                                <option value="高三">高三</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="teaching_goals">教学目标</label>
+                            <textarea id="teaching_goals" name="teaching_goals" rows="4" placeholder="请详细描述本节课的教学目标..."
+                                required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student_profile">学情描述</label>
+                            <textarea id="student_profile" name="student_profile" rows="4"
+                                placeholder="请描述班级学生的整体水平、学优生和学困生的比例等..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language_style">语言风格</label>
+                            <select id="language_style" name="language_style">
+                                <option value="严谨学术">严谨学术</option>
+                                <option value="生动活泼">生动活泼</option>
+                                <option value="通俗易懂">通俗易懂</option>
+                                <option value="启发引导">启发引导</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attachment">附件（可选）</label>
+                            <input type="file" id="attachment" name="attachment" accept=".txt,.md,.pdf,.docx">
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn-primary">
+                            开始生成教学地图
+                        </button>
+                        <button type="button" id="newPlanBtn" class="btn-secondary"
+                            style="display:none; margin-top:10px;">
+                            生成新教案
+                        </button>
+                    </form>
+                </div>
+
+                <!-- History tab -->
+                <div id="historyTab" class="left-tab-content">
+                    <div id="historyList" class="history-list">
+                        <p class="history-empty">加载中...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Progress + Result -->
+            <section class="panel result-panel">
+                <!-- Generating banner (shown while generation is in progress) -->
+                <div id="generatingBanner" class="generating-banner" style="display:none;">
+                    <span class="generating-dot"></span>
+                    <span id="generatingBannerText">正在生成教学地图...</span>
+                    <button class="btn-return-progress" onclick="returnToProgress()">返回进度</button>
+                </div>
+
+                <!-- Progress -->
+                <div id="progressSection" class="progress-section" style="display:none;">
+                    <h2>生成进度</h2>
+                    <div class="progress-current-card" id="progressCurrentCard">
+                        <div class="current-card-head">
+                            <span class="current-badge" id="currentStepBadge">等待开始</span>
+                            <span class="current-agent-name" id="currentAgentName">尚未启动</span>
+                            <span class="current-agent-status" id="currentAgentStatus"></span>
+                        </div>
+                        <p class="current-agent-message" id="currentAgentMessage">提交表单后将开始执行各 Agent。</p>
+                        <div class="current-agent-io">
+                            <div class="agent-io-panel">
+                                <div class="agent-io-label"><span class="io-icon io-in">IN</span>输入</div>
+                                <div class="agent-io-body" id="currentAgentInput">—</div>
+                            </div>
+                            <div class="agent-io-divider"></div>
+                            <div class="agent-io-panel">
+                                <div class="agent-io-label"><span class="io-icon io-out">OUT</span>输出</div>
+                                <div class="agent-io-body" id="currentAgentOutput">等待执行...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="step-tracker" id="stepTracker"></div>
+                    <div class="progress-log" id="progressLog"></div>
+                </div>
+
+                <!-- View mode tabs -->
+                <div id="viewTabs" class="view-tabs" style="display:none;">
+                    <button class="view-tab active" data-view="graph">图形视图</button>
+                    <button class="view-tab" data-view="text">文字视图</button>
+                    <button class="view-tab" data-view="logs">Agent日志</button>
+                </div>
+
+                <!-- Graph Visualization -->
+                <div id="graphSection" class="graph-section" style="display:none;">
+                    <div class="graph-header">
+                        <span class="graph-legend">
+                            <span class="legend-item"><span class="dot main-dot"></span>主干问题</span>
+                            <span class="legend-item"><span class="dot variant-dot"></span>变式问题</span>
+                            <span class="legend-item"><span class="dot scaffold-dot"></span>支架问题</span>
+                        </span>
+                    </div>
+                    <div id="graphContainer"></div>
+                </div>
+
+                <!-- Text View -->
+                <div id="textSection" class="text-section" style="display:none;">
+                    <div id="textContent"></div>
+                </div>
+
+                <!-- Logs View -->
+                <div id="logsSection" class="logs-section" style="display:none;">
+                    <div id="logsContent"></div>
+                </div>
+
+                <!-- Question Detail -->
+                <div id="detailSection" class="detail-section" style="display:none;">
+                    <h3 id="detailTitle"></h3>
+                    <div id="detailContent"></div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="placeholder" class="placeholder">
+                    <div class="placeholder-icon">&#128218;</div>
+                    <p>填写左侧表单并点击"开始生成"，系统将自动生成教学地图</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/graph.js"></script>
+</body>
+
+</html>

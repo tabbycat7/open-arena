@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}教育观测评平台 - Open Arena{% endblock %}
+
+{% block content %}
+<section class="debate-hero">
+    <div class="section-inner">
+        <div class="debate-hero-content">
+            <a href="/" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                返回首页
+            </a>
+            <h1 class="debate-hero-title">教育观辩论场</h1>
+            <p class="debate-hero-desc">
+                选择一个辩题，表达你的教育观点。AI 将为你的观点进行"加持"润色，<br>
+                随后"反驳"模型将对你的观点发起挑战。最终标注你的立场是否发生变化。
+            </p>
+            <div class="debate-flow">
+                <div class="flow-step">
+                    <div class="flow-num">1</div>
+                    <span>选择辩题与立场</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 12" fill="none" width="24" height="12">
+                        <path d="M0 6h20M16 1l5 5-5 5" stroke="#c0c4cc" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-num flow-num--primary">2</div>
+                    <span>提交辩论观点</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 12" fill="none" width="24" height="12">
+                        <path d="M0 6h20M16 1l5 5-5 5" stroke="#c0c4cc" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-num flow-num--success">3</div>
+                    <span>AI 加持润色</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 12" fill="none" width="24" height="12">
+                        <path d="M0 6h20M16 1l5 5-5 5" stroke="#c0c4cc" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-num flow-num--danger">4</div>
+                    <span>AI 反驳挑战</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 12" fill="none" width="24" height="12">
+                        <path d="M0 6h20M16 1l5 5-5 5" stroke="#c0c4cc" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-num flow-num--warning">5</div>
+                    <span>标注立场变化</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="debate-topics-section">
+    <div class="section-inner">
+        <div class="section-title-row">
+            <h2 class="section-title" style="margin-bottom: 0;">选择辩题</h2>
+            <a href="/app/debate/history" class="btn btn-outline">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"
+                    style="vertical-align: -2px; margin-right: 4px;">
+                    <path d="M8 1v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+                历史辩论记录
+            </a>
+        </div>
+        <div class="topics-grid">
+            {% for topic in topics %}
+            <a href="/app/debate/{{ topic.topic_id }}" class="topic-card">
+                <div class="topic-card-header">
+                    <span class="topic-id">{{ topic.topic_id }}</span>
+                    <span class="topic-category">{{ topic.category }}</span>
+                </div>
+                <h3 class="topic-title">{{ topic.title }}</h3>
+                <p class="topic-desc">{{ topic.description }}</p>
+                <div class="topic-sides">
+                    <div class="topic-side topic-side--a">
+                        <span class="side-label">正方</span>
+                        <span class="side-text">{{ topic.side_a }}</span>
+                    </div>
+                    <div class="topic-vs">VS</div>
+                    <div class="topic-side topic-side--b">
+                        <span class="side-label">反方</span>
+                        <span class="side-text">{{ topic.side_b }}</span>
+                    </div>
+                </div>
+                <div class="topic-card-footer">
+                    <span class="topic-enter">
+                        开始辩论
+                        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+
+            {% if not topics %}
+            <div class="topics-empty">
+                <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+                    <circle cx="40" cy="40" r="36" fill="#f5f7fa" stroke="#e4e7ed" stroke-width="2" />
+                    <text x="40" y="45" font-size="24" fill="#c0c4cc" text-anchor="middle">?</text>
+                </svg>
+                <p>暂无可用辩题</p>
+                <span>请先通过 API 导入辩题数据</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
+{% endblock %}

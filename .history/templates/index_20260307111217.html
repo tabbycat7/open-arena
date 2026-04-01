@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}Open Arena - AI 应用平台{% endblock %}
+
+{% block content %}
+
+<!-- Hero 区域 -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                AI 能力持续更新中
+            </div>
+            <h1 class="hero-title">
+                探索 <span class="text-primary">AI 应用</span><br>无限可能
+            </h1>
+            <p class="hero-desc">
+                Open Arena 汇聚多种顶尖 AI 模型能力，文本生成、图像理解、语音识别……<br>
+                一个平台，畅享 AI 带来的全新体验。
+            </p>
+            <div class="hero-actions">
+                <a href="#apps" class="btn btn-primary btn-lg">立即探索</a>
+                <a href="#about" class="btn btn-outline btn-lg">了解更多</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-num">6+</span>
+                    <span class="stat-label">AI 应用</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-num">100%</span>
+                    <span class="stat-label">API 驱动</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-num">24/7</span>
+                    <span class="stat-label">随时可用</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-illustration">
+            <!-- Hero 装饰插图 -->
+            <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-svg">
+                <!-- 背景圆 -->
+                <circle cx="240" cy="200" r="180" fill="#ecf5ff" opacity="0.6"/>
+                <circle cx="240" cy="200" r="130" fill="#d9ecff" opacity="0.5"/>
+                <!-- 中心大脑/芯片图案 -->
+                <rect x="170" y="140" width="140" height="120" rx="12" fill="white" stroke="#409eff" stroke-width="2"/>
+                <rect x="185" y="155" width="110" height="90" rx="8" fill="#ecf5ff"/>
+                <!-- 电路线条 -->
+                <line x1="170" y1="170" x2="140" y2="170" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="170" y1="190" x2="130" y2="190" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="170" y1="210" x2="140" y2="210" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="170" y1="230" x2="130" y2="230" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="310" y1="170" x2="340" y2="170" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="310" y1="190" x2="350" y2="190" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="310" y1="210" x2="340" y2="210" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="310" y1="230" x2="350" y2="230" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <!-- 连接节点 -->
+                <circle cx="140" cy="170" r="5" fill="#409eff"/>
+                <circle cx="130" cy="190" r="5" fill="#79bbff"/>
+                <circle cx="140" cy="210" r="5" fill="#409eff"/>
+                <circle cx="130" cy="230" r="5" fill="#79bbff"/>
+                <circle cx="340" cy="170" r="5" fill="#409eff"/>
+                <circle cx="350" cy="190" r="5" fill="#79bbff"/>
+                <circle cx="340" cy="210" r="5" fill="#409eff"/>
+                <circle cx="350" cy="230" r="5" fill="#79bbff"/>
+                <!-- AI 文字 -->
+                <text x="240" y="208" font-size="32" font-weight="bold" fill="#409eff" text-anchor="middle" font-family="Arial">AI</text>
+                <!-- 顶部和底部连接线 -->
+                <line x1="220" y1="140" x2="220" y2="110" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="260" y1="140" x2="260" y2="110" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="220" y1="260" x2="220" y2="290" stroke="#409eff" stroke-width="2" stroke-dasharray="4 2"/>
+                <line x1="260" y1="260" x2="260" y2="290" stroke="#79bbff" stroke-width="2" stroke-dasharray="4 2"/>
+                <!-- 顶部/底部节点 -->
+                <circle cx="220" cy="108" r="6" fill="#409eff"/>
+                <circle cx="260" cy="108" r="6" fill="#79bbff"/>
+                <circle cx="220" cy="292" r="6" fill="#409eff"/>
+                <circle cx="260" cy="292" r="6" fill="#79bbff"/>
+                <!-- 装饰小圆 -->
+                <circle cx="100" cy="130" r="20" fill="#409eff" opacity="0.15"/>
+                <circle cx="380" cy="270" r="28" fill="#409eff" opacity="0.12"/>
+                <circle cx="370" cy="110" r="14" fill="#67c23a" opacity="0.2"/>
+                <circle cx="110" cy="290" r="18" fill="#e6a23c" opacity="0.2"/>
+                <!-- 浮动的小方块 -->
+                <rect x="85" y="220" width="22" height="22" rx="4" fill="#409eff" opacity="0.2" transform="rotate(15 96 231)"/>
+                <rect x="370" y="155" width="18" height="18" rx="3" fill="#67c23a" opacity="0.25" transform="rotate(-10 379 164)"/>
+                <rect x="110" cy="155" width="14" height="14" rx="3" fill="#e6a23c" opacity="0.3" transform="rotate(20 117 162)"/>
+            </svg>
+        </div>
+    </div>
+    <!-- 波浪装饰 -->
+    <div class="hero-wave">
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f2f3f5"/>
+        </svg>
+    </div>
+</section>
+
+<!-- AI 应用卡片区域 -->
+<section class="apps-section" id="apps">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2 class="section-title">AI 应用中心</h2>
+            <p class="section-desc">探索我们提供的各类 AI 工具，助力您的工作与创作</p>
+        </div>
+
+        <div class="apps-grid">
+            {% for app in apps %}
+            <div class="app-card" data-id="{{ app.id }}">
+                <!-- 卡片插图区域 -->
+                <div class="card-illustration card-illustration--{{ app.icon }}">
+                    {% if app.icon == 'debate' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#ecf5ff"/>
+                        <!-- 左侧人物（教师） -->
+                        <circle cx="56" cy="52" r="14" fill="#409eff" opacity="0.85"/>
+                        <rect x="42" y="70" width="28" height="32" rx="8" fill="#409eff" opacity="0.65"/>
+                        <!-- 右侧人物（AI） -->
+                        <circle cx="144" cy="52" r="14" fill="#f56c6c" opacity="0.85"/>
+                        <rect x="130" y="70" width="28" height="32" rx="8" fill="#f56c6c" opacity="0.65"/>
+                        <!-- 中间 VS -->
+                        <circle cx="100" cy="64" r="18" fill="white" stroke="#e4e7ed" stroke-width="1.5"/>
+                        <text x="100" y="69" font-size="13" font-weight="bold" fill="#409eff" text-anchor="middle" font-family="Arial">VS</text>
+                        <!-- 对话气泡 左 -->
+                        <rect x="30" y="108" width="56" height="22" rx="6" fill="#409eff" opacity="0.15"/>
+                        <rect x="36" y="114" width="30" height="5" rx="2.5" fill="#409eff" opacity="0.5"/>
+                        <rect x="36" y="121" width="20" height="4" rx="2" fill="#409eff" opacity="0.35"/>
+                        <!-- 对话气泡 右 -->
+                        <rect x="114" y="108" width="56" height="22" rx="6" fill="#f56c6c" opacity="0.15"/>
+                        <rect x="120" y="114" width="30" height="5" rx="2.5" fill="#f56c6c" opacity="0.5"/>
+                        <rect x="120" y="121" width="20" height="4" rx="2" fill="#f56c6c" opacity="0.35"/>
+                        <!-- 加持标签 -->
+                        <rect x="68" y="30" width="28" height="14" rx="4" fill="#67c23a" opacity="0.9"/>
+                        <text x="82" y="40" font-size="7" fill="white" text-anchor="middle">加持</text>
+                        <!-- 反驳标签 -->
+                        <rect x="104" y="30" width="28" height="14" rx="4" fill="#f56c6c" opacity="0.9"/>
+                        <text x="118" y="40" font-size="7" fill="white" text-anchor="middle">反驳</text>
+                    </svg>
+                    {% elif app.icon == 'lesson' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#f0f9eb"/>
+                        <!-- 左侧文档 -->
+                        <rect x="30" y="32" width="64" height="80" rx="6" fill="white" stroke="#67c23a" stroke-width="1.5"/>
+                        <rect x="38" y="42" width="36" height="5" rx="2.5" fill="#67c23a" opacity="0.7"/>
+                        <rect x="38" y="52" width="48" height="4" rx="2" fill="#b3e19d"/>
+                        <rect x="38" y="60" width="44" height="4" rx="2" fill="#b3e19d"/>
+                        <rect x="38" y="68" width="48" height="4" rx="2" fill="#b3e19d"/>
+                        <rect x="38" y="76" width="32" height="4" rx="2" fill="#b3e19d"/>
+                        <rect x="38" y="86" width="36" height="10" rx="3" fill="#67c23a" opacity="0.2"/>
+                        <text x="56" y="94" font-size="7" fill="#67c23a" text-anchor="middle">A</text>
+                        <!-- 右侧文档 -->
+                        <rect x="106" y="32" width="64" height="80" rx="6" fill="white" stroke="#409eff" stroke-width="1.5"/>
+                        <rect x="114" y="42" width="36" height="5" rx="2.5" fill="#409eff" opacity="0.7"/>
+                        <rect x="114" y="52" width="48" height="4" rx="2" fill="#a0cfff"/>
+                        <rect x="114" y="60" width="44" height="4" rx="2" fill="#a0cfff"/>
+                        <rect x="114" y="68" width="48" height="4" rx="2" fill="#a0cfff"/>
+                        <rect x="114" y="76" width="32" height="4" rx="2" fill="#a0cfff"/>
+                        <rect x="114" y="86" width="36" height="10" rx="3" fill="#409eff" opacity="0.2"/>
+                        <text x="132" y="94" font-size="7" fill="#409eff" text-anchor="middle">B</text>
+                        <!-- VS 圆 -->
+                        <circle cx="100" cy="72" r="14" fill="white" stroke="#e6a23c" stroke-width="1.5"/>
+                        <text x="100" y="76" font-size="10" font-weight="bold" fill="#e6a23c" text-anchor="middle">VS</text>
+                        <!-- 五星 -->
+                        <polygon points="86,126 88,120 91,126 85,122 92,122" fill="#e6a23c" opacity="0.7"/>
+                        <polygon points="96,126 98,120 101,126 95,122 102,122" fill="#e6a23c" opacity="0.7"/>
+                        <polygon points="106,126 108,120 111,126 105,122 112,122" fill="#e6a23c" opacity="0.7"/>
+                    </svg>
+                    {% elif app.icon == 'text' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#ecf5ff"/>
+                        <rect x="36" y="38" width="90" height="10" rx="5" fill="#409eff" opacity="0.8"/>
+                        <rect x="36" y="56" width="128" height="8" rx="4" fill="#c6e2ff"/>
+                        <rect x="36" y="70" width="110" height="8" rx="4" fill="#c6e2ff"/>
+                        <rect x="36" y="84" width="128" height="8" rx="4" fill="#c6e2ff"/>
+                        <rect x="36" y="98" width="80" height="8" rx="4" fill="#c6e2ff"/>
+                        <circle cx="155" cy="115" r="18" fill="#409eff" opacity="0.9"/>
+                        <path d="M148 115 L153 120 L162 110" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- 光标闪烁 -->
+                        <rect x="116" y="96" width="2" height="12" rx="1" fill="#409eff" opacity="0.7"/>
+                    </svg>
+                    {% elif app.icon == 'image' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#f0f9eb"/>
+                        <rect x="36" y="36" width="128" height="88" rx="6" fill="white" stroke="#b3e19d" stroke-width="1.5"/>
+                        <!-- 山景 -->
+                        <path d="M36 108 L70 60 L95 85 L120 50 L164 108 Z" fill="#95d475" opacity="0.6"/>
+                        <path d="M36 108 L75 75 L100 95 L130 65 L164 108 Z" fill="#67c23a" opacity="0.5"/>
+                        <!-- 太阳 -->
+                        <circle cx="145" cy="55" r="12" fill="#f9d071" opacity="0.9"/>
+                        <!-- 扫描线 -->
+                        <rect x="36" y="76" width="128" height="2" fill="#67c23a" opacity="0.7"/>
+                        <circle cx="36" cy="77" r="4" fill="#67c23a"/>
+                        <!-- 识别框 -->
+                        <rect x="62" y="52" width="30" height="28" rx="2" stroke="#67c23a" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+                    </svg>
+                    {% elif app.icon == 'audio' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#fdf6ec"/>
+                        <!-- 麦克风 -->
+                        <rect x="88" y="32" width="24" height="44" rx="12" fill="#e6a23c" opacity="0.9"/>
+                        <path d="M72 68 C72 84 128 84 128 68" stroke="#e6a23c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                        <line x1="100" y1="84" x2="100" y2="96" stroke="#e6a23c" stroke-width="2.5" stroke-linecap="round"/>
+                        <line x1="88" y1="96" x2="112" y2="96" stroke="#e6a23c" stroke-width="2.5" stroke-linecap="round"/>
+                        <!-- 声波 -->
+                        <path d="M44 80 Q50 66 56 80 Q62 94 68 80" stroke="#f3d19e" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M32 80 Q42 55 52 80 Q62 105 72 80" stroke="#e6a23c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+                        <path d="M132 80 Q138 66 144 80 Q150 94 156 80" stroke="#f3d19e" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M128 80 Q138 55 148 80 Q158 105 168 80" stroke="#e6a23c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+                        <!-- 文字输出 -->
+                        <rect x="36" y="112" width="50" height="8" rx="4" fill="#f3d19e"/>
+                        <rect x="92" y="112" width="72" height="8" rx="4" fill="#f3d19e"/>
+                    </svg>
+                    {% elif app.icon == 'translate' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#ecf5ff"/>
+                        <!-- 左侧文本框 -->
+                        <rect x="30" y="36" width="66" height="88" rx="6" fill="white" stroke="#a0cfff" stroke-width="1.5"/>
+                        <rect x="40" y="50" width="46" height="6" rx="3" fill="#c6e2ff"/>
+                        <rect x="40" y="62" width="40" height="6" rx="3" fill="#c6e2ff"/>
+                        <rect x="40" y="74" width="46" height="6" rx="3" fill="#c6e2ff"/>
+                        <text x="63" y="108" font-size="11" fill="#409eff" text-anchor="middle" font-weight="bold">中文</text>
+                        <!-- 右侧文本框 -->
+                        <rect x="104" y="36" width="66" height="88" rx="6" fill="white" stroke="#a0cfff" stroke-width="1.5"/>
+                        <rect x="114" y="50" width="46" height="6" rx="3" fill="#c6e2ff"/>
+                        <rect x="114" y="62" width="36" height="6" rx="3" fill="#c6e2ff"/>
+                        <rect x="114" y="74" width="46" height="6" rx="3" fill="#c6e2ff"/>
+                        <text x="137" y="108" font-size="11" fill="#409eff" text-anchor="middle" font-weight="bold">EN</text>
+                        <!-- 中间箭头 -->
+                        <circle cx="100" cy="80" r="14" fill="#409eff" opacity="0.1"/>
+                        <path d="M93 80 L107 80 M102 74 L108 80 L102 86" stroke="#409eff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    {% elif app.icon == 'code' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#fef0f0"/>
+                        <!-- 代码编辑器 -->
+                        <rect x="30" y="30" width="140" height="100" rx="8" fill="#2d2d2d"/>
+                        <!-- 顶部按钮 -->
+                        <circle cx="46" cy="44" r="5" fill="#f56c6c"/>
+                        <circle cx="62" cy="44" r="5" fill="#e6a23c"/>
+                        <circle cx="78" cy="44" r="5" fill="#67c23a"/>
+                        <!-- 代码行 -->
+                        <rect x="40" y="58" width="20" height="6" rx="2" fill="#f56c6c" opacity="0.9"/>
+                        <rect x="64" y="58" width="35" height="6" rx="2" fill="#abb2bf" opacity="0.7"/>
+                        <rect x="103" y="58" width="22" height="6" rx="2" fill="#e5c07b" opacity="0.9"/>
+                        <rect x="48" y="70" width="28" height="6" rx="2" fill="#61afef" opacity="0.9"/>
+                        <rect x="80" y="70" width="14" height="6" rx="2" fill="#abb2bf" opacity="0.7"/>
+                        <rect x="98" y="70" width="40" height="6" rx="2" fill="#98c379" opacity="0.9"/>
+                        <rect x="48" y="82" width="50" height="6" rx="2" fill="#c678dd" opacity="0.9"/>
+                        <rect x="102" y="82" width="20" height="6" rx="2" fill="#abb2bf" opacity="0.7"/>
+                        <rect x="40" y="94" width="20" height="6" rx="2" fill="#f56c6c" opacity="0.9"/>
+                        <rect x="64" y="94" width="45" height="6" rx="2" fill="#abb2bf" opacity="0.5"/>
+                        <!-- 光标 -->
+                        <rect x="112" y="93" width="2" height="8" rx="1" fill="white" opacity="0.8"/>
+                        <!-- AI 提示标签 -->
+                        <rect x="115" y="70" width="45" height="22" rx="4" fill="#409eff" opacity="0.95"/>
+                        <text x="137" y="84" font-size="9" fill="white" text-anchor="middle">AI 补全</text>
+                    </svg>
+                    {% elif app.icon == 'chart' %}
+                    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="120" rx="10" fill="#f0f9eb"/>
+                        <!-- 折线图背景 -->
+                        <rect x="30" y="30" width="140" height="90" rx="6" fill="white" stroke="#e4e7ed" stroke-width="1"/>
+                        <!-- 网格线 -->
+                        <line x1="30" y1="50" x2="170" y2="50" stroke="#f2f3f5" stroke-width="1"/>
+                        <line x1="30" y1="70" x2="170" y2="70" stroke="#f2f3f5" stroke-width="1"/>
+                        <line x1="30" y1="90" x2="170" y2="90" stroke="#f2f3f5" stroke-width="1"/>
+                        <line x1="30" y1="110" x2="170" y2="110" stroke="#f2f3f5" stroke-width="1"/>
+                        <!-- 柱状图 -->
+                        <rect x="46" y="82" width="18" height="38" rx="3" fill="#a0cfff"/>
+                        <rect x="74" y="60" width="18" height="60" rx="3" fill="#409eff"/>
+                        <rect x="102" y="72" width="18" height="48" rx="3" fill="#79bbff"/>
+                        <rect x="130" y="46" width="18" height="74" rx="3" fill="#409eff"/>
+                        <!-- 折线 -->
+                        <polyline points="55,82 83,60 111,72 139,46" stroke="#67c23a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="55" cy="82" r="4" fill="white" stroke="#67c23a" stroke-width="2"/>
+                        <circle cx="83" cy="60" r="4" fill="white" stroke="#67c23a" stroke-width="2"/>
+                        <circle cx="111" cy="72" r="4" fill="white" stroke="#67c23a" stroke-width="2"/>
+                        <circle cx="139" cy="46" r="4" fill="white" stroke="#67c23a" stroke-width="2"/>
+                        <!-- 底部标签 -->
+                        <rect x="36" y="124" width="112" height="16" rx="4" fill="#f2f3f5"/>
+                        <rect x="40" y="127" width="24" height="8" rx="2" fill="#c6e2ff"/>
+                        <rect x="70" y="127" width="24" height="8" rx="2" fill="#c6e2ff"/>
+                        <rect x="100" y="127" width="24" height="8" rx="2" fill="#c6e2ff"/>
+                        <rect x="130" y="127" width="14" height="8" rx="2" fill="#c6e2ff"/>
+                    </svg>
+                    {% endif %}
+                </div>
+
+                <!-- 卡片内容 -->
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ app.title }}</h3>
+                        <span class="card-tag card-tag--{{ app.tag_type }}">{{ app.tag }}</span>
+                    </div>
+                    <p class="card-desc">{{ app.description }}</p>
+                    <div class="card-footer">
+                        <span class="card-id">{{ app.id }}</span>
+                        {% if app.status == 'coming_soon' %}
+                        <button class="btn btn-outline btn-sm card-btn" disabled>
+                            <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            即将上线
+                        </button>
+                        {% else %}
+                        <a href="{{ app.url }}" class="btn btn-primary btn-sm card-btn">
+                            立即使用
+                            <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // 卡片入场动画
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('card-visible');
+                }, index * 80);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.app-card').forEach(card => observer.observe(card));
+</script>
+{% endblock %}

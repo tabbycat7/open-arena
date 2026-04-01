@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}多智能体教学地图 - Open Arena{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/multi_agent_teaching.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="workflow-hero" id="overview">
+    <div class="workflow-hero-inner">
+        <div class="workflow-copy">
+            <div class="mat-hero-meta">
+                <a href="/" class="mat-breadcrumb">
+                    <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                        <path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    返回首页
+                </a>
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    多智能体教学工作流
+                </div>
+            </div>
+            <h1>多智能体教学地图生成系统</h1>
+            <p>统一研究、生成、校验与整合链路，将教学目标自动编织为可执行的课堂问题地图。</p>
+        </div>
+        <div class="workflow-preview">
+            <img src="{{ url_for('static', filename='images/agent-workflow.png') }}" alt="多智能体流程图" loading="lazy"
+                onerror="this.parentElement.style.display='none'">
+        </div>
+    </div>
+</section>
+
+<div class="mat-container" id="workspace">
+    <div class="mat-main-content">
+        <!-- Left Panel: Input Form + History -->
+        <section class="mat-panel mat-input-panel" id="inputPanel">
+            <div class="mat-left-tabs">
+                <button class="mat-left-tab active" data-target="formTab">新建教案</button>
+                <button class="mat-left-tab" data-target="historyTab">历史记录</button>
+            </div>
+
+            <div id="formTab" class="mat-left-tab-content active">
+                <form id="generateForm">
+                    <div class="mat-form-group">
+                        <label for="subject">学科</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">请选择学科</option>
+                            <option value="数学">数学</option>
+                            <option value="语文">语文</option>
+                            <option value="英语">英语</option>
+                            <option value="物理">物理</option>
+                            <option value="化学">化学</option>
+                            <option value="生物">生物</option>
+                            <option value="历史">历史</option>
+                            <option value="地理">地理</option>
+                            <option value="政治">政治</option>
+                        </select>
+                    </div>
+
+                    <div class="mat-form-group">
+                        <label for="grade">年级</label>
+                        <select id="grade" name="grade" required>
+                            <option value="">请选择年级</option>
+                            <option value="一年级">一年级</option>
+                            <option value="二年级">二年级</option>
+                            <option value="三年级">三年级</option>
+                            <option value="四年级">四年级</option>
+                            <option value="五年级">五年级</option>
+                            <option value="六年级">六年级</option>
+                            <option value="七年级">七年级</option>
+                            <option value="八年级">八年级</option>
+                            <option value="九年级">九年级</option>
+                            <option value="高一">高一</option>
+                            <option value="高二">高二</option>
+                            <option value="高三">高三</option>
+                        </select>
+                    </div>
+
+                    <div class="mat-form-group">
+                        <label for="teaching_goals">教学目标</label>
+                        <textarea id="teaching_goals" name="teaching_goals" rows="4" placeholder="请详细描述本节课的教学目标..."
+                            required></textarea>
+                    </div>
+
+                    <div class="mat-form-group">
+                        <label for="student_profile">学情描述</label>
+                        <textarea id="student_profile" name="student_profile" rows="4"
+                            placeholder="请描述班级学生的整体水平、学优生和学困生的比例等..."></textarea>
+                    </div>
+
+                    <div class="mat-form-group">
+                        <label for="language_style">语言风格</label>
+                        <select id="language_style" name="language_style">
+                            <option value="严谨学术">严谨学术</option>
+                            <option value="生动活泼">生动活泼</option>
+                            <option value="通俗易懂">通俗易懂</option>
+                            <option value="启发引导">启发引导</option>
+                        </select>
+                    </div>
+
+                    <div class="mat-form-group">
+                        <label for="attachment">附件（可选）</label>
+                        <input type="file" id="attachment" name="attachment" accept=".txt,.md,.pdf,.docx">
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary mat-form-submit-btn">
+                        开始生成教学地图
+                    </button>
+                    <button type="button" id="newPlanBtn" class="btn btn-outline mat-form-submit-btn"
+                        style="display:none; margin-top:10px;">
+                        生成新教案
+                    </button>
+                </form>
+            </div>
+
+            <div id="historyTab" class="mat-left-tab-content">
+                <div id="historyList" class="mat-history-list">
+                    <p class="mat-history-empty">加载中...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Progress + Result -->
+        <section class="mat-panel mat-result-panel">
+            <div id="generatingBanner" class="mat-generating-banner" style="display:none;">
+                <span class="mat-generating-dot"></span>
+                <span id="generatingBannerText">正在生成教学地图...</span>
+                <button class="mat-btn-return-progress" onclick="returnToProgress()">返回进度</button>
+            </div>
+
+            <div id="progressSection" class="mat-progress-section" style="display:none;">
+                <h2>生成进度</h2>
+                <div class="mat-progress-current-card" id="progressCurrentCard">
+                    <div class="mat-current-card-head">
+                        <span class="mat-current-badge" id="currentStepBadge">等待开始</span>
+                        <span class="mat-current-agent-name" id="currentAgentName">尚未启动</span>
+                        <span class="mat-current-agent-status" id="currentAgentStatus"></span>
+                    </div>
+                    <p class="mat-current-agent-message" id="currentAgentMessage">提交表单后将开始执行各 Agent。</p>
+                    <div class="mat-current-agent-io">
+                        <div class="mat-agent-io-panel">
+                            <div class="mat-agent-io-label"><span class="mat-io-icon mat-io-in">IN</span>输入</div>
+                            <div class="mat-agent-io-body" id="currentAgentInput">—</div>
+                        </div>
+                        <div class="mat-agent-io-divider"></div>
+                        <div class="mat-agent-io-panel">
+                            <div class="mat-agent-io-label"><span class="mat-io-icon mat-io-out">OUT</span>输出</div>
+                            <div class="mat-agent-io-body" id="currentAgentOutput">等待执行...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mat-progress-bar-container">
+                    <div class="mat-progress-bar" id="progressBar"></div>
+                </div>
+                <div class="mat-step-tracker" id="stepTracker"></div>
+                <div class="mat-progress-log" id="progressLog"></div>
+            </div>
+
+            <div id="viewTabs" class="mat-view-tabs" style="display:none;">
+                <button class="mat-view-tab active" data-view="graph">图形视图</button>
+                <button class="mat-view-tab" data-view="text">文字视图</button>
+                <button class="mat-view-tab" data-view="logs">Agent日志</button>
+            </div>
+
+            <div id="graphSection" class="mat-graph-section" style="display:none;">
+                <div class="mat-graph-header">
+                    <span class="mat-graph-legend">
+                        <span class="mat-legend-item"><span class="mat-dot mat-main-dot"></span>主干问题</span>
+                        <span class="mat-legend-item"><span class="mat-dot mat-variant-dot"></span>变式问题</span>
+                        <span class="mat-legend-item"><span class="mat-dot mat-scaffold-dot"></span>支架问题</span>
+                    </span>
+                </div>
+                <div id="graphContainer"></div>
+            </div>
+
+            <div id="textSection" class="mat-text-section" style="display:none;">
+                <div id="textContent"></div>
+            </div>
+
+            <div id="logsSection" class="mat-logs-section" style="display:none;">
+                <div id="logsContent"></div>
+            </div>
+
+            <div id="detailSection" class="mat-detail-section" style="display:none;">
+                <h3 id="detailTitle"></h3>
+                <div id="detailContent"></div>
+            </div>
+
+            <div id="placeholder" class="mat-placeholder">
+                <div class="mat-placeholder-icon">&#128218;</div>
+                <p>填写左侧表单并点击"开始生成"，系统将自动生成教学地图</p>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="{{ url_for('static', filename='js/mat_main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mat_graph.js') }}"></script>
+{% endblock %}

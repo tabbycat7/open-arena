@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}教案设计竞技场 - Open Arena{% endblock %}
+
+{% block content %}
+<section class="lesson-page">
+    <div class="lesson-container">
+
+        <!-- 顶部信息栏 -->
+        <div class="lesson-topbar">
+            <a href="/" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                返回首页
+            </a>
+        </div>
+
+        <!-- 标题区 -->
+        <div class="lesson-hero">
+            <div class="lesson-hero-icon">
+                <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+                    <rect x="4" y="6" width="40" height="36" rx="6" fill="#67c23a" opacity="0.15"/>
+                    <rect x="8" y="10" width="14" height="28" rx="4" fill="#67c23a" opacity="0.3"/>
+                    <rect x="26" y="10" width="14" height="28" rx="4" fill="#409eff" opacity="0.3"/>
+                    <circle cx="24" cy="24" r="6" fill="white" stroke="#e6a23c" stroke-width="1.5"/>
+                    <text x="24" y="27" font-size="7" font-weight="bold" fill="#e6a23c" text-anchor="middle">VS</text>
+                </svg>
+            </div>
+            <h1 class="lesson-hero-title">教案设计竞技场</h1>
+            <p class="lesson-hero-desc">
+                填写下方教学信息，系统将随机抽取两个大模型为你生成教案，你可以对比它们的表现并进行评分。
+            </p>
+        </div>
+
+        <!-- 提示词模板预览 -->
+        <div class="prompt-template-preview">
+            <div class="preview-label">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 8.5h4M5 11h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                提示词模板
+            </div>
+            <p class="preview-text" id="prompt-preview">
+                你是一位<span class="tpl-slot" data-key="grade_subject">{学段}{学科}</span>教师，擅长<span class="tpl-slot" data-key="teaching_style">{教学风格/特点}</span>。本学期正处于<span class="tpl-slot" data-key="semester_unit">{学期阶段与单元}</span>，教学内容为<span class="tpl-slot" data-key="knowledge_point">{具体知识点}</span>，学生<span class="tpl-slot" data-key="student_profile">{学情描述}</span>。我所在的<span class="tpl-slot" data-key="school_type">{学校类型与地域}</span>学校现有<span class="tpl-slot" data-key="tech_resources">{技术设备与资源条件}</span>。请设计一个<span class="tpl-slot" data-key="teaching_stage">{教学环节}</span>活动，时长约<span class="tpl-slot" data-key="duration">{时间}</span>，要求融入<span class="tpl-slot" data-key="local_element">{本土/地方元素}</span>，以<span class="tpl-slot" data-key="output_format">{呈现格式}</span>呈现，语言风格<span class="tpl-slot" data-key="language_style">{风格要求}</span>。
+            </p>
+        </div>
+
+        <!-- 表单 -->
+        <form class="lesson-form" id="lesson-form">
+            <div class="form-section-title">
+                <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M8 2L2 5l6 3 6-3-6-3z" fill="currentColor" opacity="0.2"/><path d="M2 8l6 3 6-3M2 11l6 3 6-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                填写教学信息
+            </div>
+
+            <!-- 教师姓名 -->
+            <div class="form-field">
+                <label class="form-label">教师姓名<span class="optional-tag">选填</span></label>
+                <input type="text" name="teacher_name" class="form-input" placeholder="请输入你的姓名">
+            </div>
+
+            {% for field in fields %}
+            <div class="form-field" data-key="{{ field.key }}">
+                <label class="form-label">
+                    {{ field.label }}
+                    {% if field.required %}<span class="required-mark">*</span>{% endif %}
+                </label>
+                {% if field.type == 'textarea' %}
+                <textarea name="{{ field.key }}" class="form-textarea field-input" rows="3"
+                    placeholder="{{ field.placeholder }}"
+                    {% if field.required %}required{% endif %}></textarea>
+                {% else %}
+                <input type="text" name="{{ field.key }}" class="form-input field-input"
+                    placeholder="{{ field.placeholder }}"
+                    {% if field.required %}required{% endif %}>
+                {% endif %}
+                <div class="form-hint">{{ field.hint }}</div>
+            </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="btn-reset-form">重置</button>
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-form">
+                    提交并开始对比
+                    <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </form>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">
+<script>
+(function() {
+    const form = document.getElementById('lesson-form');
+    const submitBtn = document.getElementById('btn-submit-form');
+    const resetBtn = document.getElementById('btn-reset-form');
+
+    // 实时更新模板预览
+    document.querySelectorAll('.field-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const key = this.name;
+            const val = this.value.trim();
+            const slot = document.querySelector(`.tpl-slot[data-key="${key}"]`);
+            if (slot) {
+                if (val) {
+                    slot.textContent = val;
+                    slot.classList.add('filled');
+                } else {
+                    slot.textContent = slot.dataset.key === 'grade_subject' ? '{学段}{学科}'
+                        : slot.dataset.key === 'teaching_style' ? '{教学风格/特点}'
+                        : slot.dataset.key === 'semester_unit' ? '{学期阶段与单元}'
+                        : slot.dataset.key === 'knowledge_point' ? '{具体知识点}'
+                        : slot.dataset.key === 'student_profile' ? '{学情描述}'
+                        : slot.dataset.key === 'school_type' ? '{学校类型与地域}'
+                        : slot.dataset.key === 'tech_resources' ? '{技术设备与资源条件}'
+                        : slot.dataset.key === 'teaching_stage' ? '{教学环节}'
+                        : slot.dataset.key === 'duration' ? '{时间}'
+                        : slot.dataset.key === 'local_element' ? '{本土/地方元素}'
+                        : slot.dataset.key === 'output_format' ? '{呈现格式}'
+                        : slot.dataset.key === 'language_style' ? '{风格要求}'
+                        : '';
+                    slot.classList.remove('filled');
+                }
+            }
+        });
+    });
+
+    // 重置
+    resetBtn.addEventListener('click', function() {
+        form.reset();
+        document.querySelectorAll('.tpl-slot').forEach(slot => {
+            slot.classList.remove('filled');
+        });
+        // 恢复默认占位符文本
+        const defaults = {
+            grade_subject: '{学段}{学科}', teaching_style: '{教学风格/特点}',
+            semester_unit: '{学期阶段与单元}', knowledge_point: '{具体知识点}',
+            student_profile: '{学情描述}', school_type: '{学校类型与地域}',
+            tech_resources: '{技术设备与资源条件}', teaching_stage: '{教学环节}',
+            duration: '{时间}', local_element: '{本土/地方元素}',
+            output_format: '{呈现格式}', language_style: '{风格要求}',
+        };
+        Object.entries(defaults).forEach(([k, v]) => {
+            const slot = document.querySelector(`.tpl-slot[data-key="${k}"]`);
+            if (slot) slot.textContent = v;
+        });
+    });
+
+    // 提交
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {};
+        document.querySelectorAll('.field-input').forEach(input => {
+            formData[input.name] = input.value.trim();
+        });
+
+        // 检查必填
+        const missing = [];
+        document.querySelectorAll('.field-input[required]').forEach(input => {
+            if (!input.value.trim()) {
+                missing.push(input.name);
+                input.closest('.form-field').classList.add('field-error');
+            } else {
+                input.closest('.form-field').classList.remove('field-error');
+            }
+        });
+        if (missing.length) {
+            alert('请填写所有必填字段');
+            return;
+        }
+
+        const teacherName = form.querySelector('[name="teacher_name"]').value.trim();
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 创建中…';
+
+        try {
+            const resp = await fetch('/api/lesson/sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ form_data: formData, teacher_name: teacherName }),
+            });
+            const data = await resp.json();
+            if (data.code === 0) {
+                window.location.href = `/app/lesson-arena/session/${data.data.session_id}`;
+            } else {
+                alert(data.msg || '创建失败');
+            }
+        } catch (err) {
+            alert('网络错误：' + err.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '提交并开始对比 <svg viewBox="0 0 16 16" fill="none" class="btn-icon"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+    });
+})();
+</script>
+{% endblock %}

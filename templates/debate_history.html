@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}历史辩论记录 - 教育观测评平台{% endblock %}
+
+{% block content %}
+<section class="debate-hero">
+    <div class="section-inner">
+        <div class="debate-hero-content">
+            <a href="/app/debate" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                返回辩题列表
+            </a>
+            <h1 class="debate-hero-title">历史辩论记录</h1>
+            <p class="debate-hero-desc">查看所有已完成或进行中的辩论会话，点击可查看完整的辩论过程。</p>
+        </div>
+    </div>
+</section>
+
+<section class="history-section">
+    <div class="section-inner">
+        <!-- 筛选栏 -->
+        <div class="history-toolbar">
+            <div class="history-filter">
+                <label class="filter-label">筛选状态：</label>
+                <button class="filter-btn active" data-status="all">全部</button>
+                <button class="filter-btn" data-status="annotated">已标注</button>
+                <button class="filter-btn" data-status="debating">进行中</button>
+            </div>
+            <div class="history-stats">
+                <span id="history-count">加载中…</span>
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="history-list" id="history-list">
+            <div class="history-loading">
+                <div class="loading-spinner"></div>
+                <span>加载中…</span>
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="history-empty hidden" id="history-empty">
+            <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+                <circle cx="40" cy="40" r="36" fill="#f5f7fa" stroke="#e4e7ed" stroke-width="2"/>
+                <path d="M28 32h24M28 40h18M28 48h22" stroke="#c0c4cc" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p>暂无辩论记录</p>
+            <span>完成一次辩论后，记录将显示在这里</span>
+            <a href="/app/debate" class="btn btn-primary" style="margin-top: 16px;">去辩论</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
+<script>
+(function() {
+    let allSessions = [];
+    let currentFilter = 'all';
+
+    async function loadSessions() {
+        try {
+            const resp = await fetch('/api/debate/sessions');
+            const data = await resp.json();
+            if (data.code === 0) {
+                allSessions = data.data;
+                renderList();
+            }
+        } catch (e) {
+            document.getElementById('history-list').innerHTML =
+                '<div class="history-error">加载失败: ' + e.message + '</div>';
+        }
+    }
+
+    function renderList() {
+        const list = document.getElementById('history-list');
+        const empty = document.getElementById('history-empty');
+
+        const filtered = currentFilter === 'all'
+            ? allSessions
+            : allSessions.filter(s => s.status === currentFilter);
+
+        document.getElementById('history-count').textContent = `共 ${filtered.length} 条记录`;
+
+        if (filtered.length === 0) {
+            list.innerHTML = '';
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+
+        list.innerHTML = filtered.map(s => {
+            const sideLabel = s.chosen_side === 'side_a' ? '正方' : '反方';
+            const sideClass = s.chosen_side === 'side_a' ? 'tag--primary' : 'tag--danger';
+
+            let statusLabel, statusClass;
+            if (s.status === 'annotated') {
+                statusLabel = '已标注';
+                statusClass = 'status--annotated';
+            } else if (s.status === 'debating') {
+                statusLabel = '进行中';
+                statusClass = 'status--debating';
+            } else {
+                statusLabel = '待处理';
+                statusClass = 'status--pending';
+            }
+
+            let stanceText = '';
+            if (s.stance_changed === true) {
+                stanceText = '<span class="stance-result stance-result--changed">立场已改变</span>';
+            } else if (s.stance_changed === false) {
+                stanceText = '<span class="stance-result stance-result--kept">立场未改变</span>';
+            }
+
+            const dateStr = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '未知时间';
+
+            return `
+                <a href="/app/debate/history/${s.session_id}" class="history-card">
+                    <div class="history-card-top">
+                        <div class="history-card-meta">
+                            <span class="history-status ${statusClass}">${statusLabel}</span>
+                            <span class="history-date">${dateStr}</span>
+                        </div>
+                        <h3 class="history-card-title">${escapeHtml(s.topic_title)}</h3>
+                    </div>
+                    <div class="history-card-body">
+                        <div class="history-card-info">
+                            <div class="info-item">
+                                <span class="info-label">教师</span>
+                                <span class="info-value">${escapeHtml(s.teacher_name || '匿名')}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">立场</span>
+                                <span class="info-value stance-tag ${sideClass}">${sideLabel}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">轮数</span>
+                                <span class="info-value">${s.current_round} 轮</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">反驳模型</span>
+                                <span class="info-value info-value--mono">${escapeHtml(s.refute_model_name || '-')}</span>
+                            </div>
+                        </div>
+                        ${stanceText ? '<div class="history-card-result">' + stanceText + '</div>' : ''}
+                    </div>
+                    <div class="history-card-footer">
+                        <span class="history-view-link">
+                            查看详情
+                            <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
+    // 筛选按钮
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.status;
+            renderList();
+        });
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    loadSessions();
+})();
+</script>
+{% endblock %}

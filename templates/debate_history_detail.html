@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}辩论详情 - {{ topic.title }}{% endblock %}
+
+{% block content %}
+<section class="debate-page">
+    <div class="debate-container">
+
+        <!-- 顶部导航 -->
+        <div class="debate-topbar">
+            <a href="/app/debate/history" class="breadcrumb">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 12L2 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                返回历史记录
+            </a>
+        </div>
+
+        <!-- 辩题信息 -->
+        <div class="debate-topic-banner">
+            <div class="topic-banner-id">{{ topic.topic_id }}</div>
+            <h2 class="topic-banner-title">{{ topic.title }}</h2>
+            <p class="topic-banner-desc">{{ topic.description }}</p>
+        </div>
+
+        <!-- 会话元信息 -->
+        <div class="history-detail-meta">
+            <div class="detail-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">教师姓名</span>
+                    <span class="meta-value">{{ session.teacher_name or '匿名' }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">选择立场</span>
+                    <span class="meta-value">
+                        {% if session.chosen_side == 'side_a' %}
+                        <span class="stance-tag tag--primary">正方: {{ topic.side_a }}</span>
+                        {% else %}
+                        <span class="stance-tag tag--danger">反方: {{ topic.side_b }}</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">辩论轮数</span>
+                    <span class="meta-value">{{ session.current_round }} 轮</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">反驳模型</span>
+                    <span class="meta-value meta-value--mono">{{ session.refute_model_name or '-' }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">会话状态</span>
+                    <span class="meta-value">
+                        {% if session.status == 'annotated' %}
+                        <span class="history-status status--annotated">已标注</span>
+                        {% elif session.status == 'debating' %}
+                        <span class="history-status status--debating">进行中</span>
+                        {% else %}
+                        <span class="history-status status--pending">待处理</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">创建时间</span>
+                    <span class="meta-value">{{ session.created_at.strftime('%Y-%m-%d %H:%M:%S') if session.created_at else '-' }}</span>
+                </div>
+                {% if session.stance_changed is not none %}
+                <div class="meta-item meta-item--full">
+                    <span class="meta-label">立场变化</span>
+                    <span class="meta-value">
+                        {% if session.stance_changed %}
+                        <span class="stance-result stance-result--changed">立场已改变</span>
+                        {% else %}
+                        <span class="stance-result stance-result--kept">立场未改变</span>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+                {% if session.annotation_note %}
+                <div class="meta-item meta-item--full">
+                    <span class="meta-label">标注备注</span>
+                    <span class="meta-value">{{ session.annotation_note }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 辩论对话流（只读） -->
+        <div class="debate-step">
+            <div class="step-header">
+                <h3 class="step-title">
+                    <span class="step-badge step-badge--success">辩论过程</span>
+                    完整对话记录
+                </h3>
+            </div>
+
+            <div class="debate-chat-flow" id="debate-chat-flow">
+                <!-- 由 JS 渲染 -->
+            </div>
+        </div>
+
+        <!-- 底部操作 -->
+        <div class="history-detail-actions">
+            <a href="/app/debate/history" class="btn btn-outline btn-lg">返回历史列表</a>
+            <a href="/app/debate/{{ topic.topic_id }}" class="btn btn-primary btn-lg">重新辩论此题</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/debate.css') }}">
+<script>
+(function() {
+    const sessionId = "{{ session.session_id }}";
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
+    }
+
+    async function loadSessionDetail() {
+        try {
+            const resp = await fetch(`/api/debate/sessions/${sessionId}`);
+            const data = await resp.json();
+            if (data.code === 0) {
+                renderRounds(data.data.rounds);
+            } else {
+                document.getElementById('debate-chat-flow').innerHTML =
+                    '<div class="panel-error">加载失败: ' + (data.msg || '未知错误') + '</div>';
+            }
+        } catch (e) {
+            document.getElementById('debate-chat-flow').innerHTML =
+                '<div class="panel-error">网络错误: ' + e.message + '</div>';
+        }
+    }
+
+    function renderRounds(rounds) {
+        const chatFlow = document.getElementById('debate-chat-flow');
+
+        if (!rounds || rounds.length === 0) {
+            chatFlow.innerHTML = '<div class="panel-placeholder">暂无辩论数据</div>';
+            return;
+        }
+
+        chatFlow.innerHTML = rounds.map((r, idx) => {
+            const roundNum = r.round_number;
+
+            // 教师观点
+            let html = `
+                <div class="chat-round">
+                    <div class="chat-round-header">
+                        <span class="chat-round-badge">第 ${roundNum} 轮</span>
+                    </div>
+
+                    <div class="debate-panel">
+                        <div class="panel-header">
+                            <div class="panel-avatar panel-avatar--teacher">
+                                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="8" r="5" fill="white"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="white"/></svg>
+                            </div>
+                            <span class="panel-label">教师观点${roundNum > 1 ? '（第' + roundNum + '轮回应）' : ''}</span>
+                        </div>
+                        <div class="panel-body">${escapeHtml(r.teacher_argument)}</div>
+                    </div>`;
+
+            // 加持后观点
+            if (r.enhanced_argument) {
+                const wasEdited = r.enhanced_argument_raw && r.enhanced_argument_raw !== r.enhanced_argument;
+                html += `
+                    <div class="debate-panel panel--enhanced">
+                        <div class="panel-header">
+                            <div class="panel-avatar panel-avatar--ai-enhance">
+                                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="4" fill="white"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            </div>
+                            <span class="panel-label">加持模型 · 润色后观点${wasEdited ? ' <span class="edited-badge">已修改</span>' : ''}</span>
+                        </div>
+                        <div class="panel-body">${escapeHtml(r.enhanced_argument)}</div>
+                    </div>`;
+
+                // 如果用户修改过，显示原始 AI 生成内容
+                if (wasEdited) {
+                    html += `
+                    <details class="history-original-detail">
+                        <summary class="history-original-summary">
+                            <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            查看 AI 原始润色内容
+                        </summary>
+                        <div class="debate-panel panel--enhanced-compact">
+                            <div class="panel-body panel-body--compact">${escapeHtml(r.enhanced_argument_raw)}</div>
+                        </div>
+                    </details>`;
+                }
+            }
+
+            // 反驳
+            if (r.rebuttal_argument) {
+                html += `
+                    <div class="debate-panel panel--rebuttal">
+                        <div class="panel-header">
+                            <div class="panel-avatar panel-avatar--ai-rebut">
+                                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.8"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <span class="panel-label">反驳模型 · 反驳观点</span>
+                        </div>
+                        <div class="panel-body">${escapeHtml(r.rebuttal_argument)}</div>
+                    </div>`;
+            }
+
+            html += '</div>'; // close .chat-round
+            return html;
+        }).join('');
+    }
+
+    loadSessionDetail();
+})();
+</script>
+{% endblock %}
