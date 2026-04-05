@@ -2,7 +2,7 @@
 
 import json
 import os
-from agents.llm import get_llm
+from agents.llm import get_validator_llm
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "variant_alignment.txt")
 
@@ -26,7 +26,7 @@ def variant_alignment_node(state: dict) -> dict:
         json.dumps(state.get("variant_questions", []), ensure_ascii=False, indent=2),
     )
 
-    llm = get_llm(temperature=0.1)
+    llm = get_validator_llm(temperature=0.1)
     response = llm.invoke(prompt)
     content = response.content
 
@@ -38,10 +38,10 @@ def variant_alignment_node(state: dict) -> dict:
             json_str = json_str.split("```")[1].split("```")[0]
         result = json.loads(json_str.strip())
     except (json.JSONDecodeError, IndexError):
-        result = {"passed": True, "total_score": 6, "feedback": {}, "issues": []}
+        result = {"passed": True, "total_score": 10, "feedback": {}, "issues": []}
 
     passed = result.get("passed", True)
-    total_score = result.get("total_score", 6)
+    total_score = result.get("total_score", 10)
     feedback = result.get("feedback", {})
     issues = result.get("issues", [])
     overall = result.get("overall_assessment", "")
@@ -49,11 +49,11 @@ def variant_alignment_node(state: dict) -> dict:
     retry_count = state.get("variant_retry_count", 0)
     if passed:
         if retry_count > 0:
-            status_msg = "第 %d 次重试后通过（得分 %s/6）" % (retry_count, total_score)
+            status_msg = "第 %d 次重试后通过（得分 %s/10）" % (retry_count, total_score)
         else:
-            status_msg = "通过（得分 %s/6）" % total_score
+            status_msg = "通过（得分 %s/10）" % total_score
     else:
-        status_msg = "未通过（得分 %s/6）" % total_score
+        status_msg = "未通过（得分 %s/10）" % total_score
 
     return {
         "validation_results": [

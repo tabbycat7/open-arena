@@ -7,16 +7,13 @@ const AGENT_STEPS = [
     "learning_analysis",
     "teaching_logic_design",
     "main_question_chain",
-    "cognitive_check",
-    "goal_check",
-    "teaching_logic_check",
-    "aggregate_main_checks",
+    "main_question_check",
     "fan_out_gen",
     "variant_question",
     "scaffold_question",
     "variant_check",
     "scaffold_check",
-    "wait_for_both",
+    "aggregate_sub_pipelines",
     "map_integration",
 ];
 
@@ -25,9 +22,7 @@ const AGENT_TRACKER_STEPS = [
     "learning_analysis",
     "teaching_logic_design",
     "main_question_chain",
-    "cognitive_check",
-    "goal_check",
-    "teaching_logic_check",
+    "main_question_check",
     "variant_question",
     "variant_check",
     "scaffold_question",
@@ -39,9 +34,7 @@ const AGENT_DISPLAY_NAMES = {
     learning_analysis: "学情与目标解析",
     teaching_logic_design: "教学蓝图规划",
     main_question_chain: "主干问题链构建",
-    cognitive_check: "认知对齐检验",
-    goal_check: "教学目标对齐检验",
-    teaching_logic_check: "教学逻辑检验",
+    main_question_check: "主干问题综合校验",
     variant_question: "变式问题生成",
     variant_check: "变式问题检验",
     scaffold_question: "支架问题生成",
@@ -60,7 +53,218 @@ let currentResult = null;
 let isGenerating = false;
 let currentStepIndex = -1;
 const ACTIVE_TASK_STORAGE_KEY = "teaching_map_active_task_id";
+let historyEventsBound = false;
 const APP_BASE_PATH = (window.APP_BASE_PATH || "").replace(/\/$/, "");
+const workspaceLayoutEl = document.getElementById("workspaceLayout");
+const languageStyleSelectEl = document.getElementById("language_style");
+const customLanguageWrapEl = document.getElementById("languageStyleCustomWrap");
+const customLanguageInputEl = document.getElementById("custom_language_style");
+const modelPickerEl = document.getElementById("modelPicker");
+const modelPickerTriggerEl = document.getElementById("modelPickerTrigger");
+const modelPickerMenuEl = document.getElementById("modelPickerMenu");
+const modelPickerLabelEl = document.getElementById("modelPickerLabel");
+const modelPickerIconEl = document.getElementById("modelPickerIcon");
+const modelIdInputEl = document.getElementById("model_id");
+const thinkingControlsEl = document.getElementById("thinkingControls");
+const enableThinkingEl = document.getElementById("enable_thinking");
+const thinkingBudgetEl = document.getElementById("thinking_budget");
+const thinkingLevelSelectEl = document.getElementById("thinking_budget_level");
+const thinkingSupportHintEl = document.getElementById("thinkingSupportHint");
+const thinkingSwitchTextEl = document.getElementById("thinkingSwitchText");
+const modelThinkingCapability = {};
+
+const THINKING_BUDGET_MIN = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetMin || "128", 10) : 128;
+const THINKING_BUDGET_MAX = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetMax || "32768", 10) : 32768;
+const THINKING_BUDGET_DEFAULT = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetDefault || "4096", 10) : 4096;
+
+function clampThinkingBudget(rawValue) {
+    var parsed = parseInt(rawValue, 10);
+    if (isNaN(parsed)) parsed = THINKING_BUDGET_DEFAULT;
+    if (parsed < THINKING_BUDGET_MIN) parsed = THINKING_BUDGET_MIN;
+    if (parsed > THINKING_BUDGET_MAX) parsed = THINKING_BUDGET_MAX;
+    return parsed;
+}
+
+function modelSupportsThinking(modelId) {
+    return !!modelThinkingCapability[(modelId || "").trim()];
+}
+
+function getSelectedThinkingLevelOption() {
+    if (!thinkingLevelSelectEl || !thinkingLevelSelectEl.options.length) return null;
+    if (!thinkingLevelSelectEl.value) {
+        thinkingLevelSelectEl.selectedIndex = 0;
+    }
+    return thinkingLevelSelectEl.options[thinkingLevelSelectEl.selectedIndex] || null;
+}
+
+function getThinkingBudgetFromSelectedLevel() {
+    var selected = getSelectedThinkingLevelOption();
+    if (!selected) return THINKING_BUDGET_DEFAULT;
+    return clampThinkingBudget(selected.dataset.budget || THINKING_BUDGET_DEFAULT);
+}
+
+function getSelectedThinkingLevelId() {
+    var selected = getSelectedThinkingLevelOption();
+    return selected ? selected.value : "";
+}
+
+function updateThinkingControlsForModel(modelId) {
+    if (!enableThinkingEl || !thinkingBudgetEl) return;
+
+    var supportsThinking = modelSupportsThinking(modelId);
+    if (thinkingSwitchTextEl) {
+        thinkingSwitchTextEl.textContent = supportsThinking ? "开启 Think" : "该模型不支持 Think";
+    }
+
+    enableThinkingEl.disabled = !supportsThinking;
+    if (!supportsThinking) {
+        enableThinkingEl.checked = false;
+    }
+
+    var canSelectThinkingLevel = supportsThinking && !!enableThinkingEl.checked;
+    if (thinkingLevelSelectEl) {
+        thinkingLevelSelectEl.disabled = !canSelectThinkingLevel;
+    }
+
+    var selectedLevel = getSelectedThinkingLevelOption();
+    var budget = getThinkingBudgetFromSelectedLevel();
+    thinkingBudgetEl.value = String(budget);
+    thinkingBudgetEl.disabled = !supportsThinking;
+
+    if (thinkingSupportHintEl) {
+        if (!supportsThinking) {
+            thinkingSupportHintEl.textContent = "当前模型不支持 Think 参数，提交时将自动忽略。";
+        } else if (!enableThinkingEl.checked) {
+            thinkingSupportHintEl.textContent = "支持 Think 参数，开启后可选择思维深度档位。";
+        } else {
+            var levelLabel = selectedLevel ? (selectedLevel.dataset.label || selectedLevel.value) : "当前";
+            var rangeMin = selectedLevel ? selectedLevel.dataset.min : THINKING_BUDGET_MIN;
+            var rangeMax = selectedLevel ? selectedLevel.dataset.max : THINKING_BUDGET_MAX;
+            thinkingSupportHintEl.textContent = "当前档位：" + levelLabel + "（预算区间 " + rangeMin + " - " + rangeMax + "）。";
+        }
+    }
+}
+
+function setUiStage(stage) {
+    if (!workspaceLayoutEl) return;
+    workspaceLayoutEl.classList.remove("stage-input", "stage-generation");
+    if (stage === "generation") {
+        workspaceLayoutEl.classList.add("stage-generation");
+        return;
+    }
+    workspaceLayoutEl.classList.add("stage-input");
+}
+
+function updateLanguageStyleCustomVisibility() {
+    if (!languageStyleSelectEl || !customLanguageWrapEl || !customLanguageInputEl) return;
+    var isCustom = languageStyleSelectEl.value === "自定义";
+    customLanguageWrapEl.style.display = isCustom ? "block" : "none";
+    customLanguageInputEl.required = isCustom;
+    if (!isCustom) {
+        customLanguageInputEl.value = "";
+    }
+}
+
+function setStopButtonsState(visible, disabled, text) {
+    ["stopBtn", "stopBtnTop"].forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        if (!visible) {
+            btn.style.display = "none";
+        } else {
+            btn.style.display = id === "stopBtn" ? "block" : "inline-flex";
+        }
+        btn.disabled = !!disabled;
+        btn.textContent = text || "强制停止";
+    });
+}
+
+function setBackToGenerationButtonState(visible) {
+    var btn = document.getElementById("backToGenerationBtn");
+    if (!btn) return;
+    btn.style.display = visible ? "block" : "none";
+}
+
+function setModelPickerValue(modelId, label, iconUrl) {
+    if (modelIdInputEl) modelIdInputEl.value = modelId || "";
+    if (modelPickerLabelEl) modelPickerLabelEl.textContent = label || "请选择模型";
+    if (modelPickerIconEl && iconUrl) modelPickerIconEl.src = iconUrl;
+    updateThinkingControlsForModel(modelId || "");
+
+    if (!modelPickerMenuEl) return;
+    modelPickerMenuEl.querySelectorAll(".model-picker-item").forEach(function (item) {
+        var active = item.dataset.value === (modelId || "");
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-selected", active ? "true" : "false");
+    });
+}
+
+function closeModelPicker() {
+    if (!modelPickerEl || !modelPickerTriggerEl) return;
+    modelPickerEl.classList.remove("open");
+    modelPickerTriggerEl.setAttribute("aria-expanded", "false");
+}
+
+function syncModelPickerFromInput() {
+    if (!modelPickerMenuEl || !modelIdInputEl) return;
+    var target = modelPickerMenuEl.querySelector('.model-picker-item[data-value="' + modelIdInputEl.value + '"]');
+    if (!target) {
+        target = modelPickerMenuEl.querySelector(".model-picker-item");
+    }
+    if (!target) return;
+    setModelPickerValue(target.dataset.value, target.dataset.label, target.dataset.icon);
+}
+
+function initModelPicker() {
+    if (!modelPickerEl || !modelPickerTriggerEl || !modelPickerMenuEl || !modelIdInputEl) return;
+
+    modelPickerMenuEl.querySelectorAll(".model-picker-item").forEach(function (item) {
+        modelThinkingCapability[item.dataset.value] = item.dataset.supportsThinking === "1";
+    });
+
+    modelPickerTriggerEl.addEventListener("click", function () {
+        var willOpen = !modelPickerEl.classList.contains("open");
+        if (willOpen) {
+            modelPickerEl.classList.add("open");
+            modelPickerTriggerEl.setAttribute("aria-expanded", "true");
+        } else {
+            closeModelPicker();
+        }
+    });
+
+    modelPickerMenuEl.querySelectorAll(".model-picker-item").forEach(function (item) {
+        item.addEventListener("click", function () {
+            setModelPickerValue(item.dataset.value, item.dataset.label, item.dataset.icon);
+            closeModelPicker();
+        });
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!modelPickerEl.contains(event.target)) {
+            closeModelPicker();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeModelPicker();
+        }
+    });
+
+    syncModelPickerFromInput();
+}
+
+if (enableThinkingEl) {
+    enableThinkingEl.addEventListener("change", function () {
+        updateThinkingControlsForModel(modelIdInputEl ? modelIdInputEl.value : "");
+    });
+}
+
+if (thinkingLevelSelectEl) {
+    thinkingLevelSelectEl.addEventListener("change", function () {
+        updateThinkingControlsForModel(modelIdInputEl ? modelIdInputEl.value : "");
+    });
+}
 
 function buildApiPath(path) {
     return APP_BASE_PATH + path;
@@ -88,6 +292,22 @@ document.querySelectorAll(".left-tab").forEach(function (btn) {
 // ---------------------------------------------------------------------------
 // View mode tabs (graph / text / logs)
 // ---------------------------------------------------------------------------
+function ensureHistoryResultLoaded(recordId) {
+    if (!recordId) return Promise.resolve(null);
+    if (currentResult && currentTaskId === recordId) return Promise.resolve(currentResult);
+
+    return fetch(buildApiPath("/api/history/") + recordId)
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (data && !data.error && data.result) {
+                currentResult = data.result;
+                return currentResult;
+            }
+            return null;
+        })
+        .catch(function () { return null; });
+}
+
 document.querySelectorAll(".view-tab").forEach(function (btn) {
     btn.addEventListener("click", function () {
         document.querySelectorAll(".view-tab").forEach(function (b) { b.classList.remove("active"); });
@@ -99,10 +319,37 @@ document.querySelectorAll(".view-tab").forEach(function (btn) {
         if (mode !== "graph") {
             document.getElementById("detailSection").style.display = "none";
         }
-        if (mode === "graph" && typeof chartInstance !== "undefined" && chartInstance) {
-            chartInstance.resize();
+
+        if (mode === "graph") {
+            if (currentResult) {
+                renderGraph(currentResult);
+                if (typeof chartInstance !== "undefined" && chartInstance) {
+                    chartInstance.resize();
+                }
+            } else if (currentTaskId) {
+                ensureHistoryResultLoaded(currentTaskId).then(function (result) {
+                    if (!result) return;
+                    renderGraph(result);
+                    if (typeof chartInstance !== "undefined" && chartInstance) {
+                        chartInstance.resize();
+                    }
+                });
+            }
         }
+
+        if (mode === "text") {
+            if (currentResult) {
+                renderTextView(currentResult);
+            } else if (currentTaskId) {
+                ensureHistoryResultLoaded(currentTaskId).then(function (result) {
+                    if (!result) return;
+                    renderTextView(result);
+                });
+            }
+        }
+
         if (mode === "logs" && currentTaskId) {
+            ensureHistoryResultLoaded(currentTaskId);
             loadAgentLogs(currentTaskId);
         }
     });
@@ -120,15 +367,59 @@ document.getElementById("newPlanBtn").addEventListener("click", function () {
     startNewPlan();
 });
 
+document.getElementById("stopBtn").addEventListener("click", function () {
+    forceStopTask();
+});
+
+document.getElementById("stopBtnTop").addEventListener("click", function () {
+    forceStopTask();
+});
+
+document.getElementById("backToInputBtn").addEventListener("click", function () {
+    setUiStage("input");
+});
+
+document.getElementById("backToGenerationBtn").addEventListener("click", function () {
+    returnToProgress();
+});
+
+if (languageStyleSelectEl) {
+    languageStyleSelectEl.addEventListener("change", updateLanguageStyleCustomVisibility);
+    updateLanguageStyleCustomVisibility();
+}
+
+initModelPicker();
+
 function startGeneration() {
     var form = document.getElementById("generateForm");
     var formData = new FormData(form);
+    var selectedModelId = modelIdInputEl ? modelIdInputEl.value : "";
+    var supportsThinking = modelSupportsThinking(selectedModelId);
+    var enableThinking = supportsThinking && enableThinkingEl && enableThinkingEl.checked;
+    var thinkingBudgetLevel = getSelectedThinkingLevelId();
+    var thinkingBudget = getThinkingBudgetFromSelectedLevel();
+    if (thinkingBudgetEl) {
+        thinkingBudgetEl.value = String(thinkingBudget);
+    }
+    formData.set("enable_thinking", enableThinking ? "1" : "0");
+    formData.set("thinking_budget_level", thinkingBudgetLevel);
+    formData.set("thinking_budget", String(thinkingBudget));
+    var attachmentInput = document.getElementById("attachment");
+    if (attachmentInput && attachmentInput.files && attachmentInput.files.length) {
+        formData.delete("attachment");
+        Array.prototype.forEach.call(attachmentInput.files, function (file) {
+            formData.append("attachment", file, file.name);
+        });
+    }
     var submitBtn = document.getElementById("submitBtn");
 
     submitBtn.disabled = true;
     submitBtn.textContent = "生成中...";
     document.getElementById("newPlanBtn").style.display = "none";
+    setStopButtonsState(true, false, "强制停止");
+    setBackToGenerationButtonState(true);
     isGenerating = true;
+    setUiStage("generation");
 
     document.getElementById("placeholder").style.display = "none";
     document.getElementById("progressSection").style.display = "block";
@@ -221,6 +512,16 @@ function connectSSE(taskId, fromIndex) {
             });
             eventSource.close();
             resetSubmitBtn(false);
+        } else if (data.type === "cancelled") {
+            addLogEntry("任务已强制停止", "error");
+            localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+            updateCurrentAgentCard({
+                agent_display_name: "任务终止",
+                message: data.message || "任务已强制停止",
+                output_preview: { status: "cancelled" },
+            });
+            eventSource.close();
+            resetSubmitBtn(false);
         }
     };
 
@@ -245,6 +546,13 @@ function connectSSE(taskId, fromIndex) {
                         return;
                     }
 
+                    if (data.status === "cancelled") {
+                        localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+                        addLogEntry("任务已强制停止", "error");
+                        resetSubmitBtn(false);
+                        return;
+                    }
+
                     localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
                     resetSubmitBtn(false);
                 })
@@ -257,6 +565,7 @@ function connectSSE(taskId, fromIndex) {
 }
 
 function returnToProgress() {
+    setUiStage("generation");
     // 切回"新建教案"tab
     document.querySelectorAll(".left-tab").forEach(function (b) { b.classList.remove("active"); });
     document.querySelectorAll(".left-tab-content").forEach(function (c) { c.classList.remove("active"); });
@@ -280,6 +589,8 @@ function resetSubmitBtn(showNewPlanBtn) {
     btn.disabled = false;
     btn.textContent = "重新生成";
     isGenerating = false;
+    setStopButtonsState(false, false, "强制停止");
+    setBackToGenerationButtonState(false);
     document.getElementById("generatingBanner").style.display = "none";
     newPlanBtn.style.display = showNewPlanBtn ? "block" : "none";
 }
@@ -295,13 +606,17 @@ function startNewPlan() {
     currentTaskId = null;
     currentResult = null;
     currentStepIndex = -1;
+    setUiStage("input");
 
     document.getElementById("generateForm").reset();
+    updateLanguageStyleCustomVisibility();
+    syncModelPickerFromInput();
 
     var btn = document.getElementById("submitBtn");
     btn.disabled = false;
     btn.textContent = "开始生成教学地图";
     document.getElementById("newPlanBtn").style.display = "none";
+    setBackToGenerationButtonState(false);
 
     document.getElementById("progressLog").innerHTML = "";
     document.getElementById("progressBar").style.width = "0%";
@@ -332,6 +647,7 @@ function restoreTaskProgressOnLoad() {
             if (data.status === "running") {
                 currentTaskId = taskId;
                 isGenerating = true;
+                setUiStage("generation");
                 document.getElementById("placeholder").style.display = "none";
                 document.getElementById("progressSection").style.display = "block";
                 document.getElementById("viewTabs").style.display = "none";
@@ -350,6 +666,8 @@ function restoreTaskProgressOnLoad() {
                 var btn = document.getElementById("submitBtn");
                 btn.disabled = true;
                 btn.textContent = "生成中...";
+                setStopButtonsState(true, false, "强制停止");
+                setBackToGenerationButtonState(true);
 
                 var progress = Array.isArray(data.progress) ? data.progress : [];
                 hydrateProgressSnapshot(progress);
@@ -359,6 +677,7 @@ function restoreTaskProgressOnLoad() {
 
             if (data.status === "done" && data.result) {
                 localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+                setUiStage("generation");
                 addLogEntry("刷新后已恢复完成结果", "done");
                 showResult(data.result, taskId);
                 resetSubmitBtn(true);
@@ -366,12 +685,41 @@ function restoreTaskProgressOnLoad() {
             }
 
             localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+            setUiStage("input");
             resetSubmitBtn(false);
         })
         .catch(function (err) {
             addLogEntry("恢复任务失败: " + err.message, "error");
             localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+            setUiStage("input");
             resetSubmitBtn(false);
+        });
+}
+
+function forceStopTask() {
+    if (!currentTaskId || !isGenerating) return;
+    var submitBtn = document.getElementById("submitBtn");
+    setStopButtonsState(true, true, "停止中...");
+    submitBtn.textContent = "停止中...";
+
+    fetch(buildApiPath("/api/stop/") + currentTaskId, { method: "POST" })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (data && data.ok) {
+                addLogEntry("已发送强制停止请求", "error");
+                updateCurrentAgentCard({
+                    agent_display_name: "任务终止中",
+                    message: "已发送强制停止请求，等待当前节点中断...",
+                    output_preview: { status: "cancelling" },
+                });
+                return;
+            }
+            throw new Error((data && data.error) || "停止请求失败");
+        })
+        .catch(function (err) {
+            addLogEntry("强制停止失败: " + err.message, "error");
+            setStopButtonsState(true, false, "强制停止");
+            submitBtn.textContent = "生成中...";
         });
 }
 
@@ -508,6 +856,7 @@ function syntaxHighlight(obj) {
 function showResult(result, taskId) {
     currentResult = result;
     if (taskId) currentTaskId = taskId;
+    setUiStage("generation");
     document.getElementById("viewTabs").style.display = "flex";
     document.querySelectorAll(".view-tab").forEach(function (b) { b.classList.remove("active"); });
     document.querySelector('.view-tab[data-view="graph"]').classList.add("active");
@@ -621,9 +970,12 @@ function renderTextView(teachingMap) {
         html += '<div class="text-block-body">';
         html += '<p class="text-question">' + (mainNode.content || "") + '</p>';
         html += renderMeta(mainNode);
+        html += renderCommentaryBlock(mainNode);
         html += '</div>';
 
-        var relatedVariants = variantNodes.filter(function (v) { return v.parent_id === mainNode.id; });
+        var relatedVariants = variantNodes.filter(function (v) {
+            return (v.main_id || v.parent_id) === mainNode.id;
+        });
         if (relatedVariants.length > 0) {
             html += '<div class="text-sub-group">';
             html += '<div class="text-sub-label variant-label">变式问题</div>';
@@ -637,6 +989,7 @@ function renderTextView(teachingMap) {
                 html += '<div class="text-block-body">';
                 html += '<p class="text-question">' + (v.content || "") + '</p>';
                 html += renderMeta(v);
+                html += renderCommentaryBlock(v);
                 html += '</div></div>';
             });
             html += '</div>';
@@ -645,7 +998,9 @@ function renderTextView(teachingMap) {
         if (idx < mainOrder.length - 1) {
             var nextMain = mainOrder[idx + 1];
             var relatedScaffolds = scaffoldNodes.filter(function (s) {
-                return s.from_main_id === mainNode.id || s.to_main_id === nextMain.id;
+                var fromId = s.from_id || s.from_main_id;
+                var toId = s.to_id || s.to_main_id;
+                return fromId === mainNode.id || toId === nextMain.id;
             });
             if (relatedScaffolds.length > 0) {
                 html += '<div class="text-sub-group">';
@@ -659,6 +1014,7 @@ function renderTextView(teachingMap) {
                     html += '<div class="text-block-body">';
                     html += '<p class="text-question">' + (s.content || "") + '</p>';
                     html += renderMeta(s);
+                    html += renderCommentaryBlock(s);
                     if (s.bridge_function) html += '<p class="text-bridge">桥梁功能：' + s.bridge_function + '</p>';
                     html += '</div></div>';
                 });
@@ -687,6 +1043,16 @@ function renderMeta(node) {
     if (designIntent) html += '<span>设计意图：' + designIntent + '</span>';
     html += '</div>';
     return html;
+}
+
+function getCommentary(node) {
+    return (node && (node.lesson_presentation_script || node.commentary || node.Commentary)) || "";
+}
+
+function renderCommentaryBlock(node) {
+    var commentary = getCommentary(node);
+    if (!commentary) return "";
+    return '<div class="text-commentary"><div class="text-commentary-title">说课稿</div><p class="text-commentary-body">' + escapeHtml(commentary) + '</p></div>';
 }
 
 function orderMainNodes(mainNodes, edges) {
@@ -723,7 +1089,39 @@ function orderMainNodes(mainNodes, edges) {
 // ---------------------------------------------------------------------------
 // History
 // ---------------------------------------------------------------------------
+function bindHistoryListEvents() {
+    if (historyEventsBound) return;
+    var list = document.getElementById("historyList");
+    if (!list) return;
+    list.addEventListener("click", function (event) {
+        var btn = event.target.closest("button");
+        if (!btn) return;
+        var item = btn.closest(".history-item");
+        if (!item) return;
+        var recordId = item.getAttribute("data-id");
+        if (!recordId) return;
+
+        if (btn.classList.contains("btn-view")) {
+            loadHistoryItem(recordId);
+            return;
+        }
+        if (btn.classList.contains("btn-input")) {
+            toggleHistoryInput(recordId, btn, event);
+            return;
+        }
+        if (btn.classList.contains("btn-logs")) {
+            loadHistoryLogs(recordId, event);
+            return;
+        }
+        if (btn.classList.contains("btn-delete")) {
+            deleteHistoryItem(recordId, event);
+        }
+    });
+    historyEventsBound = true;
+}
+
 function loadHistory() {
+    bindHistoryListEvents();
     fetch(buildApiPath("/api/history"))
         .then(function (res) { return res.json(); })
         .then(function (list) {
@@ -736,17 +1134,19 @@ function loadHistory() {
             list.forEach(function (item) {
                 var goals = (item.teaching_goals || "").substring(0, 60);
                 var safeGoals = escapeHtml(goals + (goals.length >= 60 ? "..." : ""));
+                var modelDisplayName = escapeHtml(item.model_display_name || "未知模型");
                 html += '<div class="history-item" data-id="' + item.id + '">';
                 html += '<div class="history-item-header">';
                 html += '<span class="history-subject">' + item.subject + ' · ' + item.grade + '</span>';
                 html += '<span class="history-time">' + item.created_at + '</span>';
                 html += '</div>';
                 html += '<div class="history-goals">' + safeGoals + '</div>';
+                html += '<div class="history-model">生成模型：' + modelDisplayName + '</div>';
                 html += '<div class="history-actions">';
-                html += '<button class="btn-sm btn-view" onclick="loadHistoryItem(\'' + item.id + '\')">查看</button>';
-                html += '<button class="btn-sm btn-input" onclick="toggleHistoryInput(\'' + item.id + '\', this, event)">输入</button>';
-                html += '<button class="btn-sm btn-logs" onclick="loadHistoryLogs(\'' + item.id + '\', event)">日志</button>';
-                html += '<button class="btn-sm btn-delete" onclick="deleteHistoryItem(\'' + item.id + '\', event)">删除</button>';
+                html += '<button class="btn-sm btn-view" type="button">查看</button>';
+                html += '<button class="btn-sm btn-input" type="button">输入</button>';
+                html += '<button class="btn-sm btn-logs" type="button">日志</button>';
+                html += '<button class="btn-sm btn-delete" type="button">删除</button>';
                 html += '</div>';
                 html += '<div class="history-input-detail" id="historyInputDetail-' + item.id + '" style="display:none;"></div>';
                 html += '</div>';
@@ -756,7 +1156,7 @@ function loadHistory() {
 }
 
 function toggleHistoryInput(recordId, btn, event) {
-    event.stopPropagation();
+    if (event && typeof event.stopPropagation === "function") event.stopPropagation();
     var detail = document.getElementById("historyInputDetail-" + recordId);
     if (!detail) return;
 
@@ -786,6 +1186,7 @@ function toggleHistoryInput(recordId, btn, event) {
 
             var goals = escapeHtml(data.teaching_goals || "未填写");
             var profile = escapeHtml(data.student_profile || "未填写");
+            var difficulty = escapeHtml(data.difficulty_analysis || "未填写");
             var style = escapeHtml(data.language_style || "未设置");
             var attachment = data.attachment ? escapeHtml(String(data.attachment).substring(0, 200)) : "无";
 
@@ -796,6 +1197,7 @@ function toggleHistoryInput(recordId, btn, event) {
             html += '<div class="history-input-row"><span class="history-input-label">语言风格：</span><span class="history-input-value">' + style + '</span></div>';
             html += '<div class="history-input-row"><span class="history-input-label">教学目标：</span><span class="history-input-value">' + goals + '</span></div>';
             html += '<div class="history-input-row"><span class="history-input-label">学情描述：</span><span class="history-input-value">' + profile + '</span></div>';
+            html += '<div class="history-input-row"><span class="history-input-label">重难点分析：</span><span class="history-input-value">' + difficulty + '</span></div>';
             html += '<div class="history-input-row"><span class="history-input-label">附件：</span><span class="history-input-value">' + attachment + '</span></div>';
 
             detail.innerHTML = html;
@@ -824,8 +1226,9 @@ function loadHistoryItem(recordId) {
 }
 
 function loadHistoryLogs(recordId, event) {
-    event.stopPropagation();
+    if (event && typeof event.stopPropagation === "function") event.stopPropagation();
     currentTaskId = recordId;
+    setUiStage("generation");
     document.getElementById("placeholder").style.display = "none";
     document.getElementById("progressSection").style.display = "none";
     document.getElementById("viewTabs").style.display = "flex";
@@ -835,11 +1238,12 @@ function loadHistoryLogs(recordId, event) {
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "block";
     document.getElementById("detailSection").style.display = "none";
+    ensureHistoryResultLoaded(recordId);
     loadAgentLogs(recordId);
 }
 
 function deleteHistoryItem(recordId, event) {
-    event.stopPropagation();
+    if (event && typeof event.stopPropagation === "function") event.stopPropagation();
     if (!confirm("确定删除此记录？")) return;
     fetch(buildApiPath("/api/history/") + recordId, { method: "DELETE" })
         .then(function () { loadHistory(); });

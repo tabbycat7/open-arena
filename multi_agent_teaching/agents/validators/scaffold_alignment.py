@@ -2,7 +2,7 @@
 
 import json
 import os
-from agents.llm import get_llm
+from agents.llm import get_validator_llm
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "scaffold_alignment.txt")
 
@@ -26,7 +26,7 @@ def scaffold_alignment_node(state: dict) -> dict:
         json.dumps(state.get("scaffold_questions", []), ensure_ascii=False, indent=2),
     )
 
-    llm = get_llm(temperature=0.1)
+    llm = get_validator_llm(temperature=0.1)
     response = llm.invoke(prompt)
     content = response.content
 

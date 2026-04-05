@@ -3,16 +3,16 @@
 import json
 import os
 import re
-from agents.llm import get_llm
+from agents.llm import get_generator_llm
 
 
-def _infer_bridge_from_id(scaffold_id, main_ids):
+def _infer_bridge_from_id(item_id, main_ids):
     """
     根据支架问题 ID 推断其桥接的主干节点。
     例如：S1-1 → from M1 to M2
           S2-1 → from M2 to M3
     """
-    match = re.match(r'S(\d+)', scaffold_id)
+    match = re.match(r'S(\d+)', item_id)
     if not match:
         return "", ""
 
@@ -31,6 +31,31 @@ def _infer_bridge_from_id(scaffold_id, main_ids):
     return from_main, to_main
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "scaffold_question.txt")
+
+
+def _pick_item_id(item: dict, default: str = "未知") -> str:
+    return (
+        item.get("id")
+        or item.get("question_id")
+        or item.get("target")
+        or default
+    )
+
+
+def _extract_bridge_ids(q: dict) -> tuple[str, str]:
+    from_id = (
+        q.get("from_id")
+        or q.get("source_main_question")
+        or q.get("from_main_question")
+        or q.get("from_main_id")
+    )
+    to_id = (
+        q.get("to_id")
+        or q.get("target_main_question")
+        or q.get("to_main_question")
+        or q.get("to_main_id")
+    )
+    return from_id or "", to_id or ""
 
 
 def _format_validation_feedback(state: dict) -> str:
@@ -57,7 +82,7 @@ def _format_validation_feedback(state: dict) -> str:
         if must_fix:
             feedback_parts.append("\n### 【必须修复】以下支架问题必须改正：")
             for i, item in enumerate(must_fix, 1):
-                qid = item.get("question_id", "未知")
+                qid = _pick_item_id(item)
                 action = item.get("action", "")
                 direction = item.get("rewrite_direction", "")
                 feedback_parts.append("%d. 支架 %s：" % (i, qid))
@@ -70,7 +95,7 @@ def _format_validation_feedback(state: dict) -> str:
         if should_fix:
             feedback_parts.append("\n### 【建议修复】以下支架问题建议改正：")
             for i, item in enumerate(should_fix, 1):
-                qid = item.get("question_id", "未知")
+                qid = _pick_item_id(item)
                 action = item.get("action", "")
                 direction = item.get("rewrite_direction", "")
                 feedback_parts.append("%d. 支架 %s：" % (i, qid))
@@ -83,7 +108,7 @@ def _format_validation_feedback(state: dict) -> str:
         if issues and not must_fix:
             feedback_parts.append("\n### 发现的问题：")
             for issue in issues[:5]:
-                qid = issue.get("question_id", "")
+                qid = _pick_item_id(issue, "")
                 severity = issue.get("severity", "")
                 issue_type = issue.get("issue_type", "")
                 desc = issue.get("description", "")
@@ -124,33 +149,33 @@ def scaffold_question_node(state: dict) -> dict:
     prompt = prompt.replace("{previous_questions}", json.dumps(previous_scaffold_questions, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{validation_feedback}", validation_feedback)
 
-    llm = get_llm(temperature=0.7)
+    llm = get_generator_llm(temperature=0.7)
     response = llm.invoke(prompt)
     content = response.content
 
-    try:
-        json_str = content
-        if "```json" in json_str:
-            json_str = json_str.split("```json")[1].split("```")[0]
-        elif "```" in json_str:
-            json_str = json_str.split("```")[1].split("```")[0]
-        scaffold_questions = json.loads(json_str.strip())
-    except (json.JSONDecodeError, IndexError):
-        scaffold_questions = []
+    scaffold_questions = _parse_scaffold_questions(content)
 
     main_ids = [m.get("id", "") for m in state.get("main_questions", [])]
 
     for q in scaffold_questions:
+        if not q.get("id"):
+            q["id"] = ""
         q["question_type"] = "scaffold"
 
-        if not q.get("from_main_id") or not q.get("to_main_id"):
+        from_id, to_id = _extract_bridge_ids(q)
+        if not from_id or not to_id:
             inferred_from, inferred_to = _infer_bridge_from_id(q.get("id", ""), main_ids)
-            if not q.get("from_main_id"):
-                q["from_main_id"] = inferred_from
-            if not q.get("to_main_id"):
-                q["to_main_id"] = inferred_to
+            from_id = from_id or inferred_from
+            to_id = to_id or inferred_to
 
-        q.setdefault("parent_id", q.get("from_main_id"))
+        if from_id:
+            q["from_id"] = from_id
+            q.setdefault("from_main_id", from_id)
+            q.setdefault("main_id", from_id)
+            q.setdefault("parent_id", from_id)
+        if to_id:
+            q["to_id"] = to_id
+            q.setdefault("to_main_id", to_id)
 
     msg = "[支架问题生成Agent] 生成了 %d 个支架问题" % len(scaffold_questions)
     if retry_count > 0:
@@ -160,3 +185,43 @@ def scaffold_question_node(state: dict) -> dict:
         "scaffold_questions": scaffold_questions,
         "progress_messages": [msg],
     }
+
+
+def _parse_scaffold_questions(content: str) -> list:
+    text = (content or "").strip()
+    if not text:
+        return []
+
+    candidates = []
+
+    if "```json" in text:
+        try:
+            candidates.append(text.split("```json", 1)[1].split("```", 1)[0].strip())
+        except IndexError:
+            pass
+    if "```" in text:
+        try:
+            candidates.append(text.split("```", 1)[1].split("```", 1)[0].strip())
+        except IndexError:
+            pass
+
+    candidates.append(text)
+
+    match = re.search(r"\[[\s\S]*\]", text)
+    if match:
+        candidates.append(match.group(0))
+
+    for candidate in candidates:
+        try:
+            parsed = json.loads(candidate)
+            if isinstance(parsed, list):
+                return parsed
+            if isinstance(parsed, dict):
+                for key in ("scaffold_questions", "questions", "data"):
+                    value = parsed.get(key)
+                    if isinstance(value, list):
+                        return value
+        except Exception:
+            continue
+
+    return []

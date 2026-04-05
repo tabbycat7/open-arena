@@ -21,6 +21,7 @@ Open Arena 是一个基于大语言模型（LLM）和多智能体（Multi-Agent�
 - **自动结构化**：生成覆盖目标、学情、逻辑与脚手架搭建的教学地图。
 - **Agent 分工审批**：由不同的生成节点（Generators）与校验节点（Validators）共同完成图流转。
 - **过程追踪与回溯**：地图与侧边栏结合，完整呈现多智能体网络的思考路径和状态。
+- **附件融合输入**：支持上传 txt/md/pdf/docx 与教材图片（png/jpg/webp 等），后端自动提取文本后注入工作流。
 
 ## 🛠️ 技术栈概览
 
@@ -78,6 +79,27 @@ python init_db.py
 python app.py
 ```
 > 控制台显示 `Running on http://127.0.0.1:5000` 后，用浏览器打开该地址即可。
+
+### 6. 多智能体假 API 边界测试
+当你想快速回放重试、校验失败、解析异常等边界情况，而不依赖真实大模型时，可启用内置 fake API：
+
+```bash
+set TEACHING_MAP_FAKE_API=1
+我们把‘每年本金乘1.05’的规律，翻译成标准的数学表达式吧。如果底数不小心取成1或者负数，这个函数会出什么‘bug’？为什么必须规定a>0且a≠1？
+```
+
+可选：只跑部分场景
+
+```bash
+python multi_agent_teaching/run_fake_workflow_tests.py --scenarios all_pass main_retry_once
+```
+
+可选：加载自定义场景脚本（格式见 `multi_agent_teaching/fake_scenarios.example.json`）
+
+```bash
+set TEACHING_MAP_FAKE_SCENARIO_FILE=multi_agent_teaching/fake_scenarios.example.json
+python multi_agent_teaching/run_fake_workflow_tests.py --scenarios custom_main_fail_twice
+```
 
 ## 📝 规划扩展 (Coming Soon)
 - 🌐 AI 智能翻译（支持泛上下文语言处理）

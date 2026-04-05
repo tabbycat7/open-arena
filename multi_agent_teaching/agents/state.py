@@ -26,6 +26,9 @@ class Question(TypedDict, total=False):
     knowledge_points: List[str]
     cognitive_level: str
     difficulty: float
+    main_id: Optional[str]
+    from_id: Optional[str]
+    to_id: Optional[str]
     parent_id: Optional[str]
 
 
@@ -48,10 +51,15 @@ class TeachingMap(TypedDict, total=False):
 
 
 class GraphState(TypedDict, total=False):
+    model_id: str
+    enable_thinking: bool
+    thinking_budget_level: str
+    thinking_budget: int
     subject: str
     grade: str
     teaching_goals: str
     student_profile: str
+    difficulty_analysis: str
     language_style: str
     attachment: str
 
@@ -70,14 +78,8 @@ class GraphState(TypedDict, total=False):
     # 专用 feedback 暂存字段，bump_retry 在清空 validation_results 前先把反馈存入，
     # 供对应生成器下一轮读取
     main_validation_feedback: List[ValidationResult]
-    main_failed_validators: List[str]
     variant_validation_feedback: List[ValidationResult]
     scaffold_validation_feedback: List[ValidationResult]
-
-    # 主干问题并行检验完成计数（累加，扇入节点传入 -999 触发重置为 0）
-    main_checks_done: Annotated[int, _reset_or_add]
-    # 本轮主干检验期望到达数量
-    main_checks_expected: int
 
     # 变式/支架两条流水线完成计数（累加，aggregate 节点传入 -999 重置）
     sub_pipelines_done: Annotated[int, _reset_or_add]

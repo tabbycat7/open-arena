@@ -26,7 +26,8 @@
 - cognitive_level：认知层次（原样保留）
 - difficulty：难度值（原样保留）
 - 对于变式问题，额外保留：parent_id, variation_type, design_rationale
-- 对于支架问题，额外保留：from_main_id, to_main_id, bridge_function, design_rationale
+- 对于变式问题，额外保留：main_id, variation_type, design_rationale
+- 对于支架问题，额外保留：from_id, to_id, bridge_function, design_rationale
 
 ## 2. edges 数组构建
 
@@ -35,16 +36,16 @@
 - weight = 1.0（表示强顺序关系）
 
 ### 2b. 变式问题与主干问题的边（variant_of）
-- 每个变式问题根据其 parent_id 字段，从主干节点指向变式节点
-- source = 变式问题的 parent_id
+- 每个变式问题根据其 main_id 字段，从主干节点指向变式节点
+- source = 变式问题的 main_id
 - target = 变式问题的 id
 - relation = "variant_of"
 - weight = 0.8
 
 ### 2c. 支架问题的边（scaffold_from / scaffold_to）
 - 每个支架问题有两条边：
-  1. 从前一个主干节点指向支架：source = from_main_id, target = 支架 id, relation = "scaffold_from"
-  2. 从支架指向后一个主干节点：source = 支架 id, target = to_main_id, relation = "scaffold_to"
+  1. 从前一个主干节点指向支架：source = from_id, target = 支架 id, relation = "scaffold_from"
+  2. 从支架指向后一个主干节点：source = 支架 id, target = to_id, relation = "scaffold_to"
 - weight = 0.7
 
 ---
@@ -71,7 +72,7 @@
       "knowledge_points": ["KP1"],
       "cognitive_level": "apply",
       "difficulty": 0.55,
-      "parent_id": "M1",
+      "main_id": "M1",
       "variation_type": "情景替换",
       "design_rationale": "设计意图"
     }},
@@ -82,8 +83,8 @@
       "knowledge_points": ["KP1"],
       "cognitive_level": "remember",
       "difficulty": 0.35,
-      "from_main_id": "M1",
-      "to_main_id": "M2",
+      "from_id": "M1",
+      "to_id": "M2",
       "bridge_function": "桥接功能",
       "design_rationale": "设计意图"
     }}
@@ -103,6 +104,6 @@
 1. ✅ nodes 数组包含了所有主干、变式、支架问题
 2. ✅ 每个问题的 content 字段与输入完全一致，没有被修改或截断
 3. ✅ 主干问题之间有完整的 sequence 边链
-4. ✅ 每个变式问题都有一条 variant_of 边连接到其 parent_id
+4. ✅ 每个变式问题都有一条 variant_of 边连接到其 main_id
 5. ✅ 每个支架问题都有 scaffold_from 和 scaffold_to 两条边
 6. ✅ 没有孤立节点（每个节点至少有一条边）

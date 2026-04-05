@@ -2,7 +2,7 @@
 
 import json
 import os
-from agents.llm import get_llm
+from agents.llm import get_generator_llm
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "main_question_chain.txt")
 
@@ -11,9 +11,7 @@ def _format_validation_feedback(state: dict) -> str:
     """从验证结果中提取结构化反馈，格式化为LLM可理解的修改指令"""
     feedback_parts = []
     validator_meta = {
-        "cognitive_alignment": ("认知对齐检验", 8),
-        "goal_alignment": ("教学目标对齐检验", 6),
-        "teaching_logic_alignment": ("教学逻辑检验", 10),
+        "integrated_main_question_validator": ("主干问题综合校验", 10),
     }
 
     for vr in state.get("validation_results", []):
@@ -57,10 +55,15 @@ def _format_validation_feedback(state: dict) -> str:
         if must_fix:
             feedback_parts.append("\n### 【必须修复】以下问题必须改正：")
             for i, item in enumerate(must_fix, 1):
-                node_id = item.get("node_id", "未知")
+                item_id = (
+                    item.get("id")
+                    or item.get("target_node")
+                    or item.get("target")
+                    or "未知"
+                )
                 action = item.get("action", "")
-                direction = item.get("rewrite_direction", "")
-                feedback_parts.append("%d. 节点 %s：" % (i, node_id))
+                direction = item.get("rewrite_direction") or item.get("direction", "")
+                feedback_parts.append("%d. 节点 %s：" % (i, item_id))
                 if action:
                     feedback_parts.append("   - 问题：%s" % action)
                 if direction:
@@ -70,22 +73,29 @@ def _format_validation_feedback(state: dict) -> str:
         if should_fix:
             feedback_parts.append("\n### 【建议修复】以下问题建议改正：")
             for i, item in enumerate(should_fix, 1):
-                node_id = item.get("node_id", item.get("target_node", "未知"))
+                item_id = (
+                    item.get("id")
+                    or item.get("target_node")
+                    or item.get("target")
+                    or "未知"
+                )
                 action = item.get("action", "")
                 direction = item.get("direction", item.get("rewrite_direction", ""))
-                feedback_parts.append("%d. 节点 %s：" % (i, node_id))
+                feedback_parts.append("%d. 节点 %s：" % (i, item_id))
                 if action:
                     feedback_parts.append("   - 问题：%s" % action)
                 if direction:
                     feedback_parts.append("   - 修改方向：%s" % direction)
 
         issues = vr.get("issues", [])
+        if not issues and isinstance(vr.get("raw_result"), dict):
+            issues = vr.get("raw_result", {}).get("issues_summary", [])
         if issues and not must_fix:
             feedback_parts.append("\n### 发现的问题：")
             for issue in issues[:5]:
-                qid = issue.get("question_id", "")
+                qid = issue.get("id") or issue.get("target") or issue.get("dimension", "")
                 severity = issue.get("severity", "")
-                desc = issue.get("description", "")
+                desc = issue.get("description") or issue.get("issue_type") or ""
                 suggestion = issue.get("suggestion", "")
                 feedback_parts.append("- [%s] %s: %s" % (severity.upper(), qid, desc))
                 if suggestion:
@@ -120,11 +130,12 @@ def main_question_chain_node(state: dict) -> dict:
     prompt = prompt.replace("{teaching_goals}", state.get("teaching_goals", ""))
     prompt = prompt.replace("{student_profile}", state.get("student_profile", ""))
     prompt = prompt.replace("{language_style}", state.get("language_style", ""))
+    prompt = prompt.replace("{attachment}", state.get("attachment", ""))
     prompt = prompt.replace("{main_question_plan}", json.dumps(main_chain_plan, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{previous_questions}", json.dumps(previous_main_questions, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{validation_feedback}", validation_feedback)
 
-    llm = get_llm(temperature=0.7)
+    llm = get_generator_llm(temperature=0.7)
     response = llm.invoke(prompt)
     content = response.content
 
@@ -139,6 +150,8 @@ def main_question_chain_node(state: dict) -> dict:
         main_questions = []
 
     for q in main_questions:
+        if not q.get("id"):
+            q["id"] = ""
         q["question_type"] = "main"
         q.setdefault("parent_id", None)
 

@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import time
+import importlib
 import threading
 import traceback
 from datetime import datetime
@@ -26,6 +27,7 @@ if _mat_dir not in sys.path:
     sys.path.insert(0, _mat_dir)
 
 from agents.graph import build_graph  # noqa: E402
+from agents.llm import use_generator_model  # noqa: E402
 
 app = Flask(__name__)
 
@@ -331,7 +333,22 @@ def multi_agent_teaching_redirect():
 @app.route("/app/multi-agent-teaching/")
 def multi_agent_teaching_page():
     """多智能体教学地图生成页面"""
-    return render_template("multi_agent_teaching.html")
+    default_model_option = _mat_get_default_model_option()
+    default_model_supports_thinking = _mat_supports_thinking(default_model_option.get("id", ""))
+    thinking_budget_presets = _mat_get_thinking_budget_presets()
+    thinking_budget_default_level = _mat_get_default_thinking_budget_level(thinking_budget_presets)
+    return render_template(
+        "multi_agent_teaching.html",
+        model_options=_mat_get_model_options(),
+        default_model_id=_mat_get_default_model_id(),
+        default_model_option=default_model_option,
+        thinking_default_enabled=bool(getattr(config, "TEACHING_MAP_THINKING_DEFAULT_ENABLED", False) and default_model_supports_thinking),
+        thinking_budget_default=int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_DEFAULT", 4096)),
+        thinking_budget_min=int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MIN", 128)),
+        thinking_budget_max=int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MAX", 32768)),
+        thinking_budget_presets=thinking_budget_presets,
+        thinking_budget_default_level=thinking_budget_default_level,
+    )
 
 
 @app.route("/app/debate/history")
@@ -1159,10 +1176,7 @@ AGENT_NAME_MAP = {
     "learning_analysis": "学情与目标解析Agent",
     "teaching_logic_design": "教学地图逻辑规划Agent",
     "main_question_chain": "主干问题链构建Agent",
-    "cognitive_check": "认知对齐检验Agent(V1)",
-    "goal_check": "教学目标对齐检验Agent(V3)",
-    "teaching_logic_check": "教学逻辑检验Agent(V5)",
-    "aggregate_main_checks": "系统-主干问题检验汇总",
+    "main_question_check": "主干问题综合校验Agent",
     "fan_out_gen": "系统-并行生成分发",
     "variant_question": "变式问题生成Agent",
     "variant_check": "变式问题检验Agent(V2a)",
@@ -1173,6 +1187,8 @@ AGENT_NAME_MAP = {
     "bump_main_retry": "系统-主干问题重试",
     "bump_variant_retry": "系统-变式问题重试",
     "bump_scaffold_retry": "系统-支架问题重试",
+    "mark_variant_done": "系统-变式流水线完成",
+    "mark_scaffold_done": "系统-支架流水线完成",
 }
 
 
@@ -1220,7 +1236,10 @@ def _mat_init_db():
                 grade           VARCHAR(32),
                 teaching_goals  TEXT,
                 student_profile TEXT,
+                difficulty_analysis TEXT,
                 language_style  VARCHAR(32),
+                model_id        VARCHAR(255),
+                duration_seconds DOUBLE NULL,
                 result_json     LONGTEXT,
                 created_at      DATETIME,
                 INDEX idx_created_at (created_at)
@@ -1238,19 +1257,31 @@ def _mat_init_db():
                 INDEX idx_created_at (created_at)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         """)
+        cur.execute("SHOW COLUMNS FROM history LIKE 'difficulty_analysis'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE history ADD COLUMN difficulty_analysis TEXT AFTER student_profile")
+        cur.execute("SHOW COLUMNS FROM history LIKE 'model_id'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE history ADD COLUMN model_id VARCHAR(255) AFTER language_style")
+        cur.execute("SHOW COLUMNS FROM history LIKE 'duration_seconds'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE history ADD COLUMN duration_seconds DOUBLE NULL AFTER model_id")
     conn.commit()
     conn.close()
     app.logger.info("[教学地图] 数据库初始化完成")
 
 
-def _mat_save_to_db(task_id: str, inputs: dict, result: dict):
+def _mat_save_to_db(task_id: str, inputs: dict, result: dict, duration_seconds: Optional[float] = None):
     conn = _mat_get_conn()
     with conn.cursor() as cur:
         cur.execute(
-            "REPLACE INTO history (id, subject, grade, teaching_goals, student_profile, language_style, result_json, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+            "REPLACE INTO history (id, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, result_json, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             (task_id, inputs.get("subject", ""), inputs.get("grade", ""),
              inputs.get("teaching_goals", ""), inputs.get("student_profile", ""),
+             inputs.get("difficulty_analysis", ""),
              inputs.get("language_style", ""),
+             inputs.get("model_id", ""),
+             duration_seconds,
              json.dumps(result, ensure_ascii=False),
              datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
         )
@@ -1271,6 +1302,55 @@ def _mat_save_agent_log(task_id: str, step_number: int, agent_name: str, output:
     conn.close()
 
 
+def _mat_extract_model_id_from_log_payload(payload: dict) -> str:
+    if not isinstance(payload, dict):
+        return ""
+    input_preview = payload.get("input_preview")
+    nested_output = payload.get("output")
+    model_id = (
+        payload.get("model_id")
+        or (input_preview.get("model_id") if isinstance(input_preview, dict) else "")
+        or (nested_output.get("model_id") if isinstance(nested_output, dict) else "")
+    )
+    if model_id is None:
+        return ""
+    return str(model_id).strip()
+
+
+def _mat_get_history_model_map(task_ids: List[str]) -> Dict[str, str]:
+    ids = [task_id for task_id in task_ids if task_id]
+    if not ids:
+        return {}
+
+    placeholders = ",".join(["%s"] * len(ids))
+    conn = _mat_get_conn()
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT task_id, step_number, output_json FROM agent_logs WHERE task_id IN (%s) ORDER BY task_id ASC, step_number ASC"
+            % placeholders,
+            tuple(ids),
+        )
+        rows = cur.fetchall()
+    conn.close()
+
+    model_map: Dict[str, str] = {}
+    for row in rows:
+        task_id = row.get("task_id")
+        if not task_id or task_id in model_map:
+            continue
+        output_json = row.get("output_json")
+        if not output_json:
+            continue
+        try:
+            payload = json.loads(output_json)
+        except json.JSONDecodeError:
+            continue
+        model_id = _mat_extract_model_id_from_log_payload(payload)
+        if model_id:
+            model_map[task_id] = model_id
+    return model_map
+
+
 def _mat_get_agent_logs(task_id: str) -> List[dict]:
     conn = _mat_get_conn()
     with conn.cursor() as cur:
@@ -1281,6 +1361,7 @@ def _mat_get_agent_logs(task_id: str) -> List[dict]:
         rows = cur.fetchall()
     conn.close()
     for r in rows:
+        r["model_id"] = ""
         if isinstance(r.get("created_at"), datetime):
             r["created_at"] = r["created_at"].strftime("%Y-%m-%d %H:%M:%S")
         if r.get("output_json"):
@@ -1288,6 +1369,8 @@ def _mat_get_agent_logs(task_id: str) -> List[dict]:
                 r["output"] = json.loads(r.pop("output_json"))
             except json.JSONDecodeError:
                 r["output"] = r.pop("output_json")
+        if isinstance(r.get("output"), dict):
+            r["model_id"] = _mat_extract_model_id_from_log_payload(r.get("output"))
     return rows
 
 
@@ -1295,14 +1378,28 @@ def _mat_get_history(limit: int = 50) -> List[dict]:
     conn = _mat_get_conn()
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT id, subject, grade, teaching_goals, student_profile, language_style, created_at FROM history ORDER BY created_at DESC LIMIT %s",
+            "SELECT id, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history ORDER BY created_at DESC LIMIT %s",
             (limit,),
         )
         rows = cur.fetchall()
     conn.close()
+
+    model_map = _mat_get_history_model_map([r.get("id") for r in rows])
+
     for r in rows:
         if isinstance(r.get("created_at"), datetime):
             r["created_at"] = r["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+        duration_seconds = r.get("duration_seconds")
+        if duration_seconds is not None:
+            try:
+                r["duration_seconds"] = round(float(duration_seconds), 2)
+            except (TypeError, ValueError):
+                r["duration_seconds"] = None
+        model_id = (str(r.get("model_id") or "")).strip()
+        if not model_id:
+            model_id = model_map.get(r.get("id"), "")
+        r["model_id"] = model_id
+        r["model_display_name"] = _mat_model_display_name(model_id) if model_id else "未知模型"
     return rows
 
 
@@ -1316,6 +1413,12 @@ def _mat_get_history_detail(record_id: str) -> Optional[dict]:
         return None
     if isinstance(row.get("created_at"), datetime):
         row["created_at"] = row["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+    duration_seconds = row.get("duration_seconds")
+    if duration_seconds is not None:
+        try:
+            row["duration_seconds"] = round(float(duration_seconds), 2)
+        except (TypeError, ValueError):
+            row["duration_seconds"] = None
     row["result"] = json.loads(row.pop("result_json"))
     return row
 
@@ -1330,14 +1433,198 @@ def _mat_build_output_preview(output: dict) -> dict:
     return {k: v for k, v in output.items() if k != "progress_messages"}
 
 
+def _mat_model_display_name(model_id: str) -> str:
+    parts = [p for p in (model_id or "").split("/") if p]
+    return parts[-1] if parts else model_id
+
+
+def _mat_supports_thinking(model_id: str) -> bool:
+    raw_supported = getattr(config, "TEACHING_MAP_THINKING_SUPPORTED_MODEL_IDS", []) or []
+    supported = {
+        (item or "").strip()
+        for item in raw_supported
+        if isinstance(item, str)
+    }
+    return model_id in supported
+
+
+def _mat_parse_optional_bool(raw_value) -> Optional[bool]:
+    if raw_value is None:
+        return None
+    value = str(raw_value).strip().lower()
+    if value in {"1", "true", "yes", "on"}:
+        return True
+    if value in {"0", "false", "no", "off"}:
+        return False
+    return None
+
+
+def _mat_normalize_thinking_budget(raw_value) -> int:
+    default_budget = int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_DEFAULT", 4096))
+    min_budget = int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MIN", 128))
+    max_budget = int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MAX", 32768))
+    try:
+        budget = int(str(raw_value).strip())
+    except (TypeError, ValueError):
+        budget = default_budget
+
+    if budget < min_budget:
+        return min_budget
+    if budget > max_budget:
+        return max_budget
+    return budget
+
+
+def _mat_get_thinking_budget_presets() -> List[dict]:
+    raw_presets = getattr(config, "TEACHING_MAP_THINKING_BUDGET_PRESETS", []) or []
+    min_budget = int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MIN", 128))
+    max_budget = int(getattr(config, "TEACHING_MAP_THINKING_BUDGET_MAX", 32768))
+    presets = []
+    seen = set()
+    for item in raw_presets:
+        if not isinstance(item, dict):
+            continue
+        preset_id = str(item.get("id", "")).strip()
+        if not preset_id or preset_id in seen:
+            continue
+        label = str(item.get("label", "")).strip() or preset_id
+        try:
+            range_min = int(item.get("min", min_budget))
+        except (TypeError, ValueError):
+            range_min = min_budget
+        try:
+            range_max = int(item.get("max", max_budget))
+        except (TypeError, ValueError):
+            range_max = max_budget
+        if range_min > range_max:
+            range_min, range_max = range_max, range_min
+        range_min = max(min_budget, min(range_min, max_budget))
+        range_max = max(min_budget, min(range_max, max_budget))
+        if range_max < range_min:
+            range_max = range_min
+
+        try:
+            budget = int(item.get("budget", (range_min + range_max) // 2))
+        except (TypeError, ValueError):
+            budget = (range_min + range_max) // 2
+        budget = max(range_min, min(budget, range_max))
+
+        presets.append(
+            {
+                "id": preset_id,
+                "label": label,
+                "min": range_min,
+                "max": range_max,
+                "budget": budget,
+            }
+        )
+        seen.add(preset_id)
+
+    if presets:
+        return presets
+
+    fallback = _mat_normalize_thinking_budget(getattr(config, "TEACHING_MAP_THINKING_BUDGET_DEFAULT", 4096))
+    return [{"id": "balanced", "label": "斟酌", "min": fallback, "max": fallback, "budget": fallback}]
+
+
+def _mat_get_default_thinking_budget_level(presets: Optional[List[dict]] = None) -> str:
+    presets = presets or _mat_get_thinking_budget_presets()
+    configured = (getattr(config, "TEACHING_MAP_THINKING_BUDGET_DEFAULT_PRESET", "") or "").strip()
+    if configured and any(item.get("id") == configured for item in presets):
+        return configured
+
+    default_budget = _mat_normalize_thinking_budget(getattr(config, "TEACHING_MAP_THINKING_BUDGET_DEFAULT", 4096))
+    for item in presets:
+        if int(item["min"]) <= default_budget <= int(item["max"]):
+            return str(item["id"])
+
+    if presets:
+        nearest = min(presets, key=lambda item: abs(int(item["budget"]) - default_budget))
+        return str(nearest["id"])
+    return ""
+
+
+def _mat_resolve_thinking_budget(raw_level, raw_budget) -> tuple:
+    presets = _mat_get_thinking_budget_presets()
+    selected_level = (str(raw_level).strip() if raw_level is not None else "")
+    matched = None
+    for item in presets:
+        if item.get("id") == selected_level:
+            matched = item
+            break
+
+    if matched:
+        return int(matched["budget"]), str(matched["id"]), str(matched["label"])
+
+    budget = _mat_normalize_thinking_budget(raw_budget)
+    if presets:
+        nearest = min(presets, key=lambda item: abs(int(item["budget"]) - budget))
+        return budget, str(nearest["id"]), str(nearest["label"])
+    return budget, "", ""
+
+
+def _mat_get_model_options() -> List[dict]:
+    raw_ids = getattr(config, "TEACHING_MAP_SELECTABLE_MODEL_IDS", []) or []
+    icon_map = getattr(config, "TEACHING_MAP_MODEL_ICON_MAP", {}) or {}
+    default_icon = (
+        getattr(config, "TEACHING_MAP_DEFAULT_MODEL_ICON", "images/model-icons/model-default.svg")
+        or "images/model-icons/model-default.svg"
+    )
+    default_icon = default_icon.strip().lstrip("/")
+
+    model_ids = []
+    seen = set()
+    for raw in raw_ids:
+        if not isinstance(raw, str):
+            continue
+        model_id = raw.strip()
+        if not model_id or model_id in seen:
+            continue
+        seen.add(model_id)
+        model_ids.append(model_id)
+
+    default_model = (getattr(config, "TEACHING_MAP_GENERATOR_MODEL_NAME", "") or "").strip()
+    if not model_ids and default_model:
+        model_ids.append(default_model)
+
+    options = []
+    for model_id in model_ids:
+        icon = icon_map.get(model_id, default_icon)
+        if not isinstance(icon, str) or not icon.strip():
+            icon = default_icon
+        options.append(
+            {
+                "id": model_id,
+                "name": _mat_model_display_name(model_id),
+                "icon": icon.strip().lstrip("/"),
+                "supports_thinking": _mat_supports_thinking(model_id),
+            }
+        )
+    return options
+
+
+def _mat_get_default_model_id() -> str:
+    options = _mat_get_model_options()
+    return options[0]["id"] if options else ""
+
+
+def _mat_get_default_model_option() -> dict:
+    options = _mat_get_model_options()
+    if options:
+        return options[0]
+    return {
+        "id": "",
+        "name": "请选择模型",
+        "icon": "images/model-icons/model-default.svg",
+    }
+
+
 def _mat_build_input_preview(node_name: str, accumulated: dict) -> dict:
     INPUT_FIELDS = {
-        "learning_analysis": ["subject", "grade", "teaching_goals", "student_profile", "language_style"],
-        "teaching_logic_design": ["subject", "grade", "teaching_goals", "analysis_result"],
-        "main_question_chain": ["subject", "grade", "teaching_goals", "student_profile", "language_style", "map_construction_logic", "main_retry_count", "validation_results"],
-        "cognitive_check": ["subject", "grade", "analysis_result", "main_questions"],
-        "goal_check": ["teaching_goals", "analysis_result", "main_questions"],
-        "teaching_logic_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions"],
+        "learning_analysis": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
+        "teaching_logic_design": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "analysis_result"],
+        "main_question_chain": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
+        "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
         "variant_question": ["subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
         "scaffold_question": ["subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
         "variant_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "variant_questions"],
@@ -1350,27 +1637,45 @@ def _mat_build_input_preview(node_name: str, accumulated: dict) -> dict:
     preview = {}
     for f in scalar_fields:
         if f in accumulated:
-            preview[f] = accumulated[f]
+            value = accumulated[f]
+            if f == "attachment" and isinstance(value, str):
+                preview[f] = _mat_truncate_text(value, 1200)
+            else:
+                preview[f] = value
     if node_name == "main_question_chain" and isinstance(preview.get("map_construction_logic"), dict):
         map_logic = preview["map_construction_logic"]
         preview["map_construction_logic"] = {"main_question_chain": map_logic.get("main_question_chain", [])}
     return preview
 
 
+def _mat_compute_duration_seconds(task: dict) -> Optional[float]:
+    started_at = task.get("started_at_ts")
+    if started_at is None:
+        return None
+    try:
+        elapsed = max(0.0, time.time() - float(started_at))
+    except (TypeError, ValueError):
+        return None
+    return round(elapsed, 2)
+
+
 def _mat_run_workflow(task_id: str):
     task = _mat_tasks[task_id]
     try:
         graph = build_graph()
+        selected_model_id = task.get("input", {}).get("model_id")
+        thinking_options = {
+            "enable_thinking": bool(task.get("input", {}).get("enable_thinking", False)),
+            "thinking_budget": _mat_normalize_thinking_budget(task.get("input", {}).get("thinking_budget")),
+        }
         initial_state = {
             **task["input"],
             "main_retry_count": 0,
             "variant_retry_count": 0,
             "scaffold_retry_count": 0,
-            "main_checks_done": 0,
-            "main_checks_expected": 3,
             "sub_pipelines_done": 0,
             "main_validation_feedback": [],
-            "main_failed_validators": [],
+            "main_retry_route": "main_question_generation",
             "variant_validation_feedback": [],
             "scaffold_validation_feedback": [],
             "progress_messages": [],
@@ -1387,51 +1692,119 @@ def _mat_run_workflow(task_id: str):
         stream_config = {"recursion_limit": 100}
         step_number = 0
 
-        for state_snapshot in graph.stream(initial_state, config=stream_config):
-            for node_name, node_output in state_snapshot.items():
-                if isinstance(node_output, dict):
-                    step_number += 1
-                    agent_display_name = AGENT_NAME_MAP.get(node_name, node_name)
-                    input_preview = _mat_build_input_preview(node_name, accumulated)
-                    new_messages = node_output.get("progress_messages", [])
-                    output_preview = _mat_build_output_preview(node_output)
+        with use_generator_model(selected_model_id, thinking_options=thinking_options):
+            for state_snapshot in graph.stream(initial_state, config=stream_config):
+                if task.get("cancel_requested"):
+                    raise RuntimeError("__MAT_TASK_CANCELLED__")
+                for node_name, node_output in state_snapshot.items():
+                    if task.get("cancel_requested"):
+                        raise RuntimeError("__MAT_TASK_CANCELLED__")
+                    if isinstance(node_output, dict):
+                        step_number += 1
+                        agent_display_name = AGENT_NAME_MAP.get(node_name, node_name)
+                        input_preview = _mat_build_input_preview(node_name, accumulated)
+                        new_messages = node_output.get("progress_messages", [])
+                        output_preview = _mat_build_output_preview(node_output)
 
-                    progress_item = {
-                        "message": new_messages[0] if new_messages else "%s 执行完成" % agent_display_name,
-                        "agent": node_name,
-                        "agent_display_name": agent_display_name,
-                        "step_number": step_number,
-                        "input_preview": input_preview,
-                        "output_preview": output_preview,
-                    }
-                    task["progress"].append(progress_item)
-                    for msg in new_messages[1:]:
-                        task["progress"].append({**progress_item, "message": msg})
-
-                    for key, value in node_output.items():
-                        if key == "progress_messages":
-                            continue
-                        accumulated[key] = value
-
-                    log_output = {k: v for k, v in node_output.items() if k != "progress_messages"}
-                    try:
-                        _mat_save_agent_log(task_id, step_number, agent_display_name, {
+                        progress_item = {
+                            "message": new_messages[0] if new_messages else "%s 执行完成" % agent_display_name,
+                            "agent": node_name,
+                            "agent_display_name": agent_display_name,
+                            "step_number": step_number,
                             "input_preview": input_preview,
-                            "output": log_output,
-                        })
-                    except Exception as log_err:
-                        app.logger.warning(f"[教学地图] 保存日志失败: {log_err}")
+                            "output_preview": output_preview,
+                        }
+                        task["progress"].append(progress_item)
+                        for msg in new_messages[1:]:
+                            task["progress"].append({**progress_item, "message": msg})
 
+                        for key, value in node_output.items():
+                            if key == "progress_messages":
+                                continue
+                            accumulated[key] = value
+
+                        log_output = {k: v for k, v in node_output.items() if k != "progress_messages"}
+                        try:
+                            _mat_save_agent_log(task_id, step_number, agent_display_name, {
+                                "input_preview": input_preview,
+                                "output": log_output,
+                            })
+                        except Exception as log_err:
+                            app.logger.warning(f"[教学地图] 保存日志失败: {log_err}")
+
+        if task.get("cancel_requested") or task.get("status") == "cancelled":
+            raise RuntimeError("__MAT_TASK_CANCELLED__")
+
+        task["duration_seconds"] = _mat_compute_duration_seconds(task)
         task["result"] = accumulated.get("teaching_map", {"nodes": [], "edges": []})
-        _mat_save_to_db(task_id, task["input"], task["result"])
+        _mat_save_to_db(task_id, task["input"], task["result"], task.get("duration_seconds"))
         task["status"] = "done"
         task["progress"].append("[系统] 教学地图生成完成！")
 
     except Exception as e:
+        if str(e) == "__MAT_TASK_CANCELLED__":
+            if task.get("duration_seconds") is None:
+                task["duration_seconds"] = _mat_compute_duration_seconds(task)
+            task["status"] = "cancelled"
+            if not task.get("error_message"):
+                task["error_message"] = "任务已强制停止"
+            if not task.get("progress") or task["progress"][-1] != "[系统] 任务已强制停止":
+                task["progress"].append("[系统] 任务已强制停止")
+            return
+        task["duration_seconds"] = _mat_compute_duration_seconds(task)
         task["status"] = "error"
         task["error_message"] = str(e)
         task["progress"].append("[错误] %s" % str(e))
         app.logger.error(f"[教学地图] Workflow failed: {traceback.format_exc()}")
+
+
+def _mat_parse_uploaded_attachment(file_storage) -> str:
+    """Load attachment parser lazily to avoid static import path issues."""
+    try:
+        parser_mod = importlib.import_module("attachment_parser")
+        return parser_mod.parse_uploaded_attachment(file_storage)
+    except Exception:
+        return file_storage.read().decode("utf-8", errors="ignore")
+
+
+def _mat_is_attachment_parse_failure(parsed_text: str) -> bool:
+    if not parsed_text:
+        return True
+    failure_markers = (
+        "附件解析失败",
+        "状态: 附件过大",
+        "无法直接解析该文件类型",
+    )
+    return any(marker in parsed_text for marker in failure_markers)
+
+
+def _mat_collect_uploaded_files(files) -> List:
+    collected = []
+    for key in ("attachment", "attachment[]"):
+        for file_storage in files.getlist(key):
+            if not file_storage or not getattr(file_storage, "filename", ""):
+                continue
+            collected.append(file_storage)
+    return collected
+
+
+def _mat_parse_uploaded_attachments(file_storages):
+    parsed_parts = []
+    stats = {"received": 0, "parsed": 0, "failed": 0}
+    for file_storage in file_storages or []:
+        if not file_storage or not getattr(file_storage, "filename", ""):
+            continue
+        stats["received"] += 1
+        text = _mat_parse_uploaded_attachment(file_storage)
+        if text:
+            parsed_parts.append(text)
+            if _mat_is_attachment_parse_failure(text):
+                stats["failed"] += 1
+            else:
+                stats["parsed"] += 1
+        else:
+            stats["failed"] += 1
+    return "\n\n".join(parsed_parts), stats
 
 
 # ===================== 多智能体教学地图 - API 路由 =====================
@@ -1439,26 +1812,90 @@ def _mat_run_workflow(task_id: str):
 def mat_generate():
     """创建教学地图生成任务"""
     data = request.form
-    attachment_text = ""
-    if "attachment" in request.files:
-        file = request.files["attachment"]
-        if file.filename:
-            attachment_text = file.read().decode("utf-8", errors="ignore")
+    model_id = (data.get("model_id", "") or "").strip()
+    allowed_model_ids = [item["id"] for item in _mat_get_model_options()]
+    if not model_id:
+        model_id = allowed_model_ids[0] if allowed_model_ids else ""
+    if allowed_model_ids and model_id not in allowed_model_ids:
+        return jsonify({"error": "所选模型不在可选列表中"}), 400
+
+    model_supports_thinking = _mat_supports_thinking(model_id)
+    requested_enable_thinking = _mat_parse_optional_bool(data.get("enable_thinking"))
+    enable_thinking = bool(getattr(config, "TEACHING_MAP_THINKING_DEFAULT_ENABLED", False))
+    if requested_enable_thinking is not None:
+        enable_thinking = requested_enable_thinking
+    if not model_supports_thinking:
+        enable_thinking = False
+    thinking_budget, thinking_budget_level, thinking_budget_label = _mat_resolve_thinking_budget(
+        data.get("thinking_budget_level"),
+        data.get("thinking_budget"),
+    )
+
+    attachment_text, attachment_stats = _mat_parse_uploaded_attachments(_mat_collect_uploaded_files(request.files))
+    language_style = data.get("language_style", "严谨学术")
+    if language_style == "自定义":
+        custom_style = data.get("custom_language_style", "").strip()
+        language_style = custom_style or "自定义"
 
     task_id = str(uuid.uuid4())
     _mat_tasks[task_id] = {
         "status": "running",
+        "cancel_requested": False,
+        "started_at_ts": time.time(),
+        "duration_seconds": None,
         "progress": [],
         "result": None,
         "input": {
+            "model_id": model_id,
+            "enable_thinking": enable_thinking,
+            "thinking_budget_level": thinking_budget_level,
+            "thinking_budget": thinking_budget,
             "subject": data.get("subject", ""),
             "grade": data.get("grade", ""),
             "teaching_goals": data.get("teaching_goals", ""),
             "student_profile": data.get("student_profile", ""),
-            "language_style": data.get("language_style", "严谨学术"),
+            "difficulty_analysis": data.get("difficulty_analysis", ""),
+            "language_style": language_style,
             "attachment": attachment_text,
         },
     }
+
+    _mat_tasks[task_id]["progress"].append(
+        "[系统] 当前模型 ID：%s" % (model_id or "未指定")
+    )
+
+    if attachment_stats["received"] > 0:
+        _mat_tasks[task_id]["progress"].append(
+            "[系统] 附件上传统计：共 %d 个，成功解析 %d 个，失败 %d 个"
+            % (attachment_stats["received"], attachment_stats["parsed"], attachment_stats["failed"])
+        )
+    else:
+        _mat_tasks[task_id]["progress"].append("[系统] 未检测到附件，按表单输入继续生成")
+
+    if model_supports_thinking:
+        _mat_tasks[task_id]["progress"].append(
+            "[系统] Think 模式：%s（思维链长度=%s，思维链长度=%d）"
+            % (
+                "开启" if enable_thinking else "关闭",
+                thinking_budget_label or "未指定",
+                thinking_budget,
+            )
+        )
+    else:
+        _mat_tasks[task_id]["progress"].append("[系统] 当前模型不支持 Think 参数，已自动忽略")
+
+    app.logger.info(
+        "[教学地图] task=%s model=%s supports_thinking=%s enable_thinking=%s thinking_budget_level=%s thinking_budget=%d attachment_received=%d attachment_parsed=%d attachment_failed=%d",
+        task_id,
+        model_id,
+        model_supports_thinking,
+        enable_thinking,
+        thinking_budget_level,
+        thinking_budget,
+        attachment_stats["received"],
+        attachment_stats["parsed"],
+        attachment_stats["failed"],
+    )
 
     thread = threading.Thread(target=_mat_run_workflow, args=(task_id,), daemon=True)
     thread.start()
@@ -1519,11 +1956,18 @@ def mat_stream(task_id):
                 )
                 sent += 1
 
-            if task["status"] in ("done", "error"):
+            if task["status"] in ("done", "error", "cancelled"):
+                if task["status"] == "done":
+                    event_type = "done"
+                elif task["status"] == "cancelled":
+                    event_type = "cancelled"
+                else:
+                    event_type = "error"
                 payload = {
-                    "type": "done" if task["status"] == "done" else "error",
+                    "type": event_type,
                     "result": task.get("result"),
                     "message": task.get("error_message", ""),
+                    "duration_seconds": task.get("duration_seconds"),
                 }
                 yield "data: %s\n\n" % json.dumps(payload, ensure_ascii=False, default=str)
                 return
@@ -1540,13 +1984,48 @@ def mat_get_result(task_id):
     if not task:
         record = _mat_get_history_detail(task_id)
         if record:
-            return jsonify({"status": "done", "result": record["result"]})
+            return jsonify({"status": "done", "result": record["result"], "duration_seconds": record.get("duration_seconds")})
         return jsonify({"error": "Task not found"}), 404
     if task["status"] == "running":
-        return jsonify({"status": "running", "progress": task["progress"]})
+        return jsonify({
+            "status": "running",
+            "progress": task["progress"],
+            "started_at_ts": task.get("started_at_ts"),
+        })
+    if task["status"] == "cancelled":
+        return jsonify({
+            "status": "cancelled",
+            "message": task.get("error_message", ""),
+            "duration_seconds": task.get("duration_seconds"),
+        })
     if task["status"] == "error":
-        return jsonify({"status": "error", "message": task.get("error_message", "")}), 500
-    return jsonify({"status": "done", "result": task["result"]})
+        return jsonify({
+            "status": "error",
+            "message": task.get("error_message", ""),
+            "duration_seconds": task.get("duration_seconds"),
+        }), 500
+    return jsonify({
+        "status": "done",
+        "result": task["result"],
+        "duration_seconds": task.get("duration_seconds"),
+    })
+
+
+@app.route("/api/mat/stop/<task_id>", methods=["POST"])
+def mat_stop_task(task_id):
+    task = _mat_tasks.get(task_id)
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    if task.get("status") in ("done", "error", "cancelled"):
+        return jsonify({"ok": True, "status": task.get("status")})
+
+    task["cancel_requested"] = True
+    task["status"] = "cancelled"
+    task["duration_seconds"] = _mat_compute_duration_seconds(task)
+    task["error_message"] = "任务已强制停止"
+    task["progress"].append("[系统] 已收到强制停止请求，任务已标记为停止")
+    return jsonify({"ok": True, "status": "cancelled"})
 
 
 @app.route("/api/mat/history")

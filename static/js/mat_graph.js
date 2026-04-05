@@ -76,6 +76,9 @@ function renderGraph(teachingMap) {
                 formatter: function () {
                     var typeLabel = TYPE_LABELS[qType] || qType;
                     var cognitiveLevel = node.cognitive_level || node.bloom_level || "";
+                    var commentary = node.lesson_presentation_script || node.commentary || node.Commentary || "";
+                    var fromId = node.from_id || node.from_main_id || "";
+                    var toId = node.to_id || node.to_main_id || "";
                     var html = '<div style="max-width:420px;white-space:normal;word-break:break-word;line-height:1.6">';
                     html += '<strong style="font-size:14px">' + node.id + '</strong>';
                     html += ' <span style="color:' + TYPE_COLORS[qType] + '">[' + typeLabel + ']</span><br/>';
@@ -83,7 +86,8 @@ function renderGraph(teachingMap) {
                     if (cognitiveLevel) html += '<div style="margin-top:6px;color:#888;font-size:12px">认知层次: ' + cognitiveLevel + '</div>';
                     if (node.difficulty !== undefined) html += '<div style="color:#888;font-size:12px">难度: ' + node.difficulty + '</div>';
                     if (node.knowledge_points && node.knowledge_points.length) html += '<div style="color:#888;font-size:12px">知识点: ' + node.knowledge_points.join("、") + '</div>';
-                    if (qType === "scaffold" && node.from_main_id && node.to_main_id) html += '<div style="color:#888;font-size:12px">桥接: ' + node.from_main_id + ' → ' + node.to_main_id + '</div>';
+                    if (qType === "scaffold" && fromId && toId) html += '<div style="color:#888;font-size:12px">桥接: ' + fromId + ' → ' + toId + '</div>';
+                    if (commentary) html += '<div style="margin-top:8px;padding-top:6px;border-top:1px dashed #d1d5db;color:#334155;font-size:12px">说课稿: ' + commentary + '</div>';
                     html += '</div>';
                     return html;
                 },
@@ -165,15 +169,20 @@ function showNodeDetail(node) {
     var html = "";
     var cognitiveLevel = node.cognitive_level || node.bloom_level || "-";
     var designIntent = node.design_intent || node.design_rationale || "";
+    var commentary = node.lesson_presentation_script || node.commentary || node.Commentary || "";
+    var mainId = node.main_id || node.parent_id || "";
+    var fromId = node.from_id || node.from_main_id || "";
+    var toId = node.to_id || node.to_main_id || "";
     html += row("问题内容", node.content || "-");
     html += row("知识点", (node.knowledge_points || []).join("、") || "-");
     html += row("认知层次", cognitiveLevel);
     html += row("难度", node.difficulty !== undefined ? node.difficulty : "-");
-    if (node.parent_id) html += row("关联主干", node.parent_id);
-    if (node.from_main_id && node.to_main_id) html += row("桥接位置", node.from_main_id + " → " + node.to_main_id);
+    if (mainId) html += row("关联主干", mainId);
+    if (fromId && toId) html += row("桥接位置", fromId + " → " + toId);
     if (designIntent) html += row("设计意图", designIntent);
     if (node.variation_type) html += row("变式方式", node.variation_type);
     if (node.bridge_function) html += row("桥梁功能", node.bridge_function);
+    if (commentary) html += row("说课稿", commentary);
 
     content.innerHTML = html;
     section.scrollIntoView({ behavior: "smooth", block: "nearest" });

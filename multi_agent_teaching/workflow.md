@@ -89,6 +89,59 @@ class E,K,M merge,G;
 
 
 ```mermaid
+flowchart TB
+    subgraph P1["阶段一：学情与主干"]
+        LA["learning_analysis<br/>学情与目标解析"]
+        TLD["teaching_logic_design<br/>教学蓝图规划"]
+        MQC["main_question_chain<br/>主干问题链生成"]
+        LA --> TLD --> MQC
+    end
+
+    subgraph P2["阶段二：主干综合校验与重试"]
+        MQCCHK["main_question_check<br/>主干问题综合校验"]
+        BMR["bump_main_retry<br/>累计重试 / 保存反馈"]
+        MQC --> MQCCHK
+        MQCCHK -->|未通过且可重试| BMR
+        BMR --> MQC
+        MQCCHK -->|通过 或 已达最大重试| FOG
+    end
+
+    subgraph P3["阶段三：并行子流水线"]
+        FOG["fan_out_gen<br/>系统分发（两条并行）"]
+
+        subgraph VAR["变式分支"]
+            VQ["variant_question"]
+            VC["variant_check"]
+            BVR["bump_variant_retry"]
+            MVD["mark_variant_done"]
+            VQ --> VC
+            VC -->|未通过且可重试| BVR
+            BVR --> VQ
+            VC -->|通过或放弃重试| MVD
+        end
+
+        subgraph SCA["支架分支"]
+            SQ["scaffold_question"]
+            SCC["scaffold_check"]
+            BSR["bump_scaffold_retry"]
+            MSD["mark_scaffold_done"]
+            SQ --> SCC
+            SCC -->|未通过且可重试| BSR
+            BSR --> SQ
+            SCC -->|通过或放弃重试| MSD
+        end
+
+        FOG --> VQ
+        FOG --> SQ
+        MVD --> ASP["aggregate_sub_pipelines<br/>两条流水线汇合计数"]
+        MSD --> ASP
+    end
+
+    subgraph P4["阶段四：整合与结束"]
+        ASP -->|两条都完成| MI["map_integration<br/>教学地图整合"]
+        MI --> ENDN((END))
+        ASP -->|仅一条完成| WAIT["wait_more → END<br/>本分支暂结束，等另一条"]
+    end
 
 ```
 

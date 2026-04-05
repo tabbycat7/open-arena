@@ -61,7 +61,7 @@
         </section>
 
         <div class="app-container" id="workspace">
-            <div class="main-content">
+            <div class="main-content stage-input" id="workspaceLayout">
                 <!-- Left Panel: Input Form + History -->
                 <section class="panel input-panel" id="inputPanel">
                     <!-- Tab switcher -->
@@ -72,76 +72,189 @@
 
                     <!-- Form tab -->
                     <div id="formTab" class="left-tab-content active">
-                        <form id="generateForm">
-                            <div class="form-group">
-                                <label for="subject">学科</label>
-                                <select id="subject" name="subject" required>
-                                    <option value="">请选择学科</option>
-                                    <option value="数学">数学</option>
-                                    <option value="语文">语文</option>
-                                    <option value="英语">英语</option>
-                                    <option value="物理">物理</option>
-                                    <option value="化学">化学</option>
-                                    <option value="生物">生物</option>
-                                    <option value="历史">历史</option>
-                                    <option value="地理">地理</option>
-                                    <option value="政治">政治</option>
-                                </select>
+                        <form id="generateForm" class="form-layout">
+                            <div class="form-section">
+                                <div class="form-section-title">基础信息</div>
+                                <div class="form-grid form-grid-2">
+                                    <div class="form-group">
+                                        <label for="subject">学科</label>
+                                        <select id="subject" name="subject" required>
+                                            <option value="">请选择学科</option>
+                                            <option value="数学">数学</option>
+                                            <option value="语文">语文</option>
+                                            <option value="英语">英语</option>
+                                            <option value="物理">物理</option>
+                                            <option value="化学">化学</option>
+                                            <option value="生物">生物</option>
+                                            <option value="历史">历史</option>
+                                            <option value="地理">地理</option>
+                                            <option value="政治">政治</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="grade">年级</label>
+                                        <select id="grade" name="grade" required>
+                                            <option value="">请选择年级</option>
+                                            <option value="一年级">一年级</option>
+                                            <option value="二年级">二年级</option>
+                                            <option value="三年级">三年级</option>
+                                            <option value="四年级">四年级</option>
+                                            <option value="五年级">五年级</option>
+                                            <option value="六年级">六年级</option>
+                                            <option value="七年级">七年级</option>
+                                            <option value="八年级">八年级</option>
+                                            <option value="九年级">九年级</option>
+                                            <option value="高一">高一</option>
+                                            <option value="高二">高二</option>
+                                            <option value="高三">高三</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group field-span-2">
+                                        <label for="modelPickerTrigger">生成模型</label>
+                                        <input type="hidden" id="model_id" name="model_id"
+                                            value="{{ default_model_id }}" required>
+                                        <div class="model-picker" id="modelPicker">
+                                            <button type="button" class="model-picker-trigger" id="modelPickerTrigger"
+                                                aria-haspopup="listbox" aria-expanded="false">
+                                                <span class="model-picker-current">
+                                                    <img id="modelPickerIcon" class="model-picker-icon"
+                                                        src="{{ url_for('static', filename=default_model_option.icon) }}"
+                                                        alt="模型图标">
+                                                    <span id="modelPickerLabel">{{ default_model_option.name }}</span>
+                                                </span>
+                                                <span class="model-picker-caret" aria-hidden="true">&#9662;</span>
+                                            </button>
+                                            <div class="model-picker-menu" id="modelPickerMenu" role="listbox">
+                                                {% for option in model_options %}
+                                                <button type="button"
+                                                    class="model-picker-item {% if option.id==default_model_id %}active{% endif %}"
+                                                    data-value="{{ option.id }}" data-label="{{ option.name }}"
+                                                    data-icon="{{ url_for('static', filename=option.icon) }}"
+                                                    data-supports-thinking="{% if option.supports_thinking %}1{% else %}0{% endif %}"
+                                                    role="option"
+                                                    aria-selected="{% if option.id==default_model_id %}true{% else %}false{% endif %}">
+                                                    <img class="model-picker-icon"
+                                                        src="{{ url_for('static', filename=option.icon) }}"
+                                                        alt="{{ option.name }}">
+                                                    <span>{{ option.name }}</span>
+                                                </button>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group field-span-2" id="thinkingControls"
+                                        data-default-enabled="{% if thinking_default_enabled %}1{% else %}0{% endif %}"
+                                        data-budget-default="{{ thinking_budget_default }}"
+                                        data-budget-min="{{ thinking_budget_min }}"
+                                        data-budget-max="{{ thinking_budget_max }}"
+                                        data-budget-default-level="{{ thinking_budget_default_level }}">
+                                        <label for="enable_thinking">Think 推理模式</label>
+                                        <div class="thinking-row">
+                                            <label class="thinking-switch" for="enable_thinking">
+                                                <input type="checkbox" id="enable_thinking" {% if
+                                                    thinking_default_enabled %}checked{% endif %}>
+                                                <span class="thinking-slider"></span>
+                                                <span class="thinking-switch-text" id="thinkingSwitchText">开启
+                                                    Think</span>
+                                            </label>
+                                            <div class="thinking-budget-wrap">
+                                                <span class="thinking-budget-label">思维深度档位</span>
+                                                <div class="thinking-level-select-wrap">
+                                                    <select id="thinking_budget_level" name="thinking_budget_level"
+                                                        class="thinking-level-select">
+                                                        {% for preset in thinking_budget_presets %}
+                                                        <option value="{{ preset.id }}" data-label="{{ preset.label }}"
+                                                            data-min="{{ preset.min }}" data-max="{{ preset.max }}"
+                                                            data-budget="{{ preset.budget }}" {% if
+                                                            preset.id==thinking_budget_default_level %}selected{% endif
+                                                            %}>
+                                                            {{ preset.label }}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" id="thinking_budget" name="thinking_budget"
+                                                    value="{{ thinking_budget_default }}">
+                                            </div>
+                                        </div>
+                                        <div class="field-hint" id="thinkingSupportHint"></div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="grade">年级</label>
-                                <select id="grade" name="grade" required>
-                                    <option value="">请选择年级</option>
-                                    <option value="一年级">一年级</option>
-                                    <option value="二年级">二年级</option>
-                                    <option value="三年级">三年级</option>
-                                    <option value="四年级">四年级</option>
-                                    <option value="五年级">五年级</option>
-                                    <option value="六年级">六年级</option>
-                                    <option value="七年级">七年级</option>
-                                    <option value="八年级">八年级</option>
-                                    <option value="九年级">九年级</option>
-                                    <option value="高一">高一</option>
-                                    <option value="高二">高二</option>
-                                    <option value="高三">高三</option>
-                                </select>
+                            <div class="form-section">
+                                <div class="form-section-title">教学内容</div>
+                                <div class="form-grid form-grid-2">
+                                    <div class="form-group field-span-2">
+                                        <label for="teaching_goals">教学目标</label>
+                                        <textarea id="teaching_goals" name="teaching_goals" rows="4"
+                                            placeholder="请详细描述本节课的教学目标..." required></textarea>
+                                    </div>
+
+                                    <div class="form-group field-span-2">
+                                        <label for="student_profile">学情描述</label>
+                                        <textarea id="student_profile" name="student_profile" rows="4"
+                                            placeholder="请描述班级学生的整体水平、学优生和学困生的比例等..."></textarea>
+                                    </div>
+
+                                    <div class="form-group field-span-2">
+                                        <label for="difficulty_analysis">重难点分析</label>
+                                        <textarea id="difficulty_analysis" name="difficulty_analysis" rows="3"
+                                            placeholder="请说明本课的教学重点、教学难点，以及你计划的突破思路..."></textarea>
+                                    </div>
+
+                                    <div class="form-group field-span-2">
+                                        <label for="language_style">语言风格</label>
+                                        <select id="language_style" name="language_style">
+                                            <option value="严谨学术">严谨学术</option>
+                                            <option value="生动活泼">生动活泼</option>
+                                            <option value="通俗易懂">通俗易懂</option>
+                                            <option value="启发引导">启发引导</option>
+                                            <option value="自定义">自定义</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group field-span-2" id="languageStyleCustomWrap"
+                                        style="display:none;">
+                                        <label for="custom_language_style">自定义语言风格</label>
+                                        <input type="text" id="custom_language_style" name="custom_language_style"
+                                            placeholder="例如：苏格拉底追问式、故事化引导、课堂对话体...">
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="teaching_goals">教学目标</label>
-                                <textarea id="teaching_goals" name="teaching_goals" rows="4"
-                                    placeholder="请详细描述本节课的教学目标..." required></textarea>
+                            <div class="form-section">
+                                <div class="form-section-title">附件与生成</div>
+                                <div class="form-grid form-grid-2">
+                                    <div class="form-group field-span-2">
+                                        <label for="attachment">附件（可选）</label>
+                                        <input type="file" id="attachment" name="attachment" multiple
+                                            accept=".txt,.md,.pdf,.docx,.png,.jpg,.jpeg,.webp,.bmp">
+                                        <div class="field-hint">支持同时上传多个附件，系统会自动合并解析内容。</div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="student_profile">学情描述</label>
-                                <textarea id="student_profile" name="student_profile" rows="4"
-                                    placeholder="请描述班级学生的整体水平、学优生和学困生的比例等..."></textarea>
+                            <div class="form-actions">
+                                <button type="submit" id="submitBtn" class="btn-primary form-submit-btn">
+                                    开始生成教学地图
+                                </button>
+                                <button type="button" id="newPlanBtn" class="btn-secondary form-submit-btn"
+                                    style="display:none; margin-top:10px;">
+                                    生成新教案
+                                </button>
+                                <button type="button" id="backToGenerationBtn" class="btn-secondary form-submit-btn"
+                                    style="display:none; margin-top:10px;">
+                                    返回生成界面
+                                </button>
+                                <button type="button" id="stopBtn" class="btn-secondary form-submit-btn"
+                                    style="display:none; margin-top:10px; background:#ef4444; border-color:#ef4444;">
+                                    强制停止
+                                </button>
                             </div>
-
-                            <div class="form-group">
-                                <label for="language_style">语言风格</label>
-                                <select id="language_style" name="language_style">
-                                    <option value="严谨学术">严谨学术</option>
-                                    <option value="生动活泼">生动活泼</option>
-                                    <option value="通俗易懂">通俗易懂</option>
-                                    <option value="启发引导">启发引导</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="attachment">附件（可选）</label>
-                                <input type="file" id="attachment" name="attachment" accept=".txt,.md,.pdf,.docx">
-                            </div>
-
-                            <button type="submit" id="submitBtn" class="btn-primary form-submit-btn">
-                                开始生成教学地图
-                            </button>
-                            <button type="button" id="newPlanBtn" class="btn-secondary form-submit-btn"
-                                style="display:none; margin-top:10px;">
-                                生成新教案
-                            </button>
                         </form>
                     </div>
 
@@ -155,6 +268,11 @@
 
                 <!-- Right Panel: Progress + Result -->
                 <section class="panel result-panel">
+                    <div class="result-top-actions">
+                        <button type="button" id="backToInputBtn" class="btn btn-outline back-input-btn">返回输入界面</button>
+                        <button type="button" id="stopBtnTop" class="btn btn-outline stop-top-btn"
+                            style="display:none;">强制停止</button>
+                    </div>
                     <!-- Generating banner (shown while generation is in progress) -->
                     <div id="generatingBanner" class="generating-banner" style="display:none;">
                         <span class="generating-dot"></span>

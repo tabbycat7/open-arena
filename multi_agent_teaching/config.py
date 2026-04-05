@@ -4,22 +4,48 @@
 import sys as _sys
 import os as _os
 import importlib as _importlib
+import importlib.util as _importlib_util
 
 def _load_main_config():
-    """导入主应用的 config 模块（向上一层目录）"""
+    """按绝对路径加载主应用根目录 config.py，避免路径顺序导致自导入。"""
     _main_dir = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
-    if _main_dir not in _sys.path:
-        _sys.path.insert(0, _main_dir)
-    return _importlib.import_module("config")
+    _main_config_path = _os.path.join(_main_dir, "config.py")
+    _spec = _importlib_util.spec_from_file_location("open_arena_main_config", _main_config_path)
+    if _spec is None or _spec.loader is None:
+        raise ImportError("Cannot load root config.py")
+
+    _module = _importlib_util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+    return _module
 
 _main = _load_main_config()
 
 LLM_BASE_URL = getattr(_main, "TEACHING_MAP_LLM_BASE_URL", "https://api.openai.com/v1")
 LLM_API_KEY = getattr(_main, "TEACHING_MAP_LLM_API_KEY", "")
 LLM_MODEL_NAME = getattr(_main, "TEACHING_MAP_LLM_MODEL_NAME", "gpt-4o")
+LLM_GENERATOR_MODEL_NAME = getattr(_main, "TEACHING_MAP_GENERATOR_MODEL_NAME", LLM_MODEL_NAME)
+LLM_VALIDATOR_MODEL_NAME = getattr(_main, "TEACHING_MAP_VALIDATOR_MODEL_NAME", "deepseek-chat")
+LLM_SELECTABLE_MODEL_IDS = list(getattr(_main, "TEACHING_MAP_SELECTABLE_MODEL_IDS", []))
+LLM_THINKING_SUPPORTED_MODEL_IDS = list(getattr(_main, "TEACHING_MAP_THINKING_SUPPORTED_MODEL_IDS", []))
+LLM_THINKING_DEFAULT_ENABLED = bool(getattr(_main, "TEACHING_MAP_THINKING_DEFAULT_ENABLED", False))
+LLM_THINKING_BUDGET_DEFAULT = int(getattr(_main, "TEACHING_MAP_THINKING_BUDGET_DEFAULT", 4096))
+LLM_THINKING_BUDGET_MIN = int(getattr(_main, "TEACHING_MAP_THINKING_BUDGET_MIN", 128))
+LLM_THINKING_BUDGET_MAX = int(getattr(_main, "TEACHING_MAP_THINKING_BUDGET_MAX", 32768))
+LLM_THINKING_BUDGET_PRESETS = list(getattr(_main, "TEACHING_MAP_THINKING_BUDGET_PRESETS", []))
+LLM_THINKING_BUDGET_DEFAULT_PRESET = str(getattr(_main, "TEACHING_MAP_THINKING_BUDGET_DEFAULT_PRESET", ""))
+LLM_DEFAULT_MODEL_ICON = getattr(
+    _main,
+    "TEACHING_MAP_DEFAULT_MODEL_ICON",
+    "images/model-icons/model-default.svg",
+)
+LLM_MODEL_ICON_MAP = dict(getattr(_main, "TEACHING_MAP_MODEL_ICON_MAP", {}))
+LLM_IMAGE_PARSER_MODEL_NAME = getattr(
+    _main,
+    "TEACHING_MAP_IMAGE_PARSER_MODEL_NAME",
+    LLM_GENERATOR_MODEL_NAME,
+)
 
 MAX_VALIDATION_RETRIES = getattr(_main, "TEACHING_MAP_MAX_VALIDATION_RETRIES", 3)
-MAIN_FULL_RECHECK_INTERVAL = getattr(_main, "TEACHING_MAP_MAIN_FULL_RECHECK_INTERVAL", 2)
 
 from urllib.parse import urlparse as _urlparse
 _parsed = _urlparse(getattr(_main, "SQLALCHEMY_DATABASE_URI", ""))

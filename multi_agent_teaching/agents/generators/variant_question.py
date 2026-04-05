@@ -3,9 +3,18 @@
 import json
 import os
 import re
-from agents.llm import get_llm
+from agents.llm import get_generator_llm
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "variant_question.txt")
+
+
+def _pick_item_id(item: dict, default: str = "未知") -> str:
+    return (
+        item.get("id")
+        or item.get("question_id")
+        or item.get("target")
+        or default
+    )
 
 
 def _format_validation_feedback(state: dict) -> str:
@@ -22,7 +31,7 @@ def _format_validation_feedback(state: dict) -> str:
         overall = vr.get("overall_assessment", "")
 
         feedback_parts.append("=" * 50)
-        feedback_parts.append("## 上一轮【变式问题检验】反馈（得分：%s/6）" % total_score)
+        feedback_parts.append("## 上一轮【变式问题检验】反馈（得分：%s/10）" % total_score)
         if overall:
             feedback_parts.append("总体评价：%s" % overall)
 
@@ -32,7 +41,7 @@ def _format_validation_feedback(state: dict) -> str:
         if must_fix:
             feedback_parts.append("\n### 【必须修复】以下变式问题必须改正：")
             for i, item in enumerate(must_fix, 1):
-                qid = item.get("question_id", "未知")
+                qid = _pick_item_id(item)
                 action = item.get("action", "")
                 direction = item.get("rewrite_direction", "")
                 feedback_parts.append("%d. 变式 %s：" % (i, qid))
@@ -45,7 +54,7 @@ def _format_validation_feedback(state: dict) -> str:
         if should_fix:
             feedback_parts.append("\n### 【建议修复】以下变式问题建议改正：")
             for i, item in enumerate(should_fix, 1):
-                qid = item.get("question_id", "未知")
+                qid = _pick_item_id(item)
                 action = item.get("action", "")
                 direction = item.get("rewrite_direction", "")
                 feedback_parts.append("%d. 变式 %s：" % (i, qid))
@@ -58,7 +67,7 @@ def _format_validation_feedback(state: dict) -> str:
         if issues and not must_fix:
             feedback_parts.append("\n### 发现的问题：")
             for issue in issues[:5]:
-                qid = issue.get("question_id", "")
+                qid = _pick_item_id(issue, "")
                 severity = issue.get("severity", "")
                 issue_type = issue.get("issue_type", "")
                 desc = issue.get("description", "")
@@ -99,7 +108,7 @@ def variant_question_node(state: dict) -> dict:
     prompt = prompt.replace("{previous_questions}", json.dumps(previous_variant_questions, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{validation_feedback}", validation_feedback)
 
-    llm = get_llm(temperature=0.8)
+    llm = get_generator_llm(temperature=0.8)
     response = llm.invoke(prompt)
     content = response.content
 
@@ -112,6 +121,12 @@ def variant_question_node(state: dict) -> dict:
         fallback_used = True
 
     for q in variant_questions:
+        if not q.get("id"):
+            q["id"] = ""
+        main_id = q.get("main_id") or q.get("linked_main_question") or q.get("parent_id")
+        if main_id:
+            q["main_id"] = main_id
+            q.setdefault("parent_id", main_id)
         q["question_type"] = "variant"
 
     msg = "[变式问题生成Agent] 生成了 %d 个变式问题" % len(variant_questions)

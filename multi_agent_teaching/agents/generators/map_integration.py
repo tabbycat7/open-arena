@@ -19,10 +19,12 @@ def map_integration_node(state: dict) -> dict:
     for q in main_qs:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
         design_intent = q.get("design_intent") or q.get("design_rationale", "")
+        lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
         nodes.append({
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "main",
+            "lesson_presentation_script": lesson_presentation_script,
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.5),
@@ -33,14 +35,18 @@ def map_integration_node(state: dict) -> dict:
     for q in variant_qs:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
         design_intent = q.get("design_intent") or q.get("design_rationale", "")
+        lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
+        main_id = q.get("main_id") or q.get("parent_id") or q.get("linked_main_question", "")
         nodes.append({
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "variant",
+            "lesson_presentation_script": lesson_presentation_script,
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.5),
-            "parent_id": q.get("parent_id", ""),
+            "main_id": main_id,
+            "parent_id": main_id,
             "variation_type": q.get("variation_type", ""),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
@@ -49,15 +55,21 @@ def map_integration_node(state: dict) -> dict:
     for q in scaffold_qs:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
         design_intent = q.get("design_intent") or q.get("design_rationale", "")
+        lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
+        from_id = q.get("from_id") or q.get("from_main_id") or q.get("source_main_question", "")
+        to_id = q.get("to_id") or q.get("to_main_id") or q.get("target_main_question", "")
         nodes.append({
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "scaffold",
+            "lesson_presentation_script": lesson_presentation_script,
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.3),
-            "from_main_id": q.get("from_main_id", ""),
-            "to_main_id": q.get("to_main_id", ""),
+            "from_id": from_id,
+            "to_id": to_id,
+            "from_main_id": from_id,
+            "to_main_id": to_id,
             "bridge_function": q.get("bridge_function", ""),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
@@ -73,10 +85,10 @@ def map_integration_node(state: dict) -> dict:
         })
 
     for vq in variant_qs:
-        parent_id = vq.get("parent_id", "")
-        if parent_id:
+        main_id = vq.get("main_id") or vq.get("parent_id") or vq.get("linked_main_question", "")
+        if main_id:
             edges.append({
-                "source": parent_id,
+                "source": main_id,
                 "target": vq.get("id", ""),
                 "relation": "variant_of",
                 "weight": 0.8,
@@ -84,8 +96,8 @@ def map_integration_node(state: dict) -> dict:
 
     bridge_groups = defaultdict(list)
     for sq in scaffold_qs:
-        from_id = sq.get("from_main_id", "")
-        to_id = sq.get("to_main_id", "")
+        from_id = sq.get("from_id") or sq.get("from_main_id") or sq.get("source_main_question", "")
+        to_id = sq.get("to_id") or sq.get("to_main_id") or sq.get("target_main_question", "")
         if from_id and to_id:
             bridge_key = (from_id, to_id)
             bridge_groups[bridge_key].append(sq)
@@ -138,23 +150,23 @@ def map_integration_node(state: dict) -> dict:
     }
 
 
-def _extract_number(node_id: str) -> int:
+def _extract_number(item_id: str) -> int:
     """从节点 ID 中提取第一个数字用于排序，如 M1 -> 1, M10 -> 10"""
-    match = re.search(r'\d+', node_id)
+    match = re.search(r'\d+', item_id)
     if match:
         return int(match.group())
     return 0
 
 
-def _extract_scaffold_seq(scaffold_id: str) -> tuple:
+def _extract_scaffold_seq(item_id: str) -> tuple:
     """
     从支架问题 ID 中提取排序元组。
     例如：S1-1 -> (1, 1), S1-2 -> (1, 2), S2-1 -> (2, 1)
     """
-    match = re.match(r'S(\d+)-(\d+)', scaffold_id)
+    match = re.match(r'S(\d+)-(\d+)', item_id)
     if match:
         return (int(match.group(1)), int(match.group(2)))
-    match2 = re.search(r'(\d+)', scaffold_id)
+    match2 = re.search(r'(\d+)', item_id)
     if match2:
         return (int(match2.group(1)), 0)
     return (999, 999)
