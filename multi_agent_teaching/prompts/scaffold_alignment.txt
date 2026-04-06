@@ -203,10 +203,12 @@
 - decision = "fail" → passed = false
 
 ### 判定规则
+总分=SD1+SD2+SD3+SD4+SD5
+
 1. 若任一维度触发直接失败条件 → decision = "fail"
-2. 若不存在直接失败条件，且总分 8~10 → decision = "pass"
-3. 若不存在直接失败条件，但总分 6~7 → decision = "pass_with_warnings"
-4. 若总分 0~5 → decision = "fail"
+2. 若不存在直接失败条件，且总分 9~10 → decision = "pass"
+3. 若不存在直接失败条件，但总分等于8 → decision = "pass_with_warnings"
+4. 若总分 0~7 → decision = "fail"
 
 ---
 

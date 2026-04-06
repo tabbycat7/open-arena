@@ -25,141 +25,17 @@ from config import (
     MYSQL_PASSWORD,
     MYSQL_DB,
     LLM_GENERATOR_MODEL_NAME,
+    LLM_MODEL_OPTIONS,
     LLM_SELECTABLE_MODEL_IDS,
-    LLM_THINKING_SUPPORTED_MODEL_IDS,
-    LLM_THINKING_DEFAULT_ENABLED,
-    LLM_THINKING_BUDGET_DEFAULT,
-    LLM_THINKING_BUDGET_MIN,
-    LLM_THINKING_BUDGET_MAX,
-    LLM_THINKING_BUDGET_PRESETS,
-    LLM_THINKING_BUDGET_DEFAULT_PRESET,
     LLM_DEFAULT_MODEL_ICON,
     LLM_MODEL_ICON_MAP,
 )
-from attachment_parser import parse_uploaded_attachment
+from attachment_parser import parse_uploaded_attachments
 
 app = Flask(__name__)
 
 # In-memory task store (live progress only)
 tasks: Dict[str, dict] = {}
-
-
-def _supports_thinking(model_id: str) -> bool:
-    supported = {
-        (item or "").strip()
-        for item in (LLM_THINKING_SUPPORTED_MODEL_IDS or [])
-        if isinstance(item, str)
-    }
-    return model_id in supported
-
-
-def _parse_optional_bool(raw_value) -> Optional[bool]:
-    if raw_value is None:
-        return None
-    value = str(raw_value).strip().lower()
-    if value in {"1", "true", "yes", "on"}:
-        return True
-    if value in {"0", "false", "no", "off"}:
-        return False
-    return None
-
-
-def _normalize_thinking_budget(raw_value) -> int:
-    try:
-        budget = int(str(raw_value).strip())
-    except (TypeError, ValueError):
-        budget = int(LLM_THINKING_BUDGET_DEFAULT)
-
-    if budget < int(LLM_THINKING_BUDGET_MIN):
-        return int(LLM_THINKING_BUDGET_MIN)
-    if budget > int(LLM_THINKING_BUDGET_MAX):
-        return int(LLM_THINKING_BUDGET_MAX)
-    return budget
-
-
-def _get_thinking_budget_presets() -> List[dict]:
-    min_budget = int(LLM_THINKING_BUDGET_MIN)
-    max_budget = int(LLM_THINKING_BUDGET_MAX)
-    presets = []
-    seen = set()
-    for item in LLM_THINKING_BUDGET_PRESETS or []:
-        if not isinstance(item, dict):
-            continue
-        preset_id = str(item.get("id", "")).strip()
-        if not preset_id or preset_id in seen:
-            continue
-        label = str(item.get("label", "")).strip() or preset_id
-        try:
-            range_min = int(item.get("min", min_budget))
-        except (TypeError, ValueError):
-            range_min = min_budget
-        try:
-            range_max = int(item.get("max", max_budget))
-        except (TypeError, ValueError):
-            range_max = max_budget
-        if range_min > range_max:
-            range_min, range_max = range_max, range_min
-        range_min = max(min_budget, min(range_min, max_budget))
-        range_max = max(min_budget, min(range_max, max_budget))
-        if range_max < range_min:
-            range_max = range_min
-        try:
-            budget = int(item.get("budget", (range_min + range_max) // 2))
-        except (TypeError, ValueError):
-            budget = (range_min + range_max) // 2
-        budget = max(range_min, min(budget, range_max))
-        presets.append(
-            {
-                "id": preset_id,
-                "label": label,
-                "min": range_min,
-                "max": range_max,
-                "budget": budget,
-            }
-        )
-        seen.add(preset_id)
-
-    if presets:
-        return presets
-
-    fallback = _normalize_thinking_budget(LLM_THINKING_BUDGET_DEFAULT)
-    return [{"id": "balanced", "label": "斟酌", "min": fallback, "max": fallback, "budget": fallback}]
-
-
-def _get_default_thinking_budget_level(presets: Optional[List[dict]] = None) -> str:
-    presets = presets or _get_thinking_budget_presets()
-    configured = (LLM_THINKING_BUDGET_DEFAULT_PRESET or "").strip()
-    if configured and any(item.get("id") == configured for item in presets):
-        return configured
-
-    default_budget = _normalize_thinking_budget(LLM_THINKING_BUDGET_DEFAULT)
-    for item in presets:
-        if int(item["min"]) <= default_budget <= int(item["max"]):
-            return str(item["id"])
-
-    if presets:
-        nearest = min(presets, key=lambda item: abs(int(item["budget"]) - default_budget))
-        return str(nearest["id"])
-    return ""
-
-
-def _resolve_thinking_budget(raw_level, raw_budget) -> tuple:
-    presets = _get_thinking_budget_presets()
-    selected_level = (str(raw_level).strip() if raw_level is not None else "")
-    matched = None
-    for item in presets:
-        if item.get("id") == selected_level:
-            matched = item
-            break
-
-    if matched:
-        return int(matched["budget"]), str(matched["id"]), str(matched["label"])
-
-    budget = _normalize_thinking_budget(raw_budget)
-    if presets:
-        nearest = min(presets, key=lambda item: abs(int(item["budget"]) - budget))
-        return budget, str(nearest["id"]), str(nearest["label"])
-    return budget, "", ""
 
 
 def _model_display_name(model_id: str) -> str:
@@ -169,8 +45,24 @@ def _model_display_name(model_id: str) -> str:
 
 def _get_model_options() -> List[dict]:
     default_icon = (LLM_DEFAULT_MODEL_ICON or "images/model-icons/model-default.svg").strip().lstrip("/")
-    model_ids = []
+    options = []
     seen = set()
+
+    for item in LLM_MODEL_OPTIONS or []:
+        if not isinstance(item, dict):
+            continue
+        model_id = str(item.get("id", "")).strip()
+        if not model_id or model_id in seen:
+            continue
+        seen.add(model_id)
+        name = str(item.get("name", "")).strip() or _model_display_name(model_id)
+        icon = str(item.get("icon", "")).strip().lstrip("/") or default_icon
+        options.append({"id": model_id, "name": name, "icon": icon})
+
+    if options:
+        return options
+
+    model_ids = []
     for raw in LLM_SELECTABLE_MODEL_IDS or []:
         if not isinstance(raw, str):
             continue
@@ -193,7 +85,6 @@ def _get_model_options() -> List[dict]:
                 "id": model_id,
                 "name": _model_display_name(model_id),
                 "icon": icon.strip().lstrip("/"),
-                "supports_thinking": _supports_thinking(model_id),
             }
         )
     return options
@@ -223,17 +114,6 @@ def _collect_uploaded_files(files) -> List:
                 continue
             collected.append(file_storage)
     return collected
-
-
-def _is_attachment_parse_failure(parsed_text: str) -> bool:
-    if not parsed_text:
-        return True
-    failure_markers = (
-        "附件解析失败",
-        "状态: 附件过大",
-        "无法直接解析该文件类型",
-    )
-    return any(marker in parsed_text for marker in failure_markers)
 
 
 # ---------------------------------------------------------------------------
@@ -504,20 +384,11 @@ _init_db()
 @app.route("/")
 def index():
     default_model_option = _get_default_model_option()
-    default_model_supports_thinking = _supports_thinking(default_model_option.get("id", ""))
-    thinking_budget_presets = _get_thinking_budget_presets()
-    thinking_budget_default_level = _get_default_thinking_budget_level(thinking_budget_presets)
     return render_template(
         "index.html",
         model_options=_get_model_options(),
         default_model_id=_get_default_model_id(),
         default_model_option=default_model_option,
-        thinking_default_enabled=bool(LLM_THINKING_DEFAULT_ENABLED and default_model_supports_thinking),
-        thinking_budget_default=int(LLM_THINKING_BUDGET_DEFAULT),
-        thinking_budget_min=int(LLM_THINKING_BUDGET_MIN),
-        thinking_budget_max=int(LLM_THINKING_BUDGET_MAX),
-        thinking_budget_presets=thinking_budget_presets,
-        thinking_budget_default_level=thinking_budget_default_level,
     )
 
 
@@ -531,33 +402,7 @@ def generate():
     if allowed_model_ids and model_id not in allowed_model_ids:
         return jsonify({"error": "所选模型不在可选列表中"}), 400
 
-    model_supports_thinking = _supports_thinking(model_id)
-    requested_enable_thinking = _parse_optional_bool(data.get("enable_thinking"))
-    enable_thinking = bool(LLM_THINKING_DEFAULT_ENABLED)
-    if requested_enable_thinking is not None:
-        enable_thinking = requested_enable_thinking
-    if not model_supports_thinking:
-        enable_thinking = False
-    thinking_budget, thinking_budget_level, thinking_budget_label = _resolve_thinking_budget(
-        data.get("thinking_budget_level"),
-        data.get("thinking_budget"),
-    )
-
-    attachment_parts = []
-    attachment_stats = {"received": 0, "parsed": 0, "failed": 0}
-    for file in _collect_uploaded_files(request.files):
-        if file and file.filename:
-            attachment_stats["received"] += 1
-            parsed = parse_uploaded_attachment(file)
-            if parsed:
-                attachment_parts.append(parsed)
-                if _is_attachment_parse_failure(parsed):
-                    attachment_stats["failed"] += 1
-                else:
-                    attachment_stats["parsed"] += 1
-            else:
-                attachment_stats["failed"] += 1
-    attachment_text = "\n\n".join(attachment_parts)
+    attachment_text, attachment_stats = parse_uploaded_attachments(_collect_uploaded_files(request.files))
     language_style = data.get("language_style", "严谨学术")
     if language_style == "自定义":
         custom_style = data.get("custom_language_style", "").strip()
@@ -571,9 +416,6 @@ def generate():
         "result": None,
         "input": {
             "model_id": model_id,
-            "enable_thinking": enable_thinking,
-            "thinking_budget_level": thinking_budget_level,
-            "thinking_budget": thinking_budget,
             "subject": data.get("subject", ""),
             "grade": data.get("grade", ""),
             "teaching_goals": data.get("teaching_goals", ""),
@@ -596,26 +438,10 @@ def generate():
     else:
         tasks[task_id]["progress"].append("[系统] 未检测到附件，按表单输入继续生成")
 
-    if model_supports_thinking:
-        tasks[task_id]["progress"].append(
-            "[系统] Think 模式：%s（思维链长度=%s，思维链长度=%d）"
-            % (
-                "开启" if enable_thinking else "关闭",
-                thinking_budget_label or "未指定",
-                thinking_budget,
-            )
-        )
-    else:
-        tasks[task_id]["progress"].append("[系统] 当前模型不支持 Think 参数，已自动忽略")
-
     app.logger.info(
-        "[教学地图] task=%s model=%s supports_thinking=%s enable_thinking=%s thinking_budget_level=%s thinking_budget=%d attachment_received=%d attachment_parsed=%d attachment_failed=%d",
+        "[教学地图] task=%s model=%s attachment_received=%d attachment_parsed=%d attachment_failed=%d",
         task_id,
         model_id,
-        model_supports_thinking,
-        enable_thinking,
-        thinking_budget_level,
-        thinking_budget,
         attachment_stats["received"],
         attachment_stats["parsed"],
         attachment_stats["failed"],
@@ -809,9 +635,9 @@ def _build_output_preview(output: dict) -> dict:
 
 def _build_input_preview(node_name: str, accumulated: dict) -> dict:
     INPUT_FIELDS = {
-        "learning_analysis": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
-        "teaching_logic_design": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "analysis_result"],
-        "main_question_chain": ["model_id", "enable_thinking", "thinking_budget_level", "thinking_budget", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
+        "learning_analysis": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
+        "teaching_logic_design": ["model_id", "subject", "grade", "teaching_goals", "analysis_result"],
+        "main_question_chain": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
         "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
         "variant_question": ["subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
         "scaffold_question": ["subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
@@ -845,10 +671,6 @@ def _run_workflow(task_id: str):
     try:
         graph = build_graph()
         selected_model_id = task.get("input", {}).get("model_id")
-        thinking_options = {
-            "enable_thinking": bool(task.get("input", {}).get("enable_thinking", False)),
-            "thinking_budget": _normalize_thinking_budget(task.get("input", {}).get("thinking_budget")),
-        }
         initial_state = {
             **task["input"],
             "main_retry_count": 0,
@@ -871,7 +693,7 @@ def _run_workflow(task_id: str):
         stream_config = {"recursion_limit": 100}
         step_number = 0
 
-        with use_generator_model(selected_model_id, thinking_options=thinking_options):
+        with use_generator_model(selected_model_id):
             for state_snapshot in graph.stream(initial_state, config=stream_config):
                 if task.get("cancel_requested"):
                     raise RuntimeError("__MAT_TASK_CANCELLED__")

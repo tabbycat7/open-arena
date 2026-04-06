@@ -52,9 +52,6 @@ class TeachingMap(TypedDict, total=False):
 
 class GraphState(TypedDict, total=False):
     model_id: str
-    enable_thinking: bool
-    thinking_budget_level: str
-    thinking_budget: int
     subject: str
     grade: str
     teaching_goals: str

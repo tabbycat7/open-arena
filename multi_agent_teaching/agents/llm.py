@@ -11,23 +11,15 @@ from config import (
     LLM_BASE_URL,
     LLM_API_KEY,
     LLM_MODEL_NAME,
+    LLM_MAX_TOKENS,
     LLM_GENERATOR_MODEL_NAME,
     LLM_VALIDATOR_MODEL_NAME,
     LLM_IMAGE_PARSER_MODEL_NAME,
-    LLM_THINKING_SUPPORTED_MODEL_IDS,
-    LLM_THINKING_DEFAULT_ENABLED,
-    LLM_THINKING_BUDGET_DEFAULT,
-    LLM_THINKING_BUDGET_MIN,
-    LLM_THINKING_BUDGET_MAX,
 )
 
 
 _GENERATOR_MODEL_OVERRIDE: ContextVar[Optional[str]] = ContextVar(
     "teaching_map_generator_model_override",
-    default=None,
-)
-_GENERATOR_THINKING_OVERRIDE: ContextVar[Optional[Dict[str, Any]]] = ContextVar(
-    "teaching_map_generator_thinking_override",
     default=None,
 )
 
@@ -53,6 +45,7 @@ def _build_llm(model_name: str, temperature: float, model_kwargs: Optional[Dict[
         "api_key": LLM_API_KEY,
         "model": model_name,
         "temperature": temperature,
+        "max_tokens": int(LLM_MAX_TOKENS),
         "model_kwargs": normalized_model_kwargs,
     }
     if extra_body is not None:
@@ -72,77 +65,12 @@ def _resolve_generator_model_name(model_name: Optional[str] = None) -> str:
     return LLM_GENERATOR_MODEL_NAME or LLM_MODEL_NAME
 
 
-def _supports_thinking(model_name: str) -> bool:
-    supported = {
-        (item or "").strip()
-        for item in (LLM_THINKING_SUPPORTED_MODEL_IDS or [])
-        if isinstance(item, str)
-    }
-    return model_name in supported
-
-
-def _normalize_thinking_budget(raw_budget: Optional[Any]) -> int:
-    try:
-        budget = int(raw_budget)
-    except (TypeError, ValueError):
-        budget = int(LLM_THINKING_BUDGET_DEFAULT)
-
-    min_budget = int(LLM_THINKING_BUDGET_MIN)
-    max_budget = int(LLM_THINKING_BUDGET_MAX)
-    if budget < min_budget:
-        return min_budget
-    if budget > max_budget:
-        return max_budget
-    return budget
-
-
-def _resolve_generator_model_kwargs(
-    model_name: str,
-    enable_thinking: Optional[bool] = None,
-    thinking_budget: Optional[int] = None,
-) -> Dict[str, Any]:
-    if not _supports_thinking(model_name):
-        return {}
-
-    override = _GENERATOR_THINKING_OVERRIDE.get() or {}
-    enabled = enable_thinking
-    if enabled is None and isinstance(override, dict) and "enable_thinking" in override:
-        enabled = bool(override.get("enable_thinking"))
-    if enabled is None:
-        enabled = bool(LLM_THINKING_DEFAULT_ENABLED)
-
-    if not enabled:
-        return {
-            "extra_body": {
-                "enable_thinking": False,
-            }
-        }
-
-    budget_raw: Any = thinking_budget
-    if budget_raw is None and isinstance(override, dict):
-        budget_raw = override.get("thinking_budget")
-    budget = _normalize_thinking_budget(budget_raw)
-    return {
-        "extra_body": {
-            "enable_thinking": True,
-            "thinking_budget": budget,
-        }
-    }
-
-
 def get_generator_llm(
     temperature: float = 0.7,
     model_name: Optional[str] = None,
-    enable_thinking: Optional[bool] = None,
-    thinking_budget: Optional[int] = None,
 ) -> ChatOpenAI:
     resolved_model = _resolve_generator_model_name(model_name)
-    model_kwargs = _resolve_generator_model_kwargs(
-        resolved_model,
-        enable_thinking=enable_thinking,
-        thinking_budget=thinking_budget,
-    )
-    return _build_llm(resolved_model, temperature, model_kwargs=model_kwargs)
+    return _build_llm(resolved_model, temperature)
 
 
 def get_validator_llm(temperature: float = 0.1) -> ChatOpenAI:
@@ -156,14 +84,11 @@ def get_image_parser_llm(temperature: float = 0) -> ChatOpenAI:
 @contextmanager
 def use_generator_model(
     model_name: Optional[str],
-    thinking_options: Optional[Dict[str, Any]] = None,
 ) -> Iterator[None]:
     token = _GENERATOR_MODEL_OVERRIDE.set(model_name or None)
-    thinking_token = _GENERATOR_THINKING_OVERRIDE.set(thinking_options or None)
     try:
         yield
     finally:
-        _GENERATOR_THINKING_OVERRIDE.reset(thinking_token)
         _GENERATOR_MODEL_OVERRIDE.reset(token)
 
 

@@ -171,7 +171,7 @@
    - 编号列表
    - 多任务打包
    - 元认知禁词
-   - 超过 120 字
+   - 超过 300 字
 4. 是否抓手不明，学生无法定位观察对象
 5. 是否更像试卷题或作业说明
 
@@ -200,10 +200,13 @@
 - decision = "fail" → passed = false
 
 ### 判定规则
+
+总分=D1+D2+D3+D4
+
 1. 若任一维度触发直接失败条件 → decision = "fail"
-2. 若不存在直接失败条件，且总分 8~10 → decision = "pass"
-3. 若不存在直接失败条件，但总分 6~7 → decision = "pass_with_warnings"
-4. 若总分 0~5 → decision = "fail"
+2. 若不存在直接失败条件，且总分 9~10 → decision = "pass"
+3. 若不存在直接失败条件，但总分等于8 → decision = "pass_with_warnings"
+4. 若总分 0~7 → decision = "fail"
 
 ---
 

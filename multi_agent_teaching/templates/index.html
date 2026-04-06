@@ -132,7 +132,6 @@
                                                     class="model-picker-item {% if option.id==default_model_id %}active{% endif %}"
                                                     data-value="{{ option.id }}" data-label="{{ option.name }}"
                                                     data-icon="{{ url_for('static', filename=option.icon) }}"
-                                                    data-supports-thinking="{% if option.supports_thinking %}1{% else %}0{% endif %}"
                                                     role="option"
                                                     aria-selected="{% if option.id==default_model_id %}true{% else %}false{% endif %}">
                                                     <img class="model-picker-icon"
@@ -143,44 +142,6 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="form-group field-span-2" id="thinkingControls"
-                                        data-default-enabled="{% if thinking_default_enabled %}1{% else %}0{% endif %}"
-                                        data-budget-default="{{ thinking_budget_default }}"
-                                        data-budget-min="{{ thinking_budget_min }}"
-                                        data-budget-max="{{ thinking_budget_max }}"
-                                        data-budget-default-level="{{ thinking_budget_default_level }}">
-                                        <label for="enable_thinking">Think 推理模式</label>
-                                        <div class="thinking-row">
-                                            <label class="thinking-switch" for="enable_thinking">
-                                                <input type="checkbox" id="enable_thinking" {% if
-                                                    thinking_default_enabled %}checked{% endif %}>
-                                                <span class="thinking-slider"></span>
-                                                <span class="thinking-switch-text" id="thinkingSwitchText">开启
-                                                    Think</span>
-                                            </label>
-                                            <div class="thinking-budget-wrap">
-                                                <span class="thinking-budget-label">思维深度档位</span>
-                                                <div class="thinking-level-select-wrap">
-                                                    <select id="thinking_budget_level" name="thinking_budget_level"
-                                                        class="thinking-level-select">
-                                                        {% for preset in thinking_budget_presets %}
-                                                        <option value="{{ preset.id }}" data-label="{{ preset.label }}"
-                                                            data-min="{{ preset.min }}" data-max="{{ preset.max }}"
-                                                            data-budget="{{ preset.budget }}" {% if
-                                                            preset.id==thinking_budget_default_level %}selected{% endif
-                                                            %}>
-                                                            {{ preset.label }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <input type="hidden" id="thinking_budget" name="thinking_budget"
-                                                    value="{{ thinking_budget_default }}">
-                                            </div>
-                                        </div>
-                                        <div class="field-hint" id="thinkingSupportHint"></div>
                                     </div>
                                 </div>
                             </div>

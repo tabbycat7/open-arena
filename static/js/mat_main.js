@@ -65,17 +65,6 @@ var modelPickerMenuEl = document.getElementById("modelPickerMenu");
 var modelPickerLabelEl = document.getElementById("modelPickerLabel");
 var modelPickerIconEl = document.getElementById("modelPickerIcon");
 var modelIdInputEl = document.getElementById("model_id");
-var thinkingControlsEl = document.getElementById("thinkingControls");
-var enableThinkingEl = document.getElementById("enable_thinking");
-var thinkingBudgetEl = document.getElementById("thinking_budget");
-var thinkingLevelSelectEl = document.getElementById("thinking_budget_level");
-var thinkingSupportHintEl = document.getElementById("thinkingSupportHint");
-var thinkingSwitchTextEl = document.getElementById("thinkingSwitchText");
-var modelThinkingCapability = {};
-
-var THINKING_BUDGET_MIN = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetMin || "128", 10) : 128;
-var THINKING_BUDGET_MAX = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetMax || "32768", 10) : 32768;
-var THINKING_BUDGET_DEFAULT = thinkingControlsEl ? parseInt(thinkingControlsEl.dataset.budgetDefault || "4096", 10) : 4096;
 
 var API_PREFIX = "/api/mat";
 
@@ -157,74 +146,6 @@ function normalizeStartedAtMs(rawStartedAtTs) {
     return parsed * 1000;
 }
 
-function clampThinkingBudget(rawValue) {
-    var parsed = parseInt(rawValue, 10);
-    if (isNaN(parsed)) parsed = THINKING_BUDGET_DEFAULT;
-    if (parsed < THINKING_BUDGET_MIN) parsed = THINKING_BUDGET_MIN;
-    if (parsed > THINKING_BUDGET_MAX) parsed = THINKING_BUDGET_MAX;
-    return parsed;
-}
-
-function modelSupportsThinking(modelId) {
-    return !!modelThinkingCapability[(modelId || "").trim()];
-}
-
-function getSelectedThinkingLevelOption() {
-    if (!thinkingLevelSelectEl || !thinkingLevelSelectEl.options.length) return null;
-    if (!thinkingLevelSelectEl.value) {
-        thinkingLevelSelectEl.selectedIndex = 0;
-    }
-    return thinkingLevelSelectEl.options[thinkingLevelSelectEl.selectedIndex] || null;
-}
-
-function getThinkingBudgetFromSelectedLevel() {
-    var selected = getSelectedThinkingLevelOption();
-    if (!selected) return THINKING_BUDGET_DEFAULT;
-    return clampThinkingBudget(selected.dataset.budget || THINKING_BUDGET_DEFAULT);
-}
-
-function getSelectedThinkingLevelId() {
-    var selected = getSelectedThinkingLevelOption();
-    return selected ? selected.value : "";
-}
-
-function updateThinkingControlsForModel(modelId) {
-    if (!enableThinkingEl || !thinkingBudgetEl) return;
-
-    var supportsThinking = modelSupportsThinking(modelId);
-    if (thinkingSwitchTextEl) {
-        thinkingSwitchTextEl.textContent = supportsThinking ? "开启 Think" : "该模型不支持 Think";
-    }
-
-    enableThinkingEl.disabled = !supportsThinking;
-    if (!supportsThinking) {
-        enableThinkingEl.checked = false;
-    }
-
-    var canSelectThinkingLevel = supportsThinking && !!enableThinkingEl.checked;
-    if (thinkingLevelSelectEl) {
-        thinkingLevelSelectEl.disabled = !canSelectThinkingLevel;
-    }
-
-    var selectedLevel = getSelectedThinkingLevelOption();
-    var budget = getThinkingBudgetFromSelectedLevel();
-    thinkingBudgetEl.value = String(budget);
-    thinkingBudgetEl.disabled = !supportsThinking;
-
-    if (thinkingSupportHintEl) {
-        if (!supportsThinking) {
-            thinkingSupportHintEl.textContent = "当前模型不支持 Think 参数，提交时将自动忽略。";
-        } else if (!enableThinkingEl.checked) {
-            thinkingSupportHintEl.textContent = "支持 Think 参数，开启后可选择思维深度档位。";
-        } else {
-            var levelLabel = selectedLevel ? (selectedLevel.dataset.label || selectedLevel.value) : "当前";
-            var rangeMin = selectedLevel ? selectedLevel.dataset.min : THINKING_BUDGET_MIN;
-            var rangeMax = selectedLevel ? selectedLevel.dataset.max : THINKING_BUDGET_MAX;
-            thinkingSupportHintEl.textContent = "当前档位：" + levelLabel + "（预算区间 " + rangeMin + " - " + rangeMax + "）。";
-        }
-    }
-}
-
 function setUiStage(stage) {
     if (!workspaceLayoutEl) return;
     workspaceLayoutEl.classList.remove("mat-stage-input", "mat-stage-generation");
@@ -269,7 +190,6 @@ function setModelPickerValue(modelId, label, iconUrl) {
     if (modelIdInputEl) modelIdInputEl.value = modelId || "";
     if (modelPickerLabelEl) modelPickerLabelEl.textContent = label || "请选择模型";
     if (modelPickerIconEl && iconUrl) modelPickerIconEl.src = iconUrl;
-    updateThinkingControlsForModel(modelId || "");
 
     if (!modelPickerMenuEl) return;
     modelPickerMenuEl.querySelectorAll(".mat-model-picker-item").forEach(function (item) {
@@ -297,10 +217,6 @@ function syncModelPickerFromInput() {
 
 function initModelPicker() {
     if (!modelPickerEl || !modelPickerTriggerEl || !modelPickerMenuEl || !modelIdInputEl) return;
-
-    modelPickerMenuEl.querySelectorAll(".mat-model-picker-item").forEach(function (item) {
-        modelThinkingCapability[item.dataset.value] = item.dataset.supportsThinking === "1";
-    });
 
     modelPickerTriggerEl.addEventListener("click", function () {
         var willOpen = !modelPickerEl.classList.contains("open");
@@ -332,18 +248,6 @@ function initModelPicker() {
     });
 
     syncModelPickerFromInput();
-}
-
-if (enableThinkingEl) {
-    enableThinkingEl.addEventListener("change", function () {
-        updateThinkingControlsForModel(modelIdInputEl ? modelIdInputEl.value : "");
-    });
-}
-
-if (thinkingLevelSelectEl) {
-    thinkingLevelSelectEl.addEventListener("change", function () {
-        updateThinkingControlsForModel(modelIdInputEl ? modelIdInputEl.value : "");
-    });
 }
 
 // ---------------------------------------------------------------------------
@@ -468,17 +372,6 @@ initModelPicker();
 function startGeneration() {
     var form = document.getElementById("generateForm");
     var formData = new FormData(form);
-    var selectedModelId = modelIdInputEl ? modelIdInputEl.value : "";
-    var supportsThinking = modelSupportsThinking(selectedModelId);
-    var enableThinking = supportsThinking && enableThinkingEl && enableThinkingEl.checked;
-    var thinkingBudgetLevel = getSelectedThinkingLevelId();
-    var thinkingBudget = getThinkingBudgetFromSelectedLevel();
-    if (thinkingBudgetEl) {
-        thinkingBudgetEl.value = String(thinkingBudget);
-    }
-    formData.set("enable_thinking", enableThinking ? "1" : "0");
-    formData.set("thinking_budget_level", thinkingBudgetLevel);
-    formData.set("thinking_budget", String(thinkingBudget));
     var attachmentInput = document.getElementById("attachment");
     if (attachmentInput && attachmentInput.files && attachmentInput.files.length) {
         formData.delete("attachment");

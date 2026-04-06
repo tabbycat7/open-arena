@@ -39,6 +39,15 @@ def main_question_check_node(state: dict) -> dict:
     return integrated_main_question_validator_node(state)
 
 
+def route_after_main_generation(state: dict) -> str:
+    main_questions = state.get("main_questions", []) or []
+    if not main_questions:
+        if state.get("main_retry_count", 0) < MAX_VALIDATION_RETRIES:
+            return "retry_main"
+        return "continue"
+    return "run_check"
+
+
 def route_after_main_check(state: dict) -> str:
     for vr in state.get("validation_results", []):
         if vr.get("validator") == MAIN_VALIDATOR_NAME:
@@ -55,6 +64,7 @@ def bump_main_retry(state: dict) -> dict:
         vr for vr in state.get("validation_results", [])
         if vr.get("validator") == MAIN_VALIDATOR_NAME
     ]
+    empty_generation = not (state.get("main_questions", []) or [])
 
     feedback_info = ""
     for vr in saved_feedback:
@@ -67,11 +77,16 @@ def bump_main_retry(state: dict) -> dict:
                     feedback_info = " — 需修复: %s" % ", ".join(targets)
             break
 
+    if empty_generation and not saved_feedback:
+        progress_msg = "[系统] 主干问题生成为空，第 %d 次重新生成" % new_count
+    else:
+        progress_msg = "[系统] 主干问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)
+
     return {
         "main_retry_count": new_count,
         "validation_results": [],
         "main_validation_feedback": saved_feedback,
-        "progress_messages": ["[系统] 主干问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)],
+        "progress_messages": [progress_msg],
     }
 
 
@@ -83,6 +98,15 @@ def variant_check_node(state: dict) -> dict:
     return variant_alignment_node(state)
 
 
+def route_after_variant_generation(state: dict) -> str:
+    variant_questions = state.get("variant_questions", []) or []
+    if not variant_questions:
+        if state.get("variant_retry_count", 0) < MAX_VALIDATION_RETRIES:
+            return "retry_variant"
+        return "done_variant"
+    return "run_check"
+
+
 def route_after_variant_check(state: dict) -> str:
     for vr in state.get("validation_results", []):
         if vr.get("validator") == "variant_alignment" and not vr.get("passed", True):
@@ -92,13 +116,26 @@ def route_after_variant_check(state: dict) -> str:
 
 
 def mark_variant_done(state: dict) -> dict:
-    passed = all(
-        vr.get("passed", True)
+    variant_validation = [
+        vr
         for vr in state.get("validation_results", [])
         if vr.get("validator") == "variant_alignment"
+    ]
+    passed = all(
+        vr.get("passed", True)
+        for vr in variant_validation
     )
     retry = state.get("variant_retry_count", 0)
-    if passed:
+    variant_questions = state.get("variant_questions", []) or []
+
+    if not variant_validation:
+        if not variant_questions and retry >= MAX_VALIDATION_RETRIES:
+            msg = "[系统] 变式问题连续生成为空，已达最大重试次数（%d 次），跳过检验并继续" % retry
+        elif not variant_questions:
+            msg = "[系统] 变式问题生成为空，跳过检验并继续"
+        else:
+            msg = "[系统] 变式问题未进入检验，使用当前结果继续"
+    elif passed:
         msg = "[系统] 变式问题检验通过" + ("（经 %d 次重试）" % retry if retry > 0 else "")
     else:
         msg = "[系统] 变式问题检验未通过，已达最大重试次数（%d 次），使用当前结果继续" % retry
@@ -112,6 +149,7 @@ def bump_variant_retry(state: dict) -> dict:
         vr for vr in state.get("validation_results", [])
         if vr.get("validator") == "variant_alignment"
     ]
+    empty_generation = not (state.get("variant_questions", []) or [])
 
     feedback_info = ""
     for vr in saved_feedback:
@@ -124,11 +162,16 @@ def bump_variant_retry(state: dict) -> dict:
                     feedback_info = " — 需修复: %s" % ", ".join(targets)
             break
 
+    if empty_generation and not saved_feedback:
+        progress_msg = "[系统] 变式问题生成为空，第 %d 次重新生成" % new_count
+    else:
+        progress_msg = "[系统] 变式问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)
+
     return {
         "variant_retry_count": new_count,
         "validation_results": [],
         "variant_validation_feedback": saved_feedback,
-        "progress_messages": ["[系统] 变式问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)],
+        "progress_messages": [progress_msg],
     }
 
 
@@ -140,6 +183,15 @@ def scaffold_check_node(state: dict) -> dict:
     return scaffold_alignment_node(state)
 
 
+def route_after_scaffold_generation(state: dict) -> str:
+    scaffold_questions = state.get("scaffold_questions", []) or []
+    if not scaffold_questions:
+        if state.get("scaffold_retry_count", 0) < MAX_VALIDATION_RETRIES:
+            return "retry_scaffold"
+        return "done_scaffold"
+    return "run_check"
+
+
 def route_after_scaffold_check(state: dict) -> str:
     for vr in state.get("validation_results", []):
         if vr.get("validator") == "scaffold_alignment" and not vr.get("passed", True):
@@ -149,13 +201,26 @@ def route_after_scaffold_check(state: dict) -> str:
 
 
 def mark_scaffold_done(state: dict) -> dict:
-    passed = all(
-        vr.get("passed", True)
+    scaffold_validation = [
+        vr
         for vr in state.get("validation_results", [])
         if vr.get("validator") == "scaffold_alignment"
+    ]
+    passed = all(
+        vr.get("passed", True)
+        for vr in scaffold_validation
     )
     retry = state.get("scaffold_retry_count", 0)
-    if passed:
+    scaffold_questions = state.get("scaffold_questions", []) or []
+
+    if not scaffold_validation:
+        if not scaffold_questions and retry >= MAX_VALIDATION_RETRIES:
+            msg = "[系统] 支架问题连续生成为空，已达最大重试次数（%d 次），跳过检验并继续" % retry
+        elif not scaffold_questions:
+            msg = "[系统] 支架问题生成为空，跳过检验并继续"
+        else:
+            msg = "[系统] 支架问题未进入检验，使用当前结果继续"
+    elif passed:
         msg = "[系统] 支架问题检验通过" + ("（经 %d 次重试）" % retry if retry > 0 else "")
     else:
         msg = "[系统] 支架问题检验未通过，已达最大重试次数（%d 次），使用当前结果继续" % retry
@@ -169,6 +234,7 @@ def bump_scaffold_retry(state: dict) -> dict:
         vr for vr in state.get("validation_results", [])
         if vr.get("validator") == "scaffold_alignment"
     ]
+    empty_generation = not (state.get("scaffold_questions", []) or [])
 
     feedback_info = ""
     for vr in saved_feedback:
@@ -181,11 +247,16 @@ def bump_scaffold_retry(state: dict) -> dict:
                     feedback_info = " — 需修复: %s" % ", ".join(targets)
             break
 
+    if empty_generation and not saved_feedback:
+        progress_msg = "[系统] 支架问题生成为空，第 %d 次重新生成" % new_count
+    else:
+        progress_msg = "[系统] 支架问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)
+
     return {
         "scaffold_retry_count": new_count,
         "validation_results": [],
         "scaffold_validation_feedback": saved_feedback,
-        "progress_messages": ["[系统] 支架问题检验未通过，第 %d 次重新生成%s" % (new_count, feedback_info)],
+        "progress_messages": [progress_msg],
     }
 
 
@@ -251,8 +322,16 @@ def build_graph() -> StateGraph:
     workflow.add_edge("learning_analysis", "teaching_logic_design")
     workflow.add_edge("teaching_logic_design", "main_question_chain")
 
-    # === Phase 2: 主干问题综合检验（单一校验节点） ===
-    workflow.add_edge("main_question_chain", "main_question_check")
+    # === Phase 2: 主干问题生成后先判断是否为空，空结果直接重试（不进入校验） ===
+    workflow.add_conditional_edges(
+        "main_question_chain",
+        route_after_main_generation,
+        {
+            "retry_main": "bump_main_retry",
+            "continue": "fan_out_gen",
+            "run_check": "main_question_check",
+        },
+    )
 
     workflow.add_conditional_edges(
         "main_question_check",
@@ -262,10 +341,21 @@ def build_graph() -> StateGraph:
 
     def _fan_out_gen_node(state: dict) -> dict:
         retry = state.get("main_retry_count", 0)
-        if retry >= MAX_VALIDATION_RETRIES:
+        main_questions = state.get("main_questions", []) or []
+        main_validation = [
+            vr for vr in state.get("validation_results", [])
+            if vr.get("validator") == MAIN_VALIDATOR_NAME
+        ]
+        passed = bool(main_validation) and all(vr.get("passed", True) for vr in main_validation)
+
+        if passed:
+            msg = "[系统] 主干检验通过，并行生成变式与支架问题..."
+        elif not main_questions:
+            msg = "[系统] 主干问题连续生成为空，已达最大重试次数，使用当前结果继续。并行生成变式与支架问题..."
+        elif retry >= MAX_VALIDATION_RETRIES:
             msg = "[系统] 主干检验未完全通过，已达最大重试次数，使用当前结果继续。并行生成变式与支架问题..."
         else:
-            msg = "[系统] 主干检验通过，并行生成变式与支架问题..."
+            msg = "[系统] 主干已进入后续流程，并行生成变式与支架问题..."
         return {"progress_messages": [msg]}
     workflow.add_node("fan_out_gen", _fan_out_gen_node)
     workflow.add_edge("fan_out_gen", "variant_question")
@@ -275,7 +365,15 @@ def build_graph() -> StateGraph:
     workflow.add_edge("bump_main_retry", "main_question_chain")
 
     # === Phase 3: 变式/支架独立流水线 ===
-    workflow.add_edge("variant_question", "variant_check")
+    workflow.add_conditional_edges(
+        "variant_question",
+        route_after_variant_generation,
+        {
+            "retry_variant": "bump_variant_retry",
+            "done_variant": "mark_variant_done",
+            "run_check": "variant_check",
+        },
+    )
     workflow.add_conditional_edges(
         "variant_check",
         route_after_variant_check,
@@ -284,7 +382,15 @@ def build_graph() -> StateGraph:
     workflow.add_edge("bump_variant_retry", "variant_question")
     workflow.add_edge("mark_variant_done", "aggregate_sub_pipelines")
 
-    workflow.add_edge("scaffold_question", "scaffold_check")
+    workflow.add_conditional_edges(
+        "scaffold_question",
+        route_after_scaffold_generation,
+        {
+            "retry_scaffold": "bump_scaffold_retry",
+            "done_scaffold": "mark_scaffold_done",
+            "run_check": "scaffold_check",
+        },
+    )
     workflow.add_conditional_edges(
         "scaffold_check",
         route_after_scaffold_check,
