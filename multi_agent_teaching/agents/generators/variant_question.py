@@ -3,7 +3,7 @@
 import json
 import os
 import re
-from agents.llm import get_generator_llm
+from agents.llm import get_generator_llm, get_state_temperature
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "variant_question.txt")
 
@@ -108,7 +108,7 @@ def variant_question_node(state: dict) -> dict:
     prompt = prompt.replace("{previous_questions}", json.dumps(previous_variant_questions, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{validation_feedback}", validation_feedback)
 
-    llm = get_generator_llm(temperature=0.8)
+    llm = get_generator_llm(temperature=get_state_temperature(state, default=0.8))
     response = llm.invoke(prompt)
     content = response.content
 

@@ -3,7 +3,7 @@
 import json
 import os
 import re
-from agents.llm import get_generator_llm
+from agents.llm import get_generator_llm, get_state_temperature
 
 
 def _infer_bridge_from_id(item_id, main_ids):
@@ -149,7 +149,7 @@ def scaffold_question_node(state: dict) -> dict:
     prompt = prompt.replace("{previous_questions}", json.dumps(previous_scaffold_questions, ensure_ascii=False, indent=2))
     prompt = prompt.replace("{validation_feedback}", validation_feedback)
 
-    llm = get_generator_llm(temperature=0.7)
+    llm = get_generator_llm(temperature=get_state_temperature(state, default=0.7))
     response = llm.invoke(prompt)
     content = response.content
 

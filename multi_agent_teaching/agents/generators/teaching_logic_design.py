@@ -2,7 +2,7 @@
 
 import json
 import os
-from agents.llm import get_generator_llm
+from agents.llm import get_generator_llm, get_state_temperature
 
 PROMPT_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "prompts", "teaching_logic_design.txt")
 
@@ -20,7 +20,7 @@ def teaching_logic_design_node(state: dict) -> dict:
     )
     prompt = prompt.replace("{attachment}", state.get("attachment", ""))
 
-    llm = get_generator_llm(temperature=0.5)
+    llm = get_generator_llm(temperature=get_state_temperature(state, default=0.5))
     response = llm.invoke(prompt)
     content = response.content
 

@@ -143,6 +143,18 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="form-group field-span-2">
+                                        <label for="temperature">Temperature</label>
+                                        <div class="temperature-slider-wrap">
+                                            <input type="range" id="temperature" name="temperature"
+                                                class="temperature-slider" min="0" max="2" step="0.1"
+                                                value="{{ default_temperature }}" required>
+                                            <span class="temperature-value" id="temperatureValue">{{ default_temperature
+                                                }}</span>
+                                        </div>
+                                        <div class="field-hint" id="temperatureHint">控制生成随机性，范围 0~2，数值越高越发散。</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -315,6 +327,23 @@
         </div>
     </main>
 
+    <script id="matTemperatureConfig"
+        type="application/json">{{ {'fixed': fixed_temperature_models, 'default': default_temperature} | tojson }}</script>
+    <script>
+        (function () {
+            var cfgEl = document.getElementById("matTemperatureConfig");
+            var cfg = {};
+            if (cfgEl && cfgEl.textContent) {
+                try {
+                    cfg = JSON.parse(cfgEl.textContent);
+                } catch (e) {
+                    cfg = {};
+                }
+            }
+            window.MAT_FIXED_TEMPERATURE_MODELS = cfg.fixed || {};
+            window.MAT_DEFAULT_TEMPERATURE = cfg.default;
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

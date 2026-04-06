@@ -42,6 +42,16 @@ def _get_env_int(name: str, default: int) -> int:
     except ValueError:
         return default
 
+
+def _get_env_float(name: str, default: float) -> float:
+    raw = (os.getenv(name, "") or "").strip()
+    if not raw:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
 # 加载 .env 文件
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
@@ -178,6 +188,36 @@ if not TEACHING_MAP_MODEL_OPTIONS:
             }
         )
 
+TEACHING_MAP_DEFAULT_TEMPERATURE = _get_env_float("TEACHING_MAP_DEFAULT_TEMPERATURE", 0.7)
+if TEACHING_MAP_DEFAULT_TEMPERATURE < 0:
+    TEACHING_MAP_DEFAULT_TEMPERATURE = 0.0
+elif TEACHING_MAP_DEFAULT_TEMPERATURE > 2:
+    TEACHING_MAP_DEFAULT_TEMPERATURE = 2.0
+
+_DEFAULT_TEACHING_MAP_FIXED_TEMPERATURE_MODELS = {
+    "claude-opus-4-6-think": 1.0,
+}
+TEACHING_MAP_FIXED_TEMPERATURE_MODELS = dict(_DEFAULT_TEACHING_MAP_FIXED_TEMPERATURE_MODELS)
+_fixed_temperature_raw = os.getenv("TEACHING_MAP_FIXED_TEMPERATURE_MODELS", "").strip()
+if _fixed_temperature_raw:
+    try:
+        _fixed_temperature_custom = json.loads(_fixed_temperature_raw)
+        if isinstance(_fixed_temperature_custom, dict):
+            for _model_id, _temperature in _fixed_temperature_custom.items():
+                if not isinstance(_model_id, str):
+                    continue
+                _model_id = _model_id.strip()
+                if not _model_id:
+                    continue
+                try:
+                    _temp_value = float(_temperature)
+                except (TypeError, ValueError):
+                    continue
+                if 0.0 <= _temp_value <= 2.0:
+                    TEACHING_MAP_FIXED_TEMPERATURE_MODELS[_model_id] = _temp_value
+    except json.JSONDecodeError:
+        pass
+
 TEACHING_MAP_IMAGE_PARSER_MODEL_NAME = os.getenv(
     "TEACHING_MAP_IMAGE_PARSER_MODEL_NAME",
     TEACHING_MAP_GENERATOR_MODEL_NAME,
@@ -196,5 +236,7 @@ LLM_MODEL_OPTIONS = TEACHING_MAP_MODEL_OPTIONS
 LLM_SELECTABLE_MODEL_IDS = TEACHING_MAP_SELECTABLE_MODEL_IDS
 LLM_DEFAULT_MODEL_ICON = TEACHING_MAP_DEFAULT_MODEL_ICON
 LLM_MODEL_ICON_MAP = TEACHING_MAP_MODEL_ICON_MAP
+LLM_DEFAULT_TEMPERATURE = TEACHING_MAP_DEFAULT_TEMPERATURE
+LLM_FIXED_TEMPERATURE_MODELS = TEACHING_MAP_FIXED_TEMPERATURE_MODELS
 LLM_IMAGE_PARSER_MODEL_NAME = TEACHING_MAP_IMAGE_PARSER_MODEL_NAME
 MAX_VALIDATION_RETRIES = TEACHING_MAP_MAX_VALIDATION_RETRIES

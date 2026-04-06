@@ -339,6 +339,8 @@ def multi_agent_teaching_page():
         model_options=_mat_get_model_options(),
         default_model_id=_mat_get_default_model_id(),
         default_model_option=default_model_option,
+        fixed_temperature_models=_mat_get_fixed_temperature_models(),
+        default_temperature=_mat_get_default_temperature(),
     )
 
 
@@ -1499,14 +1501,58 @@ def _mat_get_default_model_option() -> dict:
     }
 
 
+def _mat_get_fixed_temperature_models() -> Dict[str, float]:
+    raw_map = getattr(config, "TEACHING_MAP_FIXED_TEMPERATURE_MODELS", {}) or {}
+    normalized = {}
+    if not isinstance(raw_map, dict):
+        return normalized
+    for model_id, temperature in raw_map.items():
+        if not isinstance(model_id, str):
+            continue
+        model_id = model_id.strip()
+        if not model_id:
+            continue
+        try:
+            temp_value = float(temperature)
+        except (TypeError, ValueError):
+            continue
+        if 0.0 <= temp_value <= 2.0:
+            normalized[model_id] = temp_value
+    return normalized
+
+
+def _mat_get_default_temperature() -> float:
+    try:
+        temperature = float(getattr(config, "TEACHING_MAP_DEFAULT_TEMPERATURE", 0.7))
+    except (TypeError, ValueError):
+        temperature = 0.7
+    if temperature < 0:
+        return 0.0
+    if temperature > 2:
+        return 2.0
+    return temperature
+
+
+def _mat_parse_temperature(raw_value: str, default: float) -> Optional[float]:
+    if not raw_value:
+        return default
+    try:
+        parsed = float(raw_value)
+    except ValueError:
+        return None
+    if parsed < 0 or parsed > 2:
+        return None
+    return parsed
+
+
 def _mat_build_input_preview(node_name: str, accumulated: dict) -> dict:
     INPUT_FIELDS = {
-        "learning_analysis": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
-        "teaching_logic_design": ["model_id", "subject", "grade", "teaching_goals", "analysis_result"],
-        "main_question_chain": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
+        "learning_analysis": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
+        "teaching_logic_design": ["model_id", "temperature", "subject", "grade", "teaching_goals", "analysis_result"],
+        "main_question_chain": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
         "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
-        "variant_question": ["subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
-        "scaffold_question": ["subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
+        "variant_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
+        "scaffold_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
         "variant_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "variant_questions"],
         "scaffold_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "scaffold_questions"],
         "map_integration": ["subject", "grade", "teaching_goals", "analysis_result", "main_questions", "variant_questions", "scaffold_questions"],
@@ -1697,6 +1743,23 @@ def mat_generate():
     if allowed_model_ids and model_id not in allowed_model_ids:
         return jsonify({"error": "所选模型不在可选列表中"}), 400
 
+    temperature_raw = (data.get("temperature", "") or "").strip()
+    fixed_temperature_models = _mat_get_fixed_temperature_models()
+    forced_temperature = fixed_temperature_models.get(model_id)
+    if forced_temperature is not None:
+        if temperature_raw:
+            parsed_forced = _mat_parse_temperature(temperature_raw, forced_temperature)
+            if parsed_forced is None:
+                return jsonify({"error": "temperature 必须是 0 到 2 之间的数字"}), 400
+            if abs(parsed_forced - forced_temperature) > 1e-9:
+                return jsonify({"error": "当前模型 temperature 被固定为 %s，不可修改" % ("%g" % forced_temperature)}), 400
+        temperature = forced_temperature
+    else:
+        parsed_temperature = _mat_parse_temperature(temperature_raw, _mat_get_default_temperature())
+        if parsed_temperature is None:
+            return jsonify({"error": "temperature 必须是 0 到 2 之间的数字"}), 400
+        temperature = parsed_temperature
+
     attachment_text, attachment_stats = _mat_parse_uploaded_attachments(_mat_collect_uploaded_files(request.files))
     language_style = data.get("language_style", "严谨学术")
     if language_style == "自定义":
@@ -1713,6 +1776,7 @@ def mat_generate():
         "result": None,
         "input": {
             "model_id": model_id,
+            "temperature": temperature,
             "subject": data.get("subject", ""),
             "grade": data.get("grade", ""),
             "teaching_goals": data.get("teaching_goals", ""),
@@ -1726,6 +1790,9 @@ def mat_generate():
     _mat_tasks[task_id]["progress"].append(
         "[系统] 当前模型 ID：%s" % (model_id or "未指定")
     )
+    _mat_tasks[task_id]["progress"].append(
+        "[系统] 当前温度：%s" % ("%g" % temperature)
+    )
 
     if attachment_stats["received"] > 0:
         _mat_tasks[task_id]["progress"].append(
@@ -1736,9 +1803,10 @@ def mat_generate():
         _mat_tasks[task_id]["progress"].append("[系统] 未检测到附件，按表单输入继续生成")
 
     app.logger.info(
-        "[教学地图] task=%s model=%s attachment_received=%d attachment_parsed=%d attachment_failed=%d",
+        "[教学地图] task=%s model=%s temperature=%s attachment_received=%d attachment_parsed=%d attachment_failed=%d",
         task_id,
         model_id,
+        ("%g" % temperature),
         attachment_stats["received"],
         attachment_stats["parsed"],
         attachment_stats["failed"],

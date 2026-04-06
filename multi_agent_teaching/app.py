@@ -29,6 +29,8 @@ from config import (
     LLM_SELECTABLE_MODEL_IDS,
     LLM_DEFAULT_MODEL_ICON,
     LLM_MODEL_ICON_MAP,
+    LLM_DEFAULT_TEMPERATURE,
+    LLM_FIXED_TEMPERATURE_MODELS,
 )
 from attachment_parser import parse_uploaded_attachments
 
@@ -104,6 +106,50 @@ def _get_default_model_option() -> dict:
         "name": "请选择模型",
         "icon": "images/model-icons/model-default.svg",
     }
+
+
+def _get_fixed_temperature_models() -> Dict[str, float]:
+    raw_map = LLM_FIXED_TEMPERATURE_MODELS or {}
+    normalized = {}
+    if not isinstance(raw_map, dict):
+        return normalized
+    for model_id, temperature in raw_map.items():
+        if not isinstance(model_id, str):
+            continue
+        model_id = model_id.strip()
+        if not model_id:
+            continue
+        try:
+            temp_value = float(temperature)
+        except (TypeError, ValueError):
+            continue
+        if 0.0 <= temp_value <= 2.0:
+            normalized[model_id] = temp_value
+    return normalized
+
+
+def _get_default_temperature() -> float:
+    try:
+        temperature = float(LLM_DEFAULT_TEMPERATURE)
+    except (TypeError, ValueError):
+        temperature = 0.7
+    if temperature < 0:
+        return 0.0
+    if temperature > 2:
+        return 2.0
+    return temperature
+
+
+def _parse_temperature(raw_value: str, default: float) -> Optional[float]:
+    if not raw_value:
+        return default
+    try:
+        parsed = float(raw_value)
+    except ValueError:
+        return None
+    if parsed < 0 or parsed > 2:
+        return None
+    return parsed
 
 
 def _collect_uploaded_files(files) -> List:
@@ -389,6 +435,8 @@ def index():
         model_options=_get_model_options(),
         default_model_id=_get_default_model_id(),
         default_model_option=default_model_option,
+        fixed_temperature_models=_get_fixed_temperature_models(),
+        default_temperature=_get_default_temperature(),
     )
 
 
@@ -401,6 +449,23 @@ def generate():
         model_id = allowed_model_ids[0] if allowed_model_ids else ""
     if allowed_model_ids and model_id not in allowed_model_ids:
         return jsonify({"error": "所选模型不在可选列表中"}), 400
+
+    temperature_raw = (data.get("temperature", "") or "").strip()
+    fixed_temperature_models = _get_fixed_temperature_models()
+    forced_temperature = fixed_temperature_models.get(model_id)
+    if forced_temperature is not None:
+        if temperature_raw:
+            parsed_forced = _parse_temperature(temperature_raw, forced_temperature)
+            if parsed_forced is None:
+                return jsonify({"error": "temperature 必须是 0 到 2 之间的数字"}), 400
+            if abs(parsed_forced - forced_temperature) > 1e-9:
+                return jsonify({"error": "当前模型 temperature 被固定为 %s，不可修改" % ("%g" % forced_temperature)}), 400
+        temperature = forced_temperature
+    else:
+        parsed_temperature = _parse_temperature(temperature_raw, _get_default_temperature())
+        if parsed_temperature is None:
+            return jsonify({"error": "temperature 必须是 0 到 2 之间的数字"}), 400
+        temperature = parsed_temperature
 
     attachment_text, attachment_stats = parse_uploaded_attachments(_collect_uploaded_files(request.files))
     language_style = data.get("language_style", "严谨学术")
@@ -416,6 +481,7 @@ def generate():
         "result": None,
         "input": {
             "model_id": model_id,
+            "temperature": temperature,
             "subject": data.get("subject", ""),
             "grade": data.get("grade", ""),
             "teaching_goals": data.get("teaching_goals", ""),
@@ -429,6 +495,9 @@ def generate():
     tasks[task_id]["progress"].append(
         "[系统] 当前模型 ID：%s" % (model_id or "未指定")
     )
+    tasks[task_id]["progress"].append(
+        "[系统] 当前温度：%s" % ("%g" % temperature)
+    )
 
     if attachment_stats["received"] > 0:
         tasks[task_id]["progress"].append(
@@ -439,9 +508,10 @@ def generate():
         tasks[task_id]["progress"].append("[系统] 未检测到附件，按表单输入继续生成")
 
     app.logger.info(
-        "[教学地图] task=%s model=%s attachment_received=%d attachment_parsed=%d attachment_failed=%d",
+        "[教学地图] task=%s model=%s temperature=%s attachment_received=%d attachment_parsed=%d attachment_failed=%d",
         task_id,
         model_id,
+        ("%g" % temperature),
         attachment_stats["received"],
         attachment_stats["parsed"],
         attachment_stats["failed"],
@@ -635,12 +705,12 @@ def _build_output_preview(output: dict) -> dict:
 
 def _build_input_preview(node_name: str, accumulated: dict) -> dict:
     INPUT_FIELDS = {
-        "learning_analysis": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
-        "teaching_logic_design": ["model_id", "subject", "grade", "teaching_goals", "analysis_result"],
-        "main_question_chain": ["model_id", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
+        "learning_analysis": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
+        "teaching_logic_design": ["model_id", "temperature", "subject", "grade", "teaching_goals", "analysis_result"],
+        "main_question_chain": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
         "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
-        "variant_question": ["subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
-        "scaffold_question": ["subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
+        "variant_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
+        "scaffold_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
         "variant_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "variant_questions"],
         "scaffold_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "scaffold_questions"],
         "map_integration": ["subject", "grade", "teaching_goals", "analysis_result", "main_questions", "variant_questions", "scaffold_questions"]

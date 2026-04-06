@@ -65,6 +65,11 @@ var modelPickerMenuEl = document.getElementById("modelPickerMenu");
 var modelPickerLabelEl = document.getElementById("modelPickerLabel");
 var modelPickerIconEl = document.getElementById("modelPickerIcon");
 var modelIdInputEl = document.getElementById("model_id");
+var temperatureInputEl = document.getElementById("temperature");
+var temperatureValueEl = document.getElementById("temperatureValue");
+var temperatureHintEl = document.getElementById("temperatureHint");
+var fixedTemperatureModels = window.MAT_FIXED_TEMPERATURE_MODELS || {};
+var defaultTemperature = Number(window.MAT_DEFAULT_TEMPERATURE);
 var markdownOptionsApplied = false;
 
 var API_PREFIX = "/api/mat";
@@ -187,10 +192,94 @@ function setBackToGenerationButtonState(visible) {
     btn.style.display = visible ? "block" : "none";
 }
 
+function normalizeTemperatureValue(value, fallback) {
+    var parsed = Number(value);
+    if (!isFinite(parsed)) parsed = fallback;
+    if (!isFinite(parsed)) parsed = 0.7;
+    if (parsed < 0) parsed = 0;
+    if (parsed > 2) parsed = 2;
+    return parsed;
+}
+
+function formatTemperatureValue(value) {
+    var normalized = normalizeTemperatureValue(value, 0.7);
+    return String(Math.round(normalized * 100) / 100);
+}
+
+function syncTemperatureSliderUi() {
+    if (!temperatureInputEl) return;
+    var fallback = normalizeTemperatureValue(defaultTemperature, 0.7);
+    var normalized = normalizeTemperatureValue(temperatureInputEl.value, fallback);
+    temperatureInputEl.value = formatTemperatureValue(normalized);
+    if (temperatureValueEl) {
+        temperatureValueEl.textContent = formatTemperatureValue(normalized);
+    }
+    var min = normalizeTemperatureValue(temperatureInputEl.min, 0);
+    var max = normalizeTemperatureValue(temperatureInputEl.max, 2);
+    var percent = 0;
+    if (max > min) {
+        percent = ((normalized - min) / (max - min)) * 100;
+    }
+    if (!isFinite(percent)) {
+        percent = 0;
+    }
+    percent = Math.max(0, Math.min(100, percent));
+    temperatureInputEl.style.setProperty("--value-percent", percent.toFixed(2) + "%");
+}
+
+function handleTemperatureInputChange() {
+    if (!temperatureInputEl) return;
+    var locked = temperatureInputEl.dataset.locked === "1";
+    if (locked) {
+        var fixedValue = temperatureInputEl.dataset.fixedValue || "1";
+        temperatureInputEl.value = fixedValue;
+    } else {
+        var fallback = normalizeTemperatureValue(defaultTemperature, 0.7);
+        temperatureInputEl.value = formatTemperatureValue(
+            normalizeTemperatureValue(temperatureInputEl.value, fallback)
+        );
+    }
+    syncTemperatureSliderUi();
+}
+
+function updateTemperatureControlForModel(modelId) {
+    if (!temperatureInputEl) return;
+
+    var key = modelId || "";
+    var hasFixed = Object.prototype.hasOwnProperty.call(fixedTemperatureModels, key);
+    if (hasFixed) {
+        var fixedValue = normalizeTemperatureValue(fixedTemperatureModels[key], 1);
+        temperatureInputEl.value = formatTemperatureValue(fixedValue);
+        temperatureInputEl.dataset.locked = "1";
+        temperatureInputEl.dataset.fixedValue = formatTemperatureValue(fixedValue);
+        temperatureInputEl.setAttribute("aria-disabled", "true");
+        temperatureInputEl.classList.add("is-locked");
+        syncTemperatureSliderUi();
+        if (temperatureHintEl) {
+            temperatureHintEl.textContent = "当前模型固定 temperature=" + formatTemperatureValue(fixedValue) + "，不可修改。";
+        }
+        return;
+    }
+
+    temperatureInputEl.dataset.locked = "0";
+    delete temperatureInputEl.dataset.fixedValue;
+    temperatureInputEl.removeAttribute("aria-disabled");
+    temperatureInputEl.classList.remove("is-locked");
+    if (!temperatureInputEl.value) {
+        var fallback = normalizeTemperatureValue(defaultTemperature, 0.7);
+        temperatureInputEl.value = formatTemperatureValue(fallback);
+    }
+    syncTemperatureSliderUi();
+    if (temperatureHintEl) {
+        temperatureHintEl.textContent = "控制生成随机性，范围 0~2，数值越高越发散。";
+    }
+}
+
 function setModelPickerValue(modelId, label, iconUrl) {
     if (modelIdInputEl) modelIdInputEl.value = modelId || "";
     if (modelPickerLabelEl) modelPickerLabelEl.textContent = label || "请选择模型";
     if (modelPickerIconEl && iconUrl) modelPickerIconEl.src = iconUrl;
+    updateTemperatureControlForModel(modelId || "");
 
     if (!modelPickerMenuEl) return;
     modelPickerMenuEl.querySelectorAll(".mat-model-picker-item").forEach(function (item) {
@@ -217,7 +306,10 @@ function syncModelPickerFromInput() {
 }
 
 function initModelPicker() {
-    if (!modelPickerEl || !modelPickerTriggerEl || !modelPickerMenuEl || !modelIdInputEl) return;
+    if (!modelPickerEl || !modelPickerTriggerEl || !modelPickerMenuEl || !modelIdInputEl) {
+        updateTemperatureControlForModel(modelIdInputEl ? modelIdInputEl.value : "");
+        return;
+    }
 
     modelPickerTriggerEl.addEventListener("click", function () {
         var willOpen = !modelPickerEl.classList.contains("open");
@@ -249,6 +341,18 @@ function initModelPicker() {
     });
 
     syncModelPickerFromInput();
+}
+
+if (temperatureInputEl) {
+    if (!isFinite(defaultTemperature)) {
+        defaultTemperature = 0.7;
+    }
+    if (!temperatureInputEl.value) {
+        temperatureInputEl.value = formatTemperatureValue(defaultTemperature);
+    }
+    syncTemperatureSliderUi();
+    temperatureInputEl.addEventListener("input", handleTemperatureInputChange);
+    temperatureInputEl.addEventListener("change", handleTemperatureInputChange);
 }
 
 // ---------------------------------------------------------------------------
@@ -744,10 +848,19 @@ function updateCurrentAgentCard(payload) {
     var agentOutput = document.getElementById("currentAgentOutput");
     var stepNumber = payload.step_number || (currentStepIndex >= 0 ? (currentStepIndex + 1) : 0);
     var total = AGENT_STEPS.length;
+    var agentIdxInFlow = AGENT_STEPS.indexOf(payload.agent || "");
+    var displayStep = 0;
+    if (agentIdxInFlow >= 0) {
+        displayStep = agentIdxInFlow + 1;
+    } else if (currentStepIndex >= 0) {
+        displayStep = currentStepIndex + 1;
+    } else if (stepNumber > 0) {
+        displayStep = Math.min(stepNumber, total);
+    }
     var displayAgent = payload.agent_display_name || AGENT_DISPLAY_NAMES[payload.agent] || payload.agent || "处理中";
     var msg = payload.message || "正在执行...";
 
-    stepBadge.textContent = stepNumber > 0 ? ("步骤 " + stepNumber + " / " + total) : "等待开始";
+    stepBadge.textContent = displayStep > 0 ? ("步骤 " + displayStep + " / " + total) : "等待开始";
     agentName.textContent = displayAgent;
     agentMessage.textContent = msg;
 

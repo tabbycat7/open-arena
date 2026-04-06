@@ -65,6 +65,23 @@ def _resolve_generator_model_name(model_name: Optional[str] = None) -> str:
     return LLM_GENERATOR_MODEL_NAME or LLM_MODEL_NAME
 
 
+def get_state_temperature(state: Optional[Dict[str, Any]], default: float = 0.7) -> float:
+    raw_value = default
+    if isinstance(state, dict):
+        candidate = state.get("temperature")
+        if candidate not in (None, ""):
+            raw_value = candidate
+    try:
+        parsed = float(raw_value)
+    except (TypeError, ValueError):
+        parsed = float(default)
+    if parsed < 0:
+        return 0.0
+    if parsed > 2:
+        return 2.0
+    return parsed
+
+
 def get_generator_llm(
     temperature: float = 0.7,
     model_name: Optional[str] = None,

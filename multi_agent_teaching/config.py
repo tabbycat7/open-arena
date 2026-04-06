@@ -34,6 +34,8 @@ LLM_DEFAULT_MODEL_ICON = getattr(
     "images/model-icons/model-default.svg",
 )
 LLM_MODEL_ICON_MAP = dict(getattr(_main, "TEACHING_MAP_MODEL_ICON_MAP", {}))
+LLM_DEFAULT_TEMPERATURE = float(getattr(_main, "TEACHING_MAP_DEFAULT_TEMPERATURE", 0.7))
+LLM_FIXED_TEMPERATURE_MODELS = dict(getattr(_main, "TEACHING_MAP_FIXED_TEMPERATURE_MODELS", {}))
 LLM_IMAGE_PARSER_MODEL_NAME = getattr(
     _main,
     "TEACHING_MAP_IMAGE_PARSER_MODEL_NAME",
