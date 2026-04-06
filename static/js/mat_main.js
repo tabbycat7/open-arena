@@ -65,6 +65,7 @@ var modelPickerMenuEl = document.getElementById("modelPickerMenu");
 var modelPickerLabelEl = document.getElementById("modelPickerLabel");
 var modelPickerIconEl = document.getElementById("modelPickerIcon");
 var modelIdInputEl = document.getElementById("model_id");
+var markdownOptionsApplied = false;
 
 var API_PREFIX = "/api/mat";
 
@@ -752,9 +753,15 @@ function updateCurrentAgentCard(payload) {
 
     if (agentStatus) {
         agentStatus.className = "mat-current-agent-status";
+        var failCountMatch = msg.match(/失败\s*[:：]?\s*(\d+)/);
+        var failCount = failCountMatch ? parseInt(failCountMatch[1], 10) : null;
+        var hasHardFailure = msg.indexOf("未通过") !== -1
+            || msg.indexOf("执行失败") !== -1
+            || msg.indexOf("生成出错") !== -1
+            || msg.indexOf("任务已强制停止") !== -1;
         if (msg.indexOf("通过") !== -1 && msg.indexOf("未通过") === -1) {
             agentStatus.textContent = "通过"; agentStatus.classList.add("passed");
-        } else if (msg.indexOf("未通过") !== -1 || msg.indexOf("失败") !== -1) {
+        } else if (hasHardFailure || (failCount !== null && failCount > 0)) {
             agentStatus.textContent = "未通过"; agentStatus.classList.add("failed");
         } else if (msg.indexOf("完成") !== -1 || msg.indexOf("生成了") !== -1) {
             agentStatus.textContent = "完成"; agentStatus.classList.add("passed");
@@ -867,6 +874,25 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function renderMarkdownHtml(text) {
+    var source = text == null ? "" : String(text);
+    if (!source) return "";
+
+    if (typeof marked !== "undefined" && marked && typeof marked.parse === "function") {
+        if (!markdownOptionsApplied && typeof marked.setOptions === "function") {
+            marked.setOptions({ gfm: true, breaks: true });
+            markdownOptionsApplied = true;
+        }
+        var rendered = marked.parse(source);
+        if (typeof DOMPurify !== "undefined" && DOMPurify && typeof DOMPurify.sanitize === "function") {
+            return DOMPurify.sanitize(rendered, { USE_PROFILES: { html: true } });
+        }
+        return escapeHtml(source).replace(/\n/g, "<br>");
+    }
+
+    return escapeHtml(source).replace(/\n/g, "<br>");
+}
+
 // ---------------------------------------------------------------------------
 // Text view rendering
 // ---------------------------------------------------------------------------
@@ -889,10 +915,10 @@ function renderTextView(teachingMap) {
         html += '<div class="mat-text-block-header mat-main-header">';
         html += '<span class="mat-text-num">' + (idx + 1) + '</span>';
         html += '<span class="mat-text-tag mat-tag-main">主干问题</span>';
-        html += '<span class="mat-text-id">' + mainNode.id + '</span>';
+        html += '<span class="mat-text-id">' + escapeHtml(String(mainNode.id || "")) + '</span>';
         html += '</div>';
         html += '<div class="mat-text-block-body">';
-        html += '<p class="mat-text-question">' + (mainNode.content || "") + '</p>';
+        html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(mainNode.content || "") + '</div>';
         html += renderMeta(mainNode);
         html += renderCommentaryBlock(mainNode);
         html += '</div>';
@@ -907,11 +933,11 @@ function renderTextView(teachingMap) {
                 html += '<div class="mat-text-block mat-text-variant">';
                 html += '<div class="mat-text-block-header mat-variant-header">';
                 html += '<span class="mat-text-tag mat-tag-variant">变式</span>';
-                html += '<span class="mat-text-id">' + v.id + '</span>';
-                if (v.variation_type) html += '<span class="mat-text-vtype">' + v.variation_type + '</span>';
+                html += '<span class="mat-text-id">' + escapeHtml(String(v.id || "")) + '</span>';
+                if (v.variation_type) html += '<span class="mat-text-vtype">' + escapeHtml(String(v.variation_type)) + '</span>';
                 html += '</div>';
                 html += '<div class="mat-text-block-body">';
-                html += '<p class="mat-text-question">' + (v.content || "") + '</p>';
+                html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(v.content || "") + '</div>';
                 html += renderMeta(v);
                 html += renderCommentaryBlock(v);
                 html += '</div></div>';
@@ -933,13 +959,13 @@ function renderTextView(teachingMap) {
                     html += '<div class="mat-text-block mat-text-scaffold">';
                     html += '<div class="mat-text-block-header mat-scaffold-header">';
                     html += '<span class="mat-text-tag mat-tag-scaffold">支架</span>';
-                    html += '<span class="mat-text-id">' + s.id + '</span>';
+                    html += '<span class="mat-text-id">' + escapeHtml(String(s.id || "")) + '</span>';
                     html += '</div>';
                     html += '<div class="mat-text-block-body">';
-                    html += '<p class="mat-text-question">' + (s.content || "") + '</p>';
+                    html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(s.content || "") + '</div>';
                     html += renderMeta(s);
                     html += renderCommentaryBlock(s);
-                    if (s.bridge_function) html += '<p class="mat-text-bridge">桥梁功能：' + s.bridge_function + '</p>';
+                    if (s.bridge_function) html += '<div class="mat-text-bridge mat-markdown-content"><strong>桥梁功能：</strong>' + renderMarkdownHtml(s.bridge_function) + '</div>';
                     html += '</div></div>';
                 });
                 html += '</div>';
@@ -956,13 +982,13 @@ function renderMeta(node) {
     var html = '<div class="mat-text-meta">';
     var designIntent = node.design_intent || node.design_rationale || "";
     if (node.knowledge_points && node.knowledge_points.length) {
-        html += '<span>知识点：' + node.knowledge_points.join("、") + '</span>';
+        html += '<span>知识点：' + escapeHtml(node.knowledge_points.join("、")) + '</span>';
     }
     var cl = node.cognitive_level || node.bloom_level || "";
     var clLabel = COGNITIVE_LABELS[cl] || cl;
-    if (clLabel) html += '<span>认知层次：' + clLabel + '</span>';
-    if (node.difficulty !== undefined) html += '<span>难度：' + node.difficulty + '</span>';
-    if (designIntent) html += '<span>设计意图：' + designIntent + '</span>';
+    if (clLabel) html += '<span>认知层次：' + escapeHtml(String(clLabel)) + '</span>';
+    if (node.difficulty !== undefined) html += '<span>难度：' + escapeHtml(String(node.difficulty)) + '</span>';
+    if (designIntent) html += '<span>设计意图：' + escapeHtml(String(designIntent)) + '</span>';
     html += '</div>';
     return html;
 }
@@ -974,7 +1000,7 @@ function getCommentary(node) {
 function renderCommentaryBlock(node) {
     var commentary = getCommentary(node);
     if (!commentary) return "";
-    return '<div class="mat-text-commentary"><div class="mat-text-commentary-title">说课稿</div><p class="mat-text-commentary-body">' + escapeHtml(commentary) + '</p></div>';
+    return '<div class="mat-text-commentary"><div class="mat-text-commentary-title">说课稿</div><div class="mat-text-commentary-body mat-markdown-content">' + renderMarkdownHtml(commentary) + '</div></div>';
 }
 
 function orderMainNodes(mainNodes, edges) {
