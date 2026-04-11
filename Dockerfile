@@ -15,4 +15,4 @@ COPY . .
 
 EXPOSE 5500
 
-CMD ["sh", "-c", "python init_db.py && gunicorn -w 2 -k gthread --threads 4 --timeout 180 --graceful-timeout 30 --keep-alive 5 -b 0.0.0.0:5500 app:app"]
+CMD ["sh", "-c", "python init_db.py && gunicorn -w 3 -k gthread --threads 6 --timeout 0 --graceful-timeout 30 --keep-alive 5 -b 0.0.0.0:5500 app:app"]
