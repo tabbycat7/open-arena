@@ -466,7 +466,7 @@
             document.getElementById(`edit-enhanced-${roundNum}`).classList.add('hidden');
 
             try {
-                const resp = await fetch(`/api/debate/sessions/${sessionId}/enhance`, {
+                const resp = await fetch(buildSessionApiUrl('enhance'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -560,7 +560,7 @@
             const originalText = displayEl.textContent.trim();
             if (finalText !== originalText) {
                 try {
-                    const resp = await fetch(`/api/debate/sessions/${sessionId}/update-enhanced`, {
+                    const resp = await fetch(buildSessionApiUrl('update-enhanced'), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ enhanced_argument: finalText }),
@@ -610,7 +610,7 @@
 
             let success = false;
             try {
-                const resp = await fetch(`/api/debate/sessions/${sessionId}/rebut`, {
+                const resp = await fetch(buildSessionApiUrl('rebut'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -654,7 +654,7 @@
             this.innerHTML = '<div class="loading-spinner loading-spinner--white"></div> 提交中…';
 
             try {
-                const resp = await fetch(`/api/debate/sessions/${sessionId}/next-round`, {
+                const resp = await fetch(buildSessionApiUrl('next-round'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ teacher_argument: argument }),
@@ -703,7 +703,7 @@
 
             try {
                 const note = document.getElementById('annotation-note').value.trim();
-                const resp = await fetch(`/api/debate/sessions/${sessionId}/annotate`, {
+                const resp = await fetch(buildSessionApiUrl('annotate'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -742,6 +742,14 @@
             <div class="summary-row"><span class="summary-label">立场变化</span><span class="summary-value ${changedClass}">${changedText}</span></div>
             <div class="summary-row"><span class="summary-label">会话ID</span><span class="summary-value summary-id">${sessionId}</span></div>
         `;
+        }
+
+        function buildSessionApiUrl(action) {
+            const sid = String(sessionId || '').trim();
+            if (!sid) {
+                throw new Error('会话ID为空，请返回上一步重新开始辩论');
+            }
+            return `/api/debate/sessions/${encodeURIComponent(sid)}/${action}`;
         }
 
         // ====== 工具函数 ======

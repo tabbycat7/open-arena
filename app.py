@@ -7,7 +7,7 @@ import time
 import importlib
 import threading
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 import pymysql
@@ -506,7 +506,7 @@ def api_enhance_argument(session_id):
 
     current_round.enhanced_argument_raw = enhanced
     current_round.enhanced_argument = enhanced
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -546,7 +546,7 @@ def api_update_enhanced(session_id):
         return jsonify({"code": 1, "msg": "本轮已完成反驳，无法修改"}), 400
 
     current_round.enhanced_argument = data["enhanced_argument"].strip()
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -599,7 +599,7 @@ def api_rebut_argument(session_id):
         return jsonify({"code": 1, "msg": f"反驳模型调用失败: {str(e)}"}), 500
 
     current_round.rebuttal_argument = rebuttal
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -649,7 +649,7 @@ def api_next_round(session_id):
     db.session.add(new_round)
 
     session.current_round = new_round_number
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -682,7 +682,7 @@ def api_annotate_session(session_id):
     session.stance_changed = data["stance_changed"]
     session.annotation_note = data.get("annotation_note", "")
     session.status = "annotated"
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({"code": 0, "msg": "标注完成"})
@@ -927,7 +927,7 @@ def api_lesson_generate(session_id):
         return jsonify({"code": 1, "msg": "两个模型均调用失败: " + "; ".join(errors)}), 500
 
     session.status = "ready"
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -957,7 +957,7 @@ def api_lesson_vote(session_id):
 
     session.winner = winner
     session.status = "voted"
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({
@@ -1007,7 +1007,7 @@ def api_lesson_rate(session_id):
     session.rating_tech_usage_b = int(data["ratings_b"]["tech_usage"])
 
     session.status = "completed"
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({"code": 0, "msg": "评分提交成功"})
@@ -1081,7 +1081,7 @@ def api_lesson_chat(session_id):
     db.session.add(chat_round)
 
     session.current_round = new_round_number
-    session.updated_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({

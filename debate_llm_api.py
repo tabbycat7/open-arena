@@ -4,35 +4,93 @@
 支持多轮对话历史上下文。
 """
 
-import requests
+from openai import APIError, APIStatusError, OpenAI
 import config
 
 
-def _call_chat_api(api_url, api_key, model, messages, temperature=0.7, max_tokens=4096):
+def _normalize_openai_base_url(api_url):
+    base_url = (api_url or "").strip().rstrip("/")
+    if base_url.endswith("/chat/completions"):
+        base_url = base_url[: -len("/chat/completions")]
+    if not base_url.endswith("/v1"):
+        if base_url.endswith("/v1/"):
+            base_url = base_url[:-1]
+    return base_url + "/"
+
+
+def _should_use_max_completion_tokens(model):
+    model_name = (model or "").strip().lower()
+    return model_name.startswith("gpt-5")
+
+
+def _extract_status_error_body(error):
+    if getattr(error, "response", None) is None:
+        return ""
+    try:
+        return error.response.text or ""
+    except Exception:
+        return str(error.response)
+
+
+def _call_chat_api(api_url, api_key, model, messages, temperature=0.7, max_tokens=8192):
     """
     调用 OpenAI 兼容的 Chat Completions API
     返回模型生成的文本内容，失败时抛出异常。
     """
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-    payload = {
+    base_url = _normalize_openai_base_url(api_url)
+    if not (api_key or "").strip():
+        raise RuntimeError(f"上游模型接口请求失败: model={model}, detail=API Key 未配置")
+
+    client = OpenAI(api_key=api_key, base_url=base_url)
+    use_completion_tokens = _should_use_max_completion_tokens(model)
+    request_kwargs = {
         "model": model,
         "messages": messages,
         "temperature": temperature,
-        "max_tokens": max_tokens,
+        "timeout": 120,
     }
+    if use_completion_tokens:
+        request_kwargs["max_completion_tokens"] = max_tokens
+    else:
+        request_kwargs["max_tokens"] = max_tokens
 
-    resp = requests.post(api_url, json=payload, headers=headers, timeout=120)
-    resp.raise_for_status()
+    try:
+        completion = client.chat.completions.create(**request_kwargs)
+    except APIStatusError as e:
+        body = _extract_status_error_body(e)
+        # 对不支持 max_tokens 的模型做一次自动重试。
+        if (not use_completion_tokens) and ("max_completion_tokens" in body):
+            retry_kwargs = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+                "timeout": 120,
+                "max_completion_tokens": max_tokens,
+            }
+            try:
+                completion = client.chat.completions.create(**retry_kwargs)
+            except APIStatusError as retry_e:
+                retry_body = _extract_status_error_body(retry_e)
+                retry_preview = retry_body.strip()[:1000] if retry_body else "<empty body>"
+                raise RuntimeError(
+                    f"上游模型接口返回错误: status={retry_e.status_code}, model={model}, body={retry_preview}"
+                ) from retry_e
+            except APIError as retry_e:
+                raise RuntimeError(f"上游模型接口请求失败: model={model}, detail={retry_e}") from retry_e
+        else:
+            body_preview = body.strip()[:1000] if body else "<empty body>"
+            raise RuntimeError(
+                f"上游模型接口返回错误: status={e.status_code}, model={model}, body={body_preview}"
+            ) from e
+    except APIError as e:
+        raise RuntimeError(f"上游模型接口请求失败: model={model}, detail={e}") from e
 
-    data = resp.json()
-    # 兼容 OpenAI 格式
-    if "choices" in data and len(data["choices"]) > 0:
-        return data["choices"][0]["message"]["content"].strip()
+    if completion.choices and completion.choices[0].message:
+        content = completion.choices[0].message.content
+        if isinstance(content, str):
+            return content.strip()
 
-    raise ValueError(f"API 返回格式异常: {data}")
+    raise ValueError(f"API 返回格式异常: {completion}")
 
 
 def _format_history_for_enhance(history):
