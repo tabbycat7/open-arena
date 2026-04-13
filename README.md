@@ -55,8 +55,8 @@ open_arena/
 ### 1. 环境准备
 推荐使用 Conda 隔离运行环境：
 ```bash
-conda create -n StudentAgent python=3.10
-conda activate StudentAgent
+conda create -n multiagent python=3.13
+conda activate multiagent
 ```
 
 ### 2. 安装依赖
