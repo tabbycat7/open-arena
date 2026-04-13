@@ -65,43 +65,15 @@ pip install -r requirements.txt
 ```
 
 ### 3. 环境变量配置
-在项目根目录编辑 `.env` 文件，填入所需的大模型 API Key。
+在项目根目录编辑 `.env` 文件（去除.env.example文件的后缀.example），填入所需的大模型 API Key，只需要填TEACHING_MAP_LLM_API_KEY=。
 
-### 4. 初始化数据库
-首次运行或清除记录后，生成本地 `.db` 文件及相关表结构：
-```bash
-python init_db.py
-```
+### 4. 配置数据库
+首先需要安装mysql（按照网上教程即可），在.env中按照注释中的格式配置DATABASE_URL，
 
 ### 5. 启动应用
 使用 Python 启动主应用，访问内置的 Web 界面：
 ```bash
 python app.py
 ```
-> 控制台显示 `Running on http://127.0.0.1:5000` 后，用浏览器打开该地址即可。
+> 控制台显示 `Running on http://127.0.0.1:5500` 后，用浏览器打开该地址即可。
 
-### 6. 多智能体假 API 边界测试
-当你想快速回放重试、校验失败、解析异常等边界情况，而不依赖真实大模型时，可启用内置 fake API：
-
-```bash
-set TEACHING_MAP_FAKE_API=1
-我们把‘每年本金乘1.05’的规律，翻译成标准的数学表达式吧。如果底数不小心取成1或者负数，这个函数会出什么‘bug’？为什么必须规定a>0且a≠1？
-```
-
-可选：只跑部分场景
-
-```bash
-python multi_agent_teaching/run_fake_workflow_tests.py --scenarios all_pass main_retry_once
-```
-
-可选：加载自定义场景脚本（格式见 `multi_agent_teaching/fake_scenarios.example.json`）
-
-```bash
-set TEACHING_MAP_FAKE_SCENARIO_FILE=multi_agent_teaching/fake_scenarios.example.json
-python multi_agent_teaching/run_fake_workflow_tests.py --scenarios custom_main_fail_twice
-```
-
-## 📝 规划扩展 (Coming Soon)
-- 🌐 AI 智能翻译（支持泛上下文语言处理）
-- 💻 AI 代码助手（编程辅导与重构）
-- 📊 AI 数据分析（自动化清洗数据、生可视化图表）
