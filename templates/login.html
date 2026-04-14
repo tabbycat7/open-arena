@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - Open Arena</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+
+<body>
+    <div class="auth-page" id="auth-page">
+        <div class="auth-container">
+            <a href="/" class="back-link" id="back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                返回首页
+            </a>
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>登录 Open Arena</h1>
+                    <p>欢迎回来，请登录您的账号</p>
+                </div>
+
+                <div id="auth-error" class="auth-error"></div>
+
+                <form class="auth-form" id="login-form">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="auth-submit-btn" id="submit-btn">登录</button>
+                </form>
+
+                <div class="auth-footer">
+                    还没有账号？<a href="/register">立即注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('submit-btn');
+                const errorDiv = document.getElementById('auth-error');
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!username || !password) {
+                    errorDiv.textContent = '请填写用户名和密码';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = '登录中...';
+                errorDiv.classList.remove('show');
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.code === 0) {
+                        window.location.href = '/';
+                    } else {
+                        errorDiv.textContent = data.msg || '登录失败';
+                        errorDiv.classList.add('show');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '登录';
+                    }
+                } catch (err) {
+                    errorDiv.textContent = '网络错误，请稍后重试';
+                    errorDiv.classList.add('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '登录';
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

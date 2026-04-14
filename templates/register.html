@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - Open Arena</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+
+<body>
+    <div class="auth-page" id="auth-page">
+        <div class="auth-container">
+            <a href="/" class="back-link" id="back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                返回首页
+            </a>
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>注册 Open Arena</h1>
+                    <p>创建账号，开启 AI 之旅</p>
+                </div>
+
+                <div id="auth-error" class="auth-error"></div>
+
+                <form class="auth-form" id="register-form">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                        <div class="form-hint">3-32 个字符</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="display_name">显示名称（选填）</label>
+                        <input type="text" id="display_name" name="display_name" placeholder="用于展示的昵称">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                        <div class="form-hint">至少 6 个字符</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm">确认密码</label>
+                        <input type="password" id="password_confirm" name="password_confirm" placeholder="请再次输入密码"
+                            required>
+                    </div>
+                    <button type="submit" class="auth-submit-btn" id="submit-btn">注册</button>
+                </form>
+
+                <div class="auth-footer">
+                    已有账号？<a href="/login">立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            document.getElementById('register-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('submit-btn');
+                const errorDiv = document.getElementById('auth-error');
+
+                const username = document.getElementById('username').value.trim();
+                const display_name = document.getElementById('display_name').value.trim();
+                const password = document.getElementById('password').value;
+                const password_confirm = document.getElementById('password_confirm').value;
+
+                if (!username) {
+                    errorDiv.textContent = '请填写用户名';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                if (username.length < 3 || username.length > 32) {
+                    errorDiv.textContent = '用户名长度应为 3-32 个字符';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                if (!password) {
+                    errorDiv.textContent = '请填写密码';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    errorDiv.textContent = '密码长度至少 6 个字符';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                if (password !== password_confirm) {
+                    errorDiv.textContent = '两次输入的密码不一致';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = '注册中...';
+                errorDiv.classList.remove('show');
+
+                try {
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password, display_name })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.code === 0) {
+                        window.location.href = '/';
+                    } else {
+                        errorDiv.textContent = data.msg || '注册失败';
+                        errorDiv.classList.add('show');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '注册';
+                    }
+                } catch (err) {
+                    errorDiv.textContent = '网络错误，请稍后重试';
+                    errorDiv.classList.add('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '注册';
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

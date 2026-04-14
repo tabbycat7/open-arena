@@ -1,0 +1,356 @@
+/* =============================================
+   Open Arena - 认证页面样式
+   ============================================= */
+
+/* 动画定义 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+/* 页面基础样式 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(-45deg, #f5f7fa, #e8ecf1, #dfe6ed, #eef2f7);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite, bodyFadeIn 0.25s ease forwards;
+    overflow-x: hidden;
+}
+
+@keyframes bodyFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 装饰背景 */
+.auth-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+}
+
+.auth-page::before,
+.auth-page::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: float 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.auth-page::before {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, rgba(64, 158, 255, 0.15), rgba(102, 177, 255, 0.1));
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+}
+
+.auth-page::after {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, rgba(103, 194, 58, 0.1), rgba(64, 158, 255, 0.08));
+    bottom: -80px;
+    left: -80px;
+    animation-delay: -4s;
+}
+
+/* 容器 */
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 返回链接 */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInFromLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+.back-link:hover {
+    color: #409eff;
+    background: rgba(64, 158, 255, 0.08);
+    transform: translateX(-4px);
+}
+
+.back-link svg {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.back-link:hover svg {
+    transform: translateX(-3px);
+}
+
+/* 卡片 */
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.06),
+        0 12px 48px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    padding: 48px 40px;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(30px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 头部 */
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+    animation: fadeIn 0.3s ease 0.1s forwards;
+    opacity: 0;
+}
+
+.auth-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 15px;
+    margin: 0;
+}
+
+/* 表单 */
+.auth-form {
+    animation: fadeIn 0.3s ease 0.15s forwards;
+    opacity: 0;
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #eaeef3;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #fafbfc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.auth-form input:hover {
+    border-color: #d0d7de;
+    background: #fff;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #409eff;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.12);
+}
+
+.auth-form input::placeholder {
+    color: #a0a8b2;
+}
+
+.form-hint {
+    font-size: 12px;
+    color: #909399;
+    margin-top: 6px;
+}
+
+/* 提交按钮 */
+.auth-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #409eff 0%, #5cadff 50%, #409eff 100%);
+    background-size: 200% 200%;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(64, 158, 255, 0.35);
+    background-position: 100% 50%;
+}
+
+.auth-submit-btn:hover::before {
+    left: 100%;
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+}
+
+.auth-submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 错误提示 */
+.auth-error {
+    background: linear-gradient(135deg, #fff2f0, #ffebe8);
+    border: 1px solid #ffccc7;
+    color: #ff4d4f;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: none;
+    animation: fadeInUp 0.2s ease forwards;
+}
+
+.auth-error.show {
+    display: block;
+}
+
+/* 页脚 */
+.auth-footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 14px;
+    color: #666;
+    animation: fadeIn 0.3s ease 0.2s forwards;
+    opacity: 0;
+}
+
+.auth-footer a {
+    color: #409eff;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #409eff;
+    transition: width 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: #66b1ff;
+}
+
+.auth-footer a:hover::after {
+    width: 100%;
+}
+
+/* 响应式 */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 36px 24px;
+        border-radius: 16px;
+    }
+
+    .auth-header h1 {
+        font-size: 24px;
+    }
+
+    .auth-page::before,
+    .auth-page::after {
+        display: none;
+    }
+}

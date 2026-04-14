@@ -11,6 +11,8 @@
 </head>
 
 <body>
+    <!-- 页面过渡进度条 -->
+    <div class="nav-progress-bar" id="navProgress"></div>
 
     <!-- 顶部导航栏 -->
     <header class="navbar">
@@ -36,8 +38,40 @@
                 <a href="{% if request.path == '/' %}#about{% else %}/#about{% endif %}" class="nav-link">关于</a>
             </nav>
             <div class="navbar-actions">
-                <button class="btn btn-outline btn-sm">登录</button>
-                <button class="btn btn-primary btn-sm">注册</button>
+                {% if g.current_user %}
+                <div class="user-dropdown" id="user-dropdown">
+                    <button class="user-dropdown-trigger" id="user-dropdown-trigger">
+                        <div class="user-avatar">{{ g.current_user.display_name[0] }}</div>
+                        <span class="user-name">{{ g.current_user.display_name }}</span>
+                        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="user-dropdown-menu" id="user-dropdown-menu">
+                        <div class="user-dropdown-header">
+                            <div class="user-avatar-lg">{{ g.current_user.display_name[0] }}</div>
+                            <div class="user-info">
+                                <div class="user-display-name">{{ g.current_user.display_name }}</div>
+                                <div class="user-username">@{{ g.current_user.username }}</div>
+                            </div>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item logout-btn" id="logout-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            退出登录
+                        </button>
+                    </div>
+                </div>
+                {% else %}
+                <a href="/login" class="btn btn-outline btn-sm" data-nav-transition>登录</a>
+                <a href="/register" class="btn btn-primary btn-sm" data-nav-transition>注册</a>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -83,6 +117,53 @@
         </div>
     </footer>
 
+    <script>
+        (function () {
+            var dropdown = document.getElementById('user-dropdown');
+            var trigger = document.getElementById('user-dropdown-trigger');
+            var menu = document.getElementById('user-dropdown-menu');
+            var logoutBtn = document.getElementById('logout-btn');
+
+            if (trigger && menu) {
+                trigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('open');
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (dropdown && !dropdown.contains(e.target)) {
+                        dropdown.classList.remove('open');
+                    }
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async function () {
+                    try {
+                        await fetch('/api/auth/logout', { method: 'POST' });
+                        window.location.href = '/';
+                    } catch (err) {
+                        console.error('Logout failed:', err);
+                    }
+                });
+            }
+
+            // 页面过渡效果
+            var progressBar = document.getElementById('navProgress');
+            document.querySelectorAll('[data-nav-transition]').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var url = this.getAttribute('href');
+                    progressBar.classList.add('active');
+                    document.body.style.opacity = '0.5';
+                    document.body.style.transition = 'opacity 0.15s ease';
+                    setTimeout(function () {
+                        window.location.href = url;
+                    }, 50);
+                });
+            });
+        })();
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 

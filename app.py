@@ -7,11 +7,14 @@ import time
 import importlib
 import threading
 import traceback
+import hashlib
+import secrets
+from functools import wraps
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 import pymysql
-from flask import Flask, render_template, jsonify, request, abort, redirect, Response, stream_with_context, make_response
+from flask import Flask, render_template, jsonify, request, abort, redirect, Response, stream_with_context, make_response, session, url_for, g
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -90,6 +93,69 @@ def _assert_lesson_session_owner(session_id: str, visitor_id: str, allow_auto_bi
     if owner.visitor_id != visitor_id:
         abort(404)
 
+
+
+# ===================== 密码哈希与验证 =====================
+def _hash_password(password: str) -> str:
+    salt = secrets.token_hex(16)
+    hashed = hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
+    return f"{salt}:{hashed}"
+
+
+def _verify_password(password: str, stored: str) -> bool:
+    if ":" not in stored:
+        return False
+    salt, hashed = stored.split(":", 1)
+    return hashlib.sha256((salt + password).encode("utf-8")).hexdigest() == hashed
+
+
+# ===================== 数据库模型（用户） =====================
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(64), unique=True, nullable=False, comment="用户名")
+    password_hash = db.Column(db.String(256), nullable=False, comment="密码哈希")
+    display_name = db.Column(db.String(100), comment="显示名称")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+def get_current_user() -> Optional[dict]:
+    user_id = session.get("user_id")
+    if not user_id:
+        return None
+    user = db.session.get(User, user_id)
+    if not user:
+        return None
+    return {
+        "id": user.id,
+        "username": user.username,
+        "display_name": user.display_name or user.username,
+    }
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not get_current_user():
+            if request.is_json or request.headers.get("Accept") == "application/json":
+                return jsonify({"code": 401, "msg": "请先登录"}), 401
+            return redirect(url_for("login_page"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.before_request
+def load_current_user():
+    g.current_user = get_current_user()
+
+
+@app.before_request
+def require_login_for_api():
+    """保护应用相关的 API，未登录返回 401"""
+    protected_prefixes = ("/api/debate/", "/api/lesson/", "/api/mat/")
+    if request.path.startswith(protected_prefixes):
+        if not get_current_user():
+            return jsonify({"code": 401, "msg": "请先登录"}), 401
 
 
 # ===================== 数据库模型（仅辩论过程数据） =====================
@@ -303,7 +369,22 @@ def index():
     return render_template("index.html", apps=AI_APPS)
 
 
+@app.route("/login")
+def login_page():
+    if g.current_user:
+        return redirect("/")
+    return render_template("login.html")
+
+
+@app.route("/register")
+def register_page():
+    if g.current_user:
+        return redirect("/")
+    return render_template("register.html")
+
+
 @app.route("/app/debate")
+@login_required
 def debate_home():
     """辩论平台首页 —— 展示辩题列表（从 topics.py 读取）"""
     visitor_id = _get_or_create_visitor_id()
@@ -316,6 +397,7 @@ def debate_home():
 
 
 @app.route("/app/debate/random")
+@login_required
 def debate_random_topic():
     """随机抽取一个辩题并跳转到该辩题页"""
     topics = get_all_topics()
@@ -326,11 +408,13 @@ def debate_random_topic():
 
 
 @app.route("/app/multi-agent-teaching")
+@login_required
 def multi_agent_teaching_redirect():
     return redirect("/app/multi-agent-teaching/")
 
 
 @app.route("/app/multi-agent-teaching/")
+@login_required
 def multi_agent_teaching_page():
     """多智能体教学地图生成页面"""
     default_model_option = _mat_get_default_model_option()
@@ -345,6 +429,7 @@ def multi_agent_teaching_page():
 
 
 @app.route("/app/debate/history")
+@login_required
 def debate_history_page():
     """历史辩论记录列表页"""
     visitor_id = _get_or_create_visitor_id()
@@ -353,6 +438,7 @@ def debate_history_page():
 
 
 @app.route("/app/debate/history/<session_id>")
+@login_required
 def debate_history_detail_page(session_id):
     """查看某次辩论的详细记录"""
     visitor_id = _get_or_create_visitor_id()
@@ -366,6 +452,7 @@ def debate_history_detail_page(session_id):
 
 
 @app.route("/app/debate/<topic_id>")
+@login_required
 def debate_session_page(topic_id):
     """进入某个辩题的辩论页面"""
     visitor_id = _get_or_create_visitor_id()
@@ -377,6 +464,92 @@ def debate_session_page(topic_id):
 
 
 # ===================== API 接口 =====================
+
+# ---------- 用户认证 API ----------
+@app.route("/api/auth/register", methods=["POST"])
+def api_auth_register():
+    data = request.get_json()
+    if not data:
+        return jsonify({"code": 1, "msg": "请求体不能为空"}), 400
+
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
+    display_name = (data.get("display_name") or "").strip()
+
+    if not username:
+        return jsonify({"code": 1, "msg": "用户名不能为空"}), 400
+    if len(username) < 3 or len(username) > 32:
+        return jsonify({"code": 1, "msg": "用户名长度应为 3-32 个字符"}), 400
+    if not password:
+        return jsonify({"code": 1, "msg": "密码不能为空"}), 400
+    if len(password) < 6:
+        return jsonify({"code": 1, "msg": "密码长度至少 6 个字符"}), 400
+
+    existing = User.query.filter_by(username=username).first()
+    if existing:
+        return jsonify({"code": 1, "msg": "用户名已被占用"}), 400
+
+    user = User(
+        username=username,
+        password_hash=_hash_password(password),
+        display_name=display_name or username,
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    session["user_id"] = user.id
+    return jsonify({
+        "code": 0,
+        "msg": "注册成功",
+        "data": {
+            "id": user.id,
+            "username": user.username,
+            "display_name": user.display_name,
+        },
+    })
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def api_auth_login():
+    data = request.get_json()
+    if not data:
+        return jsonify({"code": 1, "msg": "请求体不能为空"}), 400
+
+    username = (data.get("username") or "").strip()
+    password = (data.get("password") or "").strip()
+
+    if not username or not password:
+        return jsonify({"code": 1, "msg": "用户名和密码不能为空"}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if not user or not _verify_password(password, user.password_hash):
+        return jsonify({"code": 1, "msg": "用户名或密码错误"}), 400
+
+    session["user_id"] = user.id
+    return jsonify({
+        "code": 0,
+        "msg": "登录成功",
+        "data": {
+            "id": user.id,
+            "username": user.username,
+            "display_name": user.display_name,
+        },
+    })
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def api_auth_logout():
+    session.pop("user_id", None)
+    return jsonify({"code": 0, "msg": "已退出登录"})
+
+
+@app.route("/api/auth/me")
+def api_auth_me():
+    user = g.current_user
+    if not user:
+        return jsonify({"code": 401, "msg": "未登录", "data": None}), 401
+    return jsonify({"code": 0, "data": user})
+
 
 # ---------- 通用 API ----------
 @app.route("/api/apps")
@@ -761,6 +934,7 @@ def api_list_sessions():
 
 # ===================== 教案设计竞技场 - 页面路由 =====================
 @app.route("/app/lesson-arena")
+@login_required
 def lesson_arena_home():
     """教案竞技场首页 —— 填写提示词模板表单"""
     visitor_id = _get_or_create_visitor_id()
@@ -770,6 +944,7 @@ def lesson_arena_home():
 
 
 @app.route("/app/lesson-arena/history")
+@login_required
 def lesson_arena_history_page():
     """教案竞技场历史记录页"""
     visitor_id = _get_or_create_visitor_id()
@@ -778,6 +953,7 @@ def lesson_arena_history_page():
 
 
 @app.route("/app/lesson-arena/session/<session_id>")
+@login_required
 def lesson_arena_session_page(session_id):
     """教案竞技场会话页 —— 对比两模型回答、投票、评分、多轮对话"""
     visitor_id = _get_or_create_visitor_id()
@@ -1225,6 +1401,8 @@ def _mat_init_db():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS history (
                 id              VARCHAR(64) PRIMARY KEY,
+                user_id         INT NULL,
+                user_display_name VARCHAR(100) NULL,
                 subject         VARCHAR(32),
                 grade           VARCHAR(32),
                 teaching_goals  TEXT,
@@ -1235,7 +1413,8 @@ def _mat_init_db():
                 duration_seconds DOUBLE NULL,
                 result_json     LONGTEXT,
                 created_at      DATETIME,
-                INDEX idx_created_at (created_at)
+                INDEX idx_created_at (created_at),
+                INDEX idx_user_id (user_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         """)
         cur.execute("""
@@ -1259,17 +1438,25 @@ def _mat_init_db():
         cur.execute("SHOW COLUMNS FROM history LIKE 'duration_seconds'")
         if not cur.fetchone():
             cur.execute("ALTER TABLE history ADD COLUMN duration_seconds DOUBLE NULL AFTER model_id")
+        cur.execute("SHOW COLUMNS FROM history LIKE 'user_id'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE history ADD COLUMN user_id INT NULL AFTER id")
+            cur.execute("ALTER TABLE history ADD INDEX idx_user_id (user_id)")
+        cur.execute("SHOW COLUMNS FROM history LIKE 'user_display_name'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE history ADD COLUMN user_display_name VARCHAR(100) NULL AFTER user_id")
     conn.commit()
     conn.close()
     app.logger.info("[教学地图] 数据库初始化完成")
 
 
-def _mat_save_to_db(task_id: str, inputs: dict, result: dict, duration_seconds: Optional[float] = None):
+def _mat_save_to_db(task_id: str, inputs: dict, result: dict, duration_seconds: Optional[float] = None, user_id: Optional[int] = None, user_display_name: Optional[str] = None):
     conn = _mat_get_conn()
     with conn.cursor() as cur:
         cur.execute(
-            "REPLACE INTO history (id, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, result_json, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-            (task_id, inputs.get("subject", ""), inputs.get("grade", ""),
+            "REPLACE INTO history (id, user_id, user_display_name, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, result_json, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            (task_id, user_id, user_display_name,
+             inputs.get("subject", ""), inputs.get("grade", ""),
              inputs.get("teaching_goals", ""), inputs.get("student_profile", ""),
              inputs.get("difficulty_analysis", ""),
              inputs.get("language_style", ""),
@@ -1367,13 +1554,19 @@ def _mat_get_agent_logs(task_id: str) -> List[dict]:
     return rows
 
 
-def _mat_get_history(limit: int = 50) -> List[dict]:
+def _mat_get_history(limit: int = 50, user_id: Optional[int] = None) -> List[dict]:
     conn = _mat_get_conn()
     with conn.cursor() as cur:
-        cur.execute(
-            "SELECT id, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history ORDER BY created_at DESC LIMIT %s",
-            (limit,),
-        )
+        if user_id is not None:
+            cur.execute(
+                "SELECT id, user_id, user_display_name, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history WHERE user_id = %s ORDER BY created_at DESC LIMIT %s",
+                (user_id, limit),
+            )
+        else:
+            cur.execute(
+                "SELECT id, user_id, user_display_name, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history ORDER BY created_at DESC LIMIT %s",
+                (limit,),
+            )
         rows = cur.fetchall()
     conn.close()
 
@@ -1659,7 +1852,12 @@ def _mat_run_workflow(task_id: str):
 
         task["duration_seconds"] = _mat_compute_duration_seconds(task)
         task["result"] = accumulated.get("teaching_map", {"nodes": [], "edges": []})
-        _mat_save_to_db(task_id, task["input"], task["result"], task.get("duration_seconds"))
+        _mat_save_to_db(
+            task_id, task["input"], task["result"],
+            duration_seconds=task.get("duration_seconds"),
+            user_id=task.get("user_id"),
+            user_display_name=task.get("user_display_name"),
+        )
         task["status"] = "done"
         task["progress"].append("[系统] 教学地图生成完成！")
 
@@ -1766,6 +1964,7 @@ def mat_generate():
         custom_style = data.get("custom_language_style", "").strip()
         language_style = custom_style or "自定义"
 
+    current_user = get_current_user()
     task_id = str(uuid.uuid4())
     _mat_tasks[task_id] = {
         "status": "running",
@@ -1774,6 +1973,8 @@ def mat_generate():
         "duration_seconds": None,
         "progress": [],
         "result": None,
+        "user_id": current_user["id"] if current_user else None,
+        "user_display_name": current_user["display_name"] if current_user else None,
         "input": {
             "model_id": model_id,
             "temperature": temperature,
