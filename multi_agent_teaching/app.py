@@ -665,8 +665,7 @@ def get_logs(task_id):
 # ---------------------------------------------------------------------------
 
 AGENT_NAME_MAP = {
-    "learning_analysis": "学情与目标解析Agent",
-    "teaching_logic_design": "教学地图逻辑规划Agent",
+    "learning_and_blueprint": "学情分析与教学蓝图规划Agent",
     "main_question_chain": "主干问题链构建Agent",
     "main_question_check": "主干问题综合校验Agent",
     "fan_out_gen": "系统-并行生成分发",
@@ -705,8 +704,7 @@ def _build_output_preview(output: dict) -> dict:
 
 def _build_input_preview(node_name: str, accumulated: dict) -> dict:
     INPUT_FIELDS = {
-        "learning_analysis": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
-        "teaching_logic_design": ["model_id", "temperature", "subject", "grade", "teaching_goals", "analysis_result"],
+        "learning_and_blueprint": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment"],
         "main_question_chain": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
         "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
         "variant_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],

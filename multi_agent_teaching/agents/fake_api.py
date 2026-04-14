@@ -93,7 +93,15 @@ def _analysis_result() -> Dict[str, Any]:
     }
 
 
-def _map_logic() -> Dict[str, Any]:
+def _learning_and_blueprint() -> Dict[str, Any]:
+    """合并后的学情分析与教学蓝图假响应"""
+    return {
+        "analysis_result": _analysis_result(),
+        "map_construction_logic": _map_logic_data(),
+    }
+
+
+def _map_logic_data() -> Dict[str, Any]:
     return {
         "main_question_chain": [
             {
@@ -141,6 +149,10 @@ def _map_logic() -> Dict[str, Any]:
             {"id": "S3-1", "from_id": "M3", "to_id": "M4"},
         ],
     }
+
+
+def _map_logic() -> Dict[str, Any]:
+    return _map_logic_data()
 
 
 def _main_questions(version: int = 1) -> List[Dict[str, Any]]:
@@ -379,8 +391,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
 
     return {
         "all_pass": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1)],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -389,8 +400,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": [pass_scaffold],
         },
         "main_retry_once": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1), _main_questions(2)],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -399,8 +409,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": [pass_scaffold],
         },
         "main_retry_twice": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1), _main_questions(2), _main_questions(3)],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -409,8 +418,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": [pass_scaffold],
         },
         "variant_retry_exhaust": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1)],
             "variant_question": [_variant_questions(1), _variant_questions(2), _variant_questions(3), _variant_questions(4)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -419,8 +427,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": [pass_scaffold],
         },
         "scaffold_retry_exhaust": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1)],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1), _scaffold_questions(2), _scaffold_questions(3), _scaffold_questions(4)],
@@ -429,8 +436,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": [_scaffold_fail(), _scaffold_fail(), _scaffold_fail(), _scaffold_fail()],
         },
         "validator_parse_error": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": [_main_questions(1)],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -439,8 +445,7 @@ def _builtin_scenarios() -> Dict[str, Dict[str, List[Any]]]:
             "scaffold_alignment": ["NOT_JSON"],
         },
         "generator_parse_error_main": {
-            "learning_analysis": [_analysis_result()],
-            "teaching_logic_design": [_map_logic()],
+            "learning_and_blueprint": [_learning_and_blueprint()],
             "main_question_chain": ["NOT_JSON"],
             "variant_question": [_variant_questions(1)],
             "scaffold_question": [_scaffold_questions(1)],
@@ -482,13 +487,16 @@ def _resolve_scenario_data() -> Dict[str, Dict[str, List[Any]]]:
 
 def _detect_agent(prompt: str) -> str:
     text = prompt or ""
+    if ("任务一：教学目标解析" in text and "任务七：主干问题链规划" in text) or \
+       ("第一部分：学情分析" in text and "第二部分：教学蓝图规划" in text):
+        return "learning_and_blueprint"
     if "任务一：教学目标解析" in text and "任务二：知识点图谱构建" in text:
-        return "learning_analysis"
+        return "learning_and_blueprint"
     if (
         ("教学地图架构师" in text or "教学逻辑架构师" in text)
         and "主干问题链规划" in text
     ):
-        return "teaching_logic_design"
+        return "learning_and_blueprint"
     if "主干问题规划蓝图" in text and "主干问题链" not in text:
         return "main_question_chain"
     if "变式问题规划蓝图" in text:

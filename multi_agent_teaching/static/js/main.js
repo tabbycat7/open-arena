@@ -4,8 +4,7 @@
 
 // 所有节点（含系统节点），用于进度条百分比计算
 const AGENT_STEPS = [
-    "learning_analysis",
-    "teaching_logic_design",
+    "learning_and_blueprint",
     "main_question_chain",
     "main_question_check",
     "fan_out_gen",
@@ -19,8 +18,7 @@ const AGENT_STEPS = [
 
 // 只在步骤追踪器中展示的 Agent 节点（过滤掉系统调度节点）
 const AGENT_TRACKER_STEPS = [
-    "learning_analysis",
-    "teaching_logic_design",
+    "learning_and_blueprint",
     "main_question_chain",
     "main_question_check",
     "variant_question",
@@ -31,8 +29,7 @@ const AGENT_TRACKER_STEPS = [
 ];
 
 const AGENT_DISPLAY_NAMES = {
-    learning_analysis: "学情与目标解析",
-    teaching_logic_design: "教学蓝图规划",
+    learning_and_blueprint: "学情分析与教学蓝图规划",
     main_question_chain: "主干问题链构建",
     main_question_check: "主干问题综合校验",
     variant_question: "变式问题生成",

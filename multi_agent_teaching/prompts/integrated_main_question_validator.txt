@@ -5,7 +5,7 @@
 1. 当前结果是否已经达到“可进入下一阶段”的最低质量线
 2. 若未达标，最关键的阻断问题是什么
 3. 这些问题应当回退到哪个 agent 修复：
-   - teaching_logic_design（蓝图重构/结构调整）
+   - learning_and_blueprint（蓝图重构/结构调整）
    - main_question_generation（主干问题局部改写）
 
 你必须优先减少无效重试。

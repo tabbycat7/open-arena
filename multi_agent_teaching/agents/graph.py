@@ -3,8 +3,7 @@
 from langgraph.graph import StateGraph, END
 
 from agents.state import GraphState
-from agents.generators.learning_analysis import learning_analysis_node
-from agents.generators.teaching_logic_design import teaching_logic_design_node
+from agents.generators.learning_and_blueprint import learning_and_blueprint_node
 from agents.generators.main_question_chain import main_question_chain_node
 from agents.generators.variant_question import variant_question_node
 from agents.generators.scaffold_question import scaffold_question_node
@@ -293,8 +292,7 @@ def build_graph() -> StateGraph:
     workflow = StateGraph(GraphState)
 
     # --- Generator nodes ---
-    workflow.add_node("learning_analysis", learning_analysis_node)
-    workflow.add_node("teaching_logic_design", teaching_logic_design_node)
+    workflow.add_node("learning_and_blueprint", learning_and_blueprint_node)
     workflow.add_node("main_question_chain", main_question_chain_node)
     workflow.add_node("variant_question", variant_question_node)
     workflow.add_node("scaffold_question", scaffold_question_node)
@@ -316,11 +314,10 @@ def build_graph() -> StateGraph:
     workflow.add_node("mark_scaffold_done", mark_scaffold_done)
 
     # --- Entry ---
-    workflow.set_entry_point("learning_analysis")
+    workflow.set_entry_point("learning_and_blueprint")
 
-    # === Phase 1: 学情分析 → 蓝图 → 主干生成 ===
-    workflow.add_edge("learning_analysis", "teaching_logic_design")
-    workflow.add_edge("teaching_logic_design", "main_question_chain")
+    # === Phase 1: 学情分析与蓝图规划 → 主干生成 ===
+    workflow.add_edge("learning_and_blueprint", "main_question_chain")
 
     # === Phase 2: 主干问题生成后先判断是否为空，空结果直接重试（不进入校验） ===
     workflow.add_conditional_edges(
