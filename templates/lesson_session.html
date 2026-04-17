@@ -41,7 +41,7 @@
         </div>
 
         <!-- Step 1: 生成教案 & 并排对比 -->
-        <div class="lesson-step" id="step-1">
+        <div class="lesson-step{% if session.status in ('voted', 'completed') %} lesson-step--readonly-results{% endif %}" id="step-1">
             <div class="step-header">
                 <h3 class="step-title">
                     <span class="step-badge step-badge--primary">Step 1</span>
@@ -110,7 +110,7 @@
                 </div>
             </div>
 
-            <!-- 投票入口 -->
+            <!-- 投票入口（未投票会话；已投票/已完成见下方历史结果） -->
             <div class="vote-entry hidden" id="vote-entry">
                 <div class="step-actions">
                     <button class="btn btn-primary btn-lg" id="btn-go-vote">
@@ -122,6 +122,45 @@
                     </button>
                 </div>
             </div>
+
+            {% if session.status in ('voted', 'completed') and session.winner %}
+            <div class="history-vote-result" id="history-vote-result">
+                <div class="history-vote-result-title">历史投票结果</div>
+                <div class="history-vote-result-body">
+                    {% if session.winner == 'model_a' %}
+                    <p class="history-vote-pick">你的选择：<strong>模型 A（{{ session.model_a_name }}）</strong></p>
+                    {% elif session.winner == 'model_b' %}
+                    <p class="history-vote-pick">你的选择：<strong>模型 B（{{ session.model_b_name }}）</strong></p>
+                    {% endif %}
+                    {% if session.status == 'completed' %}
+                    <div class="history-rating-summary">
+                        <div class="history-rating-column">
+                            <div class="history-rating-column-head">模型 A · {{ session.model_a_name }}</div>
+                            <ul class="history-rating-list">
+                                <li><span>是否可执行</span><span>{{ session.rating_executable_a }} / 5</span></li>
+                                <li><span>是否符合学情</span><span>{{ session.rating_student_fit_a }} / 5</span></li>
+                                <li><span>是否扎实有用</span><span>{{ session.rating_practical_a }} / 5</span></li>
+                                <li><span>是否融合本土</span><span>{{ session.rating_local_integration_a }} / 5</span></li>
+                                <li><span>是否善用技术</span><span>{{ session.rating_tech_usage_a }} / 5</span></li>
+                            </ul>
+                        </div>
+                        <div class="history-rating-column">
+                            <div class="history-rating-column-head">模型 B · {{ session.model_b_name }}</div>
+                            <ul class="history-rating-list">
+                                <li><span>是否可执行</span><span>{{ session.rating_executable_b }} / 5</span></li>
+                                <li><span>是否符合学情</span><span>{{ session.rating_student_fit_b }} / 5</span></li>
+                                <li><span>是否扎实有用</span><span>{{ session.rating_practical_b }} / 5</span></li>
+                                <li><span>是否融合本土</span><span>{{ session.rating_local_integration_b }} / 5</span></li>
+                                <li><span>是否善用技术</span><span>{{ session.rating_tech_usage_b }} / 5</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="history-rating-skipped">多维度评分未提交</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Step 2: 投票 -->
@@ -318,6 +357,8 @@
     (function () {
         const sessionId = "{{ session.session_id }}";
         let chosenWinner = null;
+        const sessionStatus = "{{ session.status }}";
+        const isReadOnlyResults = sessionStatus === 'voted' || sessionStatus === 'completed';
 
         // ====== Markdown 渲染 ======
         marked.setOptions({
@@ -361,6 +402,43 @@
         }
 
         // ====== Step 1: 生成教案 ======
+        function revealModelNamesReadOnly() {
+            const aEl = document.getElementById('model-a-name');
+            const bEl = document.getElementById('model-b-name');
+            aEl.textContent = {{ session.model_a_name|tojson }};
+            bEl.textContent = {{ session.model_b_name|tojson }};
+            aEl.classList.remove('hidden');
+            bEl.classList.remove('hidden');
+        }
+
+        function renderHistoryChatRounds(rounds) {
+            const chatHistory = document.getElementById('chat-history');
+            chatHistory.innerHTML = '';
+            rounds.forEach(function (r) {
+                const userBubble = document.createElement('div');
+                userBubble.className = 'chat-round-item';
+                const ua = r.model_a_response ? renderMarkdown(r.model_a_response) : '<div class="panel-error">无内容</div>';
+                const ub = r.model_b_response ? renderMarkdown(r.model_b_response) : '<div class="panel-error">无内容</div>';
+                userBubble.innerHTML = `
+            <div class="chat-user-msg">
+                <div class="chat-user-label">你的追问</div>
+                <div class="chat-user-text">${escapeHtml(r.user_message)}</div>
+            </div>
+            <div class="chat-compare-row">
+                <div class="chat-resp chat-resp--a">
+                    <div class="chat-resp-label">模型 A</div>
+                    <div class="chat-resp-body">${ua}</div>
+                </div>
+                <div class="chat-resp chat-resp--b">
+                    <div class="chat-resp-label">模型 B</div>
+                    <div class="chat-resp-body">${ub}</div>
+                </div>
+            </div>
+        `;
+                chatHistory.appendChild(userBubble);
+            });
+        }
+
         async function generateResponses() {
             try {
                 const resp = await fetch(`/api/lesson/sessions/${sessionId}/generate`, {
@@ -379,8 +457,21 @@
                     } else {
                         document.getElementById('response-b').innerHTML = '<div class="panel-error">模型 B 生成失败</div>';
                     }
-                    document.getElementById('chat-section').classList.remove('hidden');
-                    document.getElementById('vote-entry').classList.remove('hidden');
+                    if (isReadOnlyResults) {
+                        revealModelNamesReadOnly();
+                        document.getElementById('vote-entry').classList.add('hidden');
+                        try {
+                            const detailResp = await fetch(`/api/lesson/sessions/${sessionId}`);
+                            const detailJson = await detailResp.json();
+                            if (detailJson.code === 0 && detailJson.data.chat_rounds && detailJson.data.chat_rounds.length) {
+                                document.getElementById('chat-section').classList.remove('hidden');
+                                renderHistoryChatRounds(detailJson.data.chat_rounds);
+                            }
+                        } catch (err) { /* ignore */ }
+                    } else {
+                        document.getElementById('chat-section').classList.remove('hidden');
+                        document.getElementById('vote-entry').classList.remove('hidden');
+                    }
                 } else {
                     document.getElementById('response-a').innerHTML = `<div class="panel-error">${data.msg}</div>`;
                     document.getElementById('response-b').innerHTML = `<div class="panel-error">${data.msg}</div>`;
@@ -407,6 +498,7 @@
         });
 
         async function sendChat() {
+            if (isReadOnlyResults) return;
             const msg = chatInput.value.trim();
             if (!msg) return;
 

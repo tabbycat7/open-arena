@@ -651,6 +651,94 @@
     display: none;
 }
 
+.lesson-step--readonly-results .chat-input-area {
+    display: none;
+}
+
+.lesson-step--readonly-results #vote-entry {
+    display: none !important;
+}
+
+/* ---------- 会话页：历史投票结果（已投票/已完成） ---------- */
+.history-vote-result {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: var(--el-fill-color-light);
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 12px;
+}
+
+.history-vote-result-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--el-text-color-primary);
+    margin-bottom: 12px;
+}
+
+.history-vote-pick {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: var(--el-text-color-regular);
+}
+
+.history-vote-pick strong {
+    color: var(--el-color-primary);
+}
+
+.history-rating-skipped {
+    margin: 0;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+}
+
+.history-rating-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.history-rating-column {
+    background: #fff;
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.history-rating-column-head {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+}
+
+.history-rating-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.history-rating-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    padding: 6px 0;
+    color: var(--el-text-color-regular);
+    border-bottom: 1px dashed var(--el-border-color-extra-light);
+}
+
+.history-rating-list li:last-child {
+    border-bottom: none;
+}
+
+.history-rating-list li span:last-child {
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    flex-shrink: 0;
+}
+
 .vote-entry .step-actions {
     justify-content: center;
 }

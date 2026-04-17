@@ -960,7 +960,13 @@ def lesson_arena_session_page(session_id):
     _assert_lesson_session_owner(session_id, visitor_id, allow_auto_bind=True)
     session = LessonSession.query.filter_by(session_id=session_id).first_or_404()
     dimensions = get_rating_dimensions()
-    resp = make_response(render_template("lesson_session.html", session=session, dimensions=dimensions))
+    resp = make_response(
+        render_template(
+            "lesson_session.html",
+            session=session,
+            dimensions=dimensions,
+        )
+    )
     return _set_visitor_cookie(resp, visitor_id)
 
 
@@ -1303,6 +1309,22 @@ def api_lesson_get_session(session_id):
             "current_round": session.current_round,
             "chat_rounds": chat_rounds,
             "created_at": session.created_at.isoformat() if session.created_at else None,
+            "ratings": {
+                "a": {
+                    "executable": session.rating_executable_a,
+                    "student_fit": session.rating_student_fit_a,
+                    "practical": session.rating_practical_a,
+                    "local_integration": session.rating_local_integration_a,
+                    "tech_usage": session.rating_tech_usage_a,
+                },
+                "b": {
+                    "executable": session.rating_executable_b,
+                    "student_fit": session.rating_student_fit_b,
+                    "practical": session.rating_practical_b,
+                    "local_integration": session.rating_local_integration_b,
+                    "tech_usage": session.rating_tech_usage_b,
+                },
+            },
         },
     })
 
