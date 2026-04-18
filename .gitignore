@@ -13,3 +13,5 @@ venv/
 
 # Local history snapshots
 .history/
+
+.scripts/

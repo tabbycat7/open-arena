@@ -368,7 +368,40 @@
 
         function renderMarkdown(text) {
             if (!text) return '<div class="panel-error">内容为空</div>';
-            return marked.parse(text);
+            let html;
+            try {
+                html = marked.parse(text);
+            } catch (err) {
+                return '<div class="panel-error">教案内容格式异常，无法渲染为排版视图。可刷新重试或联系管理员。</div>';
+            }
+            // 模型 Markdown 里常夹带 HTML 表单示例（<input pattern>、<form> 等）。直接 innerHTML 会参与浏览器约束校验，
+            // 出现 “The string did not match the pattern” 等提示；刷新后焦点/重绘不同可能暂时看不到。
+            try {
+                const wrapId = 'lesson-md-wrap-' + Math.random().toString(36).slice(2, 11);
+                const doc = new DOMParser().parseFromString('<div id="' + wrapId + '">' + html + '</div>', 'text/html');
+                const wrap = doc.getElementById(wrapId);
+                if (wrap) {
+                    wrap.querySelectorAll('input, textarea, select').forEach(function (el) {
+                        el.removeAttribute('pattern');
+                        el.removeAttribute('required');
+                        el.removeAttribute('min');
+                        el.removeAttribute('max');
+                        el.removeAttribute('minlength');
+                        el.removeAttribute('maxlength');
+                        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                            el.setAttribute('readonly', 'readonly');
+                        }
+                    });
+                    wrap.querySelectorAll('form').forEach(function (form) {
+                        const d = doc.createElement('div');
+                        d.className = 'lesson-md-form-fallback';
+                        d.innerHTML = form.innerHTML;
+                        form.replaceWith(d);
+                    });
+                    html = wrap.innerHTML;
+                }
+            } catch (e2) { /* 解析失败则退回原始 html */ }
+            return '<div class="lesson-md-root">' + html + '</div>';
         }
 
         // ====== 步骤管理 ======

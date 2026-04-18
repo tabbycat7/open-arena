@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 """
-按注册用户汇总三个网页应用的作答与标注情况：
+按注册用户汇总三个应用会话数量（仅输出：辩论会话、教案会话、教学导航仪次数）。
 
-  - 教育观辩论场：debate_session_owners.user_id → debate_sessions / debate_rounds
-  - 教案设计竞技场：lesson_session_owners.user_id → lesson_sessions / lesson_chat_rounds
-  - 教学导航仪：teaching_maps.history.user_id
-
-应用启动时会执行迁移（见 app._ensure_owner_user_id_schema），为归属表增加 user_id，
-并按 teacher_name 与 username/display_name 一致回填旧数据。
+数据口径：debate_session_owners.user_id、lesson_session_owners.user_id、
+teaching_maps.history.user_id。
 
 用法：
   在项目根目录执行（读取 .env 中的 DATABASE_URL、TEACHING_MAP_MYSQL_DB）：
@@ -83,60 +79,34 @@ def main() -> None:
     mat_db = (os.getenv("TEACHING_MAP_MYSQL_DB") or "teaching_maps").strip()
 
     conn = _connect(host, port, user, password, main_db)
-    debate_unmatched_owners = 0
-    lesson_unmatched_owners = 0
     try:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT id, username, display_name, created_at FROM users ORDER BY id ASC"
+                "SELECT id, username, display_name FROM users ORDER BY id ASC"
             )
             users: List[Dict[str, Any]] = list(cur.fetchall())
 
-            debate_sql = """
-            SELECT
-              u.id AS user_id,
-              COUNT(DISTINCT t.session_id) AS debate_sessions,
-              COUNT(DISTINCT dr.id) AS debate_rounds,
-              COUNT(DISTINCT CASE WHEN t.status = 'annotated' THEN t.session_id END) AS debate_status_annotated,
-              COUNT(DISTINCT CASE WHEN t.stance_changed IS NOT NULL THEN t.session_id END) AS debate_stance_filled,
-              COUNT(DISTINCT CASE
-                WHEN t.annotation_note IS NOT NULL AND TRIM(t.annotation_note) <> '' THEN t.session_id
-              END) AS debate_has_annotation_note
-            FROM users u
-            LEFT JOIN debate_session_owners o ON o.user_id = u.id
-            LEFT JOIN debate_sessions t ON t.session_id = o.session_id
-            LEFT JOIN debate_rounds dr ON dr.session_id = t.session_id
-            GROUP BY u.id
-            """
-            cur.execute(debate_sql)
+            cur.execute(
+                """
+                SELECT u.id AS user_id, COUNT(DISTINCT t.session_id) AS debate_sessions
+                FROM users u
+                LEFT JOIN debate_session_owners o ON o.user_id = u.id
+                LEFT JOIN debate_sessions t ON t.session_id = o.session_id
+                GROUP BY u.id
+                """
+            )
             debate_by_uid = {r["user_id"]: r for r in cur.fetchall()}
 
-            lesson_sql = """
-            SELECT
-              u.id AS user_id,
-              COUNT(DISTINCT s.session_id) AS lesson_sessions,
-              COUNT(DISTINCT lcr.id) AS lesson_chat_rounds,
-              COUNT(DISTINCT CASE WHEN s.winner IS NOT NULL AND TRIM(s.winner) <> '' THEN s.session_id END) AS lesson_has_winner,
-              COUNT(DISTINCT CASE WHEN s.status = 'voted' THEN s.session_id END) AS lesson_status_voted,
-              COUNT(DISTINCT CASE WHEN s.status = 'completed' THEN s.session_id END) AS lesson_status_completed,
-              COUNT(DISTINCT CASE WHEN s.status = 'ready' THEN s.session_id END) AS lesson_status_ready
-            FROM users u
-            LEFT JOIN lesson_session_owners o ON o.user_id = u.id
-            LEFT JOIN lesson_sessions s ON s.session_id = o.session_id
-            LEFT JOIN lesson_chat_rounds lcr ON lcr.session_id = s.session_id
-            GROUP BY u.id
-            """
-            cur.execute(lesson_sql)
+            cur.execute(
+                """
+                SELECT u.id AS user_id, COUNT(DISTINCT s.session_id) AS lesson_sessions
+                FROM users u
+                LEFT JOIN lesson_session_owners o ON o.user_id = u.id
+                LEFT JOIN lesson_sessions s ON s.session_id = o.session_id
+                GROUP BY u.id
+                """
+            )
             lesson_by_uid = {r["user_id"]: r for r in cur.fetchall()}
-
-            cur.execute(
-                "SELECT COUNT(*) AS c FROM debate_session_owners WHERE user_id IS NULL"
-            )
-            debate_unmatched_owners = int(cur.fetchone()["c"])
-            cur.execute(
-                "SELECT COUNT(*) AS c FROM lesson_session_owners WHERE user_id IS NULL"
-            )
-            lesson_unmatched_owners = int(cur.fetchone()["c"])
 
     finally:
         conn.close()
@@ -153,10 +123,7 @@ def main() -> None:
             with mconn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT
-                      user_id,
-                      COUNT(*) AS mat_runs,
-                      SUM(CASE WHEN result_json IS NOT NULL AND LENGTH(TRIM(result_json)) > 2 THEN 1 ELSE 0 END) AS mat_with_result_json
+                    SELECT user_id, COUNT(*) AS mat_runs
                     FROM history
                     WHERE user_id IS NOT NULL
                     GROUP BY user_id
@@ -177,74 +144,23 @@ def main() -> None:
             {
                 "user_id": uid,
                 "username": u.get("username") or "",
-                "display_name": u.get("display_name") or "",
                 "debate_sessions": int(d.get("debate_sessions") or 0),
-                "debate_rounds": int(d.get("debate_rounds") or 0),
-                "debate_annotated_status": int(d.get("debate_status_annotated") or 0),
-                "debate_stance_filled_sessions": int(d.get("debate_stance_filled") or 0),
-                "debate_has_annotation_note": int(d.get("debate_has_annotation_note") or 0),
                 "lesson_sessions": int(l.get("lesson_sessions") or 0),
-                "lesson_chat_rounds": int(l.get("lesson_chat_rounds") or 0),
-                "lesson_has_winner": int(l.get("lesson_has_winner") or 0),
-                "lesson_status_voted": int(l.get("lesson_status_voted") or 0),
-                "lesson_status_completed": int(l.get("lesson_status_completed") or 0),
-                "lesson_status_ready": int(l.get("lesson_status_ready") or 0),
                 "mat_runs": int(m.get("mat_runs") or 0),
-                "mat_with_result_json": int(m.get("mat_with_result_json") or 0),
             }
         )
 
-    fieldnames = list(rows_out[0].keys()) if rows_out else []
-
-    if not args.csv:
-        print(
-            "说明：辩论/教案按 debate_session_owners.user_id、lesson_session_owners.user_id 统计；"
-            "教学导航仪按 history.user_id。\n"
-            f"归属表中 user_id 仍为空的行：辩论 {debate_unmatched_owners}，教案 {lesson_unmatched_owners} "
-            "（多为未登录历史或教师姓名与账号不一致；启动应用后会尝试按姓名回填）。\n"
-        )
+    fieldnames = ["user_id", "username", "debate_sessions", "lesson_sessions", "mat_runs"]
 
     if args.csv:
         w = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
         w.writeheader()
         for row in rows_out:
-            w.writerow(row)
+            w.writerow({k: row[k] for k in fieldnames})
         return
 
-    headers = [
-        "user_id",
-        "username",
-        "display",
-        "辩论会话",
-        "辩论轮次",
-        "辩论已标注状态",
-        "立场已填",
-        "有备注",
-        "教案会话",
-        "教案追问轮",
-        "教案已选winner",
-        "status=voted",
-        "status=completed",
-        "导航仪次数",
-        "导航仪有结果JSON",
-    ]
-    col_keys = [
-        "user_id",
-        "username",
-        "display_name",
-        "debate_sessions",
-        "debate_rounds",
-        "debate_annotated_status",
-        "debate_stance_filled_sessions",
-        "debate_has_annotation_note",
-        "lesson_sessions",
-        "lesson_chat_rounds",
-        "lesson_has_winner",
-        "lesson_status_voted",
-        "lesson_status_completed",
-        "mat_runs",
-        "mat_with_result_json",
-    ]
+    headers = ["user_id", "username", "辩论会话", "教案会话", "导航仪次数"]
+    col_keys = ["user_id", "username", "debate_sessions", "lesson_sessions", "mat_runs"]
     widths = [len(h) for h in headers]
     str_rows: List[List[str]] = []
     for row in rows_out:
