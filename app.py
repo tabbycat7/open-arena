@@ -17,6 +17,7 @@ import pymysql
 from flask import Flask, render_template, jsonify, request, abort, redirect, Response, stream_with_context, make_response, session, url_for, g
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 import config
 from topics import get_all_topics, get_topic_by_id
@@ -68,30 +69,62 @@ def _set_visitor_cookie(resp: Response, visitor_id: str) -> Response:
     return resp
 
 
+def _session_owner_user_id() -> Optional[int]:
+    """当前登录用户的 id；未登录为 None。"""
+    u = get_current_user()
+    return int(u["id"]) if u else None
+
+
 def _assert_session_owner(session_id: str, visitor_id: str, allow_auto_bind: bool = False) -> None:
-    """校验会话归属；未命中归属时可按需自动绑定到当前访客。"""
+    """校验会话归属；未命中归属时可按需自动绑定到当前访客。已登录时写入/识别 user_id。"""
     owner = DebateSessionOwner.query.filter_by(session_id=session_id).first()
+    uid = _session_owner_user_id()
     if owner is None:
         if allow_auto_bind:
-            db.session.add(DebateSessionOwner(session_id=session_id, visitor_id=visitor_id))
+            db.session.add(
+                DebateSessionOwner(session_id=session_id, visitor_id=visitor_id, user_id=uid)
+            )
             db.session.commit()
             return
         abort(404)
-    if owner.visitor_id != visitor_id:
-        abort(404)
+
+    same_visitor = owner.visitor_id == visitor_id
+    same_user = uid is not None and owner.user_id is not None and owner.user_id == uid
+
+    if same_visitor:
+        if uid is not None and owner.user_id is None:
+            owner.user_id = uid
+            db.session.commit()
+        return
+    if same_user:
+        return
+    abort(404)
 
 
 def _assert_lesson_session_owner(session_id: str, visitor_id: str, allow_auto_bind: bool = False) -> None:
-    """校验教案会话归属；未命中归属时可按需自动绑定到当前访客。"""
+    """校验教案会话归属；未命中归属时可按需自动绑定到当前访客。已登录时写入/识别 user_id。"""
     owner = LessonSessionOwner.query.filter_by(session_id=session_id).first()
+    uid = _session_owner_user_id()
     if owner is None:
         if allow_auto_bind:
-            db.session.add(LessonSessionOwner(session_id=session_id, visitor_id=visitor_id))
+            db.session.add(
+                LessonSessionOwner(session_id=session_id, visitor_id=visitor_id, user_id=uid)
+            )
             db.session.commit()
             return
         abort(404)
-    if owner.visitor_id != visitor_id:
-        abort(404)
+
+    same_visitor = owner.visitor_id == visitor_id
+    same_user = uid is not None and owner.user_id is not None and owner.user_id == uid
+
+    if same_visitor:
+        if uid is not None and owner.user_id is None:
+            owner.user_id = uid
+            db.session.commit()
+        return
+    if same_user:
+        return
+    abort(404)
 
 
 
@@ -199,7 +232,7 @@ class DebateRound(db.Model):
 
 
 class DebateSessionOwner(db.Model):
-    """辩论会话归属表 —— 轻量按访客隔离历史记录"""
+    """辩论会话归属表 —— 访客 Cookie + 可选注册用户 user_id"""
 
     __tablename__ = "debate_session_owners"
     session_id = db.Column(
@@ -209,6 +242,7 @@ class DebateSessionOwner(db.Model):
         nullable=False,
     )
     visitor_id = db.Column(db.String(36), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -258,7 +292,7 @@ class LessonChatRound(db.Model):
 
 
 class LessonSessionOwner(db.Model):
-    """教案会话归属表 —— 轻量按访客隔离历史记录"""
+    """教案会话归属表 —— 访客 Cookie + 可选注册用户 user_id"""
 
     __tablename__ = "lesson_session_owners"
     session_id = db.Column(
@@ -268,6 +302,7 @@ class LessonSessionOwner(db.Model):
         nullable=False,
     )
     visitor_id = db.Column(db.String(36), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -616,7 +651,13 @@ def api_create_session():
         status="debating",
     )
     db.session.add(session)
-    db.session.add(DebateSessionOwner(session_id=session_id, visitor_id=visitor_id))
+    db.session.add(
+        DebateSessionOwner(
+            session_id=session_id,
+            visitor_id=visitor_id,
+            user_id=_session_owner_user_id(),
+        )
+    )
 
     # 创建第一轮
     round1 = DebateRound(
@@ -905,7 +946,13 @@ def api_list_sessions():
     """获取辩论会话列表（支持按辩题筛选）"""
     visitor_id = _get_or_create_visitor_id()
     topic_id = request.args.get("topic_id")
-    owner_query = DebateSessionOwner.query.filter_by(visitor_id=visitor_id)
+    uid = _session_owner_user_id()
+    if uid is not None:
+        owner_query = DebateSessionOwner.query.filter(
+            or_(DebateSessionOwner.visitor_id == visitor_id, DebateSessionOwner.user_id == uid)
+        )
+    else:
+        owner_query = DebateSessionOwner.query.filter_by(visitor_id=visitor_id)
     owned_session_ids = [o.session_id for o in owner_query.all()]
     if not owned_session_ids:
         return jsonify({"code": 0, "data": []})
@@ -975,7 +1022,13 @@ def lesson_arena_session_page(session_id):
 def api_lesson_list_sessions():
     """获取教案竞技场会话列表（用于历史记录展示）"""
     visitor_id = _get_or_create_visitor_id()
-    owner_query = LessonSessionOwner.query.filter_by(visitor_id=visitor_id)
+    uid = _session_owner_user_id()
+    if uid is not None:
+        owner_query = LessonSessionOwner.query.filter(
+            or_(LessonSessionOwner.visitor_id == visitor_id, LessonSessionOwner.user_id == uid)
+        )
+    else:
+        owner_query = LessonSessionOwner.query.filter_by(visitor_id=visitor_id)
     owned_session_ids = [o.session_id for o in owner_query.all()]
     if not owned_session_ids:
         resp = jsonify({"code": 0, "data": []})
@@ -1055,7 +1108,13 @@ def api_lesson_create_session():
         status="generating",
     )
     db.session.add(lesson_session)
-    db.session.add(LessonSessionOwner(session_id=session_id, visitor_id=visitor_id))
+    db.session.add(
+        LessonSessionOwner(
+            session_id=session_id,
+            visitor_id=visitor_id,
+            user_id=_session_owner_user_id(),
+        )
+    )
     db.session.commit()
 
     resp = jsonify({
@@ -1355,6 +1414,91 @@ def _ensure_database():
 
     with app.app_context():
         db.create_all()
+        _ensure_owner_user_id_schema()
+
+
+def _ensure_owner_user_id_schema() -> None:
+    """为辩论/教案归属表补充 user_id 列，并按 teacher_name 回填历史数据。"""
+    import pymysql
+    from urllib.parse import urlparse
+
+    parsed = urlparse(config.SQLALCHEMY_DATABASE_URI)
+    db_name = (parsed.path or "").lstrip("/").split("?")[0]
+    if not db_name:
+        return
+    host = parsed.hostname or "localhost"
+    port = parsed.port or 3306
+    user = parsed.username or "root"
+    password = parsed.password or ""
+    try:
+        conn = pymysql.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=db_name,
+            charset="utf8mb4",
+        )
+    except Exception as e:
+        app.logger.warning(f"归属表 user_id 迁移跳过（无法连接数据库）: {e}")
+        return
+
+    try:
+        with conn.cursor() as cur:
+            for table in ("debate_session_owners", "lesson_session_owners"):
+                cur.execute(f"SHOW COLUMNS FROM `{table}` LIKE 'user_id'")
+                if cur.fetchone():
+                    continue
+                cur.execute(
+                    f"ALTER TABLE `{table}` ADD COLUMN `user_id` INT NULL "
+                    f"COMMENT '注册用户 id' AFTER `visitor_id`"
+                )
+                cur.execute(
+                    f"ALTER TABLE `{table}` ADD KEY `idx_{table}_user_id` (`user_id`)"
+                )
+            conn.commit()
+
+        session_table = "debate_sessions"
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""
+                UPDATE `debate_session_owners` o
+                INNER JOIN `{session_table}` d ON d.session_id = o.session_id
+                INNER JOIN `users` u ON (
+                    d.teacher_name = u.username
+                    OR (
+                        NULLIF(TRIM(u.display_name), '') IS NOT NULL
+                        AND d.teacher_name = u.display_name
+                    )
+                )
+                SET o.user_id = u.id
+                WHERE o.user_id IS NULL
+                  AND d.teacher_name IS NOT NULL
+                  AND TRIM(d.teacher_name) <> ''
+                """
+            )
+            cur.execute(
+                """
+                UPDATE `lesson_session_owners` o
+                INNER JOIN `lesson_sessions` s ON s.session_id = o.session_id
+                INNER JOIN `users` u ON (
+                    s.teacher_name = u.username
+                    OR (
+                        NULLIF(TRIM(u.display_name), '') IS NOT NULL
+                        AND s.teacher_name = u.display_name
+                    )
+                )
+                SET o.user_id = u.id
+                WHERE o.user_id IS NULL
+                  AND s.teacher_name IS NOT NULL
+                  AND TRIM(s.teacher_name) <> ''
+                """
+            )
+        conn.commit()
+    except Exception as e:
+        app.logger.warning(f"归属表 user_id 迁移或回填失败: {e}")
+    finally:
+        conn.close()
 
 
 _ensure_database()
