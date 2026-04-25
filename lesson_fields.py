@@ -70,9 +70,9 @@ PROMPT_FIELDS = [
     },
     {
         "key": "teaching_stage",
-        "label": "教学环节",
-        "placeholder": "如：导入",
-        "hint": '指定环节，如"导入""新授""小组讨论""巩固练习"。避免笼统的"设计一节课"。',
+        "label": "其他要求",
+        "placeholder": "如：加入XXX教育观",
+        "hint": '补充说明对教案的进一步要求，如"加入XXX教育观""与前一课时衔接""突出实验探究"等。避免只写"设计一整节课"这类过宽表述。',
         "required": True,
         "type": "text",
     },
