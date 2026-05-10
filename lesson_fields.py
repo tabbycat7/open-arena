@@ -70,9 +70,9 @@ PROMPT_FIELDS = [
     },
     {
         "key": "teaching_stage",
-        "label": "教学环节",
-        "placeholder": "如：导入",
-        "hint": '指定环节，如"导入""新授""小组讨论""巩固练习"。避免笼统的"设计一节课"。',
+        "label": "其他要求",
+        "placeholder": "如：加入XXX教育观",
+        "hint": '宜写成可接在「请设计教学活动，」之后的短句，如「需加入XXX教育观」「与前一课时衔接」「突出实验探究」等；避免只填零散词语。',
         "required": True,
         "type": "text",
     },
@@ -115,7 +115,7 @@ PROMPT_TEMPLATE = (
     "本学期正处于{semester_unit}，教学内容为{knowledge_point}，"
     "学生{student_profile}。"
     "我所在的{school_type}学校现有{tech_resources}。"
-    "请设计一个{teaching_stage}活动，时长约{duration}，"
+    "额外要求是，{teaching_stage}。时长约{duration}，"
     "要求融入{local_element}，以{output_format}呈现，"
     "语言风格{language_style}。"
 )
