@@ -1775,6 +1775,35 @@ def _mat_get_history_detail(record_id: str) -> Optional[dict]:
     return row
 
 
+def _mat_session_user_id() -> Optional[int]:
+    u = get_current_user()
+    return int(u["id"]) if u else None
+
+
+def _mat_history_row_owned_by(record: Optional[dict], user_id: int) -> bool:
+    if not record:
+        return False
+    rid = record.get("user_id")
+    return rid is not None and int(rid) == user_id
+
+
+def _mat_task_owned_by_user(task: dict, user_id: int) -> bool:
+    tid = task.get("user_id")
+    return tid is not None and int(tid) == user_id
+
+
+def _mat_fetch_history_owner_id(record_id: str) -> Optional[int]:
+    conn = _mat_get_conn()
+    with conn.cursor() as cur:
+        cur.execute("SELECT user_id FROM history WHERE id = %s", (record_id,))
+        row = cur.fetchone()
+    conn.close()
+    if row is None:
+        return None
+    uid = row.get("user_id")
+    return int(uid) if uid is not None else None
+
+
 def _mat_truncate_text(text: str, limit: int = 140) -> str:
     if len(text) <= limit:
         return text
@@ -2188,6 +2217,7 @@ def mat_generate():
 @app.route("/api/mat/stream/<task_id>")
 def mat_stream(task_id):
     """SSE 实时推送教学地图生成进度"""
+    session_uid = _mat_session_user_id()
     from_idx = request.args.get("from", "0")
     try:
         start_sent = max(int(from_idx), 0)
@@ -2195,7 +2225,13 @@ def mat_stream(task_id):
         start_sent = 0
 
     def event_stream():
+        if session_uid is None:
+            yield "data: %s\n\n" % json.dumps({"type": "error", "message": "请先登录"}, ensure_ascii=False)
+            return
         if task_id not in _mat_tasks:
+            yield "data: %s\n\n" % json.dumps({"type": "error", "message": "Task not found"}, ensure_ascii=False)
+            return
+        if not _mat_task_owned_by_user(_mat_tasks[task_id], session_uid):
             yield "data: %s\n\n" % json.dumps({"type": "error", "message": "Task not found"}, ensure_ascii=False)
             return
 
@@ -2262,11 +2298,16 @@ def mat_stream(task_id):
 @app.route("/api/mat/result/<task_id>")
 def mat_get_result(task_id):
     """获取教学地图任务结果"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
     task = _mat_tasks.get(task_id)
     if not task:
         record = _mat_get_history_detail(task_id)
-        if record:
+        if record and _mat_history_row_owned_by(record, session_uid):
             return jsonify({"status": "done", "result": record["result"], "duration_seconds": record.get("duration_seconds")})
+        return jsonify({"error": "Task not found"}), 404
+    if not _mat_task_owned_by_user(task, session_uid):
         return jsonify({"error": "Task not found"}), 404
     if task["status"] == "running":
         return jsonify({
@@ -2295,8 +2336,13 @@ def mat_get_result(task_id):
 
 @app.route("/api/mat/stop/<task_id>", methods=["POST"])
 def mat_stop_task(task_id):
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
     task = _mat_tasks.get(task_id)
     if not task:
+        return jsonify({"error": "Task not found"}), 404
+    if not _mat_task_owned_by_user(task, session_uid):
         return jsonify({"error": "Task not found"}), 404
 
     if task.get("status") in ("done", "error", "cancelled"):
@@ -2313,14 +2359,20 @@ def mat_stop_task(task_id):
 @app.route("/api/mat/history")
 def mat_history_list():
     """教学地图历史列表"""
-    return jsonify(_mat_get_history())
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+    return jsonify(_mat_get_history(user_id=session_uid))
 
 
 @app.route("/api/mat/history/<record_id>")
 def mat_history_detail(record_id):
     """教学地图历史详情"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
     record = _mat_get_history_detail(record_id)
-    if not record:
+    if not record or not _mat_history_row_owned_by(record, session_uid):
         return jsonify({"error": "Record not found"}), 404
     return jsonify(record)
 
@@ -2328,18 +2380,37 @@ def mat_history_detail(record_id):
 @app.route("/api/mat/history/<record_id>", methods=["DELETE"])
 def mat_history_delete(record_id):
     """删除教学地图历史记录"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+    deleted = 0
     conn = _mat_get_conn()
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM history WHERE id = %s", (record_id,))
-        cur.execute("DELETE FROM agent_logs WHERE task_id = %s", (record_id,))
+        cur.execute("DELETE FROM history WHERE id = %s AND user_id = %s", (record_id, session_uid))
+        deleted = cur.rowcount
+        if deleted:
+            cur.execute("DELETE FROM agent_logs WHERE task_id = %s", (record_id,))
     conn.commit()
     conn.close()
+    if not deleted:
+        return jsonify({"error": "Record not found"}), 404
     return jsonify({"ok": True})
 
 
 @app.route("/api/mat/logs/<task_id>")
 def mat_get_logs(task_id):
     """获取教学地图 Agent 日志"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+    task = _mat_tasks.get(task_id)
+    if task:
+        if not _mat_task_owned_by_user(task, session_uid):
+            return jsonify({"error": "Task not found"}), 404
+    else:
+        owner_id = _mat_fetch_history_owner_id(task_id)
+        if owner_id is None or owner_id != session_uid:
+            return jsonify({"error": "Task not found"}), 404
     logs = _mat_get_agent_logs(task_id)
     return jsonify(logs)
 
