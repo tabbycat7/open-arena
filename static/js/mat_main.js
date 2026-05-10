@@ -1303,17 +1303,10 @@ function exportHistoryItem(recordId, event, btn) {
                 alert("导出失败：无法获取数据");
                 return;
             }
+            var md = teachingMapToMarkdown(data);
             var rawDate = String(data.created_at || recordId).replace(/[: ]/g, "-").replace(/[^\w\-]/g, "");
-            var filename = (data.subject || "教学地图") + "_" + (data.grade || "") + "_" + rawDate;
-
-            if (typeof htmlDocx !== "undefined" && htmlDocx && typeof htmlDocx.asBlob === "function") {
-                var html = buildExportHtml(data);
-                var blob = htmlDocx.asBlob(html);
-                downloadBlob(blob, filename + ".docx");
-            } else {
-                var md = teachingMapToMarkdown(data);
-                downloadTextFile(md, filename + ".md");
-            }
+            var filename = (data.subject || "教学地图") + "_" + (data.grade || "") + "_" + rawDate + ".md";
+            downloadTextFile(md, filename);
         })
         .catch(function (err) { alert("导出失败：" + err.message); })
         .then(function () {
@@ -1444,7 +1437,8 @@ function buildMetaLine(node) {
     return parts.map(function (p) { return "- " + p; }).join("  \n");
 }
 
-function downloadBlob(blob, filename) {
+function downloadTextFile(text, filename) {
+    var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
@@ -1453,131 +1447,6 @@ function downloadBlob(blob, filename) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-}
-
-function downloadTextFile(text, filename) {
-    downloadBlob(new Blob([text], { type: "text/markdown;charset=utf-8" }), filename);
-}
-
-function buildExportHtml(data) {
-    var teachingMap = data.result || {};
-    var nodes = teachingMap.nodes || [];
-    var edges = teachingMap.edges || [];
-
-    var mainNodes = nodes.filter(function (n) { return n.question_type === "main"; });
-    var variantNodes = nodes.filter(function (n) { return n.question_type === "variant"; });
-    var scaffoldNodes = nodes.filter(function (n) { return n.question_type === "scaffold"; });
-    var mainOrder = orderMainNodes(mainNodes, edges);
-
-    var durationSeconds = Number(data.duration_seconds);
-    var hasDuration = isFinite(durationSeconds) && durationSeconds >= 0;
-
-    var body = "";
-    body += "<h1>" + esc(data.subject || "") + esc(data.grade || "") + " 教学地图</h1>";
-
-    body += "<h2>基本信息</h2><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%;'>";
-    var infoRows = [
-        ["学科", data.subject], ["年级", data.grade],
-        ["教学目标", data.teaching_goals], ["学情描述", data.student_profile],
-        ["重难点分析", data.difficulty_analysis], ["语言风格", data.language_style],
-        ["生成模型", data.model_display_name || data.model_id],
-        ["生成时长", hasDuration ? formatDurationClock(durationSeconds) : null],
-        ["生成时间", data.created_at],
-    ];
-    infoRows.forEach(function (row) {
-        if (!row[1]) return;
-        body += "<tr><td style='font-weight:bold;white-space:nowrap;width:100px;'>" + esc(row[0]) + "</td><td>" + esc(String(row[1])) + "</td></tr>";
-    });
-    body += "</table>";
-
-    body += "<h2>教学地图概览</h2>";
-    body += "<p>共 <strong>" + nodes.length + "</strong> 个问题节点（主干 " + mainNodes.length + " 个、变式 " + variantNodes.length + " 个、支架 " + scaffoldNodes.length + " 个），<strong>" + edges.length + "</strong> 条连接关系</p>";
-
-    body += "<hr/>";
-
-    mainOrder.forEach(function (mainNode, idx) {
-        var cnNum = CN_NUMBERS[idx] || String(idx + 1);
-        body += "<h2>" + cnNum + "、主干问题 " + (idx + 1) + "</h2>";
-        body += "<p style='font-size:11pt;'>" + esc(mainNode.content || "").replace(/\n/g, "<br/>") + "</p>";
-        body += buildMetaTable(mainNode);
-
-        var commentary = getCommentary(mainNode);
-        if (commentary) {
-            body += "<h3>说课稿</h3>";
-            body += "<p style='background:#f8f8f8;padding:8px;'>" + esc(commentary).replace(/\n/g, "<br/>") + "</p>";
-        }
-
-        var relatedVariants = variantNodes.filter(function (v) {
-            return (v.main_id || v.parent_id) === mainNode.id;
-        });
-        if (relatedVariants.length > 0) {
-            body += "<h3>变式问题</h3>";
-            relatedVariants.forEach(function (v, vi) {
-                body += "<h4>变式 " + (vi + 1) + (v.variation_type ? "（" + esc(v.variation_type) + "）" : "") + "</h4>";
-                body += "<p>" + esc(v.content || "").replace(/\n/g, "<br/>") + "</p>";
-                body += buildMetaTable(v);
-                var vc = getCommentary(v);
-                if (vc) body += "<p><strong>说课稿：</strong>" + esc(vc).replace(/\n/g, "<br/>") + "</p>";
-            });
-        }
-
-        if (idx < mainOrder.length - 1) {
-            var nextMain = mainOrder[idx + 1];
-            var relatedScaffolds = scaffoldNodes.filter(function (s) {
-                var fromId = s.from_id || s.from_main_id;
-                var toId = s.to_id || s.to_main_id;
-                return fromId === mainNode.id || toId === nextMain.id;
-            });
-            if (relatedScaffolds.length > 0) {
-                body += "<h3>支架问题（过渡到下一主干）</h3>";
-                relatedScaffolds.forEach(function (s, si) {
-                    body += "<h4>支架 " + (si + 1) + "</h4>";
-                    body += "<p>" + esc(s.content || "").replace(/\n/g, "<br/>") + "</p>";
-                    body += buildMetaTable(s);
-                    var sc = getCommentary(s);
-                    if (sc) body += "<p><strong>说课稿：</strong>" + esc(sc).replace(/\n/g, "<br/>") + "</p>";
-                    if (s.bridge_function) body += "<p><strong>桥梁功能：</strong>" + esc(s.bridge_function) + "</p>";
-                });
-            }
-            body += "<hr/>";
-        }
-    });
-
-    return "<!DOCTYPE html><html><head><meta charset='utf-8'><style>" +
-        "body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:10.5pt;line-height:1.6;}" +
-        "h1{font-size:16pt;}h2{font-size:13pt;border-bottom:1px solid #ccc;padding-bottom:4px;}" +
-        "h3{font-size:11pt;}h4{font-size:10.5pt;}" +
-        "table{border-collapse:collapse;width:100%;}td,th{border:1px solid #bbb;padding:5px 8px;}" +
-        "hr{border:none;border-top:1px solid #ddd;margin:12px 0;}" +
-        "</style></head><body>" + body + "</body></html>";
-}
-
-function buildMetaTable(node) {
-    var rows = [];
-    if (node.knowledge_points && node.knowledge_points.length) {
-        rows.push(["知识点", node.knowledge_points.join("、")]);
-    }
-    var cl = node.cognitive_level || node.bloom_level || "";
-    var clLabel = COGNITIVE_LABELS[cl] || cl;
-    if (clLabel) rows.push(["认知层次", clLabel]);
-    if (node.difficulty !== undefined) rows.push(["难度", String(node.difficulty)]);
-    var di = node.design_intent || node.design_rationale || "";
-    if (di) rows.push(["设计意图", di]);
-    if (!rows.length) return "";
-    var html = "<table border='1' cellpadding='4' cellspacing='0' style='border-collapse:collapse;width:100%;margin-bottom:6px;font-size:9.5pt;'>";
-    rows.forEach(function (r) {
-        html += "<tr><td style='font-weight:bold;white-space:nowrap;width:80px;color:#555;'>" + esc(r[0]) + "</td><td>" + esc(String(r[1])) + "</td></tr>";
-    });
-    html += "</table>";
-    return html;
-}
-
-function esc(text) {
-    return String(text == null ? "" : text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
 }
 
 // ---------------------------------------------------------------------------
