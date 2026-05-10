@@ -1163,6 +1163,10 @@ function bindHistoryListEvents() {
             loadHistoryItem(recordId);
             return;
         }
+        if (btn.classList.contains("mat-btn-export")) {
+            exportHistoryItem(recordId, event, btn);
+            return;
+        }
         if (btn.classList.contains("mat-btn-input")) {
             toggleHistoryInput(recordId, btn, event);
             return;
@@ -1207,6 +1211,7 @@ function loadHistory() {
                 }
                 html += '<div class="mat-history-actions">';
                 html += '<button class="mat-btn-sm mat-btn-view" type="button">查看</button>';
+                html += '<button class="mat-btn-sm mat-btn-export" type="button">导出教案</button>';
                 html += '<button class="mat-btn-sm mat-btn-input" type="button">输入</button>';
                 html += '<button class="mat-btn-sm mat-btn-logs" type="button">日志</button>';
                 html += '<button class="mat-btn-sm mat-btn-delete" type="button">删除</button>';
@@ -1285,6 +1290,163 @@ function deleteHistoryItem(recordId, event) {
     if (!confirm("确定删除此记录？")) return;
     fetch(API_PREFIX + "/history/" + recordId, { method: "DELETE" })
         .then(function () { loadHistory(); });
+}
+
+function exportHistoryItem(recordId, event, btn) {
+    if (event && typeof event.stopPropagation === "function") event.stopPropagation();
+    if (btn) { btn.disabled = true; btn.textContent = "导出中..."; }
+
+    fetch(API_PREFIX + "/history/" + recordId)
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (data.error || !data.result) {
+                alert("导出失败：无法获取数据");
+                return;
+            }
+            var md = teachingMapToMarkdown(data);
+            var rawDate = String(data.created_at || recordId).replace(/[: ]/g, "-").replace(/[^\w\-]/g, "");
+            var filename = (data.subject || "教学地图") + "_" + (data.grade || "") + "_" + rawDate + ".md";
+            downloadTextFile(md, filename);
+        })
+        .catch(function (err) { alert("导出失败：" + err.message); })
+        .then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = "导出教案"; }
+        });
+}
+
+var CN_NUMBERS = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
+    "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十"];
+
+function teachingMapToMarkdown(data) {
+    var teachingMap = data.result || {};
+    var nodes = teachingMap.nodes || [];
+    var edges = teachingMap.edges || [];
+
+    var mainNodes = nodes.filter(function (n) { return n.question_type === "main"; });
+    var variantNodes = nodes.filter(function (n) { return n.question_type === "variant"; });
+    var scaffoldNodes = nodes.filter(function (n) { return n.question_type === "scaffold"; });
+    var mainOrder = orderMainNodes(mainNodes, edges);
+
+    var lines = [];
+
+    lines.push("# " + (data.subject || "") + (data.grade || "") + " 教学地图");
+    lines.push("");
+
+    lines.push("## 基本信息");
+    lines.push("");
+    if (data.subject) lines.push("- **学科**：" + data.subject);
+    if (data.grade) lines.push("- **年级**：" + data.grade);
+    if (data.teaching_goals) lines.push("- **教学目标**：" + data.teaching_goals);
+    if (data.student_profile) lines.push("- **学情描述**：" + data.student_profile);
+    if (data.difficulty_analysis) lines.push("- **重难点分析**：" + data.difficulty_analysis);
+    if (data.language_style) lines.push("- **语言风格**：" + data.language_style);
+    if (data.model_display_name || data.model_id) lines.push("- **生成模型**：" + (data.model_display_name || data.model_id || ""));
+    var durationSeconds = Number(data.duration_seconds);
+    if (isFinite(durationSeconds) && durationSeconds >= 0) {
+        lines.push("- **生成时长**：" + formatDurationClock(durationSeconds));
+    }
+    if (data.created_at) lines.push("- **生成时间**：" + data.created_at);
+    lines.push("");
+
+    lines.push("## 教学地图概览");
+    lines.push("");
+    lines.push("共 **" + nodes.length + "** 个问题节点（主干 " + mainNodes.length + " 个、变式 " + variantNodes.length + " 个、支架 " + scaffoldNodes.length + " 个），**" + edges.length + "** 条连接关系");
+    lines.push("");
+
+    lines.push("---");
+    lines.push("");
+
+    mainOrder.forEach(function (mainNode, idx) {
+        var cnNum = CN_NUMBERS[idx] || String(idx + 1);
+        lines.push("## " + cnNum + "、主干问题 " + (idx + 1));
+        lines.push("");
+        lines.push(mainNode.content || "");
+        lines.push("");
+
+        var metaLine = buildMetaLine(mainNode);
+        if (metaLine) { lines.push(metaLine); lines.push(""); }
+
+        var commentary = getCommentary(mainNode);
+        if (commentary) {
+            lines.push("### 说课稿");
+            lines.push("");
+            lines.push(commentary);
+            lines.push("");
+        }
+
+        var relatedVariants = variantNodes.filter(function (v) {
+            return (v.main_id || v.parent_id) === mainNode.id;
+        });
+        if (relatedVariants.length > 0) {
+            lines.push("### 变式问题");
+            lines.push("");
+            relatedVariants.forEach(function (v, vi) {
+                lines.push("#### 变式 " + (vi + 1) + (v.variation_type ? "（" + v.variation_type + "）" : ""));
+                lines.push("");
+                lines.push(v.content || "");
+                lines.push("");
+                var vm = buildMetaLine(v);
+                if (vm) { lines.push(vm); lines.push(""); }
+                var vc = getCommentary(v);
+                if (vc) { lines.push("**说课稿：**"); lines.push(""); lines.push(vc); lines.push(""); }
+            });
+        }
+
+        if (idx < mainOrder.length - 1) {
+            var nextMain = mainOrder[idx + 1];
+            var relatedScaffolds = scaffoldNodes.filter(function (s) {
+                var fromId = s.from_id || s.from_main_id;
+                var toId = s.to_id || s.to_main_id;
+                return fromId === mainNode.id || toId === nextMain.id;
+            });
+            if (relatedScaffolds.length > 0) {
+                lines.push("### 支架问题（过渡到下一主干）");
+                lines.push("");
+                relatedScaffolds.forEach(function (s, si) {
+                    lines.push("#### 支架 " + (si + 1));
+                    lines.push("");
+                    lines.push(s.content || "");
+                    lines.push("");
+                    var sm = buildMetaLine(s);
+                    if (sm) { lines.push(sm); lines.push(""); }
+                    var sc = getCommentary(s);
+                    if (sc) { lines.push("**说课稿：**"); lines.push(""); lines.push(sc); lines.push(""); }
+                    if (s.bridge_function) { lines.push("**桥梁功能：**" + s.bridge_function); lines.push(""); }
+                });
+            }
+            lines.push("---");
+            lines.push("");
+        }
+    });
+
+    return lines.join("\n");
+}
+
+function buildMetaLine(node) {
+    var parts = [];
+    if (node.knowledge_points && node.knowledge_points.length) {
+        parts.push("知识点：" + node.knowledge_points.join("、"));
+    }
+    var cl = node.cognitive_level || node.bloom_level || "";
+    var clLabel = COGNITIVE_LABELS[cl] || cl;
+    if (clLabel) parts.push("认知层次：" + clLabel);
+    if (node.difficulty !== undefined) parts.push("难度：" + node.difficulty);
+    var di = node.design_intent || node.design_rationale || "";
+    if (di) parts.push("设计意图：" + di);
+    if (!parts.length) return "";
+    return parts.map(function (p) { return "- " + p; }).join("  \n");
+}
+
+function downloadTextFile(text, filename) {
+    var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // ---------------------------------------------------------------------------
