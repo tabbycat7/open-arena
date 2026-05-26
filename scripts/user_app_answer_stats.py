@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-按注册用户汇总三个应用会话数量（仅输出：辩论会话、教案会话、教学导航仪次数）。
+按注册用户汇总三个应用会话数量，并默认生成 CSV 文件。
 
 数据口径：debate_session_owners.user_id、lesson_session_owners.user_id、
 teaching_maps.history.user_id。
@@ -9,7 +9,9 @@ teaching_maps.history.user_id。
   在项目根目录执行（读取 .env 中的 DATABASE_URL、TEACHING_MAP_MYSQL_DB）：
 
     python scripts/user_app_answer_stats.py
+    python scripts/user_app_answer_stats.py -o stats.csv
     python scripts/user_app_answer_stats.py --csv > stats.csv
+    python scripts/user_app_answer_stats.py --table
 
   或临时指定连接串（注意不要写入版本库）：
 
@@ -66,12 +68,19 @@ def _connect(host: str, port: int, user: str, password: str, database: Optional[
 
 
 def main() -> None:
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if load_dotenv:
-        root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
         load_dotenv(os.path.join(root, ".env"))
 
     ap = argparse.ArgumentParser(description="按用户汇总三个应用的作答与标注统计")
-    ap.add_argument("--csv", action="store_true", help="输出 CSV 而非表格")
+    ap.add_argument("--csv", action="store_true", help="输出 CSV 到终端，而不是生成文件")
+    ap.add_argument(
+        "--output",
+        "-o",
+        default=os.path.join(root, "user_app_answer_stats.csv"),
+        help="CSV 输出文件路径；默认生成到项目根目录的 user_app_answer_stats.csv",
+    )
+    ap.add_argument("--table", action="store_true", help="只在终端输出表格，不生成 CSV 文件")
     args = ap.parse_args()
 
     url = os.getenv("DATABASE_URL", "").strip()
@@ -152,11 +161,22 @@ def main() -> None:
 
     fieldnames = ["user_id", "username", "debate_sessions", "lesson_sessions", "mat_runs"]
 
-    if args.csv:
-        w = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
+    def write_csv_file(fp: Any) -> None:
+        w = csv.DictWriter(fp, fieldnames=fieldnames)
         w.writeheader()
         for row in rows_out:
             w.writerow({k: row[k] for k in fieldnames})
+
+    if args.csv:
+        write_csv_file(sys.stdout)
+        return
+
+    if not args.table:
+        output_path = os.path.abspath(args.output)
+        os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+        with open(output_path, "w", encoding="utf-8-sig", newline="") as f:
+            write_csv_file(f)
+        print(f"已生成 CSV：{output_path}")
         return
 
     headers = ["user_id", "username", "辩论会话", "教案会话", "导航仪次数"]

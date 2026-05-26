@@ -1725,7 +1725,7 @@ def _mat_get_history(limit: int = 50, user_id: Optional[int] = None) -> List[dic
     with conn.cursor() as cur:
         if user_id is not None:
             cur.execute(
-                "SELECT id, user_id, user_display_name, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history WHERE user_id = %s ORDER BY created_at DESC LIMIT %s",
+                "SELECT id, user_id, user_display_name, subject, grade, teaching_goals, student_profile, difficulty_analysis, language_style, model_id, duration_seconds, created_at FROM history WHERE user_id = %s OR user_id IS NULL ORDER BY created_at DESC LIMIT %s",
                 (user_id, limit),
             )
         else:
@@ -1784,7 +1784,25 @@ def _mat_history_row_owned_by(record: Optional[dict], user_id: int) -> bool:
     if not record:
         return False
     rid = record.get("user_id")
-    return rid is not None and int(rid) == user_id
+    if rid is None:
+        # 早期版本未写入 user_id 的无主记录，允许已登录用户访问
+        return True
+    return int(rid) == user_id
+
+
+def _mat_claim_orphan_history(user_id: int, user_display_name: Optional[str] = None) -> None:
+    """将 user_id 为空的历史记录归属到当前登录用户（迁移/修复用）。"""
+    try:
+        conn = _mat_get_conn()
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE history SET user_id = %s, user_display_name = COALESCE(NULLIF(user_display_name, ''), %s) WHERE user_id IS NULL",
+                (user_id, user_display_name or ""),
+            )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        app.logger.warning(f"[教学地图] 认领无主历史记录失败: {e}")
 
 
 def _mat_task_owned_by_user(task: dict, user_id: int) -> bool:
@@ -2047,12 +2065,18 @@ def _mat_run_workflow(task_id: str):
 
         task["duration_seconds"] = _mat_compute_duration_seconds(task)
         task["result"] = accumulated.get("teaching_map", {"nodes": [], "edges": []})
-        _mat_save_to_db(
-            task_id, task["input"], task["result"],
-            duration_seconds=task.get("duration_seconds"),
-            user_id=task.get("user_id"),
-            user_display_name=task.get("user_display_name"),
-        )
+        try:
+            _mat_save_to_db(
+                task_id, task["input"], task["result"],
+                duration_seconds=task.get("duration_seconds"),
+                user_id=task.get("user_id"),
+                user_display_name=task.get("user_display_name"),
+            )
+        except Exception as save_err:
+            app.logger.error(f"[教学地图] 保存历史记录失败: {traceback.format_exc()}")
+            task["progress"].append(
+                "[警告] 教学地图已生成，但写入历史库失败（请确认 MySQL 已启动且 TEACHING_MAP_MYSQL_DB 可访问）：%s" % save_err
+            )
         task["status"] = "done"
         task["progress"].append("[系统] 教学地图生成完成！")
 
@@ -2362,7 +2386,17 @@ def mat_history_list():
     session_uid = _mat_session_user_id()
     if session_uid is None:
         return jsonify({"code": 401, "msg": "请先登录"}), 401
-    return jsonify(_mat_get_history(user_id=session_uid))
+    current_user = get_current_user()
+    display_name = current_user.get("display_name") if current_user else None
+    try:
+        _mat_claim_orphan_history(session_uid, display_name)
+        return jsonify(_mat_get_history(user_id=session_uid))
+    except Exception as e:
+        app.logger.error(f"[教学地图] 加载历史列表失败: {traceback.format_exc()}")
+        return jsonify({
+            "code": 503,
+            "msg": "历史记录加载失败，请确认 MySQL 已启动。错误：%s" % str(e),
+        }), 503
 
 
 @app.route("/api/mat/history/<record_id>")
@@ -2386,7 +2420,10 @@ def mat_history_delete(record_id):
     deleted = 0
     conn = _mat_get_conn()
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM history WHERE id = %s AND user_id = %s", (record_id, session_uid))
+        cur.execute(
+            "DELETE FROM history WHERE id = %s AND (user_id = %s OR user_id IS NULL)",
+            (record_id, session_uid),
+        )
         deleted = cur.rowcount
         if deleted:
             cur.execute("DELETE FROM agent_logs WHERE task_id = %s", (record_id,))
@@ -2413,6 +2450,87 @@ def mat_get_logs(task_id):
             return jsonify({"error": "Task not found"}), 404
     logs = _mat_get_agent_logs(task_id)
     return jsonify(logs)
+
+
+# ===================== 教学地图导航 =====================
+from nav_algorithm import dispatch_next, get_first_main_node  # noqa: E402
+
+
+@app.route("/app/teaching-nav/<task_id>")
+@login_required
+def teaching_nav_page(task_id):
+    """教学地图导航页面"""
+    session_uid = _mat_session_user_id()
+    task = _mat_tasks.get(task_id)
+    if task:
+        if not _mat_task_owned_by_user(task, session_uid):
+            abort(404)
+    else:
+        record = _mat_get_history_detail(task_id)
+        if not record or not _mat_history_row_owned_by(record, session_uid):
+            abort(404)
+    return render_template("teaching_nav.html", task_id=task_id)
+
+
+@app.route("/api/mat/nav/load/<task_id>")
+@login_required
+def mat_nav_load(task_id):
+    """加载教学地图数据用于导航"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+
+    task = _mat_tasks.get(task_id)
+    if task:
+        if not _mat_task_owned_by_user(task, session_uid):
+            return jsonify({"error": "Not found"}), 404
+        if task["status"] != "done":
+            return jsonify({"error": "Task not completed yet"}), 400
+        teaching_map = task.get("result", {})
+    else:
+        record = _mat_get_history_detail(task_id)
+        if not record or not _mat_history_row_owned_by(record, session_uid):
+            return jsonify({"error": "Not found"}), 404
+        teaching_map = record.get("result", {})
+
+    first_node = get_first_main_node(teaching_map)
+    return jsonify({
+        "teaching_map": teaching_map,
+        "first_node_id": first_node["id"] if first_node else None,
+    })
+
+
+@app.route("/api/mat/nav/dispatch", methods=["POST"])
+@login_required
+def mat_nav_dispatch():
+    """执行导航调度算法"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+
+    data = request.get_json(force=True)
+    teaching_map = data.get("teaching_map")
+    current_node_id = data.get("current_node_id", "")
+    participation = data.get("participation", "high")
+    accuracy = data.get("accuracy", "high")
+    visited = data.get("visited", [])
+
+    if not teaching_map or not current_node_id:
+        return jsonify({"error": "Missing required fields"}), 400
+    if participation not in ("high", "low"):
+        return jsonify({"error": "participation must be 'high' or 'low'"}), 400
+    if accuracy not in ("high", "low"):
+        return jsonify({"error": "accuracy must be 'high' or 'low'"}), 400
+
+    result = dispatch_next(teaching_map, current_node_id, participation, accuracy, visited)
+
+    node_map = {n["id"]: n for n in teaching_map.get("nodes", []) if n.get("id")}
+    next_id = result.get("next_node_id")
+    result["next_node"] = node_map.get(next_id) if next_id else None
+    explanation_id = result.get("explanation_node_id")
+    result["explanation_node"] = node_map.get(explanation_id) if explanation_id else None
+
+    return jsonify(result)
 
 
 # ===================== 启动 =====================

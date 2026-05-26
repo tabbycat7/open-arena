@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}教学导航 - Open Arena{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mat_nav.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="nav-page" id="navPage">
+    <!-- Top Bar -->
+    <header class="nav-topbar">
+        <div class="nav-topbar-left">
+            <a href="/app/multi-agent-teaching/?record={{ task_id }}" class="nav-back-link">
+                <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                    <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                返回教学地图
+            </a>
+            <div class="nav-title-group">
+                <h1 class="nav-page-title">教学导航</h1>
+                <span class="nav-status-badge" id="navStatusBadge">加载中</span>
+            </div>
+        </div>
+        <div class="nav-topbar-right">
+            <div class="nav-progress-info" id="navProgressInfo">
+                <span class="nav-progress-text" id="navProgressText">--</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    <div class="nav-loading" id="navLoading">
+        <div class="nav-loading-spinner"></div>
+        <p>正在加载教学地图...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="nav-error" id="navError" style="display:none;">
+        <div class="nav-error-icon">!</div>
+        <p id="navErrorText">加载失败</p>
+        <a href="/app/multi-agent-teaching/?record={{ task_id }}" class="btn btn-primary">返回</a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="nav-main" id="navMain" style="display:none;">
+        <!-- Question Display Area -->
+        <div class="nav-question-area">
+            <!-- Explanation Panel (slides in above question when triggered) -->
+            <div class="nav-explanation-panel" id="navExplanation" style="display:none;">
+                <div class="nav-explanation-header">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>题目解析</span>
+                    <button class="nav-explanation-close" id="closeExplanation">&times;</button>
+                </div>
+                <div class="nav-explanation-body" id="navExplanationBody"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="nav-question-card" id="navQuestionCard">
+                <div class="nav-question-meta">
+                    <span class="nav-question-badge" id="navQuestionBadge">M1</span>
+                    <span class="nav-question-type" id="navQuestionType">主干问题</span>
+                    <span class="nav-question-difficulty" id="navQuestionDifficulty"></span>
+                </div>
+                <div class="nav-question-content" id="navQuestionContent">
+                    <p class="nav-question-text" id="navQuestionText"></p>
+                </div>
+                <div class="nav-question-extra" id="navQuestionExtra">
+                    <div class="nav-extra-buttons">
+                        <button class="nav-script-toggle" id="navScriptToggle" style="display:none;">
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                            </svg>
+                            查看说课稿
+                        </button>
+                        <button class="nav-explain-toggle" id="navExplainToggle" style="display:none;">
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                            查看解析
+                        </button>
+                    </div>
+                    <div class="nav-script-content" id="navScriptContent" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Completion Card -->
+            <div class="nav-completed-card" id="navCompletedCard" style="display:none;">
+                <div class="nav-completed-icon">
+                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M8 12l2.5 2.5L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>导航完成</h2>
+                <p>所有可用的问题节点已遍历完毕</p>
+                <button class="btn btn-primary nav-restart-btn" id="navRestartBtn">重新开始</button>
+            </div>
+        </div>
+
+        <!-- Navigation Trail -->
+        <div class="nav-trail-container">
+            <div class="nav-trail" id="navTrail"></div>
+        </div>
+    </main>
+
+    <!-- Bottom Control Panel -->
+    <footer class="nav-controls" id="navControls" style="display:none;">
+        <div class="nav-controls-inner">
+            <!-- Toggle Groups -->
+            <div class="nav-toggle-section">
+                <div class="nav-toggle-group">
+                    <label class="nav-toggle-label">课堂参与度</label>
+                    <div class="nav-toggle-buttons" id="participationToggle">
+                        <button class="nav-toggle-btn nav-toggle-high active" data-value="high">高</button>
+                        <button class="nav-toggle-btn nav-toggle-low" data-value="low">低</button>
+                    </div>
+                </div>
+                <div class="nav-toggle-group">
+                    <label class="nav-toggle-label">回答准确率</label>
+                    <div class="nav-toggle-buttons" id="accuracyToggle">
+                        <button class="nav-toggle-btn nav-toggle-high active" data-value="high">高</button>
+                        <button class="nav-toggle-btn nav-toggle-low" data-value="low">低</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario Indicator -->
+            <div class="nav-scenario-indicator" id="navScenarioIndicator">
+                <span class="nav-scenario-label">当前策略：</span>
+                <span class="nav-scenario-text" id="navScenarioText">纵向认知进阶</span>
+            </div>
+
+            <!-- Dispatch Button -->
+            <button class="nav-dispatch-btn" id="navDispatchBtn">
+                <span class="nav-dispatch-btn-text">调度下一个问题</span>
+                <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
+    </footer>
+</div>
+
+<script>
+    window.NAV_TASK_ID = "{{ task_id }}";
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="{{ url_for('static', filename='js/mat_nav.js') }}"></script>
+{% endblock %}

@@ -25,6 +25,7 @@ def map_integration_node(state: dict) -> dict:
             "content": q.get("content", ""),
             "question_type": "main",
             "lesson_presentation_script": lesson_presentation_script,
+            "explanation": q.get("explanation", ""),
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.5),
@@ -42,6 +43,7 @@ def map_integration_node(state: dict) -> dict:
             "content": q.get("content", ""),
             "question_type": "variant",
             "lesson_presentation_script": lesson_presentation_script,
+            "explanation": q.get("explanation", ""),
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.5),
@@ -58,11 +60,13 @@ def map_integration_node(state: dict) -> dict:
         lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
         from_id = q.get("from_id") or q.get("from_main_id") or q.get("source_main_question", "")
         to_id = q.get("to_id") or q.get("to_main_id") or q.get("target_main_question", "")
+        bridge_group_id = q.get("bridge_group_id", "")
         nodes.append({
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "scaffold",
             "lesson_presentation_script": lesson_presentation_script,
+            "explanation": q.get("explanation", ""),
             "knowledge_points": q.get("knowledge_points", []),
             "cognitive_level": cognitive_level,
             "difficulty": q.get("difficulty", 0.3),
@@ -70,6 +74,7 @@ def map_integration_node(state: dict) -> dict:
             "to_id": to_id,
             "from_main_id": from_id,
             "to_main_id": to_id,
+            "bridge_group_id": bridge_group_id,
             "bridge_function": q.get("bridge_function", ""),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
@@ -98,23 +103,30 @@ def map_integration_node(state: dict) -> dict:
     for sq in scaffold_qs:
         from_id = sq.get("from_id") or sq.get("from_main_id") or sq.get("source_main_question", "")
         to_id = sq.get("to_id") or sq.get("to_main_id") or sq.get("target_main_question", "")
+        bg_id = sq.get("bridge_group_id", "")
         if from_id and to_id:
-            bridge_key = (from_id, to_id)
+            # Use bridge_group_id as primary key; fall back to (from_id, to_id) for legacy data
+            bridge_key = bg_id if bg_id else (from_id, to_id)
             bridge_groups[bridge_key].append(sq)
 
-    for (from_main, to_main), scaffolds in bridge_groups.items():
+    for bridge_key, scaffolds in bridge_groups.items():
         sorted_scaffolds = sorted(scaffolds, key=lambda x: _extract_scaffold_seq(x.get("id", "")))
 
         if len(sorted_scaffolds) == 0:
             continue
 
+        # Derive from_main and to_main from the scaffolds themselves
         first_scaffold = sorted_scaffolds[0]
-        edges.append({
-            "source": from_main,
-            "target": first_scaffold.get("id", ""),
-            "relation": "scaffold_from",
-            "weight": 0.7,
-        })
+        from_main = first_scaffold.get("from_id") or first_scaffold.get("from_main_id") or first_scaffold.get("source_main_question", "")
+        to_main = first_scaffold.get("to_id") or first_scaffold.get("to_main_id") or first_scaffold.get("target_main_question", "")
+
+        if from_main:
+            edges.append({
+                "source": from_main,
+                "target": first_scaffold.get("id", ""),
+                "relation": "scaffold_from",
+                "weight": 0.7,
+            })
 
         for i in range(len(sorted_scaffolds) - 1):
             edges.append({
@@ -125,12 +137,13 @@ def map_integration_node(state: dict) -> dict:
             })
 
         last_scaffold = sorted_scaffolds[-1]
-        edges.append({
-            "source": last_scaffold.get("id", ""),
-            "target": to_main,
-            "relation": "scaffold_to",
-            "weight": 0.7,
-        })
+        if to_main:
+            edges.append({
+                "source": last_scaffold.get("id", ""),
+                "target": to_main,
+                "relation": "scaffold_to",
+                "weight": 0.7,
+            })
 
     teaching_map = {"nodes": nodes, "edges": edges}
 
@@ -161,12 +174,15 @@ def _extract_number(item_id: str) -> int:
 def _extract_scaffold_seq(item_id: str) -> tuple:
     """
     从支架问题 ID 中提取排序元组。
-    例如：S1-1 -> (1, 1), S1-2 -> (1, 2), S2-1 -> (2, 1)
+    三段式：S1-1-1 -> (1, 1, 1)  两段式：S1-2 -> (1, 2, 0)
     """
-    match = re.match(r'S(\d+)-(\d+)', item_id)
-    if match:
-        return (int(match.group(1)), int(match.group(2)))
-    match2 = re.search(r'(\d+)', item_id)
+    match3 = re.match(r'S(\d+)-(\d+)-(\d+)', item_id)
+    if match3:
+        return (int(match3.group(1)), int(match3.group(2)), int(match3.group(3)))
+    match2 = re.match(r'S(\d+)-(\d+)', item_id)
     if match2:
-        return (int(match2.group(1)), 0)
-    return (999, 999)
+        return (int(match2.group(1)), int(match2.group(2)), 0)
+    match1 = re.search(r'(\d+)', item_id)
+    if match1:
+        return (int(match1.group(1)), 0, 0)
+    return (999, 999, 0)

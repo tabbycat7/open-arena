@@ -9,6 +9,7 @@ from agents.generators.main_question_chain import main_question_chain_node
 from agents.generators.variant_question import variant_question_node
 from agents.generators.scaffold_question import scaffold_question_node
 from agents.generators.map_integration import map_integration_node
+from agents.generators.priority_assignment import priority_assignment_node
 from agents.validators.integrated_main_question_validator import integrated_main_question_validator_node
 from agents.validators.variant_alignment import variant_alignment_node
 from agents.validators.scaffold_alignment import scaffold_alignment_node
@@ -300,6 +301,7 @@ def build_graph() -> StateGraph:
     workflow.add_node("scaffold_question", scaffold_question_node)
     workflow.add_node("aggregate_sub_pipelines", aggregate_sub_pipelines)
     workflow.add_node("map_integration", map_integration_node)
+    workflow.add_node("priority_assignment", priority_assignment_node)
 
     # --- Main check node (single integrated validator) ---
     workflow.add_node("main_question_check", main_question_check_node)
@@ -405,6 +407,7 @@ def build_graph() -> StateGraph:
         route_after_sub_aggregate,
         {"do_integration": "map_integration", "wait_more": END},
     )
-    workflow.add_edge("map_integration", END)
+    workflow.add_edge("map_integration", "priority_assignment")
+    workflow.add_edge("priority_assignment", END)
 
     return workflow.compile()

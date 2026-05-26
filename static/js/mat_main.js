@@ -14,6 +14,7 @@ var AGENT_STEPS = [
     "scaffold_check",
     "aggregate_sub_pipelines",
     "map_integration",
+    "priority_assignment",
 ];
 
 var AGENT_TRACKER_STEPS = [
@@ -26,6 +27,7 @@ var AGENT_TRACKER_STEPS = [
     "scaffold_question",
     "scaffold_check",
     "map_integration",
+    "priority_assignment",
 ];
 
 var AGENT_DISPLAY_NAMES = {
@@ -38,6 +40,7 @@ var AGENT_DISPLAY_NAMES = {
     scaffold_question: "支架问题生成",
     scaffold_check: "支架问题检验",
     map_integration: "教学地图整合",
+    priority_assignment: "调度优先级分配",
 };
 
 var COGNITIVE_LABELS = {
@@ -71,6 +74,10 @@ var temperatureHintEl = document.getElementById("temperatureHint");
 var fixedTemperatureModels = window.MAT_FIXED_TEMPERATURE_MODELS || {};
 var defaultTemperature = Number(window.MAT_DEFAULT_TEMPERATURE);
 var markdownOptionsApplied = false;
+var managedFiles = [];
+var lastInputRecordId = null;
+
+var LANGUAGE_STYLE_PRESETS = ["严谨学术", "生动活泼", "通俗易懂", "启发引导"];
 
 var API_PREFIX = "/api/mat";
 
@@ -474,20 +481,361 @@ if (languageStyleSelectEl) {
 
 initModelPicker();
 
+// ---------------------------------------------------------------------------
+// Form step indicator + scroll highlight (IntersectionObserver)
+// ---------------------------------------------------------------------------
+(function initFormStepper() {
+    var stepButtons = document.querySelectorAll(".mat-form-step");
+    var sections = document.querySelectorAll(".mat-form-section[data-section]");
+    if (!stepButtons.length || !sections.length) return;
+
+    stepButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            var stepNum = btn.dataset.step;
+            var target = document.querySelector('.mat-form-section[data-section="' + stepNum + '"]');
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+    });
+
+    if ("IntersectionObserver" in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var secNum = entry.target.dataset.section;
+                    stepButtons.forEach(function (b) {
+                        b.classList.toggle("is-active", b.dataset.step === secNum);
+                    });
+                }
+            });
+        }, { rootMargin: "-30% 0px -50% 0px", threshold: 0 });
+
+        sections.forEach(function (sec) { observer.observe(sec); });
+    }
+})();
+
+// ---------------------------------------------------------------------------
+// Progress ring — tracks required-field completion
+// ---------------------------------------------------------------------------
+(function initProgressRing() {
+    var ring = document.getElementById("formProgressRing");
+    var text = document.getElementById("formProgressText");
+    if (!ring || !text) return;
+
+    var CIRCUMFERENCE = 2 * Math.PI * 16;
+    ring.setAttribute("stroke-dasharray", CIRCUMFERENCE.toFixed(2));
+    ring.setAttribute("stroke-dashoffset", CIRCUMFERENCE.toFixed(2));
+
+    var requiredFields = document.querySelectorAll("#generateForm [required]");
+
+    function update() {
+        if (!requiredFields.length) return;
+        var filled = 0;
+        requiredFields.forEach(function (f) {
+            if (f.tagName === "SELECT") { if (f.value) filled++; }
+            else if (f.value && f.value.trim()) filled++;
+        });
+        var ratio = filled / requiredFields.length;
+        var offset = CIRCUMFERENCE * (1 - ratio);
+        ring.setAttribute("stroke-dashoffset", offset.toFixed(2));
+        text.textContent = Math.round(ratio * 100) + "%";
+
+        var stepButtons = document.querySelectorAll(".mat-form-step");
+        stepButtons.forEach(function (btn) {
+            var secNum = btn.dataset.step;
+            var sec = document.querySelector('.mat-form-section[data-section="' + secNum + '"]');
+            if (!sec) return;
+            var fields = sec.querySelectorAll("[required]");
+            var allFilled = fields.length > 0;
+            fields.forEach(function (f) {
+                if (f.tagName === "SELECT") { if (!f.value) allFilled = false; }
+                else if (!f.value || !f.value.trim()) allFilled = false;
+            });
+            btn.classList.toggle("is-done", allFilled && fields.length > 0);
+        });
+    }
+
+    requiredFields.forEach(function (f) {
+        f.addEventListener("input", update);
+        f.addEventListener("change", update);
+    });
+    update();
+})();
+
+// ---------------------------------------------------------------------------
+// Drag-and-drop upload zone
+// ---------------------------------------------------------------------------
+(function initDropzone() {
+    var dropzone = document.getElementById("dropzone");
+    var fileInput = document.getElementById("attachment");
+    var tagsContainer = document.getElementById("fileTags");
+    if (!dropzone || !fileInput || !tagsContainer) return;
+
+    function syncInputFiles() {
+        var dt = new DataTransfer();
+        managedFiles.forEach(function (f) { dt.items.add(f); });
+        fileInput.files = dt.files;
+    }
+
+    function renderTags() {
+        var html = "";
+        managedFiles.forEach(function (file, idx) {
+            html += '<span class="mat-file-tag">' + escapeHtml(file.name) +
+                '<button type="button" class="mat-file-tag-remove" data-idx="' + idx + '">&times;</button></span>';
+        });
+        tagsContainer.innerHTML = html;
+    }
+
+    function addFiles(fileList) {
+        var existingNames = managedFiles.map(function (f) { return f.name; });
+        Array.prototype.forEach.call(fileList, function (f) {
+            if (existingNames.indexOf(f.name) === -1) {
+                managedFiles.push(f);
+                existingNames.push(f.name);
+            }
+        });
+        syncInputFiles();
+        renderTags();
+    }
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length) addFiles(fileInput.files);
+    });
+
+    dropzone.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        dropzone.classList.add("is-dragover");
+    });
+    dropzone.addEventListener("dragleave", function () {
+        dropzone.classList.remove("is-dragover");
+    });
+    dropzone.addEventListener("drop", function (e) {
+        e.preventDefault();
+        dropzone.classList.remove("is-dragover");
+        if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+    });
+
+    tagsContainer.addEventListener("click", function (e) {
+        var btn = e.target.closest(".mat-file-tag-remove");
+        if (!btn) return;
+        var idx = parseInt(btn.dataset.idx, 10);
+        if (!isNaN(idx) && idx >= 0 && idx < managedFiles.length) {
+            managedFiles.splice(idx, 1);
+            syncInputFiles();
+            renderTags();
+        }
+    });
+})();
+
+// ---------------------------------------------------------------------------
+// Load last input from history
+// ---------------------------------------------------------------------------
+function clearManagedAttachments() {
+    managedFiles = [];
+    var fileTags = document.getElementById("fileTags");
+    if (fileTags) fileTags.innerHTML = "";
+    var attachment = document.getElementById("attachment");
+    if (attachment) attachment.value = "";
+}
+
+function triggerFormProgressRefresh() {
+    document.querySelectorAll("#generateForm [required]").forEach(function (field) {
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+}
+
+function applyMatInputRecord(record) {
+    if (!record) return;
+
+    var subjectEl = document.getElementById("subject");
+    var gradeEl = document.getElementById("grade");
+    var goalsEl = document.getElementById("teaching_goals");
+    var profileEl = document.getElementById("student_profile");
+    var difficultyEl = document.getElementById("difficulty_analysis");
+
+    if (subjectEl) subjectEl.value = record.subject || "";
+    if (gradeEl) gradeEl.value = record.grade || "";
+    if (goalsEl) goalsEl.value = record.teaching_goals || "";
+    if (profileEl) profileEl.value = record.student_profile || "";
+    if (difficultyEl) difficultyEl.value = record.difficulty_analysis || "";
+
+    var style = (record.language_style || "").trim() || "严谨学术";
+    if (languageStyleSelectEl) {
+        if (LANGUAGE_STYLE_PRESETS.indexOf(style) >= 0) {
+            languageStyleSelectEl.value = style;
+            if (customLanguageInputEl) customLanguageInputEl.value = "";
+        } else {
+            languageStyleSelectEl.value = "自定义";
+            if (customLanguageInputEl) customLanguageInputEl.value = style;
+        }
+        updateLanguageStyleCustomVisibility();
+    }
+
+    var modelId = (record.model_id || "").trim();
+    if (modelId && modelPickerMenuEl) {
+        var pickerItem = null;
+        modelPickerMenuEl.querySelectorAll(".mat-model-picker-item").forEach(function (el) {
+            if (el.dataset.value === modelId) pickerItem = el;
+        });
+        if (pickerItem) {
+            setModelPickerValue(modelId, pickerItem.dataset.label, pickerItem.dataset.icon);
+        } else if (modelIdInputEl) {
+            modelIdInputEl.value = modelId;
+            if (modelPickerLabelEl) modelPickerLabelEl.textContent = modelId;
+            updateTemperatureControlForModel(modelId);
+        }
+    }
+
+    clearManagedAttachments();
+    triggerFormProgressRefresh();
+}
+
+function switchToFormTab() {
+    var formTabBtn = document.querySelector('.mat-left-tab[data-target="formTab"]');
+    if (formTabBtn && !formTabBtn.classList.contains("active")) {
+        formTabBtn.click();
+    }
+}
+
+function setLoadLastInputButtonMeta(enabled, title) {
+    var btn = document.getElementById("loadLastInputBtn");
+    if (!btn) return;
+    btn.disabled = !enabled;
+    if (title) btn.title = title;
+}
+
+function refreshLoadLastInputAvailability() {
+    return fetch(API_PREFIX + "/history")
+        .then(function (res) {
+            return res.json().then(function (data) {
+                return { ok: res.ok, status: res.status, data: data };
+            });
+        })
+        .then(function (payload) {
+            if (payload.status === 401) {
+                lastInputRecordId = null;
+                setLoadLastInputButtonMeta(false, "请先登录后使用");
+                return;
+            }
+            if (!payload.ok || !Array.isArray(payload.data) || !payload.data.length) {
+                lastInputRecordId = null;
+                setLoadLastInputButtonMeta(false, "暂无历史记录可加载");
+                return;
+            }
+            var item = payload.data[0];
+            lastInputRecordId = item.id || null;
+            var hint = [item.subject, item.grade, item.created_at].filter(Boolean).join(" · ");
+            setLoadLastInputButtonMeta(true, hint ? "恢复最近一次输入：" + hint + "（不含附件）" : "恢复最近一次填写的教学信息（不含附件）");
+        })
+        .catch(function () {
+            lastInputRecordId = null;
+            setLoadLastInputButtonMeta(false, "历史记录暂不可用");
+        });
+}
+
+function loadLastInput() {
+    var btn = document.getElementById("loadLastInputBtn");
+    if (!btn || btn.disabled) return;
+
+    var textEl = btn.querySelector(".mat-load-last-text");
+    var origText = textEl ? textEl.textContent : "加载上次输入";
+    btn.classList.add("is-loading");
+    btn.disabled = true;
+    if (textEl) textEl.textContent = "加载中...";
+
+    function finishSuccess(record) {
+        applyMatInputRecord(record);
+        switchToFormTab();
+        btn.classList.remove("is-loading");
+        btn.classList.add("is-success");
+        if (textEl) textEl.textContent = "已加载";
+        setTimeout(function () {
+            btn.classList.remove("is-success");
+            refreshLoadLastInputAvailability().then(function () {
+                if (textEl) textEl.textContent = origText;
+            });
+        }, 1800);
+    }
+
+    function finishError(message) {
+        btn.classList.remove("is-loading");
+        if (textEl) textEl.textContent = origText;
+        refreshLoadLastInputAvailability();
+        alert(message || "加载失败");
+    }
+
+    if (lastInputRecordId) {
+        fetch(API_PREFIX + "/history/" + lastInputRecordId)
+            .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+            .then(function (payload) {
+                if (!payload.ok || payload.data.error) {
+                    finishError("无法读取上次输入记录");
+                    return;
+                }
+                finishSuccess(payload.data);
+            })
+            .catch(function () { finishError("加载失败，请稍后重试"); });
+        return;
+    }
+
+    fetch(API_PREFIX + "/history")
+        .then(function (res) {
+            return res.json().then(function (data) {
+                return { ok: res.ok, status: res.status, data: data };
+            });
+        })
+        .then(function (payload) {
+            if (payload.status === 401) {
+                finishError("请先登录后使用此功能");
+                return;
+            }
+            if (!payload.ok || !Array.isArray(payload.data) || !payload.data.length) {
+                finishError("暂无历史记录");
+                return;
+            }
+            finishSuccess(payload.data[0]);
+        })
+        .catch(function () { finishError("加载失败，请稍后重试"); });
+}
+
+(function initLoadLastInput() {
+    var btn = document.getElementById("loadLastInputBtn");
+    if (!btn) return;
+    btn.addEventListener("click", loadLastInput);
+    refreshLoadLastInputAvailability();
+})();
+
+function setSubmitLoading(loading) {
+    var btn = document.getElementById("submitBtn");
+    if (!btn) return;
+    var iconEl = btn.querySelector(".mat-btn-icon");
+    var textEl = btn.querySelector(".mat-btn-text");
+    var spinnerEl = btn.querySelector(".mat-btn-spinner");
+    if (loading) {
+        btn.classList.add("is-loading");
+        btn.disabled = true;
+        if (iconEl) iconEl.style.display = "none";
+        if (textEl) textEl.textContent = "AI 正在规划...";
+        if (spinnerEl) spinnerEl.style.display = "inline-flex";
+    } else {
+        btn.classList.remove("is-loading");
+        if (iconEl) iconEl.style.display = "";
+        if (spinnerEl) spinnerEl.style.display = "none";
+    }
+}
+
 function startGeneration() {
     var form = document.getElementById("generateForm");
     var formData = new FormData(form);
-    var attachmentInput = document.getElementById("attachment");
-    if (attachmentInput && attachmentInput.files && attachmentInput.files.length) {
+    if (managedFiles.length) {
         formData.delete("attachment");
-        Array.prototype.forEach.call(attachmentInput.files, function (file) {
+        managedFiles.forEach(function (file) {
             formData.append("attachment", file, file.name);
         });
     }
     var submitBtn = document.getElementById("submitBtn");
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = "生成中...";
+    setSubmitLoading(true);
     document.getElementById("newPlanBtn").style.display = "none";
     setStopButtonsState(true, false, "强制停止");
     setBackToGenerationButtonState(true);
@@ -497,6 +845,7 @@ function startGeneration() {
     document.getElementById("placeholder").style.display = "none";
     document.getElementById("progressSection").style.display = "block";
     document.getElementById("viewTabs").style.display = "none";
+    hideNavEntryBar();
     document.getElementById("graphSection").style.display = "none";
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "none";
@@ -526,8 +875,10 @@ function startGeneration() {
         })
         .catch(function (err) {
             addLogEntry("连接失败: " + err.message, "error");
+            setSubmitLoading(false);
             submitBtn.disabled = false;
-            submitBtn.textContent = "开始生成教学地图";
+            var btnText = submitBtn.querySelector(".mat-btn-text");
+            if (btnText) btnText.textContent = "开始生成教学地图";
             isGenerating = false;
             resetGenerationDurationDisplay();
             localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
@@ -654,6 +1005,7 @@ function returnToProgress() {
     document.getElementById("placeholder").style.display = "none";
     document.getElementById("progressSection").style.display = "block";
     document.getElementById("viewTabs").style.display = "none";
+    hideNavEntryBar();
     document.getElementById("graphSection").style.display = "none";
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "none";
@@ -664,9 +1016,12 @@ function returnToProgress() {
 function resetSubmitBtn(showNewPlanBtn) {
     var btn = document.getElementById("submitBtn");
     var newPlanBtn = document.getElementById("newPlanBtn");
+    setSubmitLoading(false);
     btn.disabled = false;
-    btn.textContent = "重新生成";
+    var btnText = btn.querySelector(".mat-btn-text");
+    if (btnText) btnText.textContent = "重新生成";
     isGenerating = false;
+    if (showNewPlanBtn) refreshLoadLastInputAvailability();
     clearGenerationDurationTicker();
     setStopButtonsState(false, false, "强制停止");
     setBackToGenerationButtonState(false);
@@ -685,11 +1040,14 @@ function startNewPlan() {
     setUiStage("input");
 
     document.getElementById("generateForm").reset();
+    clearManagedAttachments();
     updateLanguageStyleCustomVisibility();
     syncModelPickerFromInput();
     var btn = document.getElementById("submitBtn");
+    setSubmitLoading(false);
     btn.disabled = false;
-    btn.textContent = "开始生成教学地图";
+    var btnText = btn.querySelector(".mat-btn-text");
+    if (btnText) btnText.textContent = "开始生成教学地图";
     document.getElementById("newPlanBtn").style.display = "none";
     setBackToGenerationButtonState(false);
     document.getElementById("progressLog").innerHTML = "";
@@ -699,6 +1057,7 @@ function startNewPlan() {
     document.getElementById("placeholder").style.display = "flex";
     document.getElementById("progressSection").style.display = "none";
     document.getElementById("viewTabs").style.display = "none";
+    hideNavEntryBar();
     document.getElementById("graphSection").style.display = "none";
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "none";
@@ -709,6 +1068,21 @@ function startNewPlan() {
     document.querySelectorAll(".mat-left-tab-content").forEach(function (c) { c.classList.remove("active"); });
     document.querySelector('.mat-left-tab[data-target="formTab"]').classList.add("active");
     document.getElementById("formTab").classList.add("active");
+}
+
+function getRecordIdFromQuery() {
+    try {
+        return new URLSearchParams(window.location.search).get("record");
+    } catch (e) {
+        return null;
+    }
+}
+
+function openRecordFromQueryOnLoad() {
+    var recordId = getRecordIdFromQuery();
+    if (!recordId) return false;
+    loadHistoryItem(recordId);
+    return true;
 }
 
 function restoreTaskProgressOnLoad() {
@@ -726,6 +1100,7 @@ function restoreTaskProgressOnLoad() {
                 document.getElementById("placeholder").style.display = "none";
                 document.getElementById("progressSection").style.display = "block";
                 document.getElementById("viewTabs").style.display = "none";
+                hideNavEntryBar();
                 document.getElementById("graphSection").style.display = "none";
                 document.getElementById("textSection").style.display = "none";
                 document.getElementById("logsSection").style.display = "none";
@@ -738,8 +1113,7 @@ function restoreTaskProgressOnLoad() {
                     output_preview: { task_id: taskId },
                 });
                 var btn = document.getElementById("submitBtn");
-                btn.disabled = true;
-                btn.textContent = "生成中...";
+                setSubmitLoading(true);
                 setStopButtonsState(true, false, "强制停止");
                 setBackToGenerationButtonState(true);
                 var progress = Array.isArray(data.progress) ? data.progress : [];
@@ -772,9 +1146,7 @@ function restoreTaskProgressOnLoad() {
 
 function forceStopTask() {
     if (!currentTaskId || !isGenerating) return;
-    var submitBtn = document.getElementById("submitBtn");
     setStopButtonsState(true, true, "停止中...");
-    submitBtn.textContent = "停止中...";
 
     fetch(API_PREFIX + "/stop/" + currentTaskId, { method: "POST" })
         .then(function (res) { return res.json(); })
@@ -793,7 +1165,6 @@ function forceStopTask() {
         .catch(function (err) {
             addLogEntry("强制停止失败: " + err.message, "error");
             setStopButtonsState(true, false, "强制停止");
-            submitBtn.textContent = "生成中...";
         });
 }
 
@@ -924,6 +1295,25 @@ function showResult(result, taskId) {
     document.getElementById("detailSection").style.display = "none";
     renderGraph(result);
     renderTextView(result);
+    showNavEntryButton(taskId);
+}
+
+function showNavEntryButton(taskId) {
+    var bar = document.getElementById("navEntryBar");
+    var btn = document.getElementById("startNavBtn");
+    if (!bar || !btn) return;
+    var tid = taskId || currentTaskId;
+    if (tid) {
+        btn.href = "/app/teaching-nav/" + tid;
+        bar.style.display = "flex";
+    } else {
+        bar.style.display = "none";
+    }
+}
+
+function hideNavEntryBar() {
+    var bar = document.getElementById("navEntryBar");
+    if (bar) bar.style.display = "none";
 }
 
 // ---------------------------------------------------------------------------
@@ -1147,17 +1537,50 @@ function orderMainNodes(mainNodes, edges) {
 // ---------------------------------------------------------------------------
 // History
 // ---------------------------------------------------------------------------
+function closeAllMoreMenus() {
+    document.querySelectorAll(".mat-more-menu.is-open").forEach(function (m) {
+        m.classList.remove("is-open");
+    });
+}
+
 function bindHistoryListEvents() {
     if (historyEventsBound) return;
     var list = document.getElementById("historyList");
     if (!list) return;
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest(".mat-history-more-wrap")) closeAllMoreMenus();
+    });
+
     list.addEventListener("click", function (event) {
+        var moreBtn = event.target.closest(".mat-btn-more");
+        if (moreBtn) {
+            event.stopPropagation();
+            var menu = moreBtn.nextElementSibling;
+            var isOpen = menu && menu.classList.contains("is-open");
+            closeAllMoreMenus();
+            if (menu && !isOpen) {
+                menu.classList.remove("mat-more-menu--below");
+                menu.classList.add("is-open");
+                var btnRect = moreBtn.getBoundingClientRect();
+                var listEl = document.getElementById("historyList");
+                var listTop = listEl ? listEl.getBoundingClientRect().top : 0;
+                var menuHeight = menu.offsetHeight || 150;
+                if (btnRect.top - listTop < menuHeight + 12) {
+                    menu.classList.add("mat-more-menu--below");
+                }
+            }
+            return;
+        }
+
         var btn = event.target.closest("button");
         if (!btn) return;
         var item = btn.closest(".mat-history-item");
         if (!item) return;
         var recordId = item.getAttribute("data-id");
         if (!recordId) return;
+
+        closeAllMoreMenus();
 
         if (btn.classList.contains("mat-btn-view")) {
             loadHistoryItem(recordId);
@@ -1184,12 +1607,38 @@ function bindHistoryListEvents() {
 
 function loadHistory() {
     bindHistoryListEvents();
+    var container = document.getElementById("historyList");
+    if (!container) return;
+    container.innerHTML = '<p class="mat-history-empty">加载中...</p>';
+
     fetch(API_PREFIX + "/history")
-        .then(function (res) { return res.json(); })
-        .then(function (list) {
-            var container = document.getElementById("historyList");
+        .then(function (res) {
+            return res.json().then(function (data) {
+                return { ok: res.ok, status: res.status, data: data };
+            });
+        })
+        .then(function (payload) {
+            var list = payload.data;
+            if (!payload.ok) {
+                var errMsg = (list && list.msg) ? list.msg : "历史记录加载失败（HTTP " + payload.status + "）";
+                container.innerHTML = '<p class="mat-history-empty mat-history-error">' + escapeHtml(errMsg) + "</p>";
+                return;
+            }
+            if (!Array.isArray(list)) {
+                container.innerHTML = '<p class="mat-history-empty mat-history-error">历史接口返回格式异常</p>';
+                return;
+            }
             if (!list.length) {
-                container.innerHTML = '<p class="mat-history-empty">暂无历史记录</p>';
+                container.innerHTML = '<div class="mat-history-empty">'
+                    + '<svg class="mat-history-empty-illustration" viewBox="0 0 64 64" fill="none" width="48" height="48">'
+                    + '<rect x="12" y="8" width="40" height="48" rx="6" stroke="currentColor" stroke-width="2"/>'
+                    + '<line x1="22" y1="22" x2="42" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+                    + '<line x1="22" y1="30" x2="38" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+                    + '<line x1="22" y1="38" x2="34" y2="38" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+                    + '</svg>'
+                    + '<p>暂无历史记录</p>'
+                    + '<p class="mat-history-empty-hint">生成教学地图后，记录将出现在这里</p>'
+                    + '</div>';
                 return;
             }
             var html = "";
@@ -1199,27 +1648,37 @@ function loadHistory() {
                 var modelDisplayName = escapeHtml(item.model_display_name || "未知模型");
                 var durationSeconds = Number(item.duration_seconds);
                 var hasDuration = isFinite(durationSeconds) && durationSeconds >= 0;
-                html += '<div class="mat-history-item" data-id="' + item.id + '">';
+                var subjectAttr = escapeHtml(item.subject || "");
+                html += '<div class="mat-history-item" data-id="' + item.id + '" data-subject-color="' + subjectAttr + '">';
                 html += '<div class="mat-history-item-header">';
-                html += '<span class="mat-history-subject">' + item.subject + ' · ' + item.grade + '</span>';
-                html += '<span class="mat-history-time">' + item.created_at + '</span>';
+                html += '<span class="mat-history-subject">' + escapeHtml(item.subject || "") + ' · ' + escapeHtml(item.grade || "") + '</span>';
+                html += '<span class="mat-history-time">' + escapeHtml(item.created_at || "") + '</span>';
                 html += '</div>';
                 html += '<div class="mat-history-goals">' + safeGoals + '</div>';
-                html += '<div class="mat-history-model">生成模型：' + modelDisplayName + '</div>';
-                if (hasDuration) {
-                    html += '<div class="mat-history-model">生成时长：' + formatDurationClock(durationSeconds) + '</div>';
-                }
+                html += '<div class="mat-history-model">生成模型：' + modelDisplayName;
+                if (hasDuration) html += ' · 用时 ' + formatDurationClock(durationSeconds);
+                html += '</div>';
                 html += '<div class="mat-history-actions">';
                 html += '<button class="mat-btn-sm mat-btn-view" type="button">查看</button>';
+                html += '<a class="mat-btn-sm mat-btn-nav" href="/app/teaching-nav/' + item.id + '">导航</a>';
+                html += '<div class="mat-history-more-wrap">';
+                html += '<button class="mat-btn-more" type="button" aria-label="更多操作">&#8943;</button>';
+                html += '<div class="mat-more-menu">';
                 html += '<button class="mat-btn-sm mat-btn-export" type="button">导出教案</button>';
-                html += '<button class="mat-btn-sm mat-btn-input" type="button">输入</button>';
-                html += '<button class="mat-btn-sm mat-btn-logs" type="button">日志</button>';
-                html += '<button class="mat-btn-sm mat-btn-delete" type="button">删除</button>';
+                html += '<button class="mat-btn-sm mat-btn-input" type="button">查看输入</button>';
+                html += '<button class="mat-btn-sm mat-btn-logs" type="button">查看日志</button>';
+                html += '<button class="mat-btn-sm mat-btn-delete" type="button">删除记录</button>';
+                html += '</div></div>';
                 html += '</div>';
                 html += '<div class="mat-history-input-detail" id="historyInputDetail-' + item.id + '" style="display:none;"></div>';
                 html += '</div>';
             });
             container.innerHTML = html;
+            refreshLoadLastInputAvailability();
+        })
+        .catch(function (err) {
+            container.innerHTML = '<p class="mat-history-empty mat-history-error">历史记录加载失败：' + escapeHtml(String(err && err.message ? err.message : err)) + "</p>";
+            refreshLoadLastInputAvailability();
         });
 }
 
@@ -1477,4 +1936,6 @@ function updateProgressBar(stepIdx) {
 }
 
 renderGenerationDurationText();
-restoreTaskProgressOnLoad();
+if (!openRecordFromQueryOnLoad()) {
+    restoreTaskProgressOnLoad();
+}

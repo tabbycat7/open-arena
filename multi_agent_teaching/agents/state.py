@@ -26,6 +26,7 @@ class Question(TypedDict, total=False):
     knowledge_points: List[str]
     cognitive_level: str
     difficulty: float
+    priority: Optional[float]
     main_id: Optional[str]
     from_id: Optional[str]
     to_id: Optional[str]
