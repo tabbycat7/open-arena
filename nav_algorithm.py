@@ -347,12 +347,12 @@ def _scenario_high_high(current_id: str, current_type: str, unit_id: str,
             return _result(target, False, None)
         return _result(None, False, None, True)
     else:  # scaffold
-        # Jump to current unit's main/variant with highest priority
+        # Jump to current unit's main/variant with highest priority (unvisited only)
         candidates = _get_unit_nodes_by_type(unit_id, ["main", "variant"], index)
-        target = _pick_highest_priority(candidates, index, visited)
+        target = _pick_highest_priority(candidates, index, visited, unvisited_only=True)
         if target:
             return _result(target, False, None)
-        # Fallback: next unit
+        # Fallback: next unit (all current-unit main/variant already visited)
         next_unit = _next_unit_id(unit_id, index)
         if next_unit:
             candidates = _get_unit_nodes_by_type(next_unit, ["main", "variant"], index)

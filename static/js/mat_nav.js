@@ -47,6 +47,7 @@
     var completedCardEl = document.getElementById("navCompletedCard");
     var trailEl = document.getElementById("navTrail");
     var dispatchBtnEl = document.getElementById("navDispatchBtn");
+    var backBtnEl = document.getElementById("navBackBtn");
     var restartBtnEl = document.getElementById("navRestartBtn");
     var scenarioTextEl = document.getElementById("navScenarioText");
     var participationToggleEl = document.getElementById("participationToggle");
@@ -64,6 +65,7 @@
 
     function bindEvents() {
         dispatchBtnEl.addEventListener("click", handleDispatch);
+        if (backBtnEl) backBtnEl.addEventListener("click", handleGoBack);
         restartBtnEl.addEventListener("click", handleRestart);
         scriptToggleEl.addEventListener("click", toggleScript);
         closeExplanationEl.addEventListener("click", hideExplanation);
@@ -158,6 +160,33 @@
         updateTrail();
         updateProgress();
         updateScenarioLabel();
+        updateNavActionButtons();
+    }
+
+    function updateNavActionButtons() {
+        var canGoBack = visited.length > 1 && !navigationCompleted && !isTransitioning;
+        if (backBtnEl) backBtnEl.disabled = !canGoBack;
+        if (dispatchBtnEl && !navigationCompleted) {
+            dispatchBtnEl.disabled = isTransitioning;
+        }
+    }
+
+    function handleGoBack() {
+        if (isTransitioning || navigationCompleted || visited.length <= 1) return;
+
+        isTransitioning = true;
+        updateNavActionButtons();
+
+        visited.pop();
+        currentNodeId = visited[visited.length - 1];
+        currentNode = findNode(currentNodeId);
+
+        animateTransition(function () {
+            displayCurrentQuestion();
+            updateTrail();
+            updateProgress();
+            updateNavActionButtons();
+        });
     }
 
     function handleDispatch() {
@@ -165,7 +194,7 @@
 
         triggerRipple();
         isTransitioning = true;
-        dispatchBtnEl.disabled = true;
+        updateNavActionButtons();
 
         requestDispatch()
             .then(function (result) {
@@ -188,7 +217,7 @@
             .catch(function (err) {
                 console.error("Dispatch error:", err);
                 isTransitioning = false;
-                dispatchBtnEl.disabled = false;
+                updateNavActionButtons();
             });
     }
 
@@ -199,7 +228,6 @@
         statusBadgeEl.textContent = "导航中";
         statusBadgeEl.classList.remove("completed");
         statusBadgeEl.classList.add("active");
-        dispatchBtnEl.disabled = false;
         hideExplanation();
 
         var firstNode = getFirstMainNode();
@@ -210,6 +238,7 @@
             displayCurrentQuestion();
             updateTrail();
             updateProgress();
+            updateNavActionButtons();
         }
     }
 
@@ -273,7 +302,7 @@
         isTransitioning = false;
         questionCardEl.style.display = "none";
         completedCardEl.style.display = "block";
-        dispatchBtnEl.disabled = true;
+        updateNavActionButtons();
         statusBadgeEl.textContent = "已完成";
         statusBadgeEl.classList.remove("active");
         statusBadgeEl.classList.add("completed");
@@ -325,7 +354,7 @@
             setTimeout(function () {
                 questionCardEl.classList.remove("animating-in");
                 isTransitioning = false;
-                dispatchBtnEl.disabled = false;
+                updateNavActionButtons();
             }, 450);
         }, 300);
     }
