@@ -43,6 +43,93 @@ var AGENT_DISPLAY_NAMES = {
     priority_assignment: "调度优先级分配",
 };
 
+var MAT_GENERATION_PHASES = [
+    {
+        key: "analysis",
+        title: "解析课题与学情",
+        description: "正在拆解学习目标、学生起点和课堂关键障碍。",
+        agents: ["learning_analysis"],
+    },
+    {
+        key: "blueprint",
+        title: "绘制教学蓝图",
+        description: "正在把目标组织成一条清晰的课堂推进路径。",
+        agents: ["teaching_logic_design"],
+    },
+    {
+        key: "main",
+        title: "搭建主干问题链",
+        description: "正在让核心问题沿着课堂逻辑逐步连起来。",
+        agents: ["main_question_chain", "main_question_check", "bump_main_retry"],
+    },
+    {
+        key: "branches",
+        title: "生长变式与支架",
+        description: "正在让变式问题和支架提示接入主干链。",
+        agents: [
+            "fan_out_gen",
+            "variant_question",
+            "scaffold_question",
+            "variant_check",
+            "scaffold_check",
+            "bump_variant_retry",
+            "bump_scaffold_retry",
+            "mark_variant_done",
+            "mark_scaffold_done",
+        ],
+    },
+    {
+        key: "polish",
+        title: "校验与打磨",
+        description: "正在检查问题之间的目标对齐、难度梯度和课堂可用性。",
+        agents: ["aggregate_sub_pipelines"],
+    },
+    {
+        key: "assemble",
+        title: "合成教学地图",
+        description: "正在收束节点、连线和优先级，生成最终地图。",
+        agents: ["map_integration", "priority_assignment"],
+    },
+];
+
+var MAT_AGENT_PHASE_INDEX = {};
+MAT_GENERATION_PHASES.forEach(function (phase, index) {
+    phase.agents.forEach(function (agent) {
+        MAT_AGENT_PHASE_INDEX[agent] = index;
+    });
+});
+
+var MAT_FIELD_LABELS = {
+    subject: "学科",
+    grade: "年级",
+    teaching_goals: "教学目标",
+    student_profile: "学情描述",
+    difficulty_analysis: "重难点分析",
+    language_style: "语言风格",
+    attachment: "附件材料",
+    model_id: "生成模型",
+    temperature: "生成随机性",
+    analysis_result: "学情与目标解析结果",
+    map_construction_logic: "教学蓝图规划",
+    main_questions: "主干问题",
+    variant_questions: "变式问题",
+    scaffold_questions: "支架问题",
+    variant_question_plan: "变式问题计划",
+    scaffold_question_plan: "支架问题计划",
+    validation_results: "校验反馈",
+    main_validation_feedback: "主干问题反馈",
+    variant_validation_feedback: "变式问题反馈",
+    scaffold_validation_feedback: "支架问题反馈",
+    teaching_map: "教学地图",
+    nodes: "问题节点",
+    edges: "连接关系",
+    priorities: "调度优先级",
+    priority_assignments: "调度优先级",
+    error: "异常信息",
+    status: "执行状态",
+    task_id: "任务编号",
+};
+
 var COGNITIVE_LABELS = {
     remember: "记忆", understand: "理解", apply: "应用",
     analyze: "分析", evaluate: "评价", create: "创造",
@@ -76,8 +163,30 @@ var defaultTemperature = Number(window.MAT_DEFAULT_TEMPERATURE);
 var markdownOptionsApplied = false;
 var managedFiles = [];
 var lastInputRecordId = null;
+var historyDrawerLoaded = false;
+var currentWizardStep = 1;
 
 var LANGUAGE_STYLE_PRESETS = ["严谨学术", "生动活泼", "通俗易懂", "启发引导"];
+var MAT_FORM_STEP_META = {
+    1: {
+        label: "第 1 步",
+        title: "基础设置",
+        hint: "先确定学科、年级与生成参数。",
+        next: "下一步：教学内容",
+    },
+    2: {
+        label: "第 2 步",
+        title: "教学内容",
+        hint: "写清目标、学情和课堂难点。",
+        next: "下一步：附件与生成",
+    },
+    3: {
+        label: "第 3 步",
+        title: "附件与生成",
+        hint: "补充材料并开始生成教学地图。",
+        next: "",
+    },
+};
 
 var API_PREFIX = "/api/mat";
 
@@ -177,6 +286,7 @@ function updateLanguageStyleCustomVisibility() {
     if (!isCustom) {
         customLanguageInputEl.value = "";
     }
+    triggerFormProgressRefresh();
 }
 
 function setStopButtonsState(visible, disabled, text) {
@@ -283,7 +393,12 @@ function updateTemperatureControlForModel(modelId) {
 }
 
 function setModelPickerValue(modelId, label, iconUrl) {
-    if (modelIdInputEl) modelIdInputEl.value = modelId || "";
+    if (modelIdInputEl) {
+        modelIdInputEl.value = modelId || "";
+        markFieldValidity(modelIdInputEl, !!modelIdInputEl.value);
+        modelIdInputEl.dispatchEvent(new Event("input", { bubbles: true }));
+        modelIdInputEl.dispatchEvent(new Event("change", { bubbles: true }));
+    }
     if (modelPickerLabelEl) modelPickerLabelEl.textContent = label || "请选择模型";
     if (modelPickerIconEl && iconUrl) modelPickerIconEl.src = iconUrl;
     updateTemperatureControlForModel(modelId || "");
@@ -363,22 +478,58 @@ if (temperatureInputEl) {
 }
 
 // ---------------------------------------------------------------------------
-// Left panel tabs
+// History drawer
 // ---------------------------------------------------------------------------
-document.querySelectorAll(".mat-left-tab").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-        document.querySelectorAll(".mat-left-tab").forEach(function (b) { b.classList.remove("active"); });
-        document.querySelectorAll(".mat-left-tab-content").forEach(function (c) { c.classList.remove("active"); });
-        this.classList.add("active");
-        document.getElementById(this.dataset.target).classList.add("active");
-        if (this.dataset.target === "historyTab") {
-            loadHistory();
-            if (isGenerating) {
-                document.getElementById("generatingBanner").style.display = "flex";
-            }
-        }
+function setHistoryDrawerOpen(open) {
+    var drawer = document.getElementById("historyDrawer");
+    var overlay = document.getElementById("historyDrawerOverlay");
+    var trigger = document.getElementById("historyDrawerToggle");
+    if (!drawer || !overlay) return;
+
+    drawer.classList.toggle("is-open", !!open);
+    drawer.setAttribute("aria-hidden", open ? "false" : "true");
+    overlay.hidden = !open;
+    overlay.classList.toggle("is-open", !!open);
+    document.body.classList.toggle("mat-history-drawer-open", !!open);
+    if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
+
+    if (open && !historyDrawerLoaded) {
+        historyDrawerLoaded = true;
+        loadHistory();
+    }
+    if (open && isGenerating) {
+        var banner = document.getElementById("generatingBanner");
+        var bannerText = document.getElementById("generatingBannerText");
+        if (banner) banner.style.display = "flex";
+        if (bannerText) bannerText.textContent = "正在生成教学地图，当前查看的是历史记录";
+    }
+}
+
+function openHistoryDrawer() {
+    setHistoryDrawerOpen(true);
+}
+
+function closeHistoryDrawer() {
+    closeAllMoreMenus();
+    setHistoryDrawerOpen(false);
+}
+
+function toggleHistoryDrawer() {
+    var drawer = document.getElementById("historyDrawer");
+    setHistoryDrawerOpen(!(drawer && drawer.classList.contains("is-open")));
+}
+
+(function initHistoryDrawer() {
+    var trigger = document.getElementById("historyDrawerToggle");
+    var closeBtn = document.getElementById("historyDrawerClose");
+    var overlay = document.getElementById("historyDrawerOverlay");
+    if (trigger) trigger.addEventListener("click", toggleHistoryDrawer);
+    if (closeBtn) closeBtn.addEventListener("click", closeHistoryDrawer);
+    if (overlay) overlay.addEventListener("click", closeHistoryDrawer);
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeHistoryDrawer();
     });
-});
+})();
 
 // ---------------------------------------------------------------------------
 // View mode tabs (graph / text / logs)
@@ -482,35 +633,146 @@ if (languageStyleSelectEl) {
 initModelPicker();
 
 // ---------------------------------------------------------------------------
-// Form step indicator + scroll highlight (IntersectionObserver)
+// Form wizard — one focused step at a time
 // ---------------------------------------------------------------------------
-(function initFormStepper() {
+function getWizardStepForField(field) {
+    var section = field ? field.closest(".mat-form-section[data-section]") : null;
+    return section ? parseInt(section.dataset.section, 10) : 1;
+}
+
+function isRequiredFieldFilled(field) {
+    if (!field || field.disabled) return true;
+    if (field.tagName === "SELECT") return !!field.value;
+    if (field.type === "file") return !!(field.files && field.files.length);
+    return !!(field.value && field.value.trim());
+}
+
+function markFieldValidity(field, isValid) {
+    if (!field) return;
+    field.classList.toggle("is-invalid", !isValid);
+    var picker = field.id === "model_id" ? document.getElementById("modelPickerTrigger") : null;
+    if (picker) picker.classList.toggle("is-invalid", !isValid);
+}
+
+function validateWizardStep(step, focusInvalid) {
+    var section = document.querySelector('.mat-form-section[data-section="' + step + '"]');
+    if (!section) return true;
+    var fields = section.querySelectorAll("[required]");
+    var firstInvalid = null;
+
+    fields.forEach(function (field) {
+        var valid = isRequiredFieldFilled(field);
+        markFieldValidity(field, valid);
+        if (!valid && !firstInvalid) firstInvalid = field;
+    });
+
+    if (firstInvalid && focusInvalid) {
+        setWizardStep(step);
+        var focusTarget = firstInvalid.id === "model_id" ? document.getElementById("modelPickerTrigger") : firstInvalid;
+        setTimeout(function () {
+            if (focusTarget && typeof focusTarget.focus === "function") focusTarget.focus();
+            if (firstInvalid && firstInvalid.type !== "hidden" && typeof firstInvalid.reportValidity === "function") {
+                firstInvalid.reportValidity();
+            }
+        }, 30);
+    }
+    return !firstInvalid;
+}
+
+function validateWizardForm() {
+    var requiredFields = document.querySelectorAll("#generateForm [required]");
+    var firstInvalid = null;
+    requiredFields.forEach(function (field) {
+        var valid = isRequiredFieldFilled(field);
+        markFieldValidity(field, valid);
+        if (!valid && !firstInvalid) firstInvalid = field;
+    });
+    if (!firstInvalid) return true;
+    validateWizardStep(getWizardStepForField(firstInvalid), true);
+    return false;
+}
+
+function refreshFieldCounts() {
+    document.querySelectorAll(".mat-field-count[data-count-target]").forEach(function (counter) {
+        var target = document.getElementById(counter.dataset.countTarget);
+        var length = target && target.value ? target.value.trim().length : 0;
+        counter.textContent = length + " 字";
+    });
+}
+
+function setWizardStep(step) {
+    var normalized = Math.max(1, Math.min(3, parseInt(step, 10) || 1));
+    currentWizardStep = normalized;
+    var meta = MAT_FORM_STEP_META[normalized] || MAT_FORM_STEP_META[1];
+
+    document.querySelectorAll(".mat-form-section[data-section]").forEach(function (section) {
+        section.classList.toggle("is-active", section.dataset.section === String(normalized));
+    });
+
+    document.querySelectorAll(".mat-form-step").forEach(function (btn) {
+        btn.classList.toggle("is-active", btn.dataset.step === String(normalized));
+    });
+
+    var label = document.getElementById("matCurrentStepLabel");
+    var title = document.getElementById("matCurrentStepTitle");
+    var hint = document.getElementById("matCurrentStepHint");
+    if (label) label.textContent = meta.label;
+    if (title) title.textContent = meta.title;
+    if (hint) hint.textContent = meta.hint;
+
+    var prevBtn = document.getElementById("wizardPrevBtn");
+    var nextBtn = document.getElementById("wizardNextBtn");
+    var submitBtn = document.getElementById("submitBtn");
+    if (prevBtn) prevBtn.style.display = normalized > 1 ? "inline-flex" : "none";
+    if (nextBtn) {
+        nextBtn.style.display = normalized < 3 ? "inline-flex" : "none";
+        nextBtn.textContent = meta.next;
+    }
+    if (submitBtn) submitBtn.style.display = normalized === 3 ? "flex" : "none";
+}
+
+(function initFormWizard() {
     var stepButtons = document.querySelectorAll(".mat-form-step");
-    var sections = document.querySelectorAll(".mat-form-section[data-section]");
-    if (!stepButtons.length || !sections.length) return;
+    var prevBtn = document.getElementById("wizardPrevBtn");
+    var nextBtn = document.getElementById("wizardNextBtn");
+    var form = document.getElementById("generateForm");
 
     stepButtons.forEach(function (btn) {
         btn.addEventListener("click", function () {
-            var stepNum = btn.dataset.step;
-            var target = document.querySelector('.mat-form-section[data-section="' + stepNum + '"]');
-            if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+            var targetStep = parseInt(btn.dataset.step, 10);
+            if (targetStep > currentWizardStep && !validateWizardStep(currentWizardStep, true)) return;
+            setWizardStep(targetStep);
         });
     });
 
-    if ("IntersectionObserver" in window) {
-        var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    var secNum = entry.target.dataset.section;
-                    stepButtons.forEach(function (b) {
-                        b.classList.toggle("is-active", b.dataset.step === secNum);
-                    });
-                }
-            });
-        }, { rootMargin: "-30% 0px -50% 0px", threshold: 0 });
-
-        sections.forEach(function (sec) { observer.observe(sec); });
+    if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+            setWizardStep(currentWizardStep - 1);
+        });
     }
+
+    if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+            if (!validateWizardStep(currentWizardStep, true)) return;
+            setWizardStep(currentWizardStep + 1);
+        });
+    }
+
+    if (form) {
+        form.addEventListener("input", function (event) {
+            markFieldValidity(event.target, true);
+            refreshFieldCounts();
+        });
+        form.addEventListener("change", function (event) {
+            var target = event.target;
+            var valid = !target.hasAttribute || !target.hasAttribute("required") || isRequiredFieldFilled(target);
+            markFieldValidity(target, valid);
+            refreshFieldCounts();
+        });
+    }
+
+    refreshFieldCounts();
+    setWizardStep(1);
 })();
 
 // ---------------------------------------------------------------------------
@@ -525,14 +787,14 @@ initModelPicker();
     ring.setAttribute("stroke-dasharray", CIRCUMFERENCE.toFixed(2));
     ring.setAttribute("stroke-dashoffset", CIRCUMFERENCE.toFixed(2));
 
-    var requiredFields = document.querySelectorAll("#generateForm [required]");
+    var form = document.getElementById("generateForm");
 
     function update() {
+        var requiredFields = form ? form.querySelectorAll("[required]") : [];
         if (!requiredFields.length) return;
         var filled = 0;
         requiredFields.forEach(function (f) {
-            if (f.tagName === "SELECT") { if (f.value) filled++; }
-            else if (f.value && f.value.trim()) filled++;
+            if (isRequiredFieldFilled(f)) filled++;
         });
         var ratio = filled / requiredFields.length;
         var offset = CIRCUMFERENCE * (1 - ratio);
@@ -547,17 +809,16 @@ initModelPicker();
             var fields = sec.querySelectorAll("[required]");
             var allFilled = fields.length > 0;
             fields.forEach(function (f) {
-                if (f.tagName === "SELECT") { if (!f.value) allFilled = false; }
-                else if (!f.value || !f.value.trim()) allFilled = false;
+                if (!isRequiredFieldFilled(f)) allFilled = false;
             });
             btn.classList.toggle("is-done", allFilled && fields.length > 0);
         });
     }
 
-    requiredFields.forEach(function (f) {
-        f.addEventListener("input", update);
-        f.addEventListener("change", update);
-    });
+    if (form) {
+        form.addEventListener("input", update);
+        form.addEventListener("change", update);
+    }
     update();
 })();
 
@@ -688,20 +949,29 @@ function applyMatInputRecord(record) {
 
     clearManagedAttachments();
     triggerFormProgressRefresh();
+    refreshFieldCounts();
 }
 
 function switchToFormTab() {
-    var formTabBtn = document.querySelector('.mat-left-tab[data-target="formTab"]');
-    if (formTabBtn && !formTabBtn.classList.contains("active")) {
-        formTabBtn.click();
-    }
+    closeHistoryDrawer();
+    var formTab = document.getElementById("formTab");
+    if (formTab) formTab.classList.add("active");
 }
 
 function setLoadLastInputButtonMeta(enabled, title) {
     var btn = document.getElementById("loadLastInputBtn");
+    var hintEl = document.getElementById("lastInputHint");
     if (!btn) return;
     btn.disabled = !enabled;
     if (title) btn.title = title;
+    if (hintEl) {
+        var hint = title || "";
+        hint = hint.replace(/^恢复最近一次输入：/, "最近：");
+        hint = hint.replace(/^恢复最近一次填写的教学信息/, "可恢复最近一次填写");
+        hint = hint.replace("（不含附件）", "");
+        hintEl.textContent = hint || (enabled ? "可恢复最近一次填写" : "暂无可加载记录");
+        hintEl.classList.toggle("is-available", !!enabled);
+    }
 }
 
 function refreshLoadLastInputAvailability() {
@@ -826,6 +1096,7 @@ function setSubmitLoading(loading) {
 
 function startGeneration() {
     var form = document.getElementById("generateForm");
+    if (!validateWizardForm()) return;
     var formData = new FormData(form);
     if (managedFiles.length) {
         formData.delete("attachment");
@@ -850,7 +1121,7 @@ function startGeneration() {
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "none";
     document.getElementById("detailSection").style.display = "none";
-    document.getElementById("progressLog").innerHTML = "";
+    clearVisibleProgressLog();
     document.getElementById("progressBar").style.width = "0%";
     document.getElementById("generatingBanner").style.display = "none";
     document.getElementById("generatingBannerText").textContent = "正在生成教学地图...";
@@ -997,10 +1268,9 @@ function connectSSE(taskId, fromIndex) {
 
 function returnToProgress() {
     setUiStage("generation");
-    document.querySelectorAll(".mat-left-tab").forEach(function (b) { b.classList.remove("active"); });
-    document.querySelectorAll(".mat-left-tab-content").forEach(function (c) { c.classList.remove("active"); });
-    document.querySelector('.mat-left-tab[data-target="formTab"]').classList.add("active");
-    document.getElementById("formTab").classList.add("active");
+    closeHistoryDrawer();
+    var formTab = document.getElementById("formTab");
+    if (formTab) formTab.classList.add("active");
 
     document.getElementById("placeholder").style.display = "none";
     document.getElementById("progressSection").style.display = "block";
@@ -1043,6 +1313,8 @@ function startNewPlan() {
     clearManagedAttachments();
     updateLanguageStyleCustomVisibility();
     syncModelPickerFromInput();
+    refreshFieldCounts();
+    setWizardStep(1);
     var btn = document.getElementById("submitBtn");
     setSubmitLoading(false);
     btn.disabled = false;
@@ -1050,9 +1322,9 @@ function startNewPlan() {
     if (btnText) btnText.textContent = "开始生成教学地图";
     document.getElementById("newPlanBtn").style.display = "none";
     setBackToGenerationButtonState(false);
-    document.getElementById("progressLog").innerHTML = "";
+    clearVisibleProgressLog();
     document.getElementById("progressBar").style.width = "0%";
-    document.getElementById("stepTracker").innerHTML = "";
+    renderGenerationPhases(-1, false);
 
     document.getElementById("placeholder").style.display = "flex";
     document.getElementById("progressSection").style.display = "none";
@@ -1064,10 +1336,9 @@ function startNewPlan() {
     document.getElementById("detailSection").style.display = "none";
     document.getElementById("generatingBanner").style.display = "none";
 
-    document.querySelectorAll(".mat-left-tab").forEach(function (b) { b.classList.remove("active"); });
-    document.querySelectorAll(".mat-left-tab-content").forEach(function (c) { c.classList.remove("active"); });
-    document.querySelector('.mat-left-tab[data-target="formTab"]').classList.add("active");
-    document.getElementById("formTab").classList.add("active");
+    closeHistoryDrawer();
+    var formTab = document.getElementById("formTab");
+    if (formTab) formTab.classList.add("active");
 }
 
 function getRecordIdFromQuery() {
@@ -1105,7 +1376,7 @@ function restoreTaskProgressOnLoad() {
                 document.getElementById("textSection").style.display = "none";
                 document.getElementById("logsSection").style.display = "none";
                 document.getElementById("detailSection").style.display = "none";
-                document.getElementById("progressLog").innerHTML = "";
+                clearVisibleProgressLog();
                 initProgressTracker();
                 updateCurrentAgentCard({
                     agent_display_name: "恢复任务",
@@ -1184,99 +1455,408 @@ function hydrateProgressSnapshot(progressItems) {
 }
 
 function initProgressTracker() {
-    var tracker = document.getElementById("stepTracker");
-    var html = "";
-    AGENT_TRACKER_STEPS.forEach(function (step, idx) {
-        var display = AGENT_DISPLAY_NAMES[step] || step;
-        html += '<div class="mat-step-item" id="stepItem-' + step + '">';
-        html += '<span class="mat-step-index">' + (idx + 1) + '</span>';
-        html += '<span class="mat-step-name">' + display + '</span>';
-        html += '</div>';
+    renderGenerationStage({
+        phaseIndex: -1,
+        title: "准备生成",
+        description: "提交后，教学地图会在这里逐步生长。",
+        badge: "等待开始",
+        progress: 0,
+        state: "waiting",
     });
-    tracker.innerHTML = html;
 }
 
 function updateStepTracker(stepIdx, done) {
     currentStepIndex = stepIdx;
-    var currentAgentKey = AGENT_STEPS[stepIdx] || "";
-    AGENT_TRACKER_STEPS.forEach(function (step) {
-        var item = document.getElementById("stepItem-" + step);
-        if (!item) return;
-        item.classList.remove("is-active", "is-done");
-        if (done) { item.classList.add("is-done"); return; }
-        var trackerStepInAll = AGENT_STEPS.indexOf(step);
-        if (trackerStepInAll < stepIdx) { item.classList.add("is-done"); }
-        else if (step === currentAgentKey) { item.classList.add("is-active"); }
-    });
+    var agent = AGENT_STEPS[stepIdx] || "";
+    var phaseIndex = getGenerationPhaseIndex(agent, stepIdx);
+    renderGenerationPhases(done ? MAT_GENERATION_PHASES.length - 1 : phaseIndex, !!done);
 }
 
 function updateCurrentAgentCard(payload) {
     var stepBadge = document.getElementById("currentStepBadge");
     var agentName = document.getElementById("currentAgentName");
-    var agentStatus = document.getElementById("currentAgentStatus");
     var agentMessage = document.getElementById("currentAgentMessage");
-    var agentInput = document.getElementById("currentAgentInput");
-    var agentOutput = document.getElementById("currentAgentOutput");
-    var stepNumber = payload.step_number || (currentStepIndex >= 0 ? (currentStepIndex + 1) : 0);
-    var total = AGENT_STEPS.length;
-    var agentIdxInFlow = AGENT_STEPS.indexOf(payload.agent || "");
-    var displayStep = 0;
-    if (agentIdxInFlow >= 0) {
-        displayStep = agentIdxInFlow + 1;
-    } else if (currentStepIndex >= 0) {
-        displayStep = currentStepIndex + 1;
-    } else if (stepNumber > 0) {
-        displayStep = Math.min(stepNumber, total);
-    }
-    var displayAgent = payload.agent_display_name || AGENT_DISPLAY_NAMES[payload.agent] || payload.agent || "处理中";
-    var msg = payload.message || "正在执行...";
+    var state = deriveGenerationVisualState(payload || {});
 
-    stepBadge.textContent = displayStep > 0 ? ("步骤 " + displayStep + " / " + total) : "等待开始";
-    agentName.textContent = displayAgent;
-    agentMessage.textContent = msg;
-
-    if (agentStatus) {
-        agentStatus.className = "mat-current-agent-status";
-        var failCountMatch = msg.match(/失败\s*[:：]?\s*(\d+)/);
-        var failCount = failCountMatch ? parseInt(failCountMatch[1], 10) : null;
-        var hasHardFailure = msg.indexOf("未通过") !== -1
-            || msg.indexOf("执行失败") !== -1
-            || msg.indexOf("生成出错") !== -1
-            || msg.indexOf("任务已强制停止") !== -1;
-        if (msg.indexOf("通过") !== -1 && msg.indexOf("未通过") === -1) {
-            agentStatus.textContent = "通过"; agentStatus.classList.add("passed");
-        } else if (hasHardFailure || (failCount !== null && failCount > 0)) {
-            agentStatus.textContent = "未通过"; agentStatus.classList.add("failed");
-        } else if (msg.indexOf("完成") !== -1 || msg.indexOf("生成了") !== -1) {
-            agentStatus.textContent = "完成"; agentStatus.classList.add("passed");
-        } else {
-            agentStatus.textContent = "运行中"; agentStatus.classList.add("running");
-        }
-    }
-
-    if (agentInput) { agentInput.innerHTML = renderIoContent(payload.input_preview, "—"); }
-    agentOutput.innerHTML = renderIoContent(payload.output_preview, "等待执行...");
+    if (stepBadge) stepBadge.textContent = state.badge;
+    if (agentName) agentName.textContent = state.title;
+    if (agentMessage) agentMessage.textContent = state.description;
+    renderGenerationStage(state);
 }
 
-function renderIoContent(data, emptyText) {
-    if (!data || (typeof data === "object" && Object.keys(data).length === 0)) {
-        return '<span class="mat-json-meta">' + emptyText + '</span>';
+function getGenerationPhaseIndex(agent, stepIdx) {
+    if (agent && Object.prototype.hasOwnProperty.call(MAT_AGENT_PHASE_INDEX, agent)) {
+        return MAT_AGENT_PHASE_INDEX[agent];
     }
-    if (typeof data === "string") { return escapeHtml(data); }
-    return syntaxHighlight(data);
+    if (typeof stepIdx === "number" && stepIdx >= 0) {
+        var ratio = stepIdx / Math.max(AGENT_STEPS.length - 1, 1);
+        return Math.min(MAT_GENERATION_PHASES.length - 1, Math.floor(ratio * MAT_GENERATION_PHASES.length));
+    }
+    return -1;
 }
 
-function syntaxHighlight(obj) {
-    var json = "";
-    try { json = JSON.stringify(obj, null, 2); } catch (e) { return escapeHtml(String(obj)); }
-    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = "mat-json-num";
-        if (/^"/.test(match)) {
-            if (/:$/.test(match)) { cls = "mat-json-key"; } else { cls = "mat-json-str"; }
-        } else if (/true|false/.test(match)) { cls = "mat-json-bool"; }
-        else if (/null/.test(match)) { cls = "mat-json-null"; }
-        return '<span class="' + cls + '">' + escapeHtml(match) + '</span>';
+function getGenerationProgressFromPayload(payload, phaseIndex) {
+    var agentIdx = AGENT_STEPS.indexOf(payload.agent || "");
+    if (agentIdx >= 0) {
+        return Math.min(96, Math.max(8, Math.round(((agentIdx + 1) / AGENT_STEPS.length) * 96)));
+    }
+    if (phaseIndex >= 0) {
+        return Math.min(96, Math.round(((phaseIndex + 1) / MAT_GENERATION_PHASES.length) * 92));
+    }
+    return 0;
+}
+
+function deriveGenerationVisualState(payload) {
+    var output = payload.output_preview || {};
+    var rawMessage = payload.message || "";
+    var status = output.status || "";
+    var state = "running";
+
+    if (status === "waiting") state = "waiting";
+    if (status === "error" || output.error || rawMessage.indexOf("生成出错") !== -1 || rawMessage.indexOf("执行失败") !== -1) state = "error";
+    if (status === "cancelled" || status === "cancelling" || rawMessage.indexOf("强制停止") !== -1) state = "cancelled";
+    if (payload.agent_display_name === "恢复任务") state = "recovering";
+    if (payload.agent_display_name === "流程完成" || rawMessage.indexOf("教学地图已生成完成") !== -1) state = "done";
+
+    if (state === "error") {
+        return {
+            phaseIndex: Math.max(getGenerationPhaseIndex("", currentStepIndex), 0),
+            title: "生成遇到问题",
+            description: rawMessage || "工作流执行失败，请稍后重试。",
+            badge: "生成中断",
+            progress: getDisplayedProgressValue(),
+            state: "error",
+        };
+    }
+
+    if (state === "cancelled") {
+        return {
+            phaseIndex: Math.max(getGenerationPhaseIndex("", currentStepIndex), 0),
+            title: status === "cancelling" ? "正在停止生成" : "已停止生成",
+            description: rawMessage || "任务已停止，可以返回输入界面调整后重新生成。",
+            badge: status === "cancelling" ? "停止中" : "已停止",
+            progress: getDisplayedProgressValue(),
+            state: "cancelled",
+        };
+    }
+
+    if (state === "done") {
+        return {
+            phaseIndex: MAT_GENERATION_PHASES.length - 1,
+            title: "教学地图生成完成",
+            description: "节点、连线与课堂推进顺序已经整理完毕。",
+            badge: "生成完成",
+            progress: 100,
+            state: "done",
+        };
+    }
+
+    if (state === "recovering") {
+        return {
+            phaseIndex: Math.max(getGenerationPhaseIndex("", currentStepIndex), 0),
+            title: "正在恢复生成进度",
+            description: "已找到未完成任务，正在接回实时生成过程。",
+            badge: "恢复中",
+            progress: getDisplayedProgressValue(),
+            state: "recovering",
+        };
+    }
+
+    var agentIdx = AGENT_STEPS.indexOf(payload.agent || "");
+    var phaseIndex = getGenerationPhaseIndex(payload.agent || "", agentIdx);
+    if (state === "waiting") {
+        phaseIndex = -1;
+    }
+    var phase = MAT_GENERATION_PHASES[phaseIndex] || null;
+    return {
+        phaseIndex: phaseIndex,
+        title: phase ? phase.title : "准备生成",
+        description: phase ? phase.description : "提交后，教学地图会在这里逐步生长。",
+        badge: phaseIndex >= 0 ? ("阶段 " + (phaseIndex + 1) + " / " + MAT_GENERATION_PHASES.length) : "等待开始",
+        progress: getGenerationProgressFromPayload(payload, phaseIndex),
+        state: state,
+    };
+}
+
+function getDisplayedProgressValue() {
+    var percent = document.getElementById("matGenerationPercent");
+    if (!percent) return 0;
+    var parsed = parseInt(percent.textContent, 10);
+    return isFinite(parsed) ? parsed : 0;
+}
+
+function renderGenerationStage(state) {
+    var shell = document.querySelector(".mat-generation-shell");
+    var title = document.getElementById("matGenerationTitle");
+    var subtitle = document.getElementById("matGenerationSubtitle");
+    var progressBar = document.getElementById("progressBar");
+    var percent = document.getElementById("matGenerationPercent");
+    var progress = Math.max(0, Math.min(100, Math.round(Number(state.progress) || 0)));
+    var phase = MAT_GENERATION_PHASES[state.phaseIndex] || null;
+    var phaseKey = phase ? phase.key : "idle";
+
+    if (shell) {
+        shell.className = "mat-generation-shell mat-generation-state-" + (state.state || "running") + " mat-generation-phase-" + phaseKey;
+    }
+    if (title) {
+        if (state.state === "done") title.textContent = "教学地图生成完成";
+        else if (state.state === "error") title.textContent = "生成遇到问题";
+        else if (state.state === "cancelled") title.textContent = "生成已停止";
+        else title.textContent = "正在生成教学地图";
+    }
+    if (subtitle) subtitle.textContent = state.description;
+    if (progressBar) progressBar.style.width = progress + "%";
+    if (percent) percent.textContent = progress + "%";
+    renderGenerationPhases(state.phaseIndex, state.state === "done");
+}
+
+function renderGenerationPhases(activeIndex, done) {
+    var container = document.getElementById("matGenerationPhases");
+    if (!container) return;
+    var html = MAT_GENERATION_PHASES.map(function (phase, index) {
+        var className = "mat-generation-phase-item";
+        if (done || index < activeIndex) className += " is-done";
+        if (!done && index === activeIndex) className += " is-active";
+        return '<span class="' + className + '">' + escapeHtml(phase.title) + '</span>';
+    }).join("");
+    container.innerHTML = html;
+}
+
+function isMatPlainObject(value) {
+    return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function hasMatSummaryData(value) {
+    if (value === null || value === undefined || value === "") return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (isMatPlainObject(value)) return Object.keys(value).length > 0;
+    return true;
+}
+
+function matClipText(value, limit) {
+    var text = value == null ? "" : String(value);
+    text = text.replace(/\s+/g, " ").trim();
+    if (!text) return "";
+    var max = limit || 120;
+    return text.length > max ? text.slice(0, max) + "..." : text;
+}
+
+function matQuestionText(item) {
+    if (!item) return "";
+    if (typeof item === "string") return matClipText(item, 96);
+    if (!isMatPlainObject(item)) return matClipText(String(item), 96);
+    return matClipText(
+        item.content || item.question || item.title || item.name || item.original_text || item.id || "",
+        96
+    );
+}
+
+function matCountLabel(count, unit) {
+    return '<span class="mat-summary-count">' + escapeHtml(String(count)) + '</span>' + unit;
+}
+
+function renderMatSummaryEmpty(text) {
+    return '<div class="mat-summary-empty">' + escapeHtml(text) + '</div>';
+}
+
+function renderMatSummaryList(items) {
+    if (!items || !items.length) return "";
+    return '<ul class="mat-summary-list">' + items.map(function (item) {
+        return '<li>' + item + '</li>';
+    }).join("") + '</ul>';
+}
+
+function renderMatSummaryPills(items) {
+    if (!items || !items.length) return "";
+    return '<div class="mat-summary-pills">' + items.map(function (item) {
+        return '<span>' + escapeHtml(matClipText(item, 28)) + '</span>';
+    }).join("") + '</div>';
+}
+
+function extractMatArray(value) {
+    if (Array.isArray(value)) return value;
+    if (!isMatPlainObject(value)) return [];
+    var keys = ["items", "questions", "nodes", "edges", "main_question_chain", "teaching_objectives", "sub_goals", "knowledge_points", "feedback", "issues", "results"];
+    for (var i = 0; i < keys.length; i++) {
+        if (Array.isArray(value[keys[i]])) return value[keys[i]];
+    }
+    return [];
+}
+
+function summarizeMatQuestions(label, value, unit) {
+    var arr = extractMatArray(value);
+    if (!arr.length) return "";
+    var samples = arr.slice(0, 3).map(function (item) {
+        return escapeHtml(matQuestionText(item));
+    }).filter(Boolean);
+    var html = label + "：" + matCountLabel(arr.length, unit || "个");
+    if (samples.length) {
+        html += renderMatSummaryPills(samples);
+    }
+    return html;
+}
+
+function summarizeMatTeachingMap(value) {
+    if (!isMatPlainObject(value)) return "";
+    var nodes = Array.isArray(value.nodes) ? value.nodes : [];
+    var edges = Array.isArray(value.edges) ? value.edges : [];
+    var counts = { main: 0, variant: 0, scaffold: 0 };
+    nodes.forEach(function (node) {
+        var type = node && (node.question_type || node.type);
+        if (counts[type] !== undefined) counts[type] += 1;
     });
+    var parts = [
+        "问题节点 " + matCountLabel(nodes.length, "个"),
+        "连接关系 " + matCountLabel(edges.length, "条"),
+    ];
+    var typeParts = [];
+    if (counts.main) typeParts.push("主干 " + counts.main);
+    if (counts.variant) typeParts.push("变式 " + counts.variant);
+    if (counts.scaffold) typeParts.push("支架 " + counts.scaffold);
+    if (typeParts.length) parts.push("其中 " + escapeHtml(typeParts.join("、")));
+    return "已整合教学地图：" + parts.join("，") + "。";
+}
+
+function summarizeMatAnalysisResult(value) {
+    if (!isMatPlainObject(value)) return "";
+    var items = [];
+    var goals = value.teaching_objectives || value.sub_goals || value.learning_goals || value.goals;
+    var knowledge = value.knowledge_points || value.core_knowledge_points || value.knowledge_graph;
+    var profile = value.student_profile || value.student_analysis || value.learner_profile;
+    var focus = value.teaching_focus || value.key_points || value.difficulty_analysis;
+    if (Array.isArray(goals) && goals.length) items.push("拆解出 " + matCountLabel(goals.length, "个") + "可观察的学习目标");
+    if (Array.isArray(knowledge) && knowledge.length) items.push("提取 " + matCountLabel(knowledge.length, "个") + "核心知识点" + renderMatSummaryPills(knowledge.slice(0, 5).map(matQuestionText)));
+    if (profile) items.push("形成学情画像：" + escapeHtml(matClipText(profile, 90)));
+    if (focus) items.push("识别教学重点/难点：" + escapeHtml(matClipText(focus, 90)));
+    if (!items.length) items.push("已完成学情、目标和知识结构的综合解析。");
+    return renderMatSummaryList(items);
+}
+
+function summarizeMatValidation(value) {
+    var arr = extractMatArray(value);
+    if (!arr.length && isMatPlainObject(value)) {
+        arr = Object.keys(value).map(function (key) { return value[key]; });
+    }
+    if (!arr.length) return "";
+    var passed = 0;
+    var failed = 0;
+    var samples = [];
+    arr.forEach(function (item) {
+        var text = matQuestionText(item);
+        var raw = JSON.stringify(item || "");
+        if (/未通过|失败|fail|false/i.test(raw)) failed += 1;
+        else if (/通过|pass|true/i.test(raw)) passed += 1;
+        if (text && samples.length < 3) samples.push(escapeHtml(text));
+    });
+    var summary = "完成 " + matCountLabel(arr.length, "项") + "校验";
+    if (passed || failed) summary += "：通过 " + passed + " 项，需调整 " + failed + " 项";
+    if (samples.length) summary += renderMatSummaryPills(samples);
+    return summary;
+}
+
+function summarizeMatStatus(value) {
+    var status = String(value || "");
+    var labels = {
+        waiting: "等待工作流开始执行。",
+        error: "执行过程中出现异常，请查看上方提示。",
+        cancelled: "任务已停止。",
+        cancelling: "正在停止任务，请稍候。",
+        done: "本步已完成。",
+    };
+    return labels[status] || ("当前状态：" + escapeHtml(status));
+}
+
+function summarizeMatObjectGeneric(value) {
+    if (!isMatPlainObject(value)) return "";
+    var keys = Object.keys(value).filter(function (key) {
+        return key !== "progress_messages" && hasMatSummaryData(value[key]);
+    });
+    if (!keys.length) return "";
+    var items = keys.slice(0, 4).map(function (key) {
+        return summarizeMatValue(key, value[key]);
+    }).filter(Boolean);
+    if (items.length) return renderMatSummaryList(items);
+    return "已形成 " + matCountLabel(keys.length, "项") + "结构化结果，可供后续步骤继续使用。";
+}
+
+function summarizeMatValue(key, value) {
+    var label = MAT_FIELD_LABELS[key] || key;
+    if (!hasMatSummaryData(value)) return "";
+
+    if (key === "status") return summarizeMatStatus(value);
+    if (key === "error") return "异常信息：" + escapeHtml(matClipText(value, 160));
+    if (key === "model_id") return "使用模型：" + escapeHtml(matClipText(value, 80));
+    if (key === "temperature") return "生成随机性参数：" + escapeHtml(String(value));
+    if (key === "teaching_goals" || key === "student_profile" || key === "difficulty_analysis" || key === "attachment") {
+        return label + "：" + escapeHtml(matClipText(value, key === "attachment" ? 180 : 140));
+    }
+    if (key === "subject" || key === "grade" || key === "language_style") {
+        return label + "：" + escapeHtml(matClipText(value, 80));
+    }
+    if (key === "analysis_result") return summarizeMatAnalysisResult(value);
+    if (key === "teaching_map") return summarizeMatTeachingMap(value);
+    if (key === "main_questions") return summarizeMatQuestions("已形成主干问题", value, "个");
+    if (key === "variant_questions") return summarizeMatQuestions("已生成变式问题", value, "个");
+    if (key === "scaffold_questions") return summarizeMatQuestions("已生成支架问题", value, "个");
+    if (key === "map_construction_logic") return summarizeMatQuestions("规划出主干问题链", value, "个环节");
+    if (key === "variant_question_plan") return summarizeMatQuestions("规划变式问题任务", value, "项");
+    if (key === "scaffold_question_plan") return summarizeMatQuestions("规划支架问题任务", value, "项");
+    if (key.indexOf("validation") !== -1 || key.indexOf("feedback") !== -1 || key === "validation_results") return summarizeMatValidation(value);
+    if (key === "nodes") return "教学地图包含问题节点：" + matCountLabel(Number(value) || (Array.isArray(value) ? value.length : 0), "个");
+    if (key === "edges") return "教学地图包含连接关系：" + matCountLabel(Number(value) || (Array.isArray(value) ? value.length : 0), "条");
+    if (Array.isArray(value)) {
+        if (!value.length) return "";
+        var sample = value.slice(0, 3).map(matQuestionText).filter(Boolean);
+        var html = label + "：" + matCountLabel(value.length, "项");
+        if (sample.length) html += renderMatSummaryPills(sample);
+        return html;
+    }
+    if (isMatPlainObject(value)) return label + "：" + summarizeMatObjectGeneric(value);
+    return label + "：" + escapeHtml(matClipText(value, 140));
+}
+
+function renderTeacherSummarySection(data, emptyText, preferredKeys) {
+    if (!hasMatSummaryData(data)) return renderMatSummaryEmpty(emptyText);
+    if (typeof data === "string") return renderMatSummaryList([escapeHtml(matClipText(data, 180))]);
+    if (!isMatPlainObject(data)) return renderMatSummaryList([escapeHtml(matClipText(String(data), 180))]);
+
+    var keys = [];
+    (preferredKeys || []).forEach(function (key) {
+        if (Object.prototype.hasOwnProperty.call(data, key) && keys.indexOf(key) === -1) keys.push(key);
+    });
+    Object.keys(data).forEach(function (key) {
+        if (key !== "progress_messages" && keys.indexOf(key) === -1) keys.push(key);
+    });
+
+    var items = keys.map(function (key) {
+        return summarizeMatValue(key, data[key]);
+    }).filter(Boolean);
+
+    if (!items.length) return renderMatSummaryEmpty(emptyText);
+    return renderMatSummaryList(items);
+}
+
+function renderTeacherInputSummary(data) {
+    return renderTeacherSummarySection(data, "本步无需额外输入，会接续上一步结果。", [
+        "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis",
+        "language_style", "attachment", "analysis_result", "map_construction_logic",
+        "main_questions", "variant_questions", "scaffold_questions", "validation_results",
+    ]);
+}
+
+function renderTeacherOutputSummary(data) {
+    return renderTeacherSummarySection(data, "等待本步执行完成后显示产出。", [
+        "status", "error", "analysis_result", "map_construction_logic", "main_questions",
+        "variant_questions", "scaffold_questions", "validation_results", "teaching_map",
+        "nodes", "edges", "priorities", "priority_assignments",
+    ]);
+}
+
+function renderTeacherIoSummary(inputData, outputData, payload) {
+    return {
+        input: renderTeacherInputSummary(inputData),
+        output: renderTeacherOutputSummary(outputData || (payload ? payload.output_preview : null)),
+    };
 }
 
 // ---------------------------------------------------------------------------
@@ -1349,12 +1929,12 @@ function loadAgentLogs(taskId) {
                 html += '<div class="mat-log-block-body" style="display:none;">';
                 html += '<div class="mat-log-io-grid">';
                 html += '<div class="mat-log-io-panel">';
-                html += '<div class="mat-log-io-head"><span class="mat-io-icon mat-io-in">IN</span>输入</div>';
-                html += '<div class="mat-log-io-body">' + renderIoContent(inputData, "无输入预览") + '</div>';
+                html += '<div class="mat-log-io-head"><span class="mat-io-icon mat-io-in">参考</span>本步参考</div>';
+                html += '<div class="mat-log-io-body">' + renderTeacherInputSummary(inputData) + '</div>';
                 html += '</div>';
                 html += '<div class="mat-log-io-panel">';
-                html += '<div class="mat-log-io-head"><span class="mat-io-icon mat-io-out">OUT</span>输出</div>';
-                html += '<div class="mat-log-io-body">' + renderIoContent(outputData, "无输出") + '</div>';
+                html += '<div class="mat-log-io-head"><span class="mat-io-icon mat-io-out">产出</span>本步产出</div>';
+                html += '<div class="mat-log-io-body">' + renderTeacherOutputSummary(outputData) + '</div>';
                 html += '</div>';
                 html += '</div></div></div>';
             });
@@ -1717,6 +2297,7 @@ function loadHistoryItem(recordId) {
         .then(function (res) { return res.json(); })
         .then(function (data) {
             if (data.error) return;
+            closeHistoryDrawer();
             document.getElementById("placeholder").style.display = "none";
             document.getElementById("progressSection").style.display = "none";
             showResult(data.result, recordId);
@@ -1729,6 +2310,7 @@ function loadHistoryItem(recordId) {
 
 function loadHistoryLogs(recordId, event) {
     if (event && typeof event.stopPropagation === "function") event.stopPropagation();
+    closeHistoryDrawer();
     currentTaskId = recordId;
     setUiStage("generation");
     document.getElementById("placeholder").style.display = "none";
@@ -1913,6 +2495,7 @@ function downloadTextFile(text, filename) {
 // ---------------------------------------------------------------------------
 function addLogEntry(message, status) {
     var log = document.getElementById("progressLog");
+    if (!log) return;
     var entry = document.createElement("div");
     entry.className = "mat-log-entry";
     var dot = document.createElement("span");
@@ -1928,11 +2511,19 @@ function addLogEntry(message, status) {
     log.scrollTop = log.scrollHeight;
 }
 
+function clearVisibleProgressLog() {
+    var log = document.getElementById("progressLog");
+    if (log) log.innerHTML = "";
+}
+
 function updateProgressBar(stepIdx) {
     var total = AGENT_STEPS.length;
     if (stepIdx < 0) return;
     var pct = Math.min(((stepIdx + 1) / total) * 95, 95);
-    document.getElementById("progressBar").style.width = pct + "%";
+    var bar = document.getElementById("progressBar");
+    var percent = document.getElementById("matGenerationPercent");
+    if (bar) bar.style.width = pct + "%";
+    if (percent) percent.textContent = Math.round(pct) + "%";
 }
 
 renderGenerationDurationText();

@@ -28,23 +28,43 @@
     <div class="mat-main-content mat-stage-input" id="workspaceLayout">
         <!-- Left Panel: Input Form + History -->
         <section class="mat-panel mat-input-panel" id="inputPanel">
-            <div class="mat-left-tabs">
-                <button class="mat-left-tab active" data-target="formTab">新建教案</button>
-                <button class="mat-left-tab" data-target="historyTab">历史记录</button>
-            </div>
-
-            <div id="formTab" class="mat-left-tab-content active">
-                <form id="generateForm" class="mat-form-layout">
-                    <!-- Step indicator + progress ring -->
-                    <div class="mat-form-stepper">
-                        <button type="button" id="loadLastInputBtn" class="mat-load-last-btn" disabled
+            <div class="mat-workspace-head">
+                <div class="mat-workspace-title">
+                    <span class="mat-workspace-eyebrow">教学导航仪</span>
+                    <h2>新建教学地图</h2>
+                    <p>按步骤补充基础信息、教学目标与附件材料，生成可执行的课堂问题地图。</p>
+                    <div class="mat-quick-actions">
+                        <button type="button" id="loadLastInputBtn" class="mat-load-last-btn mat-load-last-inline" disabled
                             aria-label="加载上一次填写的教学信息">
                             <svg class="mat-load-last-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
                             </svg>
                             <span class="mat-load-last-text">加载上次输入</span>
                         </button>
-                        <div class="mat-form-steps">
+                        <span class="mat-last-input-hint" id="lastInputHint">暂无可加载记录</span>
+                    </div>
+                </div>
+                <div class="mat-workspace-actions">
+                    <button type="button" id="historyDrawerToggle" class="mat-history-trigger"
+                        aria-controls="historyDrawer" aria-expanded="false">
+                        <svg viewBox="0 0 20 20" fill="none" width="16" height="16" aria-hidden="true">
+                            <path d="M5 4h10M5 8h10M5 12h6M4 17h12a1 1 0 001-1V3a1 1 0 00-1-1H4a1 1 0 00-1 1v13a1 1 0 001 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        历史记录
+                    </button>
+                </div>
+            </div>
+
+            <div id="formTab" class="mat-form-content active">
+                <form id="generateForm" class="mat-form-layout" novalidate>
+                    <!-- Step indicator + progress ring -->
+                    <div class="mat-form-stepper" aria-label="教学地图生成表单步骤">
+                        <div class="mat-stepper-summary">
+                            <span id="matCurrentStepLabel">第 1 步</span>
+                            <strong id="matCurrentStepTitle">基础设置</strong>
+                            <small id="matCurrentStepHint">先确定学科、年级与生成参数。</small>
+                        </div>
+                        <div class="mat-form-steps" aria-label="填写步骤">
                             <button type="button" class="mat-form-step is-active" data-step="1">
                                 <span class="mat-step-dot">1</span>
                                 <span class="mat-step-label">基础设置</span>
@@ -71,13 +91,16 @@
                         </div>
                     </div>
 
-                    <div class="mat-form-section mat-form-section-anim" data-section="1">
-                        <div class="mat-form-section-title">
-                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 1a2 2 0 012 2v1.07A7.002 7.002 0 0116.93 8H18a2 2 0 110 4h-1.07A7.002 7.002 0 0112 16.93V18a2 2 0 11-4 0v-1.07A7.002 7.002 0 013.07 12H2a2 2 0 110-4h1.07A7.002 7.002 0 018 4.07V3a2 2 0 012-2zm0 6a3 3 0 100 6 3 3 0 000-6z" fill="currentColor"/></svg>
-                            基础设置
+                    <div class="mat-form-section mat-form-section-anim is-active" data-section="1">
+                        <div class="mat-section-head">
+                            <div class="mat-form-section-title">
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 1a2 2 0 012 2v1.07A7.002 7.002 0 0116.93 8H18a2 2 0 110 4h-1.07A7.002 7.002 0 0112 16.93V18a2 2 0 11-4 0v-1.07A7.002 7.002 0 013.07 12H2a2 2 0 110-4h1.07A7.002 7.002 0 018 4.07V3a2 2 0 012-2zm0 6a3 3 0 100 6 3 3 0 000-6z" fill="currentColor"/></svg>
+                                <span>基础设置</span>
+                            </div>
+                            <p class="mat-section-desc">这些信息会决定后续问题地图的学段、学科语境与模型生成方式。</p>
                         </div>
-                        <div class="mat-form-grid mat-form-grid-2">
-                            <div class="mat-form-group">
+                        <div class="mat-form-grid mat-form-grid-2 mat-setting-grid">
+                            <div class="mat-form-group mat-setting-card">
                                 <label for="subject">学科</label>
                                 <select id="subject" name="subject" required>
                                     <option value="">请选择学科</option>
@@ -91,9 +114,10 @@
                                     <option value="地理">地理</option>
                                     <option value="政治">政治</option>
                                 </select>
+                                <div class="mat-field-hint">用于匹配学科术语和常见课堂活动。</div>
                             </div>
 
-                            <div class="mat-form-group">
+                            <div class="mat-form-group mat-setting-card">
                                 <label for="grade">年级</label>
                                 <select id="grade" name="grade" required>
                                     <option value="">请选择年级</option>
@@ -110,9 +134,10 @@
                                     <option value="高二">高二</option>
                                     <option value="高三">高三</option>
                                 </select>
+                                <div class="mat-field-hint">用于控制问题难度、认知层级和表达方式。</div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-setting-card mat-model-field">
                                 <label for="modelPickerTrigger">生成模型</label>
                                 <input type="hidden" id="model_id" name="model_id" value="{{ default_model_id }}"
                                     required>
@@ -142,9 +167,10 @@
                                         {% endfor %}
                                     </div>
                                 </div>
+                                <div class="mat-field-hint">选择负责分析教学目标并生成问题地图的模型。</div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-setting-card mat-temperature-field">
                                 <label for="temperature">Temperature</label>
                                 <div class="mat-temperature-slider-wrap">
                                     <input type="range" id="temperature" name="temperature"
@@ -159,30 +185,45 @@
                     </div>
 
                     <div class="mat-form-section mat-form-section-anim" data-section="2">
-                        <div class="mat-form-section-title">
-                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            教学内容
+                        <div class="mat-section-head">
+                            <div class="mat-form-section-title">
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span>教学内容</span>
+                            </div>
+                            <p class="mat-section-desc">把本课要达成的目标、学生起点和关键障碍写清楚，生成结果会更贴近真实课堂。</p>
                         </div>
-                        <div class="mat-form-grid mat-form-grid-2">
-                            <div class="mat-form-group mat-field-span-2">
+                        <div class="mat-form-grid mat-form-grid-2 mat-writing-grid">
+                            <div class="mat-form-group mat-field-span-2 mat-writing-field">
                                 <label for="teaching_goals">教学目标</label>
-                                <textarea id="teaching_goals" name="teaching_goals" rows="4"
-                                    placeholder="请详细描述本节课的教学目标..." required></textarea>
+                                <textarea id="teaching_goals" name="teaching_goals" rows="5"
+                                    placeholder="例如：学生能够理解分数表示平均分后的部分与整体关系，能读写简单分数，并能用图形或生活情境解释 1/2、1/3 的含义。" required></textarea>
+                                <div class="mat-field-meta">
+                                    <span>建议写出知识、能力和素养目标。</span>
+                                    <span class="mat-field-count" data-count-target="teaching_goals">0 字</span>
+                                </div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-writing-field">
                                 <label for="student_profile">学情描述</label>
                                 <textarea id="student_profile" name="student_profile" rows="4"
-                                    placeholder="请描述班级学生的整体水平、学优生和学困生的比例等..."></textarea>
+                                    placeholder="例如：学生已有平均分的生活经验，但对分母表示整体被平均分成几份、分子表示取其中几份容易混淆。班级表达意愿较强，抽象概括能力差异较大。"></textarea>
+                                <div class="mat-field-meta">
+                                    <span>可说明已有经验、常见误区和班级差异。</span>
+                                    <span class="mat-field-count" data-count-target="student_profile">0 字</span>
+                                </div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-writing-field">
                                 <label for="difficulty_analysis">重难点分析</label>
                                 <textarea id="difficulty_analysis" name="difficulty_analysis" rows="3"
-                                    placeholder="请说明本课的教学重点、教学难点，以及你计划的突破思路..."></textarea>
+                                    placeholder="例如：重点是理解分数的意义，难点是从具体平均分活动抽象出分子、分母的含义。计划通过折纸、涂色和对比讨论逐步突破。"></textarea>
+                                <div class="mat-field-meta">
+                                    <span>写清重点、难点和准备采用的突破方式。</span>
+                                    <span class="mat-field-count" data-count-target="difficulty_analysis">0 字</span>
+                                </div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-setting-card">
                                 <label for="language_style">语言风格</label>
                                 <select id="language_style" name="language_style">
                                     <option value="严谨学术">严谨学术</option>
@@ -191,9 +232,10 @@
                                     <option value="启发引导">启发引导</option>
                                     <option value="自定义">自定义</option>
                                 </select>
+                                <div class="mat-field-hint">影响生成问题和课堂引导语的表达气质。</div>
                             </div>
 
-                            <div class="mat-form-group mat-field-span-2" id="languageStyleCustomWrap"
+                            <div class="mat-form-group mat-field-span-2 mat-setting-card" id="languageStyleCustomWrap"
                                 style="display:none;">
                                 <label for="custom_language_style">自定义语言风格</label>
                                 <input type="text" id="custom_language_style" name="custom_language_style"
@@ -203,12 +245,15 @@
                     </div>
 
                     <div class="mat-form-section mat-form-section-anim" data-section="3">
-                        <div class="mat-form-section-title">
-                            <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" fill="currentColor"/></svg>
-                            附件与生成
+                        <div class="mat-section-head">
+                            <div class="mat-form-section-title">
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" fill="currentColor"/></svg>
+                                <span>附件与生成</span>
+                            </div>
+                            <p class="mat-section-desc">上传教材片段、课标材料或课堂资料，系统会在生成教学地图时一并参考。</p>
                         </div>
                         <div class="mat-form-grid mat-form-grid-2">
-                            <div class="mat-form-group mat-field-span-2">
+                            <div class="mat-form-group mat-field-span-2 mat-resource-field">
                                 <label>附件（可选）</label>
                                 <div class="mat-dropzone" id="dropzone">
                                     <input type="file" id="attachment" name="attachment" multiple
@@ -223,11 +268,18 @@
                                     </div>
                                 </div>
                                 <div class="mat-file-tags" id="fileTags"></div>
+                                <div class="mat-field-hint">附件不会替代教学目标，建议先把核心目标写在第二步。</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mat-form-actions">
+                        <button type="button" id="wizardPrevBtn" class="btn btn-outline mat-wizard-btn mat-wizard-prev">
+                            上一步
+                        </button>
+                        <button type="button" id="wizardNextBtn" class="btn btn-primary mat-wizard-btn mat-wizard-next">
+                            下一步：教学内容
+                        </button>
                         <button type="submit" id="submitBtn" class="btn btn-primary mat-form-submit-btn">
                             <svg class="mat-btn-icon" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
@@ -253,11 +305,6 @@
                 </form>
             </div>
 
-            <div id="historyTab" class="mat-left-tab-content">
-                <div id="historyList" class="mat-history-list">
-                    <p class="mat-history-empty">加载中...</p>
-                </div>
-            </div>
         </section>
 
         <!-- Right Panel: Progress + Result -->
@@ -274,34 +321,91 @@
             </div>
 
             <div id="progressSection" class="mat-progress-section" style="display:none;">
-                <h2>生成进度</h2>
-                <div class="mat-progress-meta">
-                    <span id="generationDurationText">本次用时：--</span>
-                </div>
-                <div class="mat-progress-current-card" id="progressCurrentCard">
-                    <div class="mat-current-card-head">
-                        <span class="mat-current-badge" id="currentStepBadge">等待开始</span>
-                        <span class="mat-current-agent-name" id="currentAgentName">尚未启动</span>
-                        <span class="mat-current-agent-status" id="currentAgentStatus"></span>
-                    </div>
-                    <p class="mat-current-agent-message" id="currentAgentMessage">提交表单后将开始执行各 Agent。</p>
-                    <div class="mat-current-agent-io">
-                        <div class="mat-agent-io-panel">
-                            <div class="mat-agent-io-label"><span class="mat-io-icon mat-io-in">IN</span>输入</div>
-                            <div class="mat-agent-io-body" id="currentAgentInput">—</div>
+                <div class="mat-generation-shell">
+                    <div class="mat-generation-head">
+                        <div>
+                            <span class="mat-generation-eyebrow">教学地图正在生成</span>
+                            <h2 id="matGenerationTitle">正在生成教学地图</h2>
+                            <p id="matGenerationSubtitle">系统正在把教学目标转化为一张可执行的问题地图。</p>
                         </div>
-                        <div class="mat-agent-io-divider"></div>
-                        <div class="mat-agent-io-panel">
-                            <div class="mat-agent-io-label"><span class="mat-io-icon mat-io-out">OUT</span>输出</div>
-                            <div class="mat-agent-io-body" id="currentAgentOutput">等待执行...</div>
+                        <div class="mat-generation-clock" id="generationDurationText">本次用时：--</div>
+                    </div>
+
+                    <div class="mat-generation-body">
+                        <div class="mat-map-growth-stage" aria-hidden="true">
+                            <svg class="mat-map-growth-svg" viewBox="0 0 760 430" role="img">
+                                <defs>
+                                    <linearGradient id="matGrowthMain" x1="80" y1="0" x2="680" y2="0" gradientUnits="userSpaceOnUse">
+                                        <stop offset="0%" stop-color="#2563eb" />
+                                        <stop offset="55%" stop-color="#14b8a6" />
+                                        <stop offset="100%" stop-color="#22c55e" />
+                                    </linearGradient>
+                                    <filter id="matGrowthGlow" x="-30%" y="-30%" width="160%" height="160%">
+                                        <feGaussianBlur stdDeviation="5" result="blur" />
+                                        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.05 0 0 0 0 0.38 0 0 0 0 0.64 0 0 0 0.24 0" />
+                                        <feMerge>
+                                            <feMergeNode />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+
+                                <path class="mat-growth-grid" d="M88 215H672M150 76V354M300 76V354M460 76V354M610 76V354" />
+
+                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m1" d="M120 215C175 160 215 158 270 215" />
+                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m2" d="M270 215C325 270 365 270 420 215" />
+                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m3" d="M420 215C475 160 515 160 570 215" />
+                                <path class="mat-growth-edge mat-growth-edge-variant mat-edge-v1" d="M270 215C240 150 210 112 170 92" />
+                                <path class="mat-growth-edge mat-growth-edge-variant mat-edge-v2" d="M420 215C462 148 502 112 552 94" />
+                                <path class="mat-growth-edge mat-growth-edge-scaffold mat-edge-s1" d="M270 215C235 282 198 322 148 342" />
+                                <path class="mat-growth-edge mat-growth-edge-scaffold mat-edge-s2" d="M420 215C462 284 504 326 562 344" />
+                                <path class="mat-growth-edge mat-growth-edge-merge mat-edge-merge" d="M120 215C245 92 445 92 570 215C445 338 245 338 120 215" />
+
+                                <g class="mat-growth-node mat-growth-node-main mat-node-main-1" transform="translate(120 215)">
+                                    <circle r="27"></circle><text>目标</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-main mat-node-main-2" transform="translate(270 215)">
+                                    <circle r="27"></circle><text>主干</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-main mat-node-main-3" transform="translate(420 215)">
+                                    <circle r="27"></circle><text>迁移</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-main mat-node-main-4" transform="translate(570 215)">
+                                    <circle r="27"></circle><text>整合</text>
+                                </g>
+
+                                <g class="mat-growth-node mat-growth-node-variant mat-node-variant-1" transform="translate(170 92)">
+                                    <circle r="22"></circle><text>变式</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-variant mat-node-variant-2" transform="translate(552 94)">
+                                    <circle r="22"></circle><text>变式</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-scaffold mat-node-scaffold-1" transform="translate(148 342)">
+                                    <circle r="22"></circle><text>支架</text>
+                                </g>
+                                <g class="mat-growth-node mat-growth-node-scaffold mat-node-scaffold-2" transform="translate(562 344)">
+                                    <circle r="22"></circle><text>支架</text>
+                                </g>
+
+                                <rect class="mat-growth-scan" x="82" y="64" width="596" height="302" rx="28"></rect>
+                            </svg>
+                        </div>
+
+                        <div class="mat-generation-status-card" id="progressCurrentCard">
+                            <span class="mat-current-badge" id="currentStepBadge">等待开始</span>
+                            <h3 id="currentAgentName">准备生成</h3>
+                            <p class="mat-current-agent-message" id="currentAgentMessage">提交后，教学地图会在这里逐步生长。</p>
+                            <div class="mat-generation-progress-row">
+                                <span>整体进度</span>
+                                <strong id="matGenerationPercent">0%</strong>
+                            </div>
+                            <div class="mat-progress-bar-container" aria-hidden="true">
+                                <div class="mat-progress-bar" id="progressBar"></div>
+                            </div>
+                            <div class="mat-generation-phase-list" id="matGenerationPhases"></div>
                         </div>
                     </div>
                 </div>
-                <div class="mat-progress-bar-container">
-                    <div class="mat-progress-bar" id="progressBar"></div>
-                </div>
-                <div class="mat-step-tracker" id="stepTracker"></div>
-                <div class="mat-progress-log" id="progressLog"></div>
             </div>
 
             <div id="viewTabs" class="mat-view-tabs" style="display:none;">
@@ -349,6 +453,24 @@
             </div>
         </section>
     </div>
+
+    <div id="historyDrawerOverlay" class="mat-history-drawer-overlay" hidden></div>
+    <aside id="historyDrawer" class="mat-history-drawer" aria-hidden="true" aria-labelledby="historyDrawerTitle">
+        <div class="mat-history-drawer-head">
+            <div>
+                <span class="mat-workspace-eyebrow">历史记录</span>
+                <h2 id="historyDrawerTitle">已生成的教学地图</h2>
+            </div>
+            <button type="button" id="historyDrawerClose" class="mat-history-drawer-close" aria-label="关闭历史记录">
+                <svg viewBox="0 0 20 20" fill="none" width="18" height="18" aria-hidden="true">
+                    <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <div id="historyList" class="mat-history-list">
+            <p class="mat-history-empty">加载中...</p>
+        </div>
+    </aside>
 </div>
 {% endblock %}
 
