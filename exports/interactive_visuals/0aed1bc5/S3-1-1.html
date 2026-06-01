@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>长方形面积公式 · 符号代换</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f7;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 12px 40px rgba(0, 20, 40, 0.12);
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            padding: 28px 36px 24px 36px;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.2s;
+        }
+
+        /* ---- 标题 ---- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9edf4;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1a2639;
+            letter-spacing: 1px;
+        }
+        .header .badge {
+            font-size: 16px;
+            font-weight: 400;
+            color: #6b7a8f;
+            background: #f0f3f8;
+            padding: 4px 16px;
+            border-radius: 40px;
+        }
+
+        /* ---- 主体区域 (flex 列) ---- */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding-top: 8px;
+        }
+
+        /* ---- SVG 图形区 ---- */
+        .svg-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .svg-wrapper svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            overflow: visible;
+        }
+
+        /* ---- 公式区 ---- */
+        .formula-area {
+            flex-shrink: 0;
+            padding: 10px 0 6px 0;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .formula-main {
+            font-size: 44px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: 1px;
+            color: #1a2639;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2px 10px;
+            transition: all 0.25s ease;
+        }
+        .formula-main .eq {
+            font-weight: 400;
+            color: #3a4a62;
+        }
+        .formula-main .op {
+            font-weight: 400;
+            color: #3a4a62;
+            margin: 0 4px;
+        }
+        .formula-main .sym {
+            transition: color 0.25s ease, opacity 0.25s ease;
+        }
+        .sym-blue {
+            color: #2b6ed7;
+        }
+        .sym-red {
+            color: #cf3a4f;
+        }
+        .sym-gray {
+            color: #8f9db0;
+        }
+        .sym-hidden {
+            opacity: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .formula-sub {
+            font-size: 22px;
+            font-weight: 400;
+            color: #5e6f86;
+            margin-top: 2px;
+            min-height: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px 18px;
+            flex-wrap: wrap;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .formula-sub.show {
+            opacity: 1;
+        }
+        .formula-sub .pair {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 22px;
+        }
+        .formula-sub .pair .arrow {
+            color: #8f9db0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        .formula-sub .pair .from {
+            color: #8f9db0;
+            text-decoration: line-through;
+        }
+        .formula-sub .pair .to {
+            font-weight: 600;
+        }
+
+        /* ---- 按钮区 ---- */
+        .controls {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0 0 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-size: 20px;
+            font-weight: 500;
+            padding: 10px 28px;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f0f3f8;
+            color: #3a4a62;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            min-width: 120px;
+            letter-spacing: 0.5px;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 20, 40, 0.10);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: #2b6ed7;
+            color: #fff;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #1e5abe;
+        }
+        .btn-primary:disabled {
+            background: #a0b9df;
+        }
+
+        .btn-secondary {
+            background: #cf3a4f;
+            color: #fff;
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: #b52e41;
+        }
+        .btn-secondary:disabled {
+            background: #d99ba6;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #d0d8e3;
+            color: #3a4a62;
+        }
+        .btn-outline:hover:not(:disabled) {
+            background: #f0f3f8;
+            border-color: #b0bcca;
+        }
+
+        .btn-step {
+            background: #ffffff;
+            border: 2px solid #d5deea;
+            color: #2b6ed7;
+        }
+        .btn-step:hover:not(:disabled) {
+            border-color: #2b6ed7;
+            background: #f5f9ff;
+        }
+        .btn-step:disabled {
+            border-color: #e2e8f0;
+            color: #a0b0c4;
+            background: #f9fafc;
+        }
+        .btn-step.done {
+            background: #eaf1fd;
+            border-color: #2b6ed7;
+            color: #1e5abe;
+        }
+        .btn-step.done-red {
+            background: #fde8eb;
+            border-color: #cf3a4f;
+            color: #b52e41;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 2px solid #d0d8e3;
+            color: #5e6f86;
+            min-width: 80px;
+            padding: 10px 20px;
+        }
+        .btn-reset:hover:not(:disabled) {
+            border-color: #8f9db0;
+            background: #f5f7fa;
+        }
+
+        /* ---- 步骤指示器小点 ---- */
+        .step-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-right: 8px;
+        }
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d5deea;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .step-dot.active {
+            background: #2b6ed7;
+            transform: scale(1.2);
+        }
+        .step-dot.active-red {
+            background: #cf3a4f;
+            transform: scale(1.2);
+        }
+        .step-dot.done {
+            background: #7fa3e0;
+        }
+        .step-dot.done-red {
+            background: #e07a8a;
+        }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 720px) {
+            .card {
+                padding: 16px 18px 16px 18px;
+                border-radius: 20px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .header .badge {
+                font-size: 13px;
+                padding: 2px 12px;
+            }
+            .formula-main {
+                font-size: 30px;
+            }
+            .formula-sub {
+                font-size: 17px;
+                min-height: 28px;
+            }
+            .formula-sub .pair {
+                font-size: 17px;
+            }
+            .btn {
+                font-size: 16px;
+                padding: 8px 18px;
+                min-width: 90px;
+            }
+            .btn-reset {
+                padding: 8px 14px;
+                min-width: 60px;
+            }
+            .controls {
+                gap: 10px;
+                padding-top: 8px;
+            }
+            .step-dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 12px 12px 12px 12px;
+                border-radius: 16px;
+            }
+            .header h1 {
+                font-size: 17px;
+            }
+            .formula-main {
+                font-size: 24px;
+                gap: 0px 6px;
+            }
+            .formula-sub {
+                font-size: 14px;
+                min-height: 24px;
+            }
+            .formula-sub .pair {
+                font-size: 14px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 6px 14px;
+                min-width: 70px;
+            }
+            .btn-reset {
+                padding: 6px 10px;
+                min-width: 50px;
+            }
+            .controls {
+                gap: 6px;
+                padding-top: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- 标题 -->
+        <div class="header">
+            <h1>📐 长方形面积 · 符号代换</h1>
+            <span class="badge">六年级 · 几何</span>
+        </div>
+
+        <!-- 主体 -->
+        <div class="main-area">
+            <!-- SVG 图形区 -->
+            <div class="svg-wrapper">
+                <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="长方形">
+                    <!-- 长方形 -->
+                    <rect x="80" y="70" width="400" height="160" rx="6" ry="6"
+                    fill="#f0f6ff" stroke="#2b6ed7" stroke-width="3" />
+
+                    <!-- 长边标注线 (下方) -->
+                    <line x1="80" y1="240" x2="480" y2="240" stroke="#2b6ed7" stroke-width="2.5"
+                    stroke-dasharray="6 4" opacity="0.7" />
+                    <!-- 宽边标注线 (右侧) -->
+                    <line x1="490" y1="70" x2="490" y2="230" stroke="#cf3a4f" stroke-width="2.5"
+                    stroke-dasharray="6 4" opacity="0.7" />
+
+                    <!-- 长标注 (下方中间) -->
+                    <text id="label-length" x="280" y="270" text-anchor="middle"
+                    font-size="42" font-weight="700" fill="#2b6ed7" font-family="inherit"
+                    style="transition: opacity 0.3s ease;">长</text>
+
+                    <!-- 宽标注 (右侧中间) -->
+                    <text id="label-width" x="520" y="155" text-anchor="middle"
+                    font-size="42" font-weight="700" fill="#cf3a4f" font-family="inherit"
+                    style="transition: opacity 0.3s ease;">宽</text>
+
+                    <!-- 辅助小箭头 (长) -->
+                    <polygon points="460,236 470,240 460,244" fill="#2b6ed7" opacity="0.6" />
+                    <!-- 辅助小箭头 (宽) -->
+                    <polygon points="486,210 490,220 494,210" fill="#cf3a4f" opacity="0.6" />
+
+                    <!-- 单位提示 (轻量) -->
+                    <text x="280" y="296" text-anchor="middle" font-size="15"
+                    fill="#8f9db0" font-family="inherit">（水平方向 · 长）</text>
+                    <text x="560" y="155" text-anchor="middle" font-size="15"
+                    fill="#8f9db0" font-family="inherit">（垂直方向 · 宽）</text>
+                </svg>
+            </div>
+
+            <!-- 公式区 -->
+            <div class="formula-area">
+                <div class="formula-main" id="formulaMain">
+                    <span class="eq">S</span>
+                    <span class="eq">=</span>
+                    <span id="f-term1" class="sym sym-blue">长</span>
+                    <span class="op">×</span>
+                    <span id="f-term2" class="sym sym-red">宽</span>
+                </div>
+                <div class="formula-sub" id="formulaSub">
+                    <span class="pair">
+                        <span class="from" id="sub-from1">长</span>
+                        <span class="arrow">→</span>
+                        <span class="to sym-blue" id="sub-to1">πr</span>
+                    </span>
+                    <span class="pair">
+                        <span class="from" id="sub-from2">宽</span>
+                        <span class="arrow">→</span>
+                        <span class="to sym-red" id="sub-to2">r</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 控制区 -->
+            <div class="controls">
+                <!-- 步骤点 -->
+                <div class="step-dots">
+                    <span class="step-dot active" id="dot0"></span>
+                    <span class="step-dot" id="dot1"></span>
+                    <span class="step-dot" id="dot2"></span>
+                </div>
+
+                <button class="btn btn-step" id="btnStep1">① 代换长 → πr</button>
+                <button class="btn btn-step" id="btnStep2">② 代换宽 → r</button>
+                <button class="btn btn-reset" id="btnReset">⟳ 重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // DOM 引用
+            const labelLength = document.getElementById('label-length');
+            const labelWidth = document.getElementById('label-width');
+            const fTerm1 = document.getElementById('f-term1');
+            const fTerm2 = document.getElementById('f-term2');
+            const subFrom1 = document.getElementById('sub-from1');
+            const subFrom2 = document.getElementById('sub-from2');
+            const subTo1 = document.getElementById('sub-to1');
+            const subTo2 = document.getElementById('sub-to2');
+            const formulaSub = document.getElementById('formulaSub');
+
+            const btnStep1 = document.getElementById('btnStep1');
+            const btnStep2 = document.getElementById('btnStep2');
+            const btnReset = document.getElementById('btnReset');
+
+            const dot0 = document.getElementById('dot0');
+            const dot1 = document.getElementById('dot1');
+            const dot2 = document.getElementById('dot2');
+
+            // 状态: 0 = 初始, 1 = 代换长, 2 = 代换宽
+            let step = 0;
+
+            // ---- 更新视图 ----
+            function updateUI() {
+                // 1) 更新 SVG 标注
+                if (step === 0) {
+                    labelLength.textContent = '长';
+                    labelWidth.textContent = '宽';
+                } else if (step === 1) {
+                    labelLength.textContent = 'πr';
+                    labelWidth.textContent = '宽';
+                } else { // step === 2
+                    labelLength.textContent = 'πr';
+                    labelWidth.textContent = 'r';
+                }
+
+                // 2) 更新公式主行
+                if (step === 0) {
+                    fTerm1.textContent = '长';
+                    fTerm1.className = 'sym sym-blue';
+                    fTerm2.textContent = '宽';
+                    fTerm2.className = 'sym sym-red';
+                } else if (step === 1) {
+                    fTerm1.textContent = 'πr';
+                    fTerm1.className = 'sym sym-blue';
+                    fTerm2.textContent = '宽';
+                    fTerm2.className = 'sym sym-red';
+                } else {
+                    fTerm1.textContent = 'πr';
+                    fTerm1.className = 'sym sym-blue';
+                    fTerm2.textContent = 'r';
+                    fTerm2.className = 'sym sym-red';
+                }
+
+                // 3) 更新副公式 (代换对应)
+                if (step >= 1) {
+                    subFrom1.textContent = '长';
+                    subTo1.textContent = 'πr';
+                }
+                if (step >= 2) {
+                    subFrom2.textContent = '宽';
+                    subTo2.textContent = 'r';
+                }
+
+                // 副公式显隐
+                if (step === 0) {
+                    formulaSub.classList.remove('show');
+                } else {
+                    formulaSub.classList.add('show');
+                }
+
+                // 4) 更新按钮状态 & 样式
+                if (step === 0) {
+                    btnStep1.disabled = false;
+                    btnStep2.disabled = true;
+                    btnStep1.textContent = '① 代换长 → πr';
+                    btnStep1.className = 'btn btn-step';
+                    btnStep2.className = 'btn btn-step';
+                } else if (step === 1) {
+                    btnStep1.disabled = true;
+                    btnStep2.disabled = false;
+                    btnStep1.textContent = '✓ 长 → πr';
+                    btnStep1.className = 'btn btn-step done';
+                    btnStep2.textContent = '② 代换宽 → r';
+                    btnStep2.className = 'btn btn-step';
+                } else { // step === 2
+                    btnStep1.disabled = true;
+                    btnStep2.disabled = true;
+                    btnStep1.textContent = '✓ 长 → πr';
+                    btnStep1.className = 'btn btn-step done';
+                    btnStep2.textContent = '✓ 宽 → r';
+                    btnStep2.className = 'btn btn-step done-red';
+                }
+
+                // 5) 步骤点
+                dot0.className = 'step-dot' + (step === 0 ? ' active' : (step > 0 ? ' done' : ''));
+                dot1.className = 'step-dot' + (step === 1 ? ' active' : (step > 1 ? ' done' : ''));
+                dot2.className = 'step-dot' + (step === 2 ? ' active-red' : (step > 2 ? ' done-red' : ''));
+
+                // 重置始终可用
+                btnReset.disabled = false;
+            }
+
+            // ---- 动作 ----
+            function goToStep(target) {
+                if (target < 0 || target > 2) return;
+                // 只能顺序推进，不能跳步
+                if (target > step + 1) return;
+                // 不允许回退 (除了重置)
+                if (target < step) return;
+                step = target;
+                updateUI();
+            }
+
+            function resetAll() {
+                step = 0;
+                updateUI();
+            }
+
+            // ---- 事件绑定 (addEventListener) ----
+            btnStep1.addEventListener('click', function() {
+                if (step === 0) {
+                    goToStep(1);
+                }
+            });
+
+            btnStep2.addEventListener('click', function() {
+                if (step === 1) {
+                    goToStep(2);
+                }
+            });
+
+            btnReset.addEventListener('click', resetAll);
+
+            // ---- 键盘支持 (辅助) ----
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '1' && !btnStep1.disabled) {
+                    btnStep1.click();
+                } else if (e.key === '2' && !btnStep2.disabled) {
+                    btnStep2.click();
+                } else if (e.key === 'r' || e.key === 'R') {
+                    btnReset.click();
+                }
+            });
+
+            // ---- 初始化 ----
+            updateUI();
+
+            // 窗口变化时无需额外操作 (SVG 自适应)
+
+            // 小彩蛋: 点击公式区可重置 (教学演示用)
+            document.querySelector('.formula-area').addEventListener('dblclick', function() {
+                resetAll();
+            });
+
+            // 额外: 点击图形中的标注文字可触发对应步骤 (仅当可用)
+            labelLength.addEventListener('click', function() {
+                if (step === 0 && !btnStep1.disabled) {
+                    btnStep1.click();
+                } else if (step === 1 && !btnStep2.disabled) {
+                    btnStep2.click();
+                }
+            });
+            labelWidth.addEventListener('click', function() {
+                if (step === 0 && !btnStep1.disabled) {
+                    btnStep1.click();
+                } else if (step === 1 && !btnStep2.disabled) {
+                    btnStep2.click();
+                }
+            });
+
+            // 鼠标悬停提示 (通过title属性)
+            labelLength.setAttribute('title', '点击可代换 (若可用)');
+            labelWidth.setAttribute('title', '点击可代换 (若可用)');
+
+        })();
+    </script>
+</body>
+</html>

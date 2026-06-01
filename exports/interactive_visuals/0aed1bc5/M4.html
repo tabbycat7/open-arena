@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>圆的面积公式推导</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            padding: 20px 28px 24px 28px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
+        /* 标题 */
+        .header {
+            text-align: center;
+            padding-bottom: 8px;
+            flex-shrink: 0;
+            border-bottom: 2px solid #eef0f4;
+        }
+        .header h1 {
+            font-size: clamp(24px, 3.2vh, 36px);
+            font-weight: 700;
+            color: #1a2639;
+            letter-spacing: 2px;
+        }
+        .header h1 span {
+            color: #d44c4c;
+            margin: 0 6px;
+        }
+        .header .sub {
+            font-size: clamp(13px, 1.6vh, 18px);
+            color: #5a6a7a;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+        /* 主区域：图形 + 公式 */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            min-height: 0;
+            padding-top: 10px;
+            padding-bottom: 6px;
+        }
+        /* 左：Canvas 图形区 */
+        .canvas-wrapper {
+            flex: 3;
+            background: #fafbfd;
+            border-radius: 18px;
+            border: 1px solid #e6eaf0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 0;
+        }
+        #mainCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            background: #fafbfd;
+            cursor: default;
+        }
+        /* 右：公式推导区 */
+        .formula-panel {
+            flex: 2;
+            background: #f8f9fc;
+            border-radius: 18px;
+            border: 1px solid #e6eaf0;
+            padding: 16px 18px 14px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .formula-step {
+            font-size: clamp(18px, 2.4vh, 28px);
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 6px 0;
+            line-height: 1.5;
+            opacity: 0.25;
+            transition: opacity 0.5s ease, transform 0.4s ease;
+            transform: translateX(-6px);
+            letter-spacing: 0.5px;
+            text-align: center;
+            border-bottom: 1px dashed transparent;
+        }
+        .formula-step.active {
+            opacity: 1;
+            transform: translateX(0);
+            border-bottom-color: #dce3ec;
+        }
+        .formula-step .hl {
+            color: #1a73e8;
+            font-weight: 700;
+        }
+        .formula-step .highlight-red {
+            color: #d44c4c;
+            font-weight: 700;
+            background: #fff0f0;
+            padding: 0 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .formula-step .big {
+            font-size: clamp(22px, 3.2vh, 38px);
+        }
+        .formula-step .pi-symbol {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+        }
+        .warning-box {
+            margin-top: 8px;
+            background: #fff5f5;
+            border-left: 6px solid #d44c4c;
+            border-radius: 10px;
+            padding: 10px 12px 10px 16px;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity 0.6s ease, transform 0.5s ease;
+        }
+        .warning-box.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .warning-box .warn-title {
+            font-size: clamp(16px, 2.0vh, 24px);
+            font-weight: 700;
+            color: #b33a3a;
+            letter-spacing: 1px;
+        }
+        .warning-box .warn-compare {
+            font-size: clamp(20px, 2.8vh, 34px);
+            font-weight: 700;
+            color: #1a2639;
+            margin: 4px 0 2px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .warning-box .warn-compare .true {
+            color: #2a7d2a;
+            background: #e8f5e8;
+            padding: 0 12px;
+            border-radius: 8px;
+        }
+        .warning-box .warn-compare .false {
+            color: #c0392b;
+            background: #fde8e8;
+            padding: 0 12px;
+            border-radius: 8px;
+            text-decoration: line-through 2px #c0392b;
+        }
+        .warning-box .warn-compare .neq {
+            color: #d44c4c;
+            font-size: clamp(24px, 3.2vh, 40px);
+        }
+        .warning-box .warn-desc {
+            font-size: clamp(13px, 1.4vh, 18px);
+            color: #5a6a7a;
+            margin-top: 2px;
+        }
+        /* 控制区 */
+        .controls {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding-top: 10px;
+            padding-bottom: 2px;
+            flex-wrap: wrap;
+            border-top: 1px solid #eef0f4;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .control-group label {
+            font-size: clamp(14px, 1.6vh, 18px);
+            font-weight: 500;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+        .control-group input[type="range"] {
+            width: 140px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #d0d7e2;
+            border-radius: 3px;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1a73e8;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.35);
+            transition: 0.15s;
+            border: 2px solid white;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+        }
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1a73e8;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+        .control-group .value-badge {
+            min-width: 36px;
+            text-align: center;
+            font-size: clamp(16px, 1.8vh, 22px);
+            font-weight: 600;
+            color: #1a2639;
+            background: #eef2f7;
+            border-radius: 8px;
+            padding: 0 6px;
+        }
+        .btn {
+            padding: 8px 28px;
+            border: none;
+            border-radius: 30px;
+            font-size: clamp(15px, 1.8vh, 20px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            background: #eef2f7;
+            color: #2c3e50;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        .btn:active {
+            transform: translateY(0px);
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.30);
+        }
+        .btn-primary:hover {
+            background: #1557b0;
+            box-shadow: 0 6px 24px rgba(26, 115, 232, 0.38);
+        }
+        .btn-primary:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #b0bccb;
+            color: #3d5066;
+        }
+        .btn-outline:hover {
+            border-color: #1a73e8;
+            color: #1a73e8;
+            background: #f0f5ff;
+        }
+        .btn-outline:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-success {
+            background: #2a7d2a;
+            color: white;
+            box-shadow: 0 4px 14px rgba(42, 125, 42, 0.28);
+        }
+        .btn-success:hover {
+            background: #1f631f;
+            box-shadow: 0 6px 20px rgba(42, 125, 42, 0.35);
+        }
+        /* 响应式 */
+        @media (max-width: 780px) {
+            .container {
+                aspect-ratio: auto;
+                min-height: 92vh;
+                padding: 14px 16px 18px 16px;
+                border-radius: 20px;
+            }
+            .main-area {
+                flex-direction: column;
+                gap: 12px;
+                padding-top: 8px;
+            }
+            .canvas-wrapper {
+                flex: 1 1 50%;
+                min-height: 240px;
+            }
+            .formula-panel {
+                flex: 1 1 40%;
+                min-height: 180px;
+                padding: 12px 14px;
+            }
+            .controls {
+                gap: 14px;
+                padding-top: 8px;
+                flex-wrap: wrap;
+            }
+            .control-group input[type="range"] {
+                width: 100px;
+            }
+            .btn {
+                padding: 6px 18px;
+                font-size: 14px;
+            }
+            .warning-box .warn-compare {
+                gap: 8px;
+            }
+            .formula-step {
+                font-size: 16px;
+                padding: 4px 0;
+            }
+            .formula-step .big {
+                font-size: 20px;
+            }
+            .warning-box .warn-compare {
+                font-size: 18px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px 10px 14px 10px;
+                border-radius: 16px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .control-group input[type="range"] {
+                width: 70px;
+            }
+            .control-group .value-badge {
+                min-width: 28px;
+                font-size: 14px;
+            }
+            .formula-step {
+                font-size: 14px;
+            }
+            .formula-step .big {
+                font-size: 17px;
+            }
+            .warning-box .warn-compare {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 标题 -->
+        <div class="header">
+            <h1>📐 圆的面积 <span>→</span> 公式推导</h1>
+            <div class="sub">化圆为方 · 观察 · 思考 · 发现</div>
+        </div>
+
+        <!-- 主区域 -->
+        <div class="main-area">
+            <div class="canvas-wrapper">
+                <canvas id="mainCanvas"></canvas>
+            </div>
+            <div class="formula-panel" id="formulaPanel">
+                <div class="formula-step" data-step="0" id="step0">
+                    <span class="big">S = 长 × 宽</span>
+                </div>
+                <div class="formula-step" data-step="1" id="step1">
+                    <span class="big">S = <span class="pi-symbol">π</span>r <span style="font-weight:400;">×</span> r</span>
+                </div>
+                <div class="formula-step" data-step="2" id="step2">
+                    <span class="big">S = <span class="pi-symbol">π</span> <span class="hl">r²</span></span>
+                </div>
+                <!-- 易错警示 -->
+                <div class="warning-box" id="warningBox">
+                    <div class="warn-title">⚠️ 特别注意</div>
+                    <div class="warn-compare">
+                        <span class="true">r² = r × r</span>
+                        <span class="neq">≠</span>
+                        <span class="false">2r</span>
+                    </div>
+                    <div class="warn-desc">r² 是「 r 乘 r 」，不是「 r 加 r 」！</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制区 -->
+        <div class="controls">
+            <div class="control-group">
+                <label for="segSlider">分割份数</label>
+                <input type="range" id="segSlider" min="4" max="32" step="2" value="12">
+                <span class="value-badge" id="segBadge">12</span>
+            </div>
+            <div class="control-group">
+                <button class="btn btn-primary" id="btnPlay">▶ 开始推导</button>
+                <button class="btn btn-outline" id="btnReset">⟲ 重置</button>
+            </div>
+            <div class="control-group" style="gap:6px;">
+                <button class="btn btn-outline" id="btnPrevStep" disabled>← 上一步</button>
+                <button class="btn btn-outline" id="btnNextStep" disabled>下一步 →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- DOM 引用 ----------
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const segSlider = document.getElementById('segSlider');
+            const segBadge = document.getElementById('segBadge');
+            const btnPlay = document.getElementById('btnPlay');
+            const btnReset = document.getElementById('btnReset');
+            const btnPrev = document.getElementById('btnPrevStep');
+            const btnNext = document.getElementById('btnNextStep');
+
+            const stepEls = [
+                document.getElementById('step0'),
+                document.getElementById('step1'),
+                document.getElementById('step2')
+            ];
+            const warningBox = document.getElementById('warningBox');
+
+            // ---------- 状态 ----------
+            const STATE = {
+                IDLE: 0,
+                ANIMATING: 1,
+                DONE: 2
+            };
+
+            let state = STATE.IDLE;
+            let segCount = 12; // 当前分割份数 (偶数)
+            let animProgress = 0; // 0 ~ 1  圆→长方形的进度
+            let displayStep = -1; // -1 表示未开始, 0,1,2 分别对应三步公式
+            let showWarning = false;
+
+            // 动画循环控制
+            let animId = null;
+            let animStartTime = 0;
+            const ANIM_DURATION = 2000; // ms
+            let targetProgress = 0;
+
+            // 尺寸缓存
+            let dpr = 1;
+            let W = 0,
+                H = 0;
+
+            // ---------- 尺寸管理 ----------
+            function resizeCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                dpr = window.devicePixelRatio || 1;
+                const displayW = w;
+                const displayH = h;
+                canvas.style.width = displayW + 'px';
+                canvas.style.height = displayH + 'px';
+                canvas.width = displayW * dpr;
+                canvas.height = displayH * dpr;
+                W = displayW;
+                H = displayH;
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+                draw();
+            }
+
+            // ---------- 绘图核心 ----------
+            function getLayout() {
+                // 基于 W, H 计算绘图参数
+                const cx = W * 0.5;
+                const cy = H * 0.5;
+                const radius = Math.min(W, H) * 0.38;
+                // 长方形目标尺寸: 宽 = πr, 高 = r
+                const rectW = Math.PI * radius;
+                const rectH = radius;
+                // 确保不超出画布
+                const scaleX = (W * 0.82) / rectW;
+                const scaleY = (H * 0.78) / rectH;
+                const scale = Math.min(scaleX, scaleY, 1.0);
+                const finalR = radius * scale;
+                const finalRectW = Math.PI * finalR;
+                const finalRectH = finalR;
+                return {
+                    cx: cx,
+                    cy: cy,
+                    r: finalR,
+                    rectW: finalRectW,
+                    rectH: finalRectH,
+                    left: cx - finalRectW / 2,
+                    top: cy - finalRectH / 2
+                };
+            }
+
+            // 生成扇形顶点 (圆形状态)
+            function getSectorCircle(layout, i, n) {
+                const { cx, cy, r } = layout;
+                const angleStart = (i / n) * 2 * Math.PI - Math.PI / 2;
+                const angleEnd = ((i + 1) / n) * 2 * Math.PI - Math.PI / 2;
+                const p1 = { x: cx + r * Math.cos(angleStart), y: cy + r * Math.sin(angleStart) };
+                const p2 = { x: cx + r * Math.cos(angleEnd), y: cy + r * Math.sin(angleEnd) };
+                // 弧上采样点 (用于从弧->直线插值)
+                const arcPoints = [];
+                const steps = 12;
+                for (let k = 0; k <= steps; k++) {
+                    const t = k / steps;
+                    const ang = angleStart + t * (angleEnd - angleStart);
+                    arcPoints.push({ x: cx + r * Math.cos(ang), y: cy + r * Math.sin(ang) });
+                }
+                return { center: { x: cx, y: cy }, p1, p2, arcPoints };
+            }
+
+            // 生成扇形顶点 (长方形状态) —— 三角形近似
+            function getSectorRect(layout, i, n) {
+                const { left, top, rectW, rectH } = layout;
+                const half = n / 2;
+                const w = rectW / half; // 每个扇形占宽
+                if (i < half) {
+                    // 上半部分: 底边在上方, 尖端朝下
+                    const x0 = left + i * w;
+                    const x1 = left + (i + 0.5) * w;
+                    const x2 = left + (i + 1) * w;
+                    const p1 = { x: x0, y: top };
+                    const p2 = { x: x2, y: top };
+                    const tip = { x: x1, y: top + rectH };
+                    // 弧边 -> 底边直线, 采样点均匀分布在p1-p2上
+                    const arcPoints = [];
+                    const steps = 12;
+                    for (let k = 0; k <= steps; k++) {
+                        const t = k / steps;
+                        arcPoints.push({ x: x0 + t * (x2 - x0), y: top });
+                    }
+                    return { center: tip, p1, p2, arcPoints };
+                } else {
+                    // 下半部分: 底边在下方, 尖端朝上
+                    const j = i - half;
+                    const x0 = left + j * w;
+                    const x1 = left + (j + 0.5) * w;
+                    const x2 = left + (j + 1) * w;
+                    const p1 = { x: x0, y: top + rectH };
+                    const p2 = { x: x2, y: top + rectH };
+                    const tip = { x: x1, y: top };
+                    const arcPoints = [];
+                    const steps = 12;
+                    for (let k = 0; k <= steps; k++) {
+                        const t = k / steps;
+                        arcPoints.push({ x: x0 + t * (x2 - x0), y: top + rectH });
+                    }
+                    return { center: tip, p1, p2, arcPoints };
+                }
+            }
+
+            function lerpPoint(a, b, t) {
+                return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+            }
+
+            function lerpArcPoints(ptsA, ptsB, t) {
+                const len = Math.min(ptsA.length, ptsB.length);
+                const result = [];
+                for (let i = 0; i < len; i++) {
+                    result.push(lerpPoint(ptsA[i], ptsB[i], t));
+                }
+                return result;
+            }
+
+            // 绘制一个扇形 (通过路径)
+            function drawSector(layout, i, n, progress, color, alpha) {
+                const circ = getSectorCircle(layout, i, n);
+                const rect = getSectorRect(layout, i, n);
+
+                // 插值三个关键点
+                const center = lerpPoint(circ.center, rect.center, progress);
+                const p1 = lerpPoint(circ.p1, rect.p1, progress);
+                const p2 = lerpPoint(circ.p2, rect.p2, progress);
+                const arcPts = lerpArcPoints(circ.arcPoints, rect.arcPoints, progress);
+
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.moveTo(center.x, center.y);
+                ctx.lineTo(p1.x, p1.y);
+                // 弧线 (用采样点)
+                for (let k = 0; k < arcPts.length; k++) {
+                    ctx.lineTo(arcPts[k].x, arcPts[k].y);
+                }
+                ctx.lineTo(p2.x, p2.y);
+                ctx.closePath();
+
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 主绘图
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                if (W < 1 || H < 1) return;
+
+                const layout = getLayout();
+                const n = segCount;
+                const progress = animProgress;
+
+                // 背景辅助线 (极浅)
+                ctx.save();
+                ctx.strokeStyle = '#e6eaf0';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 6]);
+                ctx.strokeRect(layout.left, layout.top, layout.rectW, layout.rectH);
+                ctx.restore();
+
+                // 决定颜色
+                const hueStep = 360 / n;
+                const alpha = 0.88;
+
+                for (let i = 0; i < n; i++) {
+                    const hue = (i * 360 / n + 20) % 360;
+                    const color = `hsl(${hue}, 72%, 62%)`;
+                    drawSector(layout, i, n, progress, color, alpha);
+                }
+
+                // 标注: 半径 r, 长 πr, 宽 r
+                ctx.save();
+                ctx.font = `bold ${Math.max(15, Math.min(22, W * 0.032))}px "PingFang SC", "Microsoft YaHei", sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // 当 progress > 0.3 时显示长方形标注
+                if (progress > 0.3) {
+                    const { left, top, rectW, rectH, cx, cy } = layout;
+                    // 长标注 (下方)
+                    const labelY1 = top + rectH + Math.min(28, H * 0.06);
+                    ctx.fillStyle = '#1a73e8';
+                    ctx.fillText('长 = πr', left + rectW / 2, labelY1);
+                    // 画指示线
+                    ctx.strokeStyle = '#1a73e8';
+                    ctx.lineWidth = 1.8;
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    ctx.moveTo(left, top + rectH + 10);
+                    ctx.lineTo(left, labelY1 - 8);
+                    ctx.moveTo(left + rectW, top + rectH + 10);
+                    ctx.lineTo(left + rectW, labelY1 - 8);
+                    ctx.stroke();
+                    // 宽标注 (右侧)
+                    const labelX1 = left + rectW + Math.min(24, W * 0.05);
+                    ctx.fillStyle = '#d44c4c';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('宽 = r', labelX1, top + rectH / 2);
+                    ctx.strokeStyle = '#d44c4c';
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.moveTo(left + rectW + 8, top);
+                    ctx.lineTo(labelX1 - 10, top);
+                    ctx.moveTo(left + rectW + 8, top + rectH);
+                    ctx.lineTo(labelX1 - 10, top + rectH);
+                    ctx.stroke();
+                    // 额外: 在左侧标 r
+                    const labelX2 = left - Math.min(20, W * 0.04);
+                    ctx.fillStyle = '#d44c4c';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('r', labelX2, top + rectH / 2);
+                }
+
+                // 圆形状态下标 r (progress < 0.7 时)
+                if (progress < 0.7) {
+                    const { cx, cy, r } = layout;
+                    ctx.fillStyle = '#d44c4c';
+                    ctx.font = `bold ${Math.max(16, Math.min(24, W * 0.036))}px "PingFang SC", "Microsoft YaHei", sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    // 从圆心到右侧标 r
+                    const angle = 0.2;
+                    const labelR = r * 0.6;
+                    const lx = cx + labelR * Math.cos(angle);
+                    const ly = cy + labelR * Math.sin(angle);
+                    ctx.fillText('r', cx + r * 0.55, cy - 6);
+                    // 画半径指示
+                    ctx.strokeStyle = 'rgba(212,76,76,0.5)';
+                    ctx.lineWidth = 1.6;
+                    ctx.setLineDash([4, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + r * 0.92, cy);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    // 圆心点
+                    ctx.fillStyle = '#1a2639';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 3.5, 0, 2 * Math.PI);
+                    ctx.fill();
+                    // 圆心标签 O
+                    ctx.fillStyle = '#1a2639';
+                    ctx.font = `${Math.max(13, Math.min(18, W * 0.026))}px "PingFang SC", sans-serif`;
+                    ctx.fillText('O', cx - 14, cy + 6);
+                }
+
+                // 右上角显示分割份数
+                ctx.fillStyle = '#5a6a7a';
+                ctx.font = `${Math.max(12, Math.min(16, W * 0.024))}px "PingFang SC", sans-serif`;
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'top';
+                ctx.fillText('分割 ' + n + ' 份', W - 14, 12);
+
+                // 显示当前状态文字
+                let statusText = '';
+                if (state === STATE.IDLE && animProgress === 0) {
+                    statusText = '🔵 圆形 · 拖动滑块调整份数';
+                } else if (state === STATE.ANIMATING) {
+                    statusText = '🔄 化圆为方中…';
+                } else if (state === STATE.DONE && animProgress >= 1) {
+                    statusText = '✅ 长方形 · 观察公式推导';
+                } else if (animProgress > 0 && animProgress < 1) {
+                    statusText = '🔄 变形中…';
+                }
+                if (statusText) {
+                    ctx.fillStyle = '#3d5066';
+                    ctx.font = `${Math.max(13, Math.min(17, W * 0.026))}px "PingFang SC", sans-serif`;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText(statusText, 14, H - 8);
+                }
+
+                ctx.restore();
+            }
+
+            // ---------- 动画循环 ----------
+            function animateLoop(timestamp) {
+                if (!animStartTime) animStartTime = timestamp;
+                const elapsed = timestamp - animStartTime;
+                const t = Math.min(elapsed / ANIM_DURATION, 1);
+                // easeInOutCubic
+                const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                animProgress = targetProgress * ease;
+
+                draw();
+
+                if (t < 1) {
+                    animId = requestAnimationFrame(animateLoop);
+                } else {
+                    animProgress = targetProgress;
+                    draw();
+                    if (targetProgress >= 1) {
+                        state = STATE.DONE;
+                        updateControls();
+                        // 自动显示公式步骤
+                        revealFormulaSteps();
+                    } else {
+                        state = STATE.IDLE;
+                        updateControls();
+                    }
+                    animId = null;
+                }
+            }
+
+            function startAnimation(toProgress) {
+                if (animId) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                }
+                targetProgress = toProgress;
+                animStartTime = 0;
+                state = STATE.ANIMATING;
+                updateControls();
+                animId = requestAnimationFrame(animateLoop);
+            }
+
+            // ---------- 公式逐步展示 ----------
+            function revealFormulaSteps() {
+                // 逐步激活公式步骤, 每步间隔 0.7s
+                let stepIdx = 0;
+                function showNext() {
+                    if (stepIdx < stepEls.length) {
+                        stepEls[stepIdx].classList.add('active');
+                        displayStep = stepIdx;
+                        updateControls();
+                        stepIdx++;
+                        setTimeout(showNext, 700);
+                    } else {
+                        // 所有步骤显示完后，展示警告
+                        setTimeout(() => {
+                            warningBox.classList.add('show');
+                            showWarning = true;
+                            updateControls();
+                        }, 500);
+                    }
+                }
+                // 先重置所有步骤
+                stepEls.forEach(el => el.classList.remove('active'));
+                warningBox.classList.remove('show');
+                showWarning = false;
+                displayStep = -1;
+                setTimeout(showNext, 300);
+            }
+
+            function resetFormula() {
+                stepEls.forEach(el => el.classList.remove('active'));
+                warningBox.classList.remove('show');
+                showWarning = false;
+                displayStep = -1;
+                updateControls();
+            }
+
+            // 手动控制步骤 (上一步/下一步)
+            function goToStep(idx) {
+                if (state !== STATE.DONE) return;
+                const clamped = Math.max(-1, Math.min(stepEls.length - 1, idx));
+                stepEls.forEach((el, i) => {
+                    if (i <= clamped) el.classList.add('active');
+                    else el.classList.remove('active');
+                });
+                displayStep = clamped;
+                // 警告框: 当所有步骤显示完后显示
+                if (clamped >= stepEls.length - 1) {
+                    warningBox.classList.add('show');
+                    showWarning = true;
+                } else {
+                    warningBox.classList.remove('show');
+                    showWarning = false;
+                }
+                updateControls();
+            }
+
+            // ---------- UI 更新 ----------
+            function updateControls() {
+                const isAnimating = state === STATE.ANIMATING;
+                const isDone = state === STATE.DONE;
+                const isIdle = state === STATE.IDLE;
+
+                segSlider.disabled = isAnimating || isDone;
+                btnPlay.disabled = isAnimating || isDone;
+                btnReset.disabled = isAnimating;
+
+                if (isIdle && animProgress === 0) {
+                    btnPlay.textContent = '▶ 开始推导';
+                    btnPlay.className = 'btn btn-primary';
+                } else if (isDone && animProgress >= 1) {
+                    btnPlay.textContent = '✅ 已完成';
+                    btnPlay.className = 'btn btn-success';
+                    btnPlay.disabled = true;
+                } else if (isAnimating) {
+                    btnPlay.textContent = '⏳ 推导中…';
+                }
+
+                // 步骤按钮
+                if (isDone) {
+                    btnPrev.disabled = displayStep <= -1;
+                    btnNext.disabled = displayStep >= stepEls.length - 1;
+                } else {
+                    btnPrev.disabled = true;
+                    btnNext.disabled = true;
+                }
+
+                // 如果处于 done 但未显示任何步骤 (异常), 启用next
+                if (isDone && displayStep === -1) {
+                    btnNext.disabled = false;
+                }
+            }
+
+            // ---------- 重置 ----------
+            function resetAll() {
+                if (animId) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                }
+                state = STATE.IDLE;
+                animProgress = 0;
+                targetProgress = 0;
+                resetFormula();
+                draw();
+                updateControls();
+                btnPlay.textContent = '▶ 开始推导';
+                btnPlay.className = 'btn btn-primary';
+                btnPlay.disabled = false;
+                segSlider.disabled = false;
+                btnPrev.disabled = true;
+                btnNext.disabled = true;
+            }
+
+            // ---------- 事件绑定 ----------
+            segSlider.addEventListener('input', function() {
+                const val = parseInt(this.value, 10);
+                segCount = val;
+                segBadge.textContent = val;
+                if (state === STATE.IDLE && animProgress === 0) {
+                    draw();
+                }
+            });
+
+            btnPlay.addEventListener('click', function() {
+                if (state === STATE.IDLE && animProgress === 0) {
+                    // 开始推导
+                    resetFormula();
+                    startAnimation(1.0);
+                } else if (state === STATE.DONE) {
+                    // 如果已完成，不做操作（或可重新播放？但按钮已禁用）
+                }
+            });
+
+            btnReset.addEventListener('click', resetAll);
+
+            btnNext.addEventListener('click', function() {
+                if (state !== STATE.DONE) return;
+                const next = displayStep + 1;
+                if (next < stepEls.length) {
+                    goToStep(next);
+                } else if (next === stepEls.length) {
+                    // 如果已经到最后一步，再点就显示警告
+                    if (!showWarning) {
+                        warningBox.classList.add('show');
+                        showWarning = true;
+                        displayStep = stepEls.length; // 标记
+                        updateControls();
+                    }
+                } else {
+                    // 全部显示完了，再点没反应
+                }
+            });
+
+            btnPrev.addEventListener('click', function() {
+                if (state !== STATE.DONE) return;
+                const prev = displayStep - 1;
+                if (prev >= -1) {
+                    goToStep(prev);
+                }
+            });
+
+            // ---------- 窗口自适应 ----------
+            let resizeTimer = null;
+            window.addEventListener('resize', function() {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    resizeCanvas();
+                    if (state === STATE.IDLE || state === STATE.DONE) {
+                        draw();
+                    }
+                }, 100);
+            });
+
+            // ---------- 初始化 ----------
+            function init() {
+                resizeCanvas();
+                resetAll();
+                // 默认显示一点引导
+                draw();
+                updateControls();
+            }
+
+            // 监听 canvas 父容器尺寸变化 (更精确)
+            const ro = new ResizeObserver(() => {
+                resizeCanvas();
+                if (state === STATE.IDLE || state === STATE.DONE) {
+                    draw();
+                }
+            });
+            ro.observe(canvas.parentElement);
+
+            // 额外: 用 MutationObserver 兜底
+            setTimeout(() => {
+                resizeCanvas();
+                draw();
+            }, 50);
+
+            init();
+
+            // 键盘快捷键 (课堂辅助)
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!btnPlay.disabled) btnPlay.click();
+                }
+                if (e.key === 'r' || e.key === 'R') {
+                    if (!btnReset.disabled) btnReset.click();
+                }
+                if (e.key === 'ArrowRight') {
+                    if (!btnNext.disabled) btnNext.click();
+                }
+                if (e.key === 'ArrowLeft') {
+                    if (!btnPrev.disabled) btnPrev.click();
+                }
+            });
+
+            // 暴露一些变量用于调试 (非必须)
+            console.log('✅ 圆的面积推导可视化已加载。');
+        })();
+    </script>
+
+</body>
+</html>

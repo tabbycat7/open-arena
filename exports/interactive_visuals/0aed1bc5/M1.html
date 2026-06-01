@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆形草坪 · 周长与面积辨析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f0eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            padding: 16px;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #fefcf9;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 20, 10, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 20px 28px 24px 28px;
+        }
+        /* 标题区 */
+        .header {
+            flex: 0 0 auto;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed #d9d0c7;
+        }
+        .header .q-text {
+            font-size: clamp(18px, 3.2vw, 32px);
+            font-weight: 600;
+            color: #2d4a3b;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+        .header .q-text .highlight-word {
+            color: #c0392b;
+            font-weight: 700;
+        }
+        .header .q-text .highlight-word2 {
+            color: #2d7d46;
+            font-weight: 700;
+        }
+        .hint-tag {
+            display: inline-block;
+            font-size: clamp(13px, 1.6vw, 18px);
+            background: #e8e0d8;
+            color: #5a4a3a;
+            padding: 2px 16px;
+            border-radius: 24px;
+            margin-top: 6px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* 画布区 */
+        .canvas-wrap {
+            flex: 1 1 0;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 0 4px 0;
+            position: relative;
+        }
+        .canvas-wrap canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: #eef5ea;
+            box-shadow: inset 0 2px 12px rgba(90, 120, 80, 0.08);
+            cursor: default;
+        }
+
+        /* 底部控制区 */
+        .controls {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(16px, 4vw, 48px);
+            padding-top: 14px;
+            padding-bottom: 2px;
+            flex-wrap: wrap;
+        }
+        .btn-group {
+            display: flex;
+            align-items: center;
+            gap: 10px 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .ctrl-btn {
+            position: relative;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 28px;
+            font-size: clamp(15px, 1.8vw, 22px);
+            font-weight: 600;
+            font-family: inherit;
+            background: #f0ebe6;
+            color: #4a3f36;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.18s ease;
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 2px solid transparent;
+        }
+        .ctrl-btn .icon {
+            font-size: clamp(16px, 2vw, 26px);
+            line-height: 1;
+        }
+        .ctrl-btn.btn-left {
+            background: #fff0ed;
+            color: #a53f32;
+            border-color: #e8c8c0;
+        }
+        .ctrl-btn.btn-left:hover {
+            background: #ffe4de;
+            border-color: #d4a89a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(180, 70, 50, 0.12);
+        }
+        .ctrl-btn.btn-left.active {
+            background: #e6392b;
+            color: #fff;
+            border-color: #c52f20;
+            box-shadow: 0 4px 20px rgba(230, 57, 43, 0.35);
+        }
+        .ctrl-btn.btn-right {
+            background: #eaf5ec;
+            color: #2a6b42;
+            border-color: #b8d5c0;
+        }
+        .ctrl-btn.btn-right:hover {
+            background: #ddeee2;
+            border-color: #8fbc9a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(50, 130, 80, 0.12);
+        }
+        .ctrl-btn.btn-right.active {
+            background: #2d8b4e;
+            color: #fff;
+            border-color: #1f6e3a;
+            box-shadow: 0 4px 20px rgba(45, 139, 78, 0.35);
+        }
+        .ctrl-btn .badge {
+            font-size: clamp(11px, 1.2vw, 16px);
+            background: rgba(0, 0, 0, 0.08);
+            padding: 0 10px;
+            border-radius: 30px;
+            font-weight: 400;
+        }
+        .ctrl-btn.active .badge {
+            background: rgba(255, 255, 255, 0.20);
+        }
+        .ctrl-btn:focus-visible {
+            outline: 3px solid #1a6cff;
+            outline-offset: 2px;
+        }
+        .legend-tip {
+            font-size: clamp(12px, 1.3vw, 17px);
+            color: #6f5e4e;
+            background: #f6f1ec;
+            padding: 4px 18px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            font-weight: 400;
+            border: 1px solid #e5dbd2;
+        }
+        .legend-tip span {
+            font-weight: 600;
+        }
+        .legend-tip .c-red {
+            color: #c0392b;
+        }
+        .legend-tip .c-green {
+            color: #2d7d46;
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 14px 14px 16px 14px;
+                border-radius: 18px;
+            }
+            .ctrl-btn {
+                padding: 8px 18px;
+                font-size: 14px;
+            }
+            .header .q-text {
+                font-size: 16px;
+            }
+            .legend-tip {
+                font-size: 12px;
+                padding: 2px 12px;
+            }
+        }
+        @media (max-width: 420px) {
+            .controls {
+                gap: 6px;
+            }
+            .btn-group {
+                gap: 6px;
+            }
+            .ctrl-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            .ctrl-btn .icon {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- 标题区 -->
+        <div class="header">
+            <div class="q-text">
+                🌳 给圆形草坪围一圈 <span class="highlight-word">护栏</span> ，
+                或者在草坪上铺满 <span class="highlight-word2">草皮</span> ，
+                这两件事分别求圆的什么？
+            </div>
+            <div class="hint-tag">👆 点击下方按钮，高亮对应的部分</div>
+        </div>
+
+        <!-- 画布 -->
+        <div class="canvas-wrap">
+            <canvas id="gardenCanvas" width="800" height="520"></canvas>
+        </div>
+
+        <!-- 底部控制 -->
+        <div class="controls">
+            <div class="btn-group">
+                <button class="ctrl-btn btn-left" id="btnPerimeter" aria-label="高亮显示围栏（周长）">
+                    <span class="icon">⛓️</span> 围栏 · 周长
+                    <span class="badge">边界</span>
+                </button>
+                <button class="ctrl-btn btn-right" id="btnArea" aria-label="高亮显示草皮（面积）">
+                    <span class="icon">🌿</span> 草皮 · 面积
+                    <span class="badge">内部</span>
+                </button>
+            </div>
+            <div class="legend-tip">
+                <span class="c-red">●</span> 周长 <span style="margin:0 6px;">|</span> <span class="c-green">●</span> 面积
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('gardenCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // 按钮
+            const btnPerimeter = document.getElementById('btnPerimeter');
+            const btnArea = document.getElementById('btnArea');
+
+            // 高亮状态
+            let highlightPerimeter = false;
+            let highlightArea = false;
+
+            // ---------- 绘制参数 (基于 canvas 固定尺寸 800x520) ----------
+            const CW = 800;
+            const CH = 520;
+
+            // 两个圆的参数
+            const cxL = 260; // 左圆圆心 x
+            const cxR = 540; // 右圆圆心 x
+            const cy = 280; // 圆心 y
+            const radius = 150; // 半径
+
+            // 标签文字
+            const LABEL_PERIMETER = '周 长';
+            const LABEL_AREA = '面 积';
+            const SUB_LEFT = '围 栏';
+            const SUB_RIGHT = '草 皮';
+
+            // ---------- 绘制函数 ----------
+            function drawGarden() {
+                ctx.clearRect(0, 0, CW, CH);
+
+                // ---- 背景 ----
+                const grad = ctx.createLinearGradient(0, 0, 0, CH);
+                grad.addColorStop(0, '#dce8d8');
+                grad.addColorStop(0.45, '#c6dbbf');
+                grad.addColorStop(0.70, '#b5cfaa');
+                grad.addColorStop(1, '#9fbf94');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, CW, CH);
+
+                // 柔和云影 / 光斑
+                ctx.globalAlpha = 0.06;
+                for (let i = 0; i < 6; i++) {
+                    ctx.beginPath();
+                    ctx.arc(100 + i * 130, 40 + (i % 3) * 30, 60 + i * 8, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1.0;
+
+                // 草地纹理线条 (极淡)
+                ctx.strokeStyle = 'rgba(90,130,70,0.08)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 40; i++) {
+                    const x = (i * 27 + 13) % CW;
+                    const y = 340 + (i * 19) % 160;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + 6, y - 12);
+                    ctx.stroke();
+                }
+
+                // ---- 绘制两个花坛基底 (阴影) ----
+                ctx.shadowColor = 'rgba(40,60,30,0.15)';
+                ctx.shadowBlur = 28;
+                ctx.shadowOffsetX = 4;
+                ctx.shadowOffsetY = 6;
+
+                // 左基底 (围栏花坛) —— 浅色泥土
+                ctx.beginPath();
+                ctx.arc(cxL, cy, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#f5ede4';
+                ctx.fill();
+                // 右基底 (草皮花坛) —— 绿色草皮底色
+                ctx.beginPath();
+                ctx.arc(cxR, cy, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#9dcf8e';
+                ctx.fill();
+
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+
+                // ---- 左侧花坛：围栏 (周长) ----
+                // 泥土细节
+                ctx.fillStyle = '#e8ddd2';
+                ctx.beginPath();
+                ctx.arc(cxL, cy, radius - 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 围栏柱子 (小圆点)
+                const numPosts = 28;
+                for (let i = 0; i < numPosts; i++) {
+                    const angle = (i / numPosts) * Math.PI * 2;
+                    const px = cxL + (radius - 4) * Math.cos(angle);
+                    const py = cy + (radius - 4) * Math.sin(angle);
+                    ctx.beginPath();
+                    ctx.arc(px, py, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#b55a4a';
+                    ctx.fill();
+                    ctx.strokeStyle = '#8d4739';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+
+                // 围栏横梁 (红色粗线 — 代表周长)
+                // 根据高亮状态调整样式
+                const perimBaseWidth = highlightPerimeter ? 8 : 4.5;
+                const perimBaseColor = highlightPerimeter ? '#e62e1e' : '#c0392b';
+                const perimGlow = highlightPerimeter ? true : false;
+
+                if (perimGlow) {
+                    ctx.shadowColor = 'rgba(230,46,30,0.55)';
+                    ctx.shadowBlur = 28;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+                ctx.beginPath();
+                ctx.arc(cxL, cy, radius - 2, 0, Math.PI * 2);
+                ctx.strokeStyle = perimBaseColor;
+                ctx.lineWidth = perimBaseWidth;
+                ctx.setLineDash([]);
+                ctx.stroke();
+
+                // 第二层细围栏线 (装饰)
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(cxL, cy, radius - 14, 0, Math.PI * 2);
+                ctx.strokeStyle = '#c98a7a';
+                ctx.lineWidth = 1.8;
+                ctx.setLineDash([4, 6]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 高亮时额外发光晕
+                if (highlightPerimeter) {
+                    ctx.shadowColor = 'rgba(230,46,30,0.20)';
+                    ctx.shadowBlur = 48;
+                    ctx.beginPath();
+                    ctx.arc(cxL, cy, radius + 6, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(230,46,30,0.15)';
+                    ctx.lineWidth = 14;
+                    ctx.stroke();
+                    ctx.shadowColor = 'transparent';
+                    ctx.shadowBlur = 0;
+                }
+
+                // 围栏小标牌
+                ctx.fillStyle = '#8d4739';
+                ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('⛓️ 围栏', cxL, cy - 12);
+
+                // ---- 右侧花坛：草皮 (面积) ----
+                // 草皮填充 (深浅色块模拟草地)
+                const turfBase = highlightArea ? '#6fc47f' : '#7fc98a';
+                const turfLight = highlightArea ? '#8de09b' : '#96d8a0';
+                const turfDark = highlightArea ? '#4fa85e' : '#5daf6b';
+
+                // 主填充
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(cxR, cy, radius - 6, 0, Math.PI * 2);
+                ctx.fillStyle = turfBase;
+                ctx.fill();
+
+                // 草皮纹理 (小叶片)
+                for (let i = 0; i < 90; i++) {
+                    const ang = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * (radius - 16);
+                    const gx = cxR + dist * Math.cos(ang);
+                    const gy = cy + dist * Math.sin(ang);
+                    const len = 6 + Math.random() * 14;
+                    const dir = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(gx, gy);
+                    ctx.lineTo(gx + len * 0.6 * Math.cos(dir + 0.3), gy + len * 0.6 * Math.sin(dir + 0.3));
+                    ctx.lineTo(gx + len * 0.6 * Math.cos(dir - 0.3), gy + len * 0.6 * Math.sin(dir - 0.3));
+                    ctx.closePath();
+                    ctx.fillStyle = Math.random() > 0.5 ? turfLight : turfDark;
+                    ctx.globalAlpha = 0.5 + Math.random() * 0.3;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1.0;
+
+                // 草皮边框 (淡)
+                ctx.beginPath();
+                ctx.arc(cxR, cy, radius - 4, 0, Math.PI * 2);
+                ctx.strokeStyle = highlightArea ? '#2d8b4e' : '#6aae78';
+                ctx.lineWidth = highlightArea ? 4 : 2.5;
+                ctx.setLineDash([]);
+                ctx.stroke();
+
+                // 高亮时外发光
+                if (highlightArea) {
+                    ctx.shadowColor = 'rgba(45,139,78,0.30)';
+                    ctx.shadowBlur = 50;
+                    ctx.beginPath();
+                    ctx.arc(cxR, cy, radius + 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(45,139,78,0.18)';
+                    ctx.lineWidth = 18;
+                    ctx.stroke();
+                    ctx.shadowColor = 'transparent';
+                    ctx.shadowBlur = 0;
+                }
+
+                // 草皮标牌
+                ctx.fillStyle = '#1f6033';
+                ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🌱 草皮', cxR, cy - 12);
+
+                // ---- 标签：周长 / 面积 (大字) ----
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+                // 左侧 "周长" 标签
+                ctx.font = 'bold 34px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = highlightPerimeter ? '#e62e1e' : '#b64a3a';
+                ctx.shadowColor = highlightPerimeter ? 'rgba(230,46,30,0.25)' : 'transparent';
+                ctx.shadowBlur = highlightPerimeter ? 20 : 0;
+                ctx.fillText(LABEL_PERIMETER, cxL, cy + radius + 48);
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+                // 小字 "围栏"
+                ctx.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillStyle = '#7a5a4a';
+                ctx.fillText('( ' + SUB_LEFT + ' )', cxL, cy + radius + 82);
+
+                // 右侧 "面积" 标签
+                ctx.font = 'bold 34px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillStyle = highlightArea ? '#2d8b4e' : '#3d7a4a';
+                ctx.shadowColor = highlightArea ? 'rgba(45,139,78,0.25)' : 'transparent';
+                ctx.shadowBlur = highlightArea ? 20 : 0;
+                ctx.fillText(LABEL_AREA, cxR, cy + radius + 48);
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+                ctx.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillStyle = '#4d7055';
+                ctx.fillText('( ' + SUB_RIGHT + ' )', cxR, cy + radius + 82);
+
+                // ---- 辅助装饰：小箭头 / 指示 ----
+                ctx.fillStyle = 'rgba(80,70,60,0.25)';
+                ctx.font = '22px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // 左箭头指向围栏
+                ctx.fillText('⟵ 红色边界', 86, cy + 10);
+                // 右箭头指向草皮
+                ctx.fillText('绿色内部 ⟶', CW - 86, cy + 10);
+
+                // ---- 边框装饰文字 ----
+                ctx.fillStyle = 'rgba(60,80,50,0.18)';
+                ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('⚪ 圆的边界 → 周长', cxL, CH - 8);
+                ctx.fillText('⚪ 圆面的大小 → 面积', cxR, CH - 8);
+
+                // ---- 重置阴影 ----
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                ctx.setLineDash([]);
+                ctx.globalAlpha = 1.0;
+            }
+
+            // ---------- 更新高亮状态 & 重绘 ----------
+            function updateView() {
+                // 更新按钮样式
+                btnPerimeter.classList.toggle('active', highlightPerimeter);
+                btnArea.classList.toggle('active', highlightArea);
+                drawGarden();
+            }
+
+            // ---------- 交互事件绑定 (addEventListener) ----------
+            btnPerimeter.addEventListener('click', function() {
+                highlightPerimeter = !highlightPerimeter;
+                updateView();
+            });
+
+            btnArea.addEventListener('click', function() {
+                highlightArea = !highlightArea;
+                updateView();
+            });
+
+            // ---------- 初始绘制 ----------
+            // 确保 canvas 尺寸准确
+            function resizeCanvas() {
+                // canvas 尺寸已固定为 800x520，不需要缩放
+                // 但为了高清屏，不做物理像素缩放，保持清晰文字
+                // 已在 css 中控制显示尺寸
+            }
+            resizeCanvas();
+            updateView();
+
+            // 窗口改变时不需要重绘，因为 canvas 尺寸固定，显示自适应
+            // 但为了防止某些浏览器缩放导致模糊，保留一个空监听
+            window.addEventListener('resize', function() {
+                // 不做重绘，仅占位
+            });
+
+            // ---- 键盘辅助 (可选项) ----
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'p' || e.key === 'P') {
+                    highlightPerimeter = !highlightPerimeter;
+                    updateView();
+                    e.preventDefault();
+                } else if (e.key === 'a' || e.key === 'A') {
+                    highlightArea = !highlightArea;
+                    updateView();
+                    e.preventDefault();
+                }
+            });
+
+            // 悬浮提示 (无额外操作)
+
+            console.log('🌳 圆形草坪可视化已加载！按 P 切换周长高亮，按 A 切换面积高亮。');
+        })();
+    </script>
+
+</body>
+</html>

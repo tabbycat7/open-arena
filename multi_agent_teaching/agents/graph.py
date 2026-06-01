@@ -1,5 +1,6 @@
 """LangGraph workflow — orchestrates all generation and validation agents."""
 
+import logging
 from langgraph.graph import StateGraph, END
 
 from agents.state import GraphState
@@ -14,6 +15,8 @@ from agents.validators.integrated_main_question_validator import integrated_main
 from agents.validators.variant_alignment import variant_alignment_node
 from agents.validators.scaffold_alignment import scaffold_alignment_node
 from config import MAX_VALIDATION_RETRIES
+
+_logger = logging.getLogger(__name__)
 
 
 MAIN_VALIDATOR_NAME = "integrated_main_question_validator"
@@ -287,6 +290,83 @@ def route_after_sub_aggregate(state: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Interactive visual aid generation (staged, non-blocking on individual failures)
+# ---------------------------------------------------------------------------
+
+def _questions_with_visual_prompt(questions: list) -> list:
+    return [
+        q for q in questions
+        if q.get("visual_aid_prompt")
+        and q.get("visual_aid_type", "") != "none"
+    ]
+
+
+def _visual_aid_generation_for_questions(state: dict, question_key: str, label: str) -> dict:
+    """Generate interactive HTML visuals for a finalized question group."""
+    questions = [dict(q) for q in (state.get(question_key, []) or [])]
+    if not questions:
+        return {
+            question_key: questions,
+            "progress_messages": ["[交互可视化] %s为空，跳过可视化生成" % label],
+        }
+
+    nodes_with_prompt = _questions_with_visual_prompt(questions)
+    if not nodes_with_prompt:
+        return {
+            question_key: questions,
+            "progress_messages": ["[交互可视化] %s无需生成可视化（所有节点均标记为 none 或无描述）" % label],
+        }
+
+    try:
+        from interactive_visual_gen import generate_interactive_visuals_for_questions
+
+        subject = state.get("subject", "")
+        grade = state.get("grade", "")
+
+        task_id = state.get("_task_id", "")
+        if not task_id:
+            import uuid
+            task_id = str(uuid.uuid4())[:8]
+
+        results = generate_interactive_visuals_for_questions(task_id, questions, subject, grade)
+
+        updated_count = len(results)
+        msg = "[交互可视化] %s共 %d 个节点需要可视化，并发生成成功 %d 个" % (
+            label, len(nodes_with_prompt), updated_count
+        )
+        if updated_count < len(nodes_with_prompt):
+            msg += "（%d 个生成失败，将显示文字描述作为替代）" % (
+                len(nodes_with_prompt) - updated_count
+            )
+
+        return {
+            question_key: questions,
+            "progress_messages": [msg],
+        }
+
+    except Exception:
+        _logger.exception("Interactive visual generation failed for %s", question_key)
+        return {
+            question_key: questions,
+            "progress_messages": [
+                "[交互可视化] %s可视化生成过程出错，已跳过。相关节点将显示文字描述作为替代。" % label
+            ],
+        }
+
+
+def main_visual_aid_generation_node(state: dict) -> dict:
+    return _visual_aid_generation_for_questions(state, "main_questions", "主干问题")
+
+
+def variant_visual_aid_generation_node(state: dict) -> dict:
+    return _visual_aid_generation_for_questions(state, "variant_questions", "变式问题")
+
+
+def scaffold_visual_aid_generation_node(state: dict) -> dict:
+    return _visual_aid_generation_for_questions(state, "scaffold_questions", "支架问题")
+
+
+# ---------------------------------------------------------------------------
 # Build the graph
 # ---------------------------------------------------------------------------
 
@@ -302,6 +382,9 @@ def build_graph() -> StateGraph:
     workflow.add_node("aggregate_sub_pipelines", aggregate_sub_pipelines)
     workflow.add_node("map_integration", map_integration_node)
     workflow.add_node("priority_assignment", priority_assignment_node)
+    workflow.add_node("main_visual_aid_generation", main_visual_aid_generation_node)
+    workflow.add_node("variant_visual_aid_generation", variant_visual_aid_generation_node)
+    workflow.add_node("scaffold_visual_aid_generation", scaffold_visual_aid_generation_node)
 
     # --- Main check node (single integrated validator) ---
     workflow.add_node("main_question_check", main_question_check_node)
@@ -330,7 +413,7 @@ def build_graph() -> StateGraph:
         route_after_main_generation,
         {
             "retry_main": "bump_main_retry",
-            "continue": "fan_out_gen",
+            "continue": "main_visual_aid_generation",
             "run_check": "main_question_check",
         },
     )
@@ -338,7 +421,7 @@ def build_graph() -> StateGraph:
     workflow.add_conditional_edges(
         "main_question_check",
         route_after_main_check,
-        {"retry_main": "bump_main_retry", "continue": "fan_out_gen"},
+        {"retry_main": "bump_main_retry", "continue": "main_visual_aid_generation"},
     )
 
     def _fan_out_gen_node(state: dict) -> dict:
@@ -360,6 +443,7 @@ def build_graph() -> StateGraph:
             msg = "[系统] 主干已进入后续流程，并行生成变式与支架问题..."
         return {"progress_messages": [msg]}
     workflow.add_node("fan_out_gen", _fan_out_gen_node)
+    workflow.add_edge("main_visual_aid_generation", "fan_out_gen")
     workflow.add_edge("fan_out_gen", "variant_question")
     workflow.add_edge("fan_out_gen", "scaffold_question")
 
@@ -382,7 +466,8 @@ def build_graph() -> StateGraph:
         {"retry_variant": "bump_variant_retry", "done_variant": "mark_variant_done"},
     )
     workflow.add_edge("bump_variant_retry", "variant_question")
-    workflow.add_edge("mark_variant_done", "aggregate_sub_pipelines")
+    workflow.add_edge("mark_variant_done", "variant_visual_aid_generation")
+    workflow.add_edge("variant_visual_aid_generation", "aggregate_sub_pipelines")
 
     workflow.add_conditional_edges(
         "scaffold_question",
@@ -399,7 +484,8 @@ def build_graph() -> StateGraph:
         {"retry_scaffold": "bump_scaffold_retry", "done_scaffold": "mark_scaffold_done"},
     )
     workflow.add_edge("bump_scaffold_retry", "scaffold_question")
-    workflow.add_edge("mark_scaffold_done", "aggregate_sub_pipelines")
+    workflow.add_edge("mark_scaffold_done", "scaffold_visual_aid_generation")
+    workflow.add_edge("scaffold_visual_aid_generation", "aggregate_sub_pipelines")
 
     # === Phase 4: 计数器门控 fan-in → 地图整合 ===
     workflow.add_conditional_edges(

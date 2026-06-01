@@ -1407,374 +1407,1405 @@
     min-height: calc(100vh - 210px);
 }
 
-.mat-generation-shell {
+/* =========================================================
+   Theater: 舞台剧场景化生成过程
+   ========================================================= */
+.mat-theater {
     min-height: calc(100vh - 210px);
-    padding: 24px;
+    display: flex;
+    flex-direction: column;
     border: 1px solid #dbe5ee;
-    border-radius: 14px;
-    background:
-        linear-gradient(120deg, rgba(239, 246, 255, 0.78), rgba(240, 253, 250, 0.76)),
-        #ffffff;
-    box-shadow: 0 24px 60px -46px rgba(15, 23, 42, 0.55);
+    border-radius: 16px;
+    background: #f8fbff;
+    box-shadow: 0 24px 60px -34px rgba(59, 130, 246, 0.2);
     overflow: hidden;
 }
 
-.mat-generation-head {
+/* ---- Topbar: dot progress + timer ---- */
+.mat-theater-topbar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    align-items: flex-start;
-    margin-bottom: 20px;
+    gap: 16px;
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #dbe5ee;
+    flex-shrink: 0;
 }
 
-.mat-generation-eyebrow {
-    display: inline-flex;
+.mat-theater-dots {
+    display: flex;
     align-items: center;
-    margin-bottom: 7px;
-    color: #0f766e;
-    font-size: 12px;
+    gap: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.mat-dot-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.mat-dot-circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2.5px solid #94a3b8;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.mat-dot-label {
+    font-size: 10px;
+    color: #475569;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+    letter-spacing: 0.02em;
+}
+
+.mat-dot-connector {
+    flex: 1;
+    height: 2.5px;
+    background: #cbd5e1;
+    min-width: 12px;
+    margin: 0 2px;
+    margin-bottom: 18px;
+    border-radius: 2px;
+    transition: background 0.4s ease;
+}
+
+/* Dot states */
+.mat-dot-step.is-done .mat-dot-circle {
+    border-color: #22c55e;
+    background: #22c55e;
+}
+.mat-dot-step.is-done .mat-dot-circle::after {
+    content: "✓";
+    font-size: 10px;
+    color: #fff;
     font-weight: 800;
 }
-
-.mat-generation-head h2 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 25px;
-    line-height: 1.25;
+.mat-dot-step.is-done .mat-dot-label {
+    color: #15803d;
+}
+.mat-dot-step.is-done + .mat-dot-connector {
+    background: #22c55e;
 }
 
-.mat-generation-head p {
-    margin: 8px 0 0;
-    color: #475569;
-    font-size: 14px;
-    line-height: 1.6;
+.mat-dot-step.is-active .mat-dot-circle {
+    border-color: var(--scene-color, #3b82f6);
+    background: var(--scene-color, #3b82f6);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+    animation: matDotPulse 1.8s ease-in-out infinite;
+}
+.mat-dot-step.is-active .mat-dot-label {
+    color: #1e40af;
+    font-weight: 700;
 }
 
-.mat-generation-clock {
+.mat-dot-step.is-error .mat-dot-circle {
+    border-color: #ef4444;
+    background: #ef4444;
+}
+.mat-dot-step.is-error .mat-dot-circle::after {
+    content: "✕";
+    font-size: 10px;
+    color: #fff;
+    font-weight: 800;
+}
+.mat-dot-step.is-error .mat-dot-label { color: #b91c1c; }
+
+.mat-theater-clock {
     flex-shrink: 0;
-    padding: 8px 12px;
-    border: 1px solid #cbd5e1;
+    padding: 5px 14px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.72);
-    color: #334155;
+    background: #eff6ff;
+    color: #1e40af;
     font-size: 13px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    border: 1px solid #bfdbfe;
 }
 
-.mat-generation-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
-    gap: 20px;
-    align-items: stretch;
-}
-
-.mat-map-growth-stage {
+/* ---- Stage: scene container ---- */
+.mat-theater-stage {
+    flex: 1;
     position: relative;
-    min-height: 470px;
-    border: 1px solid #d6e0ea;
-    border-radius: 12px;
-    background:
-        linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-        linear-gradient(135deg, #ffffff 0%, #f8fafc 52%, #ecfeff 100%);
-    background-size: 34px 34px, 34px 34px, auto;
+    min-height: 420px;
     overflow: hidden;
 }
 
-.mat-map-growth-stage::after {
-    content: "";
+.mat-scene {
     position: absolute;
     inset: 0;
-    background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.48) 45%, transparent 70%);
-    transform: translateX(-100%);
-    animation: matGrowthSheen 4.8s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(60px);
+    pointer-events: none;
+    transition: opacity 0.55s ease, transform 0.55s ease;
+    will-change: transform, opacity;
+    z-index: 0;
+}
+
+.mat-scene.is-active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.mat-scene.is-exiting {
+    opacity: 0;
+    transform: translateX(-40px);
+    z-index: 0;
+}
+
+.mat-scene-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     pointer-events: none;
 }
 
-.mat-map-growth-svg {
-    position: absolute;
-    inset: 0;
+.mat-scene-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 40px 32px;
+    max-width: 560px;
     width: 100%;
-    height: 100%;
 }
 
-.mat-growth-grid {
+.mat-scene-character {
+    font-size: 72px;
+    line-height: 1;
+    filter: drop-shadow(0 8px 24px rgba(30, 64, 175, 0.16));
+    animation: matCharacterFloat 3s ease-in-out infinite;
+}
+
+.mat-scene-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+}
+
+.mat-scene-desc {
+    margin: 0;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+    max-width: 420px;
+}
+
+.mat-scene-work {
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+    position: relative;
+}
+
+/* ---- Scene backgrounds ---- */
+.mat-scene-waiting .mat-scene-bg {
+    background: radial-gradient(ellipse at 50% 80%, rgba(125, 211, 252, 0.28) 0%, transparent 70%),
+                linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
+}
+.mat-scene-analysis .mat-scene-bg {
+    background: radial-gradient(ellipse at 30% 60%, rgba(147, 197, 253, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 40%, rgba(191, 219, 254, 0.3) 0%, transparent 50%),
+                linear-gradient(160deg, #f8fbff 0%, #eff6ff 55%, #e0ecff 100%);
+}
+.mat-scene-blueprint .mat-scene-bg {
+    background:
+        linear-gradient(rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 50%, rgba(125, 211, 252, 0.26) 0%, transparent 60%),
+        linear-gradient(145deg, #f8fbff 0%, #e6f7ff 100%);
+    background-size: 40px 40px, 40px 40px, auto, auto;
+}
+.mat-scene-main .mat-scene-bg {
+    background: radial-gradient(ellipse at 50% 70%, rgba(45, 212, 191, 0.24) 0%, transparent 60%),
+                linear-gradient(155deg, #f8fbff 0%, #e8fcf7 100%);
+}
+.mat-scene-branches .mat-scene-bg {
+    background: radial-gradient(ellipse at 40% 50%, rgba(134, 239, 172, 0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 60%, rgba(187, 247, 208, 0.24) 0%, transparent 40%),
+                linear-gradient(150deg, #f8fbff 0%, #ecfdf3 100%);
+}
+.mat-scene-polish .mat-scene-bg {
+    background: radial-gradient(ellipse at 50% 50%, rgba(252, 211, 77, 0.26) 0%, transparent 55%),
+                linear-gradient(160deg, #fffdf5 0%, #fffaeb 100%);
+}
+.mat-scene-assemble .mat-scene-bg {
+    background: radial-gradient(ellipse at 50% 40%, rgba(196, 181, 253, 0.35) 0%, transparent 55%),
+                linear-gradient(155deg, #f8fbff 0%, #f3ecff 100%);
+}
+.mat-scene-complete .mat-scene-bg {
+    background: radial-gradient(ellipse at 50% 50%, rgba(134, 239, 172, 0.28) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 70%, rgba(147, 197, 253, 0.24) 0%, transparent 40%),
+                linear-gradient(150deg, #f8fbff 0%, #eef6ff 100%);
+}
+
+/* ---- Product counters bar ---- */
+.mat-theater-narration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px 16px;
+    background: rgba(255, 255, 255, 0.94);
+    border-top: 1px solid #dbe5ee;
+    flex-shrink: 0;
+}
+
+/* ---- Theater counters ---- */
+.mat-theater-counters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.mat-theater-counters .mat-node-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 138px;
+    padding: 10px 16px;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    background: #f8fbff;
+    box-shadow: 0 10px 24px -22px rgba(15, 23, 42, 0.45);
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mat-theater-counters .mat-node-counter.is-bump {
+    animation: matCounterBump 0.5s ease;
+}
+
+.mat-theater-counters .mat-counter-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.mat-theater-counters .mat-node-counter--main { border-color: rgba(59, 130, 246, 0.3); }
+.mat-theater-counters .mat-node-counter--main .mat-counter-dot { background: #3b82f6; }
+.mat-theater-counters .mat-node-counter--main .mat-counter-value { color: #1d4ed8; }
+
+.mat-theater-counters .mat-node-counter--variant { border-color: rgba(34, 197, 94, 0.3); }
+.mat-theater-counters .mat-node-counter--variant .mat-counter-dot { background: #22c55e; }
+.mat-theater-counters .mat-node-counter--variant .mat-counter-value { color: #15803d; }
+
+.mat-theater-counters .mat-node-counter--scaffold { border-color: rgba(245, 158, 11, 0.3); }
+.mat-theater-counters .mat-node-counter--scaffold .mat-counter-dot { background: #f59e0b; }
+.mat-theater-counters .mat-node-counter--scaffold .mat-counter-value { color: #b45309; }
+
+.mat-theater-counters .mat-counter-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.mat-theater-counters .mat-counter-value {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   Scene-specific work area styles
+   ========================================================= */
+
+/* Act 1: Analysis — floating document cards */
+.mat-doc-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    backdrop-filter: blur(8px);
+    font-size: 28px;
+    opacity: 0;
+    transform: translateY(40px);
+}
+.mat-scene-analysis.is-active .mat-doc-card { animation: matDocFloat 0.6s ease forwards; }
+.mat-scene-analysis.is-active .mat-doc-card-1 { animation-delay: 0.2s; }
+.mat-scene-analysis.is-active .mat-doc-card-2 { animation-delay: 0.5s; }
+.mat-scene-analysis.is-active .mat-doc-card-3 { animation-delay: 0.8s; }
+.mat-doc-tag {
+    font-size: 11px;
+    color: #1d4ed8;
+    font-weight: 800;
+    min-height: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.mat-doc-card.has-tag .mat-doc-tag { opacity: 1; }
+
+/* Act 2: Blueprint — SVG path drawing */
+.mat-blueprint-svg {
+    width: 100%;
+    max-width: 400px;
+    height: 120px;
+}
+.mat-blueprint-path {
     fill: none;
-    stroke: #cbd5e1;
-    stroke-width: 1.2;
-    stroke-dasharray: 4 9;
-    opacity: 0.36;
+    stroke: rgba(14, 165, 233, 0.3);
+    stroke-width: 2.5;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    stroke-linecap: round;
+}
+.mat-scene-blueprint.is-active .mat-blueprint-path {
+    animation: matPathDraw 3s ease forwards 0.3s;
+}
+.mat-blueprint-dot {
+    fill: rgba(14, 165, 233, 0.15);
+    stroke: #0ea5e9;
+    stroke-width: 2;
+    opacity: 0;
+}
+.mat-scene-blueprint.is-active .mat-bp-dot-1 { animation: matDotAppear 0.4s ease forwards 0.6s; }
+.mat-scene-blueprint.is-active .mat-bp-dot-2 { animation: matDotAppear 0.4s ease forwards 1.2s; }
+.mat-scene-blueprint.is-active .mat-bp-dot-3 { animation: matDotAppear 0.4s ease forwards 1.8s; }
+.mat-scene-blueprint.is-active .mat-bp-dot-4 { animation: matDotAppear 0.4s ease forwards 2.3s; }
+.mat-scene-blueprint.is-active .mat-bp-dot-5 { animation: matDotAppear 0.4s ease forwards 2.8s; }
+.mat-blueprint-path.is-solid {
+    stroke: #0ea5e9;
+    stroke-dashoffset: 0;
+    animation: none;
+    filter: drop-shadow(0 0 6px rgba(14, 165, 233, 0.5));
 }
 
-.mat-growth-edge {
+/* Act 3: Main — building blocks */
+.mat-blocks-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+.mat-block-item {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, rgba(20, 184, 166, 0.25), rgba(20, 184, 166, 0.08));
+    border: 1.5px solid rgba(20, 184, 166, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f766e;
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    animation: matBlockRise 0.5s ease forwards;
+}
+.mat-block-item.is-labeled {
+    background: linear-gradient(145deg, rgba(204, 251, 241, 0.95), rgba(153, 246, 228, 0.72));
+    border-color: #14b8a6;
+    color: #0f766e;
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.26);
+}
+
+/* Act 4: Branches — tree trunk + branches */
+.mat-tree-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-height: 130px;
+    position: relative;
+    width: 100%;
+}
+.mat-tree-trunk {
+    width: 4px;
+    height: 0;
+    background: linear-gradient(180deg, #22c55e, #15803d);
+    border-radius: 4px;
+    transition: height 0.6s ease;
+    position: relative;
+}
+.mat-scene-branches.is-active .mat-tree-trunk {
+    height: 80px;
+    animation: matTrunkGrow 0.8s ease forwards;
+}
+.mat-tree-branch {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.mat-tree-branch.is-left { right: 100%; flex-direction: row-reverse; }
+.mat-tree-branch.is-right { left: 100%; }
+.mat-tree-branch.is-grown { opacity: 1; }
+.mat-tree-branch-line {
+    width: 0;
+    height: 2px;
+    background: #4ade80;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+.mat-tree-branch.is-grown .mat-tree-branch-line { width: 36px; }
+.mat-tree-leaf {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
+}
+.mat-tree-branch.is-grown .mat-tree-leaf {
+    opacity: 1;
+    transform: scale(1);
+}
+.mat-tree-leaf.is-variant {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1.5px solid #22c55e;
+    color: #166534;
+}
+.mat-tree-leaf.is-scaffold {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1.5px solid #f59e0b;
+    color: #92400e;
+}
+
+/* Act 5: Polish — scan line + checks */
+.mat-polish-area {
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    min-height: 80px;
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+}
+.mat-scan-line {
+    position: absolute;
+    top: 0;
+    left: -10%;
+    width: 120%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+    opacity: 0;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+}
+.mat-scene-polish.is-active .mat-scan-line {
+    animation: matScanSweep 2.5s ease-in-out infinite;
+}
+.mat-polish-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+.mat-check-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    font-size: 12px;
+    color: #475569;
+    opacity: 0;
+    transform: scale(0.9);
+}
+.mat-check-item.is-checked {
+    opacity: 1;
+    transform: scale(1);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #15803d;
+    animation: matCheckPop 0.4s ease;
+}
+.mat-check-item.is-checked::before {
+    content: "✓";
+    font-weight: 800;
+    color: #22c55e;
+}
+
+/* Act 6: Assemble — pieces flying to center */
+.mat-assemble-area {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+.mat-assemble-pieces {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.mat-assemble-piece {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    opacity: 0;
+}
+.mat-scene-assemble.is-active .mat-assemble-piece {
+    animation: matPieceFly 1.2s ease forwards;
+}
+.mat-assemble-target {
+    font-size: 56px;
+    opacity: 0.3;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.mat-assemble-target.is-ready {
+    opacity: 1;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+}
+
+/* Act Final: Complete — fireworks */
+.mat-celebrate-area {
+    position: relative;
+    min-height: 80px;
+    width: 100%;
+}
+.mat-firework {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 0;
+}
+.mat-fw-1 { left: 25%; top: 30%; }
+.mat-fw-2 { left: 55%; top: 20%; }
+.mat-fw-3 { left: 75%; top: 40%; }
+.mat-scene-complete.is-active .mat-fw-1 { animation: matFirework 1.4s ease-out 0.1s infinite; --fw-color: #3b82f6; }
+.mat-scene-complete.is-active .mat-fw-2 { animation: matFirework 1.4s ease-out 0.5s infinite; --fw-color: #22c55e; }
+.mat-scene-complete.is-active .mat-fw-3 { animation: matFirework 1.4s ease-out 0.9s infinite; --fw-color: #f59e0b; }
+
+/* =========================================================
+   Theater @keyframes
+   ========================================================= */
+@keyframes matDotPulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25); }
+    50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.1); }
+}
+
+@keyframes matCharacterFloat {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes matDocFloat {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes matPathDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes matDotAppear {
+    0% { opacity: 0; r: 0; }
+    60% { opacity: 1; r: 8; }
+    100% { opacity: 1; }
+}
+
+@keyframes matBlockRise {
+    0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+    60% { opacity: 1; transform: translateY(-4px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes matTrunkGrow {
+    0% { height: 0; }
+    100% { height: 80px; }
+}
+
+@keyframes matScanSweep {
+    0% { top: -5%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 105%; opacity: 0; }
+}
+
+@keyframes matCheckPop {
+    0% { transform: scale(0.9); opacity: 0; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes matPieceFly {
+    0% { opacity: 1; transform: translate(0, 0) scale(1); }
+    70% { opacity: 0.6; }
+    100% { opacity: 0; transform: translate(var(--fly-x, 0px), var(--fly-y, 40px)) scale(0.3); }
+}
+
+@keyframes matFirework {
+    0% { opacity: 0; transform: scale(0); box-shadow: none; }
+    30% { opacity: 1; transform: scale(1); box-shadow:
+        0 0 0 0 var(--fw-color, #3b82f6),
+        20px -20px 0 0 var(--fw-color, #3b82f6),
+        -20px -20px 0 0 var(--fw-color, #3b82f6),
+        20px 20px 0 0 var(--fw-color, #3b82f6),
+        -20px 20px 0 0 var(--fw-color, #3b82f6),
+        0 -28px 0 0 var(--fw-color, #3b82f6),
+        0 28px 0 0 var(--fw-color, #3b82f6),
+        28px 0 0 0 var(--fw-color, #3b82f6),
+        -28px 0 0 0 var(--fw-color, #3b82f6);
+    }
+    100% { opacity: 0; transform: scale(1.5); box-shadow:
+        0 0 0 0 transparent,
+        40px -40px 0 -2px transparent,
+        -40px -40px 0 -2px transparent,
+        40px 40px 0 -2px transparent,
+        -40px 40px 0 -2px transparent,
+        0 -56px 0 -2px transparent,
+        0 56px 0 -2px transparent,
+        56px 0 0 -2px transparent,
+        -56px 0 0 -2px transparent;
+    }
+}
+
+@keyframes matCounterBump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+}
+
+/* =========================================================
+   Classroom workshop theater
+   ========================================================= */
+.mat-theater-stage {
+    min-height: 520px;
+    background: #f8fbff;
+}
+
+.mat-scene-content {
+    max-width: 760px;
+    padding: 42px 28px;
+}
+
+.mat-scene-title {
+    font-size: 24px;
+}
+
+.mat-scene-desc {
+    max-width: 560px;
+}
+
+.mat-scene-work {
+    min-height: 210px;
+    margin-top: 18px;
+}
+
+.mat-workshop-sign {
+    width: 112px;
+    height: 56px;
+    border: 2px solid #cbd5e1;
+    border-radius: 14px 14px 6px 6px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(226, 232, 240, 0.62)),
+        repeating-linear-gradient(90deg, transparent 0 16px, rgba(148, 163, 184, 0.16) 16px 18px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    box-shadow: 0 18px 36px -28px rgba(15, 23, 42, 0.45);
+}
+
+.mat-sign-light {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.12);
+    animation: matSignPulse 1.8s ease-in-out infinite;
+}
+
+.mat-sign-light:nth-child(2) {
+    background: #0ea5e9;
+    box-shadow: 0 0 0 5px rgba(14, 165, 233, 0.12);
+    animation-delay: 0.2s;
+}
+
+.mat-sign-light:nth-child(3) {
+    background: #f59e0b;
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.12);
+    animation-delay: 0.4s;
+}
+
+.mat-workshop-idle {
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mat-workbench {
+    width: min(520px, 100%);
+    height: 92px;
+    border: 1px solid rgba(148, 163, 184, 0.36);
+    border-radius: 16px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.88)),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.16), rgba(20, 184, 166, 0.12), rgba(245, 158, 11, 0.12));
+    position: relative;
+    overflow: hidden;
+}
+
+.mat-workbench::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 20px;
+    height: 8px;
+    border-radius: 999px;
+    background: #94a3b8;
+}
+
+.mat-workbench-tool {
+    position: absolute;
+    top: 28px;
+    width: 54px;
+    height: 28px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 12px 22px -18px rgba(15, 23, 42, 0.65);
+    animation: matToolSlide 3.2s ease-in-out infinite;
+}
+
+.mat-workbench-tool:nth-child(1) { left: 18%; --tool-shift: 18px; }
+.mat-workbench-tool:nth-child(2) { left: 44%; --tool-shift: -14px; animation-delay: 0.35s; }
+.mat-workbench-tool:nth-child(3) { left: 68%; --tool-shift: 22px; animation-delay: 0.7s; }
+
+.mat-workshop-queue {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.mat-workshop-queue span {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mat-analysis-workshop {
+    gap: 28px;
+}
+
+.mat-intel-desk {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(88px, 1fr));
+    gap: 14px;
+    width: min(430px, 100%);
+}
+
+.mat-intel-card {
+    min-height: 122px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    box-shadow: 0 20px 34px -30px rgba(30, 64, 175, 0.5);
+    font-size: 12px;
+    transform: translateY(28px) rotate(var(--card-tilt, -2deg));
+}
+
+.mat-intel-card:nth-child(2) { --card-tilt: 1deg; }
+.mat-intel-card:nth-child(3) { --card-tilt: -1deg; }
+
+.mat-doc-lines {
+    display: block;
+    width: 100%;
+    height: 58px;
+    border-radius: 8px;
+    background:
+        linear-gradient(#cbd5e1 0 0) 12px 12px / 60% 4px no-repeat,
+        linear-gradient(#e2e8f0 0 0) 12px 26px / 78% 4px no-repeat,
+        linear-gradient(#e2e8f0 0 0) 12px 40px / 48% 4px no-repeat,
+        #f8fafc;
+}
+
+.mat-doc-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    margin-top: 10px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    line-height: 1.3;
+    word-break: break-word;
+    transform: rotate(-1deg) scale(0.92);
+}
+
+.mat-doc-card.has-tag .mat-doc-tag {
+    animation: matNotePop 0.38s ease forwards;
+}
+
+.mat-observation-lens {
+    width: 98px;
+    height: 98px;
+    border: 10px solid rgba(37, 99, 235, 0.82);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: inset 0 0 26px rgba(147, 197, 253, 0.55), 0 18px 36px -28px rgba(30, 64, 175, 0.7);
+}
+
+.mat-observation-lens::after {
+    content: "";
+    position: absolute;
+    width: 54px;
+    height: 12px;
+    right: -44px;
+    bottom: -18px;
+    border-radius: 999px;
+    background: #1d4ed8;
+    transform: rotate(42deg);
+}
+
+.mat-scene-analysis.is-active .mat-observation-lens {
+    animation: matLensScan 2.4s ease-in-out infinite;
+}
+
+.mat-blueprint-board {
+    width: min(620px, 100%);
+    min-height: 220px;
+    border: 1px solid rgba(14, 165, 233, 0.28);
+    border-radius: 18px;
+    background:
+        linear-gradient(rgba(14, 165, 233, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.10) 1px, transparent 1px),
+        rgba(240, 249, 255, 0.86);
+    background-size: 28px 28px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 22px 44px -34px rgba(14, 165, 233, 0.55);
+}
+
+.mat-blueprint-svg {
+    width: 100%;
+    max-width: 560px;
+    height: 190px;
+}
+
+.mat-route-shadow,
+.mat-route-line {
     fill: none;
     stroke-linecap: round;
-    stroke-linejoin: round;
+}
+
+.mat-route-shadow {
+    stroke: rgba(15, 23, 42, 0.08);
+    stroke-width: 14;
+}
+
+.mat-route-line {
+    stroke: #0ea5e9;
     stroke-width: 4;
+    stroke-dasharray: 720;
+    stroke-dashoffset: 720;
+    filter: drop-shadow(0 0 6px rgba(14, 165, 233, 0.28));
+}
+
+.mat-scene-blueprint.is-active .mat-route-line,
+.mat-route-line.is-solid {
+    animation: matRouteTrace 2.4s ease forwards;
+}
+
+.mat-route-line.is-solid {
+    stroke-dashoffset: 0;
+}
+
+.mat-route-stop {
     opacity: 0;
-    stroke-dasharray: 14 13;
-    transition: opacity 0.35s ease;
-    animation: matGrowthFlow 1.8s linear infinite;
 }
 
-.mat-growth-edge-main {
-    stroke: url(#matGrowthMain);
-}
-
-.mat-growth-edge-variant {
-    stroke: #22c55e;
-}
-
-.mat-growth-edge-scaffold {
-    stroke: #f59e0b;
-}
-
-.mat-growth-edge-merge {
-    stroke: #2563eb;
-    stroke-width: 2.4;
-    stroke-dasharray: 9 13;
-}
-
-.mat-growth-node {
-    opacity: 0.16;
-    transition: opacity 0.32s ease, filter 0.32s ease;
-}
-
-.mat-growth-node circle {
+.mat-route-stop circle {
     fill: #ffffff;
-    stroke: #94a3b8;
-    stroke-width: 2;
+    stroke: #0ea5e9;
+    stroke-width: 3;
 }
 
-.mat-growth-node text {
-    dominant-baseline: middle;
-    fill: #334155;
+.mat-route-stop text {
+    fill: #0369a1;
     font-size: 13px;
     font-weight: 800;
     text-anchor: middle;
 }
 
-.mat-growth-node-main circle {
-    stroke: #2563eb;
+.mat-scene-blueprint.is-active .mat-route-stop,
+.mat-route-stop.is-plotted {
+    animation: matStopFade 0.42s ease forwards;
 }
 
-.mat-growth-node-variant circle {
-    stroke: #22c55e;
-}
-
-.mat-growth-node-scaffold circle {
-    stroke: #f59e0b;
-}
-
-.mat-growth-scan {
-    fill: none;
-    stroke: #06b6d4;
-    stroke-width: 2;
-    stroke-dasharray: 16 14;
-    opacity: 0;
-    animation: matGrowthScan 1.4s ease-in-out infinite;
-}
-
-.mat-generation-status-card {
-    display: flex;
+.mat-main-yard {
     flex-direction: column;
-    min-height: 470px;
-    padding: 20px;
-    border: 1px solid #dbe5ee;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.86);
-    box-shadow: 0 18px 44px -38px rgba(15, 23, 42, 0.5);
+    gap: 24px;
+    width: min(680px, 100%);
 }
 
-.mat-current-badge {
-    display: inline-flex;
+.mat-crane {
+    width: min(360px, 90%);
+    height: 112px;
+    position: relative;
+}
+
+.mat-crane-mast,
+.mat-crane-arm,
+.mat-crane-cable,
+.mat-crane-hook {
+    position: absolute;
+    display: block;
+    background: #f59e0b;
+}
+
+.mat-crane-mast {
+    left: 74px;
+    top: 18px;
+    width: 12px;
+    height: 94px;
+    background: repeating-linear-gradient(45deg, #f59e0b 0 8px, #fde68a 8px 14px);
+}
+
+.mat-crane-arm {
+    left: 72px;
+    top: 18px;
+    width: 228px;
+    height: 12px;
+    background: repeating-linear-gradient(135deg, #f59e0b 0 8px, #fde68a 8px 14px);
+}
+
+.mat-crane-cable {
+    left: 262px;
+    top: 30px;
+    width: 3px;
+    height: 52px;
+    background: #64748b;
+    animation: matCraneHook 2.8s ease-in-out infinite;
+}
+
+.mat-crane-hook {
+    left: 254px;
+    top: 80px;
+    width: 20px;
+    height: 12px;
+    border: 3px solid #64748b;
+    border-top: 0;
+    border-radius: 0 0 12px 12px;
+    background: transparent;
+    animation: matCraneHook 2.8s ease-in-out infinite;
+}
+
+.mat-main-track {
+    width: 100%;
+    min-height: 96px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    color: #fff;
-    background: var(--el-color-primary);
-    font-weight: 700;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 18px;
+    border-radius: 18px;
+    background:
+        linear-gradient(90deg, rgba(20, 184, 166, 0.16), rgba(59, 130, 246, 0.12)),
+        rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(20, 184, 166, 0.26);
 }
 
-.mat-generation-status-card h3 {
-    margin: 14px 0 8px;
-    color: #0f172a;
-    font-size: 20px;
-    line-height: 1.35;
-}
-
-.mat-current-agent-message {
-    min-height: 44px;
-    font-size: 14px;
-    color: var(--el-text-color-regular);
-    margin: 0 0 20px;
-    line-height: 1.65;
-}
-
-.mat-generation-progress-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 8px;
-    color: #475569;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.mat-generation-progress-row strong {
+.mat-main-node {
+    width: 72px;
+    height: 58px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #ccfbf1, #99f6e4);
+    border: 2px solid #14b8a6;
     color: #0f766e;
-    font-size: 18px;
-    font-variant-numeric: tabular-nums;
-}
-
-.mat-generation-phase-list {
     display: grid;
-    gap: 9px;
-    margin-top: auto;
-    padding-top: 18px;
-}
-
-.mat-generation-phase-item {
+    place-items: center;
+    font-size: 18px;
+    font-weight: 900;
+    opacity: 0;
+    transform: translateY(-34px) scale(0.86);
     position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 34px;
-    padding: 7px 10px 7px 34px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    color: #64748b;
-    background: #f8fafc;
-    font-size: 13px;
-    font-weight: 700;
-    transition: color 0.2s, background 0.2s, border-color 0.2s;
+    animation: matBeamDrop 0.58s cubic-bezier(.2, .9, .24, 1.18) forwards;
+    box-shadow: 0 18px 30px -24px rgba(15, 118, 110, 0.65);
 }
 
-.mat-generation-phase-item::before {
+.mat-main-node::after {
     content: "";
     position: absolute;
-    left: 12px;
+    left: 100%;
     top: 50%;
-    width: 10px;
-    height: 10px;
-    margin-top: -5px;
-    border-radius: 50%;
-    background: #cbd5e1;
-}
-
-.mat-generation-phase-item.is-active {
-    border-color: #5eead4;
-    color: #0f766e;
-    background: #f0fdfa;
-}
-
-.mat-generation-phase-item.is-active::before {
+    width: 14px;
+    height: 3px;
     background: #14b8a6;
-    box-shadow: 0 0 0 5px rgba(20, 184, 166, 0.12);
-    animation: matPulseDot 1.2s ease-in-out infinite;
+    transform: translateY(-50%);
 }
 
-.mat-generation-phase-item.is-done {
-    border-color: #bbf7d0;
+.mat-main-node:last-child::after {
+    display: none;
+}
+
+.mat-main-node-pin {
+    position: absolute;
+    top: -8px;
+    width: 18px;
+    height: 8px;
+    border-radius: 8px 8px 0 0;
+    background: #0f766e;
+}
+
+.mat-branch-lab {
+    width: min(680px, 100%);
+    flex-direction: column;
+    gap: 18px;
+}
+
+.mat-branch-spine {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(34, 197, 94, 0.26);
+}
+
+.mat-branch-spine span {
+    width: 48px;
+    height: 38px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.mat-branch-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.mat-branch-card {
+    min-width: 78px;
+    min-height: 56px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    display: grid;
+    place-items: center;
+    gap: 1px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(-16px) scale(0.88);
+    animation: matBranchCardPop 0.46s ease forwards;
+}
+
+.mat-branch-card::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    width: 2px;
+    height: 14px;
+    background: currentColor;
+    opacity: 0.42;
+}
+
+.mat-branch-card strong {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.mat-branch-card small {
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.mat-branch-card.is-variant {
     color: #15803d;
     background: #f0fdf4;
+    border-color: #86efac;
 }
 
-.mat-generation-phase-item.is-done::before {
-    background: #22c55e;
+.mat-branch-card.is-scaffold {
+    color: #b45309;
+    background: #fffbeb;
+    border-color: #fcd34d;
 }
 
-.mat-generation-shell.mat-generation-state-error .mat-current-badge,
-.mat-generation-shell.mat-generation-state-cancelled .mat-current-badge {
-    background: #ef4444;
+.mat-quality-bench {
+    width: min(620px, 100%);
+    min-height: 230px;
+    overflow: visible;
 }
 
-.mat-generation-shell.mat-generation-state-error .mat-generation-progress-row strong,
-.mat-generation-shell.mat-generation-state-cancelled .mat-generation-progress-row strong {
-    color: #dc2626;
+.mat-quality-paper {
+    width: min(420px, 100%);
+    min-height: 116px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    box-shadow: 0 22px 42px -34px rgba(146, 64, 14, 0.55);
+    display: grid;
+    gap: 10px;
+    padding: 22px;
 }
 
-.mat-generation-shell.mat-generation-state-done .mat-current-badge {
-    background: #16a34a;
+.mat-quality-paper span {
+    height: 8px;
+    border-radius: 999px;
+    background: #fde68a;
 }
 
-.mat-generation-shell.mat-generation-state-done .mat-generation-progress-row strong {
-    color: #16a34a;
+.mat-quality-paper span:nth-child(2) { width: 82%; background: #fed7aa; }
+.mat-quality-paper span:nth-child(3) { width: 64%; background: #fde68a; }
+.mat-quality-paper span:nth-child(4) { width: 74%; background: #fed7aa; }
+
+.mat-quality-check {
+    background: #ffffff;
 }
 
-.mat-generation-phase-analysis .mat-node-main-1,
-.mat-generation-phase-blueprint .mat-node-main-1,
-.mat-generation-phase-blueprint .mat-node-main-2,
-.mat-generation-phase-main .mat-node-main-1,
-.mat-generation-phase-main .mat-node-main-2,
-.mat-generation-phase-main .mat-node-main-3,
-.mat-generation-phase-branches .mat-node-main-1,
-.mat-generation-phase-branches .mat-node-main-2,
-.mat-generation-phase-branches .mat-node-main-3,
-.mat-generation-phase-branches .mat-node-variant-1,
-.mat-generation-phase-branches .mat-node-variant-2,
-.mat-generation-phase-branches .mat-node-scaffold-1,
-.mat-generation-phase-branches .mat-node-scaffold-2,
-.mat-generation-phase-polish .mat-growth-node,
-.mat-generation-phase-assemble .mat-growth-node,
-.mat-generation-state-done .mat-growth-node {
-    opacity: 1;
-    filter: url(#matGrowthGlow);
+.mat-quality-stamp {
+    position: absolute;
+    right: 34px;
+    bottom: 16px;
+    width: 86px;
+    height: 86px;
+    border: 3px solid rgba(245, 158, 11, 0.82);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #b45309;
+    font-size: 15px;
+    font-weight: 900;
+    transform: rotate(-14deg) scale(0.82);
+    opacity: 0.28;
+    background: rgba(255, 251, 235, 0.82);
 }
 
-.mat-generation-phase-blueprint .mat-edge-m1,
-.mat-generation-phase-main .mat-edge-m1,
-.mat-generation-phase-main .mat-edge-m2,
-.mat-generation-phase-branches .mat-edge-m1,
-.mat-generation-phase-branches .mat-edge-m2,
-.mat-generation-phase-branches .mat-edge-v1,
-.mat-generation-phase-branches .mat-edge-v2,
-.mat-generation-phase-branches .mat-edge-s1,
-.mat-generation-phase-branches .mat-edge-s2,
-.mat-generation-phase-polish .mat-edge-m1,
-.mat-generation-phase-polish .mat-edge-m2,
-.mat-generation-phase-polish .mat-edge-m3,
-.mat-generation-phase-polish .mat-edge-v1,
-.mat-generation-phase-polish .mat-edge-v2,
-.mat-generation-phase-polish .mat-edge-s1,
-.mat-generation-phase-polish .mat-edge-s2,
-.mat-generation-phase-assemble .mat-growth-edge,
-.mat-generation-state-done .mat-growth-edge {
-    opacity: 0.92;
-}
-
-.mat-generation-phase-polish .mat-growth-scan {
-    opacity: 0.85;
-}
-
-.mat-generation-phase-assemble .mat-edge-merge,
-.mat-generation-state-done .mat-edge-merge {
+.mat-quality-stamp.is-active {
     opacity: 0.72;
+    transform: rotate(-14deg) scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes matGrowthFlow {
-    from { stroke-dashoffset: 0; }
-    to { stroke-dashoffset: -54; }
+.mat-quality-stamp.is-passed {
+    border-color: #22c55e;
+    color: #15803d;
+    background: rgba(240, 253, 244, 0.9);
 }
 
-@keyframes matGrowthSheen {
-    0% { transform: translateX(-110%); }
-    46%, 100% { transform: translateX(110%); }
+.mat-assemble-area {
+    width: min(620px, 100%);
 }
 
-@keyframes matGrowthScan {
-    0%, 100% {
-        stroke-dashoffset: 0;
-        transform: translateY(0);
+.mat-assemble-pieces {
+    min-height: 48px;
+}
+
+.mat-assemble-piece {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    box-shadow: 0 10px 18px -14px rgba(15, 23, 42, 0.55);
+}
+
+.mat-assemble-target {
+    width: min(340px, 88vw);
+    height: 190px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+        #ffffff;
+    background-size: 22px 22px;
+    border: 1px solid rgba(139, 92, 246, 0.26);
+    opacity: 0.55;
+    transform: scale(0.96);
+    transition: opacity 0.45s ease, transform 0.45s ease, box-shadow 0.45s ease;
+}
+
+.mat-assemble-target.is-ready {
+    opacity: 1;
+    transform: scale(1.02);
+    box-shadow: 0 26px 50px -34px rgba(109, 40, 217, 0.65);
+}
+
+.mat-mini-map {
+    width: 88%;
+    height: 76%;
+}
+
+.mat-mini-edge {
+    fill: none;
+    stroke: #8b5cf6;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+}
+
+.mat-assemble-target.is-ready .mat-mini-edge {
+    animation: matRouteTrace 0.8s ease forwards;
+}
+
+.mat-mini-node {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.mat-mini-node-main { fill: #dbeafe; stroke: #3b82f6; stroke-width: 3; }
+.mat-mini-node-variant { fill: #dcfce7; stroke: #22c55e; stroke-width: 2; }
+.mat-mini-node-scaffold { fill: #fef3c7; stroke: #f59e0b; stroke-width: 2; }
+
+.mat-assemble-target.is-ready .mat-mini-node {
+    animation: matStopPlot 0.42s ease forwards;
+}
+
+.mat-complete-mark {
+    width: 94px;
+    height: 94px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #dcfce7;
+    border: 3px solid #22c55e;
+    color: #15803d;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 22px 42px -28px rgba(21, 128, 61, 0.62);
+}
+
+@keyframes matSignPulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.18); opacity: 1; }
+}
+
+@keyframes matToolSlide {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(var(--tool-shift, 18px)); }
+}
+
+@keyframes matNotePop {
+    0% { opacity: 0; transform: rotate(-4deg) scale(0.82); }
+    70% { transform: rotate(-1deg) scale(1.06); }
+    100% { opacity: 1; transform: rotate(-1deg) scale(1); }
+}
+
+@keyframes matLensScan {
+    0%, 100% { transform: translate(0, 0) rotate(-3deg); }
+    50% { transform: translate(-12px, 8px) rotate(3deg); }
+}
+
+@keyframes matRouteTrace {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes matStopPlot {
+    0% { opacity: 0; transform: scale(0.78); }
+    70% { opacity: 1; transform: scale(1.16); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes matStopFade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes matCraneHook {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-32px); }
+}
+
+@keyframes matBeamDrop {
+    0% { opacity: 0; transform: translateY(-34px) scale(0.86); }
+    68% { opacity: 1; transform: translateY(4px) scale(1.04); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes matBranchCardPop {
+    0% { opacity: 0; transform: translateY(-16px) scale(0.88); }
+    70% { opacity: 1; transform: translateY(3px) scale(1.04); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mat-sign-light,
+    .mat-workbench-tool,
+    .mat-scene,
+    .mat-observation-lens,
+    .mat-crane-cable,
+    .mat-crane-hook,
+    .mat-scan-line,
+    .mat-firework,
+    .mat-dot-step.is-active .mat-dot-circle {
+        animation: none !important;
     }
-    50% {
-        stroke-dashoffset: -40;
-        transform: translateY(8px);
+
+    .mat-scene,
+    .mat-route-line,
+    .mat-mini-edge,
+    .mat-main-node,
+    .mat-branch-card,
+    .mat-route-stop,
+    .mat-mini-node {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }
+
+/* Old generation-head/body styles removed — replaced by mat-theater */
+
+/* Old relay bar + canvas + status card styles removed — replaced by mat-theater scenes */
+
+/* Old relay, avatar, bubble, canvas, status-card, node-counter, celebrate CSS removed — replaced by mat-theater */
 
 /* Input / Output 双栏 */
 .mat-current-agent-io {
@@ -3087,37 +4118,51 @@
         margin-left: 12px;
     }
 
-    .mat-generation-shell {
+    /* Theater responsive */
+    .mat-theater {
         min-height: auto;
-        padding: 14px;
     }
 
-    .mat-generation-head {
+    .mat-theater-topbar {
         flex-direction: column;
-        gap: 12px;
-        margin-bottom: 14px;
+        gap: 10px;
+        padding: 10px 14px;
     }
 
-    .mat-generation-head h2 {
-        font-size: 20px;
+    .mat-theater-dots {
+        overflow-x: auto;
     }
 
-    .mat-generation-clock {
+    .mat-dot-label {
+        font-size: 9px;
+    }
+
+    .mat-theater-stage {
+        min-height: 320px;
+    }
+
+    .mat-scene-character {
+        font-size: 52px;
+    }
+
+    .mat-scene-title {
+        font-size: 18px;
+    }
+
+    .mat-theater-narration {
+        padding: 12px 14px;
+    }
+
+    .mat-theater-counters {
         width: 100%;
+        justify-content: center;
+        gap: 8px;
     }
 
-    .mat-generation-body {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    .mat-map-growth-stage {
-        min-height: 310px;
-    }
-
-    .mat-generation-status-card {
-        min-height: auto;
-        padding: 16px;
+    .mat-theater-counters .mat-node-counter {
+        flex: 1 1 110px;
+        min-width: 0;
+        padding: 9px 10px;
     }
 
     .mat-log-io-grid {
@@ -3238,4 +4283,270 @@
 
 .mat-nav-entry-btn:active {
     transform: translateY(0);
+}
+
+/* ---- Visual Aid in Text View ---- */
+.mat-visual-aid-section {
+    margin-bottom: 12px;
+    transition: opacity 0.2s;
+}
+
+.mat-visual-aid-preview {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.mat-visual-aid-thumb {
+    width: 180px;
+    max-height: 160px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mat-visual-aid-thumb:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.mat-visual-aid-interactive-preview {
+    align-items: stretch;
+}
+
+.mat-visual-aid-frame {
+    width: min(360px, 100%);
+    height: 260px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.mat-visual-aid-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mat-visual-aid-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.mat-visual-aid-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.mat-visual-aid-delete:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
+.mat-visual-aid-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+    background: #f8fafc;
+}
+
+.mat-visual-aid-prompt-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.mat-visual-aid-prompt-text svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #94a3b8;
+}
+
+/* ---- Text View Lightbox ---- */
+.mat-lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mat-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.mat-lightbox-content {
+    position: relative;
+    z-index: 1;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.mat-lightbox-img {
+    display: block;
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    object-fit: contain;
+    background: #fff;
+}
+
+.mat-lightbox-frame {
+    display: block;
+    width: min(1120px, 92vw);
+    height: min(760px, 84vh);
+    border: 0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.mat-lightbox-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    color: #334155;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.15s, color 0.15s;
+}
+
+.mat-lightbox-close:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .mat-theater-stage {
+        min-height: 520px;
+    }
+
+    .mat-scene-content {
+        padding: 30px 16px;
+        max-width: 100%;
+    }
+
+    .mat-scene-work {
+        min-height: 220px;
+    }
+
+    .mat-analysis-workshop {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .mat-intel-desk {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .mat-intel-card {
+        min-height: 106px;
+        padding: 10px;
+    }
+
+    .mat-observation-lens {
+        width: 70px;
+        height: 70px;
+        border-width: 7px;
+    }
+
+    .mat-observation-lens::after {
+        width: 38px;
+        right: -30px;
+        bottom: -13px;
+    }
+
+    .mat-blueprint-board {
+        min-height: 180px;
+    }
+
+    .mat-blueprint-svg {
+        height: 156px;
+    }
+
+    .mat-crane {
+        height: 86px;
+        transform: scale(0.82);
+        transform-origin: center bottom;
+    }
+
+    .mat-main-track {
+        gap: 8px;
+        padding: 14px 10px;
+    }
+
+    .mat-main-node {
+        width: 56px;
+        height: 48px;
+        font-size: 15px;
+    }
+
+    .mat-main-node::after {
+        width: 9px;
+    }
+
+    .mat-branch-spine {
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .mat-branch-spine span {
+        width: 42px;
+        height: 34px;
+    }
+
+    .mat-branch-card {
+        min-width: 68px;
+        min-height: 50px;
+        padding: 8px 10px;
+    }
+
+    .mat-quality-stamp {
+        right: 10px;
+        bottom: 8px;
+        width: 68px;
+        height: 68px;
+        font-size: 13px;
+    }
+
+    .mat-assemble-target {
+        height: 160px;
+    }
 }

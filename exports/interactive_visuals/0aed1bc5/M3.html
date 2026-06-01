@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>圆的面积推导：圆拼近似长方形</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            padding: 16px;
+        }
+        .container {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10), 0 4px 16px rgba(0, 0, 0, 0.06);
+            padding: 24px 28px 32px 28px;
+            max-width: 980px;
+            width: 100%;
+            transition: box-shadow 0.2s;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1a2639;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+        .header .sub {
+            font-size: 16px;
+            color: #5a6b7c;
+            background: #eef1f5;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #fafcff;
+            border-radius: 18px;
+            border: 1px solid #e6ecf3;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .canvas-wrap canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: default;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 18px 28px;
+            margin-top: 18px;
+            padding: 10px 8px 4px 8px;
+            border-top: 1px solid #eef2f7;
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .slider-group label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+        .slider-group input[type="range"] {
+            width: 180px;
+            height: 6px;
+            appearance: none;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #4a90d9 0%, #6ab0f7 100%);
+            border-radius: 4px;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #4a90d9;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.08);
+            border-color: #2c6fbf;
+        }
+        .slider-group input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #4a90d9;
+            cursor: pointer;
+        }
+        .slider-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 17px;
+            color: #1a2a3a;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-group button {
+            padding: 8px 22px;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            background: #eef2f7;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: 0.15s;
+            letter-spacing: 0.3px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        .btn-group button:hover {
+            background: #dce3ed;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .btn-group button.primary {
+            background: #4a90d9;
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 144, 217, 0.30);
+        }
+        .btn-group button.primary:hover {
+            background: #3a7bc8;
+            box-shadow: 0 6px 18px rgba(74, 144, 217, 0.35);
+        }
+        .btn-group button.active-highlight {
+            background: #f5a623;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+        }
+        .btn-group button.active-highlight:hover {
+            background: #e0961a;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 30px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed #e0e6ed;
+            font-size: 15px;
+            color: #1a2a3a;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-item .color-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .legend-item .color-box.radius-color {
+            background: #e74c3c;
+        }
+        .legend-item .color-box.circum-color {
+            background: #2e86de;
+        }
+        .hint {
+            text-align: center;
+            font-size: 14px;
+            color: #6a7b8c;
+            margin-top: 6px;
+            letter-spacing: 0.2px;
+        }
+        .hint span {
+            background: #f0f3f8;
+            padding: 2px 12px;
+            border-radius: 12px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 14px 20px 14px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .slider-group input[type="range"] {
+                width: 100px;
+            }
+            .controls {
+                gap: 12px 16px;
+            }
+            .btn-group button {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+            .legend {
+                font-size: 13px;
+                gap: 10px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧩 圆 → 近似长方形</h1>
+            <span class="sub">观察对应关系</span>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="mainCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="controls">
+            <div class="slider-group">
+                <label for="tSlider">拼合进度</label>
+                <input type="range" id="tSlider" min="0" max="1" step="0.005" value="0">
+                <span class="slider-value" id="tValue">0%</span>
+            </div>
+            <div class="btn-group">
+                <button id="playBtn" class="primary">▶ 播放</button>
+                <button id="resetBtn">⟲ 重置</button>
+                <button id="highlightBtn" class="active-highlight">✨ 高亮对应</button>
+            </div>
+        </div>
+        <div class="legend">
+            <div class="legend-item">
+                <span class="color-box radius-color"></span>
+                <span><strong>半径 r</strong> ↔ 长方形的 <strong>宽</strong></span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box circum-color"></span>
+                <span><strong>半周长 πr</strong> ↔ 长方形的 <strong>长</strong></span>
+            </div>
+        </div>
+        <div class="hint"><span>💡 拖动滑块观察拼合过程 · 点击高亮按钮显示对应关系</span></div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const wrap = document.getElementById('canvasWrap');
+
+            // ---- 尺寸适配 ----
+            let displayWidth = 0,
+                displayHeight = 0;
+            let scale = 1;
+
+            function resizeCanvas() {
+                const rect = wrap.getBoundingClientRect();
+                const w = rect.width;
+                const h = w * 3 / 4;
+                displayWidth = w;
+                displayHeight = h;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                canvas.width = 800;
+                canvas.height = 600;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // ---- 参数 ----
+            const N = 16; // 扇形数量
+            const PI = Math.PI;
+            const TAU = 2 * PI;
+            const angleStep = TAU / N;
+
+            // 颜色方案 (交替)
+            const colorsA = ['#f39c12', '#e67e22'];
+            const colorsB = ['#3498db', '#2980b9'];
+            // 用于扇形的填充色 (暖色)
+            const sliceColors = [];
+            for (let i = 0; i < N; i++) {
+                sliceColors.push(i % 2 === 0 ? '#f7dc6f' : '#f0b27a');
+            }
+            // 高亮色
+            const highlightColor = 'rgba(46, 204, 113, 0.55)';
+            const highlightStroke = '#27ae60';
+
+            // ---- 布局参数 (在 800x600 坐标系中) ----
+            const cxL = 220,
+                cyL = 300; // 左侧圆心
+            const radius = 140;
+
+            // 右侧长方形的区域
+            const rectLeft = 440,
+                rectRight = 740,
+                rectTop = 200,
+                rectBottom = 400;
+            const rectW = rectRight - rectLeft; // 300
+            const rectH = rectBottom - rectTop; // 200
+
+            // 每个切片在长方形中的宽度
+            const sliceW = rectW / (N / 2); // 每个切片宽度 300/8 = 37.5
+
+            // ---- 状态 ----
+            let t = 0; // 0~1 拼合进度
+            let highlightMode = false; // 是否高亮对应关系
+            let animId = null;
+            let isPlaying = false;
+
+            // ---- 获取 DOM 元素 ----
+            const tSlider = document.getElementById('tSlider');
+            const tValue = document.getElementById('tValue');
+            const playBtn = document.getElementById('playBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const highlightBtn = document.getElementById('highlightBtn');
+
+            // ---- 核心绘制 ----
+            function draw() {
+                ctx.clearRect(0, 0, 800, 600);
+
+                // ----- 背景辅助线 (极淡) -----
+                ctx.save();
+                ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 8]);
+                ctx.beginPath();
+                ctx.moveTo(400, 0);
+                ctx.lineTo(400, 600);
+                ctx.stroke();
+                ctx.restore();
+
+                // ----- 绘制左侧圆形 (t<1 时显示) -----
+                if (t < 1) {
+                    drawCircle(t);
+                }
+
+                // ----- 绘制右侧近似长方形 (t>0 时显示) -----
+                if (t > 0) {
+                    drawRectangle(t);
+                }
+
+                // ----- 标注与箭头 (随 t 变化透明度) -----
+                drawAnnotations(t);
+
+                // ----- 标题说明 (左下) -----
+                ctx.save();
+                ctx.fillStyle = 'rgba(26,38,57,0.7)';
+                ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillText('← 圆 (分成' + N + '个扇形)', 20, 575);
+                ctx.fillText('近似长方形 →', 620, 575);
+                ctx.restore();
+            }
+
+            // ---- 绘制圆形 (t 影响透明度/位置) ----
+            function drawCircle(tVal) {
+                const alpha = 1 - tVal * 0.85;
+                if (alpha < 0.01) return;
+
+                // 每个扇形从圆形位置向长方形位置偏移
+                // t 越大，扇形越向外扩散
+                for (let i = 0; i < N; i++) {
+                    const startA = i * angleStep - PI / 2;
+                    const endA = (i + 1) * angleStep - PI / 2;
+                    const midA = (startA + endA) / 2;
+
+                    // 偏移量：沿径向向外，t 越大偏移越大
+                    const drift = tVal * 18;
+                    const dx = Math.cos(midA) * drift;
+                    const dy = Math.sin(midA) * drift;
+
+                    // 透明度
+                    const sliceAlpha = Math.max(0, 1 - tVal * 0.9);
+                    if (sliceAlpha < 0.01) continue;
+
+                    const color = sliceColors[i];
+                    ctx.save();
+                    ctx.globalAlpha = sliceAlpha;
+
+                    // 绘制扇形
+                    ctx.beginPath();
+                    ctx.moveTo(cxL + dx, cyL + dy);
+                    ctx.arc(cxL + dx, cyL + dy, radius, startA, endA);
+                    ctx.closePath();
+
+                    // 填充
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(44,62,80,0.25)';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+
+                    // 如果高亮模式，给扇形加半透明边框
+                    if (highlightMode) {
+                        ctx.strokeStyle = 'rgba(46,204,113,0.2)';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
+                // 绘制圆心点 + 半径标注 (仅在 t 较小时)
+                if (tVal < 0.4) {
+                    const alphaR = 1 - tVal * 2.5;
+                    if (alphaR > 0.1) {
+                        ctx.save();
+                        ctx.globalAlpha = alphaR;
+                        // 圆心
+                        ctx.beginPath();
+                        ctx.arc(cxL, cyL, 4, 0, TAU);
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.fill();
+
+                        // 半径线 (红色)
+                        ctx.beginPath();
+                        ctx.moveTo(cxL, cyL);
+                        const rAngle = -PI / 4;
+                        const rx = cxL + radius * Math.cos(rAngle);
+                        const ry = cyL + radius * Math.sin(rAngle);
+                        ctx.lineTo(rx, ry);
+                        ctx.strokeStyle = '#e74c3c';
+                        ctx.lineWidth = 2.5;
+                        ctx.stroke();
+
+                        // 半径标签
+                        ctx.fillStyle = '#e74c3c';
+                        ctx.font = 'bold 20px "PingFang SC","Microsoft YaHei",sans-serif';
+                        const labelAngle = rAngle;
+                        const lx = cxL + radius * 0.55 * Math.cos(labelAngle);
+                        const ly = cyL + radius * 0.55 * Math.sin(labelAngle);
+                        ctx.fillText('r', lx - 8, ly + 7);
+
+                        // 弧线标注 半周长 (蓝色)
+                        const arcStart = -PI / 2 - 0.3;
+                        const arcEnd = PI / 2 + 0.3;
+                        ctx.beginPath();
+                        ctx.arc(cxL, cyL, radius + 14, arcStart, arcEnd);
+                        ctx.strokeStyle = '#2e86de';
+                        ctx.lineWidth = 2.0;
+                        ctx.setLineDash([5, 6]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        // 半周长标签
+                        ctx.fillStyle = '#2e86de';
+                        ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif';
+                        ctx.fillText('C/2 = πr', cxL - 32, cyL - radius - 18);
+                        ctx.restore();
+                    }
+                }
+            }
+
+            // ---- 绘制近似长方形 (t 控制切片出现) ----
+            function drawRectangle(tVal) {
+                const alpha = Math.min(1, tVal * 1.2);
+                if (alpha < 0.01) return;
+
+                // 长方形的轮廓 (淡)
+                ctx.save();
+                ctx.globalAlpha = alpha * 0.3;
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 6]);
+                ctx.strokeRect(rectLeft, rectTop, rectW, rectH);
+                ctx.setLineDash([]);
+                ctx.restore();
+
+                // 绘制每个切片 (梯形)
+                const halfN = N / 2;
+                for let(i = 0; i < N; i++) {
+                    const sliceAlpha = Math.min(1, (tVal - 0.05) * 1.5);
+                    if (sliceAlpha < 0.01) continue;
+
+                    const isTop = i < halfN;
+                    const idx = isTop ? i : (i - halfN);
+                    const x0 = rectLeft + idx * sliceW;
+                    const x1 = x0 + sliceW;
+
+                    // 梯形: 上底和下底不同，形成拼合效果
+                    const shrink = 0.15;
+                    const topOff = isTop ? 0 : sliceW * shrink;
+                    const botOff = isTop ? sliceW * shrink : 0;
+
+                    let yTop, yBot;
+                    if (isTop) {
+                        yTop = rectTop;
+                        yBot = rectTop + rectH * 0.52;
+                    } else {
+                        yTop = rectTop + rectH * 0.48;
+                        yBot = rectBottom;
+                    }
+
+                    // 对边界做轻微交错
+                    const xL = x0 + (isTop ? topOff : 0);
+                    const xR = x1 - (isTop ? 0 : botOff);
+                    const xL2 = x0 + (isTop ? 0 : topOff);
+                    const xR2 = x1 - (isTop ? botOff : 0);
+
+                    ctx.save();
+                    ctx.globalAlpha = sliceAlpha;
+
+                    const color = sliceColors[i];
+                    ctx.beginPath();
+                    ctx.moveTo(xL, yTop);
+                    ctx.lineTo(xR, yTop);
+                    ctx.lineTo(xR2, yBot);
+                    ctx.lineTo(xL2, yBot);
+                    ctx.closePath();
+
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(44,62,80,0.18)';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+
+                    // 高亮模式：边框加粗
+                    if (highlightMode) {
+                        ctx.strokeStyle = 'rgba(46,204,113,0.30)';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
+                // 标注 宽 = r  和  长 = πr
+                if (tVal > 0.3) {
+                    const alphaLabel = Math.min(1, (tVal - 0.3) * 3);
+                    ctx.save();
+                    ctx.globalAlpha = alphaLabel;
+
+                    // 宽 (红色) —— 右侧边
+                    const wx = rectRight + 18;
+                    const wy1 = rectTop;
+                    const wy2 = rectBottom;
+                    ctx.beginPath();
+                    ctx.moveTo(wx - 4, wy1);
+                    ctx.lineTo(wx - 4, wy2);
+                    ctx.strokeStyle = '#e74c3c';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                    // 箭头
+                    ctx.beginPath();
+                    ctx.moveTo(wx - 4, wy1 + 6);
+                    ctx.lineTo(wx - 10, wy1 + 16);
+                    ctx.lineTo(wx + 2, wy1 + 16);
+                    ctx.closePath();
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(wx - 4, wy2 - 6);
+                    ctx.lineTo(wx - 10, wy2 - 16);
+                    ctx.lineTo(wx + 2, wy2 - 16);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.font = 'bold 22px "PingFang SC","Microsoft YaHei",sans-serif';
+                    ctx.fillText('宽 = r', wx + 8, (wy1 + wy2) / 2 + 8);
+
+                    // 长 (蓝色) —— 下边
+                    const lx1 = rectLeft;
+                    const lx2 = rectRight;
+                    const ly = rectBottom + 28;
+                    ctx.beginPath();
+                    ctx.moveTo(lx1, ly);
+                    ctx.lineTo(lx2, ly);
+                    ctx.strokeStyle = '#2e86de';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                    // 箭头
+                    ctx.beginPath();
+                    ctx.moveTo(lx1 + 6, ly);
+                    ctx.lineTo(lx1 + 16, ly - 6);
+                    ctx.lineTo(lx1 + 16, ly + 6);
+                    ctx.closePath();
+                    ctx.fillStyle = '#2e86de';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(lx2 - 6, ly);
+                    ctx.lineTo(lx2 - 16, ly - 6);
+                    ctx.lineTo(lx2 - 16, ly + 6);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.fillStyle = '#2e86de';
+                    ctx.font = 'bold 22px "PingFang SC","Microsoft YaHei",sans-serif';
+                    const labelW = ctx.measureText('长 = πr').width;
+                    ctx.fillText('长 = πr', (lx1 + lx2) / 2 - labelW / 2, ly + 32);
+
+                    ctx.restore();
+                }
+            }
+
+            // ---- 标注与箭头 (连接左右) ----
+            function drawAnnotations(tVal) {
+                const alpha = Math.min(1, tVal * 1.8 + 0.2);
+                if (alpha < 0.05) return;
+                ctx.save();
+                ctx.globalAlpha = alpha * 0.9;
+
+                // ---- 从左侧半径 到 右侧宽的箭头 (红色) ----
+                // 左侧起点: 半径线端点
+                const rAngle = -PI / 4;
+                const startX = cxL + radius * 0.85 * Math.cos(rAngle);
+                const startY = cyL + radius * 0.85 * Math.sin(rAngle);
+
+                // 右侧终点: 长方形的宽标注位置
+                const endX = rectRight + 6;
+                const endY = (rectTop + rectBottom) / 2;
+
+                // 绘制曲线箭头 (贝塞尔)
+                const cp1x = startX + 100;
+                const cp1y = startY - 30;
+                const cp2x = endX - 80;
+                const cp2y = endY + 20;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2.0;
+                ctx.setLineDash([6, 6]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 箭头头
+                const angle = Math.atan2(endY - cp2y, endX - cp2x);
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - 14 * Math.cos(angle - 0.4), endY - 14 * Math.sin(angle - 0.4));
+                ctx.lineTo(endX - 14 * Math.cos(angle + 0.4), endY - 14 * Math.sin(angle + 0.4));
+                ctx.closePath();
+                ctx.fillStyle = '#e74c3c';
+                ctx.fill();
+
+                // 标签 "半径 r"
+                ctx.fillStyle = '#e74c3c';
+                ctx.font = 'bold 16px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillText('半径 r', startX + 40, startY - 18);
+
+                // 标签 "宽"
+                ctx.fillStyle = '#e74c3c';
+                ctx.font = 'bold 16px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillText('宽', endX - 50, endY - 12);
+
+                // ---- 从左侧半周长 到 右侧长的箭头 (蓝色) ----
+                // 左侧起点: 弧线中部
+                const arcMidAngle = 0;
+                const startX2 = cxL + (radius + 22) * Math.cos(arcMidAngle);
+                const startY2 = cyL + (radius + 22) * Math.sin(arcMidAngle);
+
+                const endX2 = (rectLeft + rectRight) / 2;
+                const endY2 = rectBottom + 18;
+
+                const cp1x2 = startX2 + 120;
+                const cp1y2 = startY2 + 30;
+                const cp2x2 = endX2 + 20;
+                const cp2y2 = endY2 - 40;
+
+                ctx.beginPath();
+                ctx.moveTo(startX2, startY2);
+                ctx.bezierCurveTo(cp1x2, cp1y2, cp2x2, cp2y2, endX2, endY2);
+                ctx.strokeStyle = '#2e86de';
+                ctx.lineWidth = 2.0;
+                ctx.setLineDash([6, 6]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                const angle2 = Math.atan2(endY2 - cp2y2, endX2 - cp2x2);
+                ctx.beginPath();
+                ctx.moveTo(endX2, endY2);
+                ctx.lineTo(endX2 - 14 * Math.cos(angle2 - 0.4), endY2 - 14 * Math.sin(angle2 - 0.4));
+                ctx.lineTo(endX2 - 14 * Math.cos(angle2 + 0.4), endY2 - 14 * Math.sin(angle2 + 0.4));
+                ctx.closePath();
+                ctx.fillStyle = '#2e86de';
+                ctx.fill();
+
+                ctx.fillStyle = '#2e86de';
+                ctx.font = 'bold 16px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillText('半周长 πr', startX2 + 40, startY2 + 28);
+
+                ctx.fillStyle = '#2e86de';
+                ctx.font = 'bold 16px "PingFang SC","Microsoft YaHei",sans-serif';
+                ctx.fillText('长', endX2 + 10, endY2 - 8);
+
+                ctx.restore();
+            }
+
+            // ---- 更新滑块显示 ----
+            function updateSliderUI() {
+                tValue.textContent = Math.round(t * 100) + '%';
+                tSlider.value = t;
+            }
+
+            // ---- 重绘 ----
+            function render() {
+                draw();
+                updateSliderUI();
+            }
+
+            // ---- 事件绑定 ----
+            tSlider.addEventListener('input', function() {
+                if (isPlaying) {
+                    cancelAnimationFrame(animId);
+                    isPlaying = false;
+                    playBtn.textContent = '▶ 播放';
+                }
+                t = parseFloat(this.value);
+                render();
+            });
+
+            // ---- 播放动画 ----
+            function startPlay() {
+                if (isPlaying) return;
+                if (t >= 1) {
+                    t = 0;
+                    render();
+                }
+                isPlaying = true;
+                playBtn.textContent = '⏸ 暂停';
+                const step = 0.006;
+                let lastTime = 0;
+
+                function animate(time) {
+                    if (!isPlaying) return;
+                    if (lastTime === 0) lastTime = time;
+                    const delta = Math.min(time - lastTime, 40);
+                    lastTime = time;
+
+                    t += step * (delta / 16);
+                    if (t >= 1) {
+                        t = 1;
+                        render();
+                        isPlaying = false;
+                        playBtn.textContent = '▶ 播放';
+                        return;
+                    }
+                    render();
+                    animId = requestAnimationFrame(animate);
+                }
+                animId = requestAnimationFrame(animate);
+            }
+
+            function stopPlay() {
+                if (isPlaying) {
+                    cancelAnimationFrame(animId);
+                    isPlaying = false;
+                    playBtn.textContent = '▶ 播放';
+                }
+            }
+
+            playBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    stopPlay();
+                } else {
+                    startPlay();
+                }
+            });
+
+            resetBtn.addEventListener('click', function() {
+                stopPlay();
+                t = 0;
+                render();
+            });
+
+            highlightBtn.addEventListener('click', function() {
+                highlightMode = !highlightMode;
+                this.textContent = highlightMode ? '✨ 关闭高亮' : '✨ 高亮对应';
+                this.classList.toggle('active-highlight');
+                render();
+            });
+
+            // ---- 点按 Canvas 切换高亮 (方便触屏) ----
+            canvas.addEventListener('click', function() {
+                highlightMode = !highlightMode;
+                highlightBtn.textContent = highlightMode ? '✨ 关闭高亮' : '✨ 高亮对应';
+                highlightBtn.classList.toggle('active-highlight');
+                render();
+            });
+
+            // ---- 键盘支持 ----
+            document.addEventListener('keydown', function(e) {
+                if (e.key === ' ' || e.key === 'Space') {
+                    e.preventDefault();
+                    playBtn.click();
+                }
+                if (e.key === 'h' || e.key === 'H') {
+                    highlightBtn.click();
+                }
+                if (e.key === 'r' || e.key === 'R') {
+                    resetBtn.click();
+                }
+            });
+
+            // ---- 初始化 ----
+            t = 0;
+            render();
+
+            // 窗口变化重绘
+            window.addEventListener('resize', function() {
+                resizeCanvas();
+                render();
+            });
+
+            // 防抖
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    resizeCanvas();
+                    render();
+                }, 100);
+            });
+
+            console.log('✅ 交互可视化已加载。拖拽滑块 / 播放 / 点击高亮 探索圆与长方形的对应关系。');
+        })();
+    </script>
+</body>
+</html>

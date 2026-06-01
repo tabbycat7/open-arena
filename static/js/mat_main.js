@@ -7,11 +7,14 @@ var AGENT_STEPS = [
     "teaching_logic_design",
     "main_question_chain",
     "main_question_check",
+    "main_visual_aid_generation",
     "fan_out_gen",
     "variant_question",
     "scaffold_question",
     "variant_check",
     "scaffold_check",
+    "variant_visual_aid_generation",
+    "scaffold_visual_aid_generation",
     "aggregate_sub_pipelines",
     "map_integration",
     "priority_assignment",
@@ -22,10 +25,13 @@ var AGENT_TRACKER_STEPS = [
     "teaching_logic_design",
     "main_question_chain",
     "main_question_check",
+    "main_visual_aid_generation",
     "variant_question",
     "variant_check",
+    "variant_visual_aid_generation",
     "scaffold_question",
     "scaffold_check",
+    "scaffold_visual_aid_generation",
     "map_integration",
     "priority_assignment",
 ];
@@ -35,10 +41,13 @@ var AGENT_DISPLAY_NAMES = {
     teaching_logic_design: "教学蓝图规划",
     main_question_chain: "主干问题链构建",
     main_question_check: "主干问题综合校验",
+    main_visual_aid_generation: "主干交互可视化",
     variant_question: "变式问题生成",
     variant_check: "变式问题检验",
+    variant_visual_aid_generation: "变式交互可视化",
     scaffold_question: "支架问题生成",
     scaffold_check: "支架问题检验",
+    scaffold_visual_aid_generation: "支架交互可视化",
     map_integration: "教学地图整合",
     priority_assignment: "调度优先级分配",
 };
@@ -47,31 +56,33 @@ var MAT_GENERATION_PHASES = [
     {
         key: "analysis",
         title: "解析课题与学情",
-        description: "正在拆解学习目标、学生起点和课堂关键障碍。",
+        description: "小侦察正在拆解学习目标、学生起点和课堂关键障碍 🔍",
         agents: ["learning_analysis"],
     },
     {
         key: "blueprint",
         title: "绘制教学蓝图",
-        description: "正在把目标组织成一条清晰的课堂推进路径。",
+        description: "蓝图设计师正在把目标组织成一条清晰的课堂推进路径 📐",
         agents: ["teaching_logic_design"],
     },
     {
         key: "main",
         title: "搭建主干问题链",
-        description: "正在让核心问题沿着课堂逻辑逐步连起来。",
-        agents: ["main_question_chain", "main_question_check", "bump_main_retry"],
+        description: "主干工程师正在让核心问题沿着课堂逻辑逐步连起来，并生成交互可视化 🌳",
+        agents: ["main_question_chain", "main_question_check", "main_visual_aid_generation", "bump_main_retry"],
     },
     {
         key: "branches",
         title: "生长变式与支架",
-        description: "正在让变式问题和支架提示接入主干链。",
+        description: "小园丁正在让变式问题和支架提示从主干上冒芽 🌱",
         agents: [
             "fan_out_gen",
             "variant_question",
             "scaffold_question",
             "variant_check",
             "scaffold_check",
+            "variant_visual_aid_generation",
+            "scaffold_visual_aid_generation",
             "bump_variant_retry",
             "bump_scaffold_retry",
             "mark_variant_done",
@@ -81,13 +92,13 @@ var MAT_GENERATION_PHASES = [
     {
         key: "polish",
         title: "校验与打磨",
-        description: "正在检查问题之间的目标对齐、难度梯度和课堂可用性。",
+        description: "打磨匠正在检查目标对齐、难度梯度和课堂可用性 ✨",
         agents: ["aggregate_sub_pipelines"],
     },
     {
         key: "assemble",
         title: "合成教学地图",
-        description: "正在收束节点、连线和优先级，生成最终地图。",
+        description: "总装工正在收束节点、连线和优先级，准备交付地图 🎁",
         agents: ["map_integration", "priority_assignment"],
     },
 ];
@@ -98,6 +109,544 @@ MAT_GENERATION_PHASES.forEach(function (phase, index) {
         MAT_AGENT_PHASE_INDEX[agent] = index;
     });
 });
+
+// 6 位智能体的视觉化配置：与 MAT_GENERATION_PHASES 一一对应
+var MAT_AGENT_AVATARS = [
+    {
+        key: "analysis",
+        emoji: "🔍",
+        name: "学情侦察员",
+        idleHint: "随时出发",
+        busyHint: "正在解读学情…",
+        doneHint: "侦察完成",
+        color: "#2563eb",
+        bg: "#eff6ff",
+        shadow: "rgba(37, 99, 235, 0.45)",
+    },
+    {
+        key: "blueprint",
+        emoji: "📐",
+        name: "蓝图设计师",
+        idleHint: "待接力",
+        busyHint: "正在描蓝图…",
+        doneHint: "蓝图就绪",
+        color: "#0ea5e9",
+        bg: "#ecfeff",
+        shadow: "rgba(14, 165, 233, 0.4)",
+    },
+    {
+        key: "main",
+        emoji: "🌳",
+        name: "主干工程师",
+        idleHint: "待接力",
+        busyHint: "正在搭主干…",
+        doneHint: "主干稳了",
+        color: "#14b8a6",
+        bg: "#f0fdfa",
+        shadow: "rgba(20, 184, 166, 0.4)",
+    },
+    {
+        key: "branches",
+        emoji: "🌱",
+        name: "分支园丁",
+        idleHint: "待接力",
+        busyHint: "正在冒芽…",
+        doneHint: "枝叶舒展",
+        color: "#22c55e",
+        bg: "#f0fdf4",
+        shadow: "rgba(34, 197, 94, 0.4)",
+    },
+    {
+        key: "polish",
+        emoji: "✨",
+        name: "打磨匠",
+        idleHint: "待接力",
+        busyHint: "正在精雕…",
+        doneHint: "通过校验",
+        color: "#f59e0b",
+        bg: "#fffbeb",
+        shadow: "rgba(245, 158, 11, 0.4)",
+    },
+    {
+        key: "assemble",
+        emoji: "🎁",
+        name: "总装工",
+        idleHint: "待接力",
+        busyHint: "正在装箱…",
+        doneHint: "地图交付",
+        color: "#8b5cf6",
+        bg: "#f5f3ff",
+        shadow: "rgba(139, 92, 246, 0.4)",
+    },
+];
+
+// ---------------------------------------------------------------------------
+// MatTheater：舞台剧场景化生成过程（替代旧 MatStage）
+// ---------------------------------------------------------------------------
+var MatStage = (function () {
+    var SCENE_KEYS = ["waiting", "analysis", "blueprint", "main", "branches", "polish", "assemble", "complete"];
+    var PHASE_TO_SCENE = {
+        analysis: "analysis",
+        blueprint: "blueprint",
+        main: "main",
+        branches: "branches",
+        polish: "polish",
+        assemble: "assemble",
+    };
+    var SCENE_COLORS = {
+        waiting: "#64748b",
+        analysis: "#2563eb",
+        blueprint: "#0ea5e9",
+        main: "#14b8a6",
+        branches: "#22c55e",
+        polish: "#f59e0b",
+        assemble: "#8b5cf6",
+        complete: "#22c55e",
+    };
+
+    var state = {
+        currentScene: "waiting",
+        currentPhaseIndex: -1,
+        finalized: false,
+        mainCount: 0,
+        variantCount: 0,
+        scaffoldCount: 0,
+        analysisTagsDrawn: false,
+        blocksSpawned: 0,
+        branchSignature: "",
+        checksSpawned: 0,
+        assemblePiecesSpawned: false,
+    };
+
+    function getEl(id) { return document.getElementById(id); }
+
+    function clearChildren(node) {
+        if (!node) return;
+        while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    // ---------- Topbar dot progress ----------
+    // 顶栏第 1 个圆点为「平台准备」，其后 6 个圆点与 MAT_GENERATION_PHASES（第一步…第六步）一一对应
+    function phaseIndexToDotIndex(phaseIndex) {
+        return phaseIndex < 0 ? 0 : phaseIndex + 1;
+    }
+
+    function updateDots(phaseIndex, isDone) {
+        var dotsRoot = getEl("matTheaterDots");
+        if (!dotsRoot) return;
+        var dots = dotsRoot.querySelectorAll(".mat-dot-step");
+        var connectors = dotsRoot.querySelectorAll(".mat-dot-connector");
+        var activeDotIndex = phaseIndexToDotIndex(phaseIndex);
+        var sceneColor = SCENE_COLORS[state.currentScene] || "#3b82f6";
+        dots.forEach(function (dot, idx) {
+            dot.classList.remove("is-done", "is-active", "is-error");
+            dot.style.setProperty("--scene-color", sceneColor);
+            if (isDone || idx < activeDotIndex) {
+                dot.classList.add("is-done");
+            } else if (idx === activeDotIndex) {
+                dot.classList.add("is-active");
+            }
+        });
+        connectors.forEach(function (conn, idx) {
+            conn.style.background = (isDone || idx < activeDotIndex) ? "#22c55e" : "#cbd5e1";
+        });
+    }
+
+    function markDotError(phaseIndex) {
+        var dotsRoot = getEl("matTheaterDots");
+        if (!dotsRoot) return;
+        var dots = dotsRoot.querySelectorAll(".mat-dot-step");
+        var dotIndex = phaseIndexToDotIndex(Math.max(phaseIndex, 0));
+        if (dots[dotIndex]) {
+            dots[dotIndex].classList.remove("is-active");
+            dots[dotIndex].classList.add("is-error");
+        }
+    }
+
+    // ---------- Scene switching ----------
+    function switchScene(sceneKey) {
+        if (sceneKey === state.currentScene) return;
+        var stage = getEl("matTheaterStage");
+        if (!stage) return;
+        var scenes = stage.querySelectorAll(".mat-scene");
+        scenes.forEach(function (scene) {
+            if (scene.classList.contains("is-active")) {
+                scene.classList.remove("is-active");
+                scene.classList.add("is-exiting");
+                setTimeout(function () { scene.classList.remove("is-exiting"); }, 600);
+            }
+        });
+        var next = stage.querySelector('[data-scene="' + sceneKey + '"]');
+        if (next) {
+            setTimeout(function () { next.classList.add("is-active"); }, 80);
+        }
+        state.currentScene = sceneKey;
+    }
+
+    // ---------- Narration bar ----------
+    function updateNarration(emoji, name, text) {
+        // The bottom bar is now product counters only. Keep this no-op so
+        // existing state transitions do not need to branch on DOM shape.
+    }
+
+    // ---------- Node counters ----------
+    function updateNodeCounters() {
+        var counts = { main: state.mainCount, variant: state.variantCount, scaffold: state.scaffoldCount };
+        Object.keys(counts).forEach(function (key) {
+            var el = document.querySelector('[data-counter="' + key + '"]');
+            if (el) el.textContent = String(counts[key]);
+        });
+    }
+
+    function bumpCounter(key) {
+        var el = document.querySelector('[data-counter="' + key + '"]');
+        if (!el) return;
+        var counterCard = el.closest(".mat-node-counter");
+        if (!counterCard) return;
+        counterCard.classList.remove("is-bump");
+        void counterCard.getBoundingClientRect();
+        counterCard.classList.add("is-bump");
+        setTimeout(function () { counterCard.classList.remove("is-bump"); }, 600);
+    }
+
+    // ---------- Scene-specific animations ----------
+
+    // Act 1: Analysis — show tags on doc cards
+    function applyAnalysisTags(analysisResult) {
+        if (state.analysisTagsDrawn) return;
+        var tags = extractSimpleTags(analysisResult);
+        if (!tags.length) return;
+        var cards = document.querySelectorAll(".mat-scene-analysis .mat-doc-card");
+        tags.slice(0, 3).forEach(function (tag, idx) {
+            if (cards[idx]) {
+                var tagEl = cards[idx].querySelector(".mat-doc-tag");
+                if (tagEl) tagEl.textContent = tag;
+                cards[idx].classList.add("has-tag");
+            }
+        });
+        state.analysisTagsDrawn = true;
+    }
+
+    function extractSimpleTags(data) {
+        var tags = [];
+        if (!data) return tags;
+        if (typeof data === "string") { tags.push(matClipText(data, 10)); return tags; }
+        if (typeof data !== "object" || Array.isArray(data)) return tags;
+        function addTag(t) { if (t && tags.length < 3) tags.push(matClipText(t, 10)); }
+        if (Array.isArray(data.teaching_goals_breakdown)) {
+            data.teaching_goals_breakdown.forEach(function (g) {
+                if (g && Array.isArray(g.sub_goals)) g.sub_goals.forEach(function (sg) { if (sg && sg.description) addTag(sg.description); });
+            });
+        }
+        if (tags.length < 3 && data.knowledge_graph && Array.isArray(data.knowledge_graph.nodes)) {
+            data.knowledge_graph.nodes.forEach(function (n) { if (n && n.name) addTag(n.name); });
+        }
+        if (tags.length < 3 && data.teaching_focus && Array.isArray(data.teaching_focus.key_points)) {
+            data.teaching_focus.key_points.forEach(function (kp) { addTag(kp.point || kp.name); });
+        }
+        var fallbacks = [data.teaching_objectives, data.sub_goals, data.learning_goals, data.goals, data.knowledge_points, data.core_knowledge_points];
+        for (var i = 0; i < fallbacks.length && tags.length < 3; i++) {
+            if (Array.isArray(fallbacks[i])) fallbacks[i].forEach(function (item) { addTag(matQuestionText(item)); });
+        }
+        return tags.slice(0, 3);
+    }
+
+    // Act 2: Blueprint — solidify the path
+    function solidifyBlueprint() {
+        var path = document.querySelector(".mat-route-line");
+        if (path) path.classList.add("is-solid");
+        document.querySelectorAll(".mat-route-stop").forEach(function (stop, idx) {
+            setTimeout(function () { stop.classList.add("is-plotted"); }, 120 + idx * 120);
+        });
+    }
+
+    // Act 3: Main — install main-question beams on the workshop rail.
+    function spawnBlocks(mainQuestions) {
+        var row = getEl("matBlocksRow");
+        if (!row || !Array.isArray(mainQuestions)) return;
+        var count = mainQuestions.length;
+        if (count <= state.blocksSpawned) return;
+        for (var i = state.blocksSpawned; i < count; i++) {
+            var block = document.createElement("div");
+            block.className = "mat-block-item mat-main-node";
+            block.style.animationDelay = ((i - state.blocksSpawned) * 0.15) + "s";
+            block.innerHTML = '<span class="mat-main-node-label"></span><span class="mat-main-node-pin"></span>';
+            block.title = matQuestionText(mainQuestions[i]);
+            row.appendChild(block);
+        }
+        state.blocksSpawned = count;
+    }
+
+    function labelBlocks(mainQuestions) {
+        var row = getEl("matBlocksRow");
+        if (!row) return;
+        var blocks = row.querySelectorAll(".mat-block-item");
+        mainQuestions.forEach(function (q, idx) {
+            if (blocks[idx] && !blocks[idx].classList.contains("is-labeled")) {
+                var label = blocks[idx].querySelector(".mat-main-node-label");
+                if (label) label.textContent = "M" + (idx + 1);
+                blocks[idx].classList.add("is-labeled");
+            }
+        });
+    }
+
+    // Act 4: Branches — render variant/scaffold cards growing from the main rail.
+    function spawnBranches(variantCount, scaffoldCount) {
+        var cardRoot = getEl("matBranchCards");
+        if (!cardRoot) return;
+        var total = variantCount + scaffoldCount;
+        var signature = variantCount + ":" + scaffoldCount;
+        if (!total || signature === state.branchSignature) return;
+        var allItems = [];
+        for (var v = 0; v < variantCount; v++) allItems.push({ type: "variant", label: "V" + (v + 1) });
+        for (var s = 0; s < scaffoldCount; s++) allItems.push({ type: "scaffold", label: "S" + (s + 1) });
+        clearChildren(cardRoot);
+        allItems.forEach(function (item, idx) {
+            var card = document.createElement("div");
+            card.className = "mat-branch-card " + (item.type === "variant" ? "is-variant" : "is-scaffold");
+            card.style.animationDelay = (idx * 0.08) + "s";
+            card.innerHTML = '<span class="mat-branch-card-anchor"></span><strong>' + escapeHtml(item.label) + '</strong><small>' + (item.type === "variant" ? "变式" : "支架") + '</small>';
+            cardRoot.appendChild(card);
+        });
+        state.branchSignature = signature;
+    }
+
+    // Act 5: Polish — add check items
+    function spawnChecks(labels) {
+        var container = getEl("matPolishChecks");
+        if (!container) return;
+        labels.forEach(function (label, idx) {
+            if (idx < state.checksSpawned) return;
+            var item = document.createElement("div");
+            item.className = "mat-check-item mat-quality-check";
+            item.textContent = label;
+            container.appendChild(item);
+            setTimeout(function () { item.classList.add("is-checked"); }, 300 + idx * 400);
+        });
+        state.checksSpawned = Math.max(state.checksSpawned, labels.length);
+        var stamp = getEl("matQualityStamp");
+        if (stamp && labels.length) {
+            stamp.textContent = "逐项校验";
+            stamp.classList.add("is-active");
+        }
+    }
+
+    // Act 6: Assemble — send generated pieces into a compact map preview.
+    function spawnAssemblePieces() {
+        var container = getEl("matAssemblePieces");
+        if (!container || state.assemblePiecesSpawned) return;
+        var colors = ["#3b82f6", "#14b8a6", "#22c55e", "#f59e0b", "#8b5cf6", "#ef4444"];
+        var total = state.mainCount + state.variantCount + state.scaffoldCount;
+        var count = Math.min(Math.max(total, 6), 15);
+        clearChildren(container);
+        for (var i = 0; i < count; i++) {
+            var piece = document.createElement("div");
+            piece.className = "mat-assemble-piece";
+            piece.style.background = colors[i % colors.length];
+            piece.style.setProperty("--fly-x", ((Math.random() - 0.5) * 60) + "px");
+            piece.style.setProperty("--fly-y", (30 + Math.random() * 30) + "px");
+            piece.style.animationDelay = (i * 0.1) + "s";
+            container.appendChild(piece);
+        }
+        state.assemblePiecesSpawned = true;
+    }
+
+    function completeAssemble() {
+        var target = getEl("matAssembleTarget");
+        if (target) target.classList.add("is-ready");
+        var stamp = getEl("matQualityStamp");
+        if (stamp) {
+            stamp.textContent = "通过";
+            stamp.classList.add("is-passed");
+        }
+    }
+
+    // ---------- PLACEHOLDER: old buildRelay was here ----------
+    // (The old relay bar code has been removed. The following is a no-op stub
+    //  so that any remaining call sites don't error.)
+    function buildRelay() { /* no-op: replaced by theater topbar */ }
+
+    // ---------- Build canvas (no-op for theater) ----------
+    function buildCanvas() { /* no-op: replaced by theater scenes */ }
+
+    // ---------- Public API ----------
+    function init() {
+        buildRelay();
+        buildCanvas();
+        resetSceneState();
+        switchScene("waiting");
+        updateDots(-1, false);
+        updateNarration("🎭", "准备中", "等待开始：6 位智能体准备就绪。");
+        updateNodeCounters();
+    }
+
+    function resetSceneState() {
+        state.currentScene = "waiting";
+        state.currentPhaseIndex = -1;
+        state.finalized = false;
+        state.mainCount = 0;
+        state.variantCount = 0;
+        state.scaffoldCount = 0;
+        state.analysisTagsDrawn = false;
+        state.blocksSpawned = 0;
+        state.branchSignature = "";
+        state.checksSpawned = 0;
+        state.assemblePiecesSpawned = false;
+        // Clear dynamic content in scenes
+        var blocksRow = getEl("matBlocksRow");
+        if (blocksRow) clearChildren(blocksRow);
+        var branchCards = getEl("matBranchCards");
+        if (branchCards) clearChildren(branchCards);
+        var checks = getEl("matPolishChecks");
+        if (checks) clearChildren(checks);
+        var pieces = getEl("matAssemblePieces");
+        if (pieces) clearChildren(pieces);
+        var target = getEl("matAssembleTarget");
+        if (target) target.classList.remove("is-ready");
+        // Reset blueprint path
+        var bpPath = document.querySelector(".mat-route-line");
+        if (bpPath) bpPath.classList.remove("is-solid");
+        document.querySelectorAll(".mat-route-stop").forEach(function (stop) {
+            stop.classList.remove("is-plotted");
+        });
+        var stamp = getEl("matQualityStamp");
+        if (stamp) {
+            stamp.textContent = "校验中";
+            stamp.classList.remove("is-active", "is-passed");
+        }
+        // Reset doc cards
+        document.querySelectorAll(".mat-doc-card").forEach(function (card) {
+            card.classList.remove("has-tag");
+            var tag = card.querySelector(".mat-doc-tag");
+            if (tag) tag.textContent = "";
+        });
+    }
+
+    function setStageHint(text) {
+        updateNarration(null, null, text || "");
+    }
+
+    function onAgentEvent(payload) {
+        payload = payload || {};
+        var phaseIndex = getGenerationPhaseIndex(payload.agent || "", AGENT_STEPS.indexOf(payload.agent || ""));
+        var phase = MAT_GENERATION_PHASES[phaseIndex] || null;
+        if (phaseIndex >= 0) {
+            state.currentPhaseIndex = phaseIndex;
+            var sceneKey = phase ? PHASE_TO_SCENE[phase.key] : null;
+            if (sceneKey) switchScene(sceneKey);
+            updateDots(phaseIndex, false);
+            var avatar = MAT_AGENT_AVATARS[phaseIndex] || {};
+            var bubble = payload.message || (phase ? phase.description : "");
+            updateNarration(avatar.emoji || "🤖", avatar.name || (phase ? phase.title : ""), matClipText(bubble, 80));
+        } else {
+            // Unknown agent — just update narration text
+            var txt = payload.message || "";
+            if (txt) updateNarration(null, null, matClipText(txt, 80));
+        }
+        applyOutput(payload);
+    }
+
+    function applyOutput(payload) {
+        var preview = payload && payload.output_preview;
+        if (!preview || typeof preview !== "object" || Array.isArray(preview)) return;
+
+        // Analysis tags
+        if (preview.analysis_result && typeof preview.analysis_result === "object") {
+            applyAnalysisTags(preview.analysis_result);
+        }
+        // Blueprint
+        if (preview.map_construction_logic && typeof preview.map_construction_logic === "object" && Object.keys(preview.map_construction_logic).length > 0) {
+            solidifyBlueprint();
+        }
+        // Main questions
+        if (Array.isArray(preview.main_questions) && preview.main_questions.length) {
+            var mc = preview.main_questions.length;
+            if (mc > state.mainCount) {
+                state.mainCount = mc;
+                bumpCounter("main");
+                updateNodeCounters();
+            }
+            spawnBlocks(preview.main_questions);
+            labelBlocks(preview.main_questions);
+        }
+        // Variant / scaffold
+        if (Array.isArray(preview.variant_questions) && preview.variant_questions.length) {
+            var vc = preview.variant_questions.length;
+            if (vc > state.variantCount) {
+                state.variantCount = vc;
+                bumpCounter("variant");
+                updateNodeCounters();
+            }
+        }
+        if (Array.isArray(preview.scaffold_questions) && preview.scaffold_questions.length) {
+            var sc = preview.scaffold_questions.length;
+            if (sc > state.scaffoldCount) {
+                state.scaffoldCount = sc;
+                bumpCounter("scaffold");
+                updateNodeCounters();
+            }
+        }
+        // Branch scene visualization
+        if (state.variantCount + state.scaffoldCount > 0) {
+            spawnBranches(state.variantCount, state.scaffoldCount);
+        }
+        // teaching_map (final)
+        if (preview.teaching_map && Array.isArray(preview.teaching_map.nodes)) {
+            var mains = 0, variants = 0, scaffolds = 0;
+            preview.teaching_map.nodes.forEach(function (n) {
+                var t = n.question_type || n.type;
+                if (t === "main") mains++;
+                else if (t === "variant") variants++;
+                else if (t === "scaffold") scaffolds++;
+            });
+            if (mains > state.mainCount) { state.mainCount = mains; bumpCounter("main"); }
+            if (variants > state.variantCount) { state.variantCount = variants; bumpCounter("variant"); }
+            if (scaffolds > state.scaffoldCount) { state.scaffoldCount = scaffolds; bumpCounter("scaffold"); }
+            updateNodeCounters();
+        }
+        // Polish checks
+        if (state.currentScene === "polish" || (preview.validation_results || preview.main_validation_feedback)) {
+            var checkLabels = ["目标对齐", "难度梯度", "问题覆盖", "课堂可用性", "逻辑连贯"];
+            spawnChecks(checkLabels);
+        }
+        // Assemble
+        if (state.currentScene === "assemble") {
+            spawnAssemblePieces();
+        }
+    }
+
+    function finalize() {
+        if (state.finalized) return;
+        state.finalized = true;
+        updateDots(MAT_GENERATION_PHASES.length - 1, true);
+        completeAssemble();
+        setTimeout(function () {
+            switchScene("complete");
+            updateNarration("🎉", "全部完成", "教学地图已生成完成，正在准备最终视图…");
+        }, 600);
+    }
+
+    function freezeWithError(opts) {
+        opts = opts || {};
+        markDotError(Math.max(state.currentPhaseIndex, 0));
+        updateNarration("⚠️", opts.freezeHint || "已中断", opts.freezeHint || "生成过程已中断。");
+    }
+
+    function reset() {
+        init();
+    }
+
+
+    return {
+        init: init,
+        reset: reset,
+        onAgentEvent: onAgentEvent,
+        applyOutput: applyOutput,
+        finalize: finalize,
+        freezeWithError: freezeWithError,
+        setStageHint: setStageHint,
+    };
+})();
 
 var MAT_FIELD_LABELS = {
     subject: "学科",
@@ -1122,7 +1671,8 @@ function startGeneration() {
     document.getElementById("logsSection").style.display = "none";
     document.getElementById("detailSection").style.display = "none";
     clearVisibleProgressLog();
-    document.getElementById("progressBar").style.width = "0%";
+    var progressBar = document.getElementById("progressBar");
+    if (progressBar) progressBar.style.width = "0%";
     document.getElementById("generatingBanner").style.display = "none";
     document.getElementById("generatingBannerText").textContent = "正在生成教学地图...";
     initProgressTracker();
@@ -1185,9 +1735,14 @@ function connectSSE(taskId, fromIndex) {
         } else if (data.type === "done") {
             finalizeGenerationDuration(data.duration_seconds);
             addLogEntry("教学地图生成完成！", "done");
-            document.getElementById("progressBar").style.width = "100%";
+            var progressBar = document.getElementById("progressBar");
+            if (progressBar) progressBar.style.width = "100%";
             updateStepTracker(AGENT_STEPS.length - 1, true);
             localStorage.removeItem(ACTIVE_TASK_STORAGE_KEY);
+            // 先把"最终 teaching_map"喂给画布，确保 N/M/K 计数和节点完备
+            if (data.result) {
+                MatStage.applyOutput({ output_preview: { teaching_map: data.result } });
+            }
             updateCurrentAgentCard({
                 step_number: AGENT_STEPS.length,
                 agent_display_name: "流程完成",
@@ -1198,7 +1753,10 @@ function connectSSE(taskId, fromIndex) {
                 },
             });
             eventSource.close();
-            if (data.result) showResult(data.result, taskId);
+            // 礼花 1.2s 后再切到 ECharts 结果图
+            if (data.result) {
+                setTimeout(function () { showResult(data.result, taskId); }, 1200);
+            }
             resetSubmitBtn(true);
         } else if (data.type === "error") {
             finalizeGenerationDuration(data.duration_seconds);
@@ -1323,7 +1881,8 @@ function startNewPlan() {
     document.getElementById("newPlanBtn").style.display = "none";
     setBackToGenerationButtonState(false);
     clearVisibleProgressLog();
-    document.getElementById("progressBar").style.width = "0%";
+    var progressBar = document.getElementById("progressBar");
+    if (progressBar) progressBar.style.width = "0%";
     renderGenerationPhases(-1, false);
 
     document.getElementById("placeholder").style.display = "flex";
@@ -1440,25 +1999,39 @@ function forceStopTask() {
 }
 
 function hydrateProgressSnapshot(progressItems) {
+    if (!Array.isArray(progressItems) || !progressItems.length) return;
+    // 重放前先确保画布是干净的
+    MatStage.reset();
     var maxStepReached = -1;
+    var lastNormalized = null;
     progressItems.forEach(function (item) {
-        if (typeof item === "string") { addLogEntry(item, "active"); return; }
+        if (typeof item === "string") {
+            addLogEntry(item, "active");
+            return;
+        }
         addLogEntry(item.message || "", "active");
         var stepIdx = AGENT_STEPS.indexOf(item.agent);
         if (stepIdx > maxStepReached) maxStepReached = stepIdx;
-        updateCurrentAgentCard(item);
+        // 在回放过程中只触发画布增量更新（避免反复 toggle 接力条造成视觉抖动）
+        MatStage.applyOutput(item);
+        lastNormalized = item;
     });
     if (maxStepReached >= 0) {
         updateProgressBar(maxStepReached);
         updateStepTracker(maxStepReached);
     }
+    // 最后基于"最新"的事件统一刷新接力条/状态卡
+    if (lastNormalized) {
+        updateCurrentAgentCard(lastNormalized);
+    }
 }
 
 function initProgressTracker() {
+    MatStage.init();
     renderGenerationStage({
         phaseIndex: -1,
         title: "准备生成",
-        description: "提交后，教学地图会在这里逐步生长。",
+        description: "提交后，6 位智能体会接力把这张地图画出来。",
         badge: "等待开始",
         progress: 0,
         state: "waiting",
@@ -1473,15 +2046,26 @@ function updateStepTracker(stepIdx, done) {
 }
 
 function updateCurrentAgentCard(payload) {
-    var stepBadge = document.getElementById("currentStepBadge");
-    var agentName = document.getElementById("currentAgentName");
-    var agentMessage = document.getElementById("currentAgentMessage");
-    var state = deriveGenerationVisualState(payload || {});
-
-    if (stepBadge) stepBadge.textContent = state.badge;
-    if (agentName) agentName.textContent = state.title;
-    if (agentMessage) agentMessage.textContent = state.description;
+    payload = payload || {};
+    var state = deriveGenerationVisualState(payload);
     renderGenerationStage(state);
+
+    if (state.state === "done") {
+        MatStage.finalize();
+    } else if (state.state === "error" || state.state === "cancelled") {
+        MatStage.applyOutput(payload);
+        MatStage.freezeWithError({
+            freezeHint: state.state === "error" ? "执行失败" : "已停止",
+        });
+        MatStage.setStageHint(state.description || "");
+    } else if (state.state === "recovering") {
+        MatStage.applyOutput(payload);
+        MatStage.setStageHint("正在接回未完成的任务…");
+    } else if (state.state === "waiting") {
+        MatStage.setStageHint(state.description || "等待开始");
+    } else {
+        MatStage.onAgentEvent(payload);
+    }
 }
 
 function getGenerationPhaseIndex(agent, stepIdx) {
@@ -1586,40 +2170,17 @@ function getDisplayedProgressValue() {
 }
 
 function renderGenerationStage(state) {
-    var shell = document.querySelector(".mat-generation-shell");
-    var title = document.getElementById("matGenerationTitle");
-    var subtitle = document.getElementById("matGenerationSubtitle");
     var progressBar = document.getElementById("progressBar");
     var percent = document.getElementById("matGenerationPercent");
     var progress = Math.max(0, Math.min(100, Math.round(Number(state.progress) || 0)));
-    var phase = MAT_GENERATION_PHASES[state.phaseIndex] || null;
-    var phaseKey = phase ? phase.key : "idle";
 
-    if (shell) {
-        shell.className = "mat-generation-shell mat-generation-state-" + (state.state || "running") + " mat-generation-phase-" + phaseKey;
-    }
-    if (title) {
-        if (state.state === "done") title.textContent = "教学地图生成完成";
-        else if (state.state === "error") title.textContent = "生成遇到问题";
-        else if (state.state === "cancelled") title.textContent = "生成已停止";
-        else title.textContent = "正在生成教学地图";
-    }
-    if (subtitle) subtitle.textContent = state.description;
     if (progressBar) progressBar.style.width = progress + "%";
     if (percent) percent.textContent = progress + "%";
-    renderGenerationPhases(state.phaseIndex, state.state === "done");
 }
 
+// 旧 API 兼容保留：阶段列表已并入接力条 + 画布，此函数仅作 no-op
 function renderGenerationPhases(activeIndex, done) {
-    var container = document.getElementById("matGenerationPhases");
-    if (!container) return;
-    var html = MAT_GENERATION_PHASES.map(function (phase, index) {
-        var className = "mat-generation-phase-item";
-        if (done || index < activeIndex) className += " is-done";
-        if (!done && index === activeIndex) className += " is-active";
-        return '<span class="' + className + '">' + escapeHtml(phase.title) + '</span>';
-    }).join("");
-    container.innerHTML = html;
+    return;
 }
 
 function isMatPlainObject(value) {
@@ -2001,6 +2562,7 @@ function renderTextView(teachingMap) {
         html += '<span class="mat-text-id">' + escapeHtml(String(mainNode.id || "")) + '</span>';
         html += '</div>';
         html += '<div class="mat-text-block-body">';
+        html += renderVisualAidBlock(mainNode);
         html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(mainNode.content || "") + '</div>';
         html += renderMeta(mainNode);
         html += renderCommentaryBlock(mainNode);
@@ -2020,6 +2582,7 @@ function renderTextView(teachingMap) {
                 if (v.variation_type) html += '<span class="mat-text-vtype">' + escapeHtml(String(v.variation_type)) + '</span>';
                 html += '</div>';
                 html += '<div class="mat-text-block-body">';
+                html += renderVisualAidBlock(v);
                 html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(v.content || "") + '</div>';
                 html += renderMeta(v);
                 html += renderCommentaryBlock(v);
@@ -2045,6 +2608,7 @@ function renderTextView(teachingMap) {
                     html += '<span class="mat-text-id">' + escapeHtml(String(s.id || "")) + '</span>';
                     html += '</div>';
                     html += '<div class="mat-text-block-body">';
+                    html += renderVisualAidBlock(s);
                     html += '<div class="mat-text-question mat-markdown-content">' + renderMarkdownHtml(s.content || "") + '</div>';
                     html += renderMeta(s);
                     html += renderCommentaryBlock(s);
@@ -2084,6 +2648,158 @@ function renderCommentaryBlock(node) {
     var commentary = getCommentary(node);
     if (!commentary) return "";
     return '<div class="mat-text-commentary"><div class="mat-text-commentary-title">说课稿</div><div class="mat-text-commentary-body mat-markdown-content">' + renderMarkdownHtml(commentary) + '</div></div>';
+}
+
+function renderVisualAidBlock(node) {
+    var interactiveHtml = node.visual_aid_html || "";
+    var urls = node.visual_aid_urls || [];
+    var prompt = node.visual_aid_prompt || "";
+    var vaType = node.visual_aid_type || "";
+    var nodeId = node.id || "";
+
+    if (vaType === "none" && !urls.length && !interactiveHtml) return "";
+
+    var html = '<div class="mat-visual-aid-section" data-node-id="' + escapeHtml(nodeId) + '">';
+
+    if (interactiveHtml) {
+        html += '<div class="mat-visual-aid-preview mat-visual-aid-interactive-preview">';
+        html += '<iframe class="mat-visual-aid-frame" title="交互可视化" sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer" srcdoc="' + escapeHtml(interactiveHtml) + '"></iframe>';
+        html += '<div class="mat-visual-aid-actions">';
+        html += "<button type=\"button\" class=\"mat-visual-aid-btn\" onclick=\"openTextViewInteractiveLightbox(this.closest('.mat-visual-aid-section'))\">";
+        html += '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M5 8a1 1 0 011-1h3V4a1 1 0 112 0v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0V9H6a1 1 0 01-1-1z"/><path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm0-2A6 6 0 108 2a6 6 0 000 12z" clip-rule="evenodd"/></svg>';
+        html += '放大交互';
+        html += '</button>';
+        html += '</div>';
+        html += '</div>';
+    } else if (urls.length > 0 && urls[0]) {
+        html += '<div class="mat-visual-aid-preview">';
+        html += '<img src="' + escapeHtml(urls[0]) + '" alt="配图" class="mat-visual-aid-thumb" onclick="openTextViewLightbox(this.src)">';
+        html += '<div class="mat-visual-aid-actions">';
+        html += '<label class="mat-visual-aid-btn mat-visual-aid-replace">';
+        html += '<input type="file" accept="image/*" style="display:none" onchange="handleVisualAidUpload(this, \'' + escapeHtml(nodeId) + '\')">';
+        html += '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/></svg>';
+        html += '替换配图';
+        html += '</label>';
+        html += '<button type="button" class="mat-visual-aid-btn mat-visual-aid-delete" onclick="handleVisualAidDelete(\'' + escapeHtml(nodeId) + '\', this)">';
+        html += '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
+        html += '删除';
+        html += '</button>';
+        html += '</div>';
+        html += '</div>';
+    } else if (prompt) {
+        html += '<div class="mat-visual-aid-placeholder">';
+        html += '<div class="mat-visual-aid-prompt-text">';
+        html += '<svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>';
+        html += '<span>' + escapeHtml(prompt) + '</span>';
+        html += '</div>';
+        html += '</div>';
+    } else {
+        html += '<div class="mat-visual-aid-placeholder">';
+        html += '<div class="mat-visual-aid-prompt-text">暂无可视化材料</div>';
+        html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+}
+
+function handleVisualAidUpload(inputEl, nodeId) {
+    var file = inputEl.files && inputEl.files[0];
+    if (!file) return;
+    if (!currentTaskId) { alert("当前无活动任务"); return; }
+    if (file.size > 5 * 1024 * 1024) { alert("文件过大，最大支持 5MB"); return; }
+
+    var formData = new FormData();
+    formData.append("task_id", currentTaskId);
+    formData.append("node_id", nodeId);
+    formData.append("image", file);
+
+    var section = inputEl.closest(".mat-visual-aid-section");
+    if (section) section.style.opacity = "0.5";
+
+    fetch(API_PREFIX + "/node-image/upload", { method: "POST", body: formData })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.url) {
+                updateNodeVisualAidInResult(nodeId, data.url);
+                if (currentResult) renderTextView(currentResult);
+            } else {
+                alert(data.error || "上传失败");
+                if (section) section.style.opacity = "1";
+            }
+        })
+        .catch(function () {
+            alert("上传出错");
+            if (section) section.style.opacity = "1";
+        });
+}
+
+function handleVisualAidDelete(nodeId, btnEl) {
+    if (!currentTaskId) return;
+    if (!confirm("确定删除该节点的配图？")) return;
+
+    var section = btnEl.closest(".mat-visual-aid-section");
+    if (section) section.style.opacity = "0.5";
+
+    fetch(API_PREFIX + "/node-image/" + currentTaskId + "/" + nodeId, { method: "DELETE" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            updateNodeVisualAidInResult(nodeId, null);
+            if (currentResult) renderTextView(currentResult);
+        })
+        .catch(function () {
+            alert("删除出错");
+            if (section) section.style.opacity = "1";
+        });
+}
+
+function updateNodeVisualAidInResult(nodeId, url) {
+    if (!currentResult || !currentResult.nodes) return;
+    for (var i = 0; i < currentResult.nodes.length; i++) {
+        if (currentResult.nodes[i].id === nodeId) {
+            currentResult.nodes[i].visual_aid_urls = url ? [url] : [];
+            break;
+        }
+    }
+}
+
+function openTextViewLightbox(src) {
+    var overlay = document.getElementById("matTextViewLightbox");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "matTextViewLightbox";
+        overlay.className = "mat-lightbox-overlay";
+        overlay.innerHTML = '<div class="mat-lightbox-backdrop"></div><div class="mat-lightbox-content"><img class="mat-lightbox-img" src="" alt="放大查看"><button class="mat-lightbox-close" type="button">&times;</button></div>';
+        document.body.appendChild(overlay);
+        overlay.querySelector(".mat-lightbox-backdrop").addEventListener("click", function () { overlay.style.display = "none"; });
+        overlay.querySelector(".mat-lightbox-close").addEventListener("click", function () { overlay.style.display = "none"; });
+    }
+    overlay.querySelector(".mat-lightbox-img").src = src;
+    overlay.style.display = "flex";
+}
+
+function openTextViewInteractiveLightbox(sectionEl) {
+    if (!sectionEl) return;
+    var sourceFrame = sectionEl.querySelector(".mat-visual-aid-frame");
+    if (!sourceFrame) return;
+    var overlay = document.getElementById("matTextViewInteractiveLightbox");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "matTextViewInteractiveLightbox";
+        overlay.className = "mat-lightbox-overlay";
+        overlay.innerHTML = '<div class="mat-lightbox-backdrop"></div><div class="mat-lightbox-content mat-lightbox-interactive-content"><iframe class="mat-lightbox-frame" title="交互可视化放大" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe><button class="mat-lightbox-close" type="button">&times;</button></div>';
+        document.body.appendChild(overlay);
+        overlay.querySelector(".mat-lightbox-backdrop").addEventListener("click", function () {
+            overlay.style.display = "none";
+            overlay.querySelector(".mat-lightbox-frame").removeAttribute("srcdoc");
+        });
+        overlay.querySelector(".mat-lightbox-close").addEventListener("click", function () {
+            overlay.style.display = "none";
+            overlay.querySelector(".mat-lightbox-frame").removeAttribute("srcdoc");
+        });
+    }
+    overlay.querySelector(".mat-lightbox-frame").srcdoc = sourceFrame.getAttribute("srcdoc") || "";
+    overlay.style.display = "flex";
 }
 
 function orderMainNodes(mainNodes, edges) {

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>圆的面积推导 · 认识长方形的宽</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1024px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(0, 20, 50, 0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 28px 18px 28px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9edf4;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a2a4a;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        .header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #4a6a8a;
+            margin-left: 12px;
+        }
+
+        .header .tag {
+            font-size: 14px;
+            background: #eef3fa;
+            color: #3a5a7a;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .canvas-wrapper {
+            flex: 1 1 auto;
+            position: relative;
+            min-height: 0;
+            margin: 8px 0 6px 0;
+            background: #fafcff;
+            border-radius: 18px;
+            border: 1px solid #e6edf6;
+            overflow: hidden;
+        }
+
+        #mainCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .footer {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer .info-area {
+            flex: 1 1 auto;
+            min-width: 140px;
+            font-size: 17px;
+            color: #1a2a4a;
+            background: #f0f5fd;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .footer .info-area.highlight {
+            background: #fff0e8;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            background: #ffffff;
+            border: 2px solid #ccd9e9;
+            color: #1a2a4a;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 22px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background: #f8faff;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: #e8f0fe;
+            border-color: #7a9bcb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(60, 100, 180, 0.12);
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: #2a5a9a;
+            border-color: #2a5a9a;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #1e4a82;
+            border-color: #1e4a82;
+        }
+        .btn-outline-red {
+            border-color: #e85454;
+            color: #c62a2a;
+            background: #fff6f6;
+        }
+        .btn-outline-red:hover {
+            background: #ffe0e0;
+            border-color: #c62a2a;
+        }
+        .btn-outline-green {
+            border-color: #3a9a7a;
+            color: #1a7a5a;
+            background: #f0faf6;
+        }
+        .btn-outline-green:hover {
+            background: #dff2ea;
+            border-color: #1a7a5a;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 14px 16px 12px 16px;
+                border-radius: 20px;
+                aspect-ratio: auto;
+                min-height: 480px;
+                max-height: 98vh;
+            }
+            .header h1 {
+                font-size: 17px;
+            }
+            .header h1 small {
+                font-size: 13px;
+                margin-left: 6px;
+            }
+            .header .tag {
+                font-size: 11px;
+                padding: 2px 12px;
+            }
+            .footer .info-area {
+                font-size: 14px;
+                padding: 6px 14px;
+                min-height: 36px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 6px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px 10px 10px 10px;
+                border-radius: 16px;
+                min-height: 380px;
+            }
+            .header h1 {
+                font-size: 14px;
+            }
+            .header h1 small {
+                font-size: 11px;
+                display: block;
+                margin-left: 0;
+            }
+            .header .tag {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+            .footer .info-area {
+                font-size: 12px;
+                padding: 4px 10px;
+                min-height: 30px;
+            }
+            .btn {
+                font-size: 11px;
+                padding: 4px 10px;
+                border-width: 1.5px;
+            }
+            .footer {
+                gap: 6px;
+            }
+            .btn-group {
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>
+                📐 拼成的近似长方形
+                <small>宽 · 从哪来？</small>
+            </h1>
+            <span class="tag">✏️ 六年级 · 圆的面积</span>
+        </div>
+
+        <!-- 画布 -->
+        <div class="canvas-wrapper">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+
+        <!-- 底部交互 -->
+        <div class="footer">
+            <div class="info-area" id="infoDisplay">
+                👆 点击任意一个扇形，观察它的直边
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-outline-green" id="hintBtn">🔍 提示</button>
+                <button class="btn btn-outline-red" id="resetBtn">⟲ 重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const infoEl = document.getElementById('infoDisplay');
+
+            // ---- 几何参数 ----
+            const SECTOR_COUNT = 12; // 12个扇形
+            const COLORS = [
+                '#F9D4C6', '#F4C8B2', '#EFC1A5', '#E8B897',
+                '#DDAF9F', '#D4A58A', '#C99B7E', '#BF9272',
+                '#B58974', '#AB8066', '#A0775C', '#967052'
+            ];
+            // 让颜色更柔和、有层次
+            // 实际使用HSL调整
+            const SECTOR_COLORS = [];
+            for (let i = 0; i < SECTOR_COUNT; i++) {
+                const hue = 18 + i * 28; // 橙–棕系渐变
+                const sat = 35 + (i % 3) * 8;
+                const lig = 70 - (i % 4) * 4;
+                SECTOR_COLORS.push(`hsl(${hue}, ${sat}%, ${lig}%)`);
+            }
+            // 略微调整，更丰富
+            SECTOR_COLORS[0] = '#FDE8D0';
+            SECTOR_COLORS[1] = '#FADCC0';
+            SECTOR_COLORS[2] = '#F5D0B0';
+            SECTOR_COLORS[3] = '#EFC4A0';
+            SECTOR_COLORS[4] = '#E8B890';
+            SECTOR_COLORS[5] = '#E0AC80';
+            SECTOR_COLORS[6] = '#D8A070';
+            SECTOR_COLORS[7] = '#CF9465';
+            SECTOR_COLORS[8] = '#C6885A';
+            SECTOR_COLORS[9] = '#BC7C50';
+            SECTOR_COLORS[10] = '#B27046';
+            SECTOR_COLORS[11] = '#A8643C';
+
+            // ---- 状态 ----
+            let selectedIndex = -1; // -1表示无选中
+            let highlightRed = true; // 是否高亮左右宽边
+            let hintActive = false;
+
+            // ---- 尺寸自适应 ----
+            let W, H;
+            let padLeft, padRight, padTop, padBottom;
+            let rectX, rectY, rectW, rectH; // 近似长方形的边界
+            let sectorW; // 每个扇形的宽度
+
+            function computeLayout() {
+                const rect = canvas.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                W = rect.width;
+                H = rect.height;
+                canvas.width = W * dpr;
+                canvas.height = H * dpr;
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+
+                // 计算近似长方形的位置 (4:3画布内留边)
+                const aspect = W / H;
+                let drawW, drawH;
+                if (aspect > 1.5) {
+                    drawW = W * 0.82;
+                    drawH = drawW / 2.8;
+                } else {
+                    drawH = H * 0.62;
+                    drawW = drawH * 2.8;
+                }
+                // 边界限制
+                drawW = Math.min(drawW, W * 0.88);
+                drawH = Math.min(drawH, H * 0.66);
+                drawW = Math.max(drawW, 340);
+                drawH = Math.max(drawH, 120);
+
+                rectW = drawW;
+                rectH = drawH;
+                rectX = (W - rectW) / 2;
+                rectY = (H - rectH) / 2 + 6;
+
+                // 微调位置，视觉居中
+                sectorW = rectW / SECTOR_COUNT;
+            }
+
+            // ---- 绘制单个扇形 ----
+            function drawSector(index, highlight) {
+                const x1 = rectX + index * sectorW;
+                const x2 = rectX + (index + 1) * sectorW;
+                const yTop = rectY;
+                const yBot = rectY + rectH;
+                const midX = (x1 + x2) / 2;
+                const arcHeight = sectorW * 0.32; // 弧的隆起高度
+
+                const isEven = (index % 2 === 0);
+
+                ctx.save();
+
+                // 填充
+                ctx.beginPath();
+                if (isEven) {
+                    // 尖朝下 (弧在上方)
+                    // 弧: 从左上到右上，向上弯曲
+                    const cpX = midX;
+                    const cpY = yTop - arcHeight;
+                    ctx.moveTo(x1, yTop);
+                    ctx.quadraticCurveTo(cpX, cpY, x2, yTop);
+                    ctx.lineTo(midX, yBot);
+                    ctx.closePath();
+                } else {
+                    // 尖朝上 (弧在下方)
+                    const cpX = midX;
+                    const cpY = yBot + arcHeight;
+                    ctx.moveTo(x1, yBot);
+                    ctx.quadraticCurveTo(cpX, cpY, x2, yBot);
+                    ctx.lineTo(midX, yTop);
+                    ctx.closePath();
+                }
+
+                const color = SECTOR_COLORS[index % SECTOR_COLORS.length];
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // 边框 (浅灰)
+                ctx.strokeStyle = '#b0c0d4';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+
+                // ---- 如果选中 或 hint激活 指向该扇形 ----
+                if (highlight || (selectedIndex === index)) {
+                    // 重绘填充，半透明高亮
+                    ctx.save();
+                    ctx.beginPath();
+                    if (isEven) {
+                        const cpX = midX;
+                        const cpY = yTop - arcHeight;
+                        ctx.moveTo(x1, yTop);
+                        ctx.quadraticCurveTo(cpX, cpY, x2, yTop);
+                        ctx.lineTo(midX, yBot);
+                        ctx.closePath();
+                    } else {
+                        const cpX = midX;
+                        const cpY = yBot + arcHeight;
+                        ctx.moveTo(x1, yBot);
+                        ctx.quadraticCurveTo(cpX, cpY, x2, yBot);
+                        ctx.lineTo(midX, yTop);
+                        ctx.closePath();
+                    }
+                    ctx.fillStyle = 'rgba(255, 215, 100, 0.25)';
+                    ctx.fill();
+                    ctx.restore();
+
+                    // 加粗边框
+                    ctx.beginPath();
+                    if (isEven) {
+                        const cpX = midX;
+                        const cpY = yTop - arcHeight;
+                        ctx.moveTo(x1, yTop);
+                        ctx.quadraticCurveTo(cpX, cpY, x2, yTop);
+                        ctx.lineTo(midX, yBot);
+                        ctx.closePath();
+                    } else {
+                        const cpX = midX;
+                        const cpY = yBot + arcHeight;
+                        ctx.moveTo(x1, yBot);
+                        ctx.quadraticCurveTo(cpX, cpY, x2, yBot);
+                        ctx.lineTo(midX, yTop);
+                        ctx.closePath();
+                    }
+                    ctx.strokeStyle = '#c63a2a';
+                    ctx.lineWidth = 3.2;
+                    ctx.stroke();
+
+                    // ---- 高亮该扇形的两条直边 ----
+                    ctx.beginPath();
+                    if (isEven) {
+                        // 左直边: (x1, yTop) -> (midX, yBot)
+                        ctx.moveTo(x1, yTop);
+                        ctx.lineTo(midX, yBot);
+                        // 右直边: (x2, yTop) -> (midX, yBot)
+                        ctx.moveTo(x2, yTop);
+                        ctx.lineTo(midX, yBot);
+                    } else {
+                        // 左直边: (x1, yBot) -> (midX, yTop)
+                        ctx.moveTo(x1, yBot);
+                        ctx.lineTo(midX, yTop);
+                        // 右直边: (x2, yBot) -> (midX, yTop)
+                        ctx.moveTo(x2, yBot);
+                        ctx.lineTo(midX, yTop);
+                    }
+                    ctx.strokeStyle = '#d63a2a';
+                    ctx.lineWidth = 3.5;
+                    ctx.setLineDash([6, 5]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // 在直边旁标注 "直边"
+                    const labelX = isEven ? (x1 + midX) / 2 - 4 : (x2 + midX) / 2 + 4;
+                    const labelY = isEven ? (yTop + yBot) / 2 - 6 : (yTop + yBot) / 2 + 6;
+                    ctx.font = 'bold 15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#b52a1a';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('✧ 直边', labelX, labelY);
+                }
+
+                ctx.restore();
+            }
+
+            // ---- 绘制整体 ----
+            function drawScene() {
+                ctx.clearRect(0, 0, W, H);
+
+                // 背景微网格 (极浅)
+                ctx.save();
+                ctx.strokeStyle = '#eef3fa';
+                ctx.lineWidth = 0.5;
+                for (let x = 0; x < W; x += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, H);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < H; y += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(W, y);
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // 绘制所有扇形
+                for (let i = 0; i < SECTOR_COUNT; i++) {
+                    const isHighlighted = (hintActive && (i === 0 || i === SECTOR_COUNT - 1));
+                    drawSector(i, isHighlighted);
+                }
+
+                // ---- 红色高亮左右两条宽边 ----
+                if (highlightRed) {
+                    ctx.save();
+                    const leftX = rectX;
+                    const rightX = rectX + rectW;
+                    const yTop = rectY;
+                    const yBot = rectY + rectH;
+
+                    // 左宽边
+                    ctx.beginPath();
+                    ctx.moveTo(leftX, yTop);
+                    ctx.lineTo(leftX, yBot);
+                    ctx.strokeStyle = '#d02a2a';
+                    ctx.lineWidth = 5;
+                    ctx.shadowColor = 'rgba(200, 40, 40, 0.25)';
+                    ctx.shadowBlur = 14;
+                    ctx.stroke();
+
+                    // 右宽边
+                    ctx.beginPath();
+                    ctx.moveTo(rightX, yTop);
+                    ctx.lineTo(rightX, yBot);
+                    ctx.strokeStyle = '#d02a2a';
+                    ctx.lineWidth = 5;
+                    ctx.shadowColor = 'rgba(200, 40, 40, 0.25)';
+                    ctx.shadowBlur = 14;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+
+                    // 绘制 "宽" 标签 (左右)
+                    ctx.font = 'bold 24px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#c62a2a';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    // 左标签
+                    const lx = leftX - 22;
+                    const ly = (yTop + yBot) / 2;
+                    ctx.fillText('宽', lx, ly);
+
+                    // 右标签
+                    const rx = rightX + 22;
+                    ctx.fillText('宽', rx, ly);
+
+                    // 添加小箭头指示
+                    ctx.font = '18px sans-serif';
+                    ctx.fillStyle = '#c62a2a';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('←', leftX - 38, ly);
+                    ctx.fillText('→', rightX + 38, ly);
+
+                    ctx.restore();
+                }
+
+                // ---- 标注 "近似长方形" ----
+                ctx.save();
+                ctx.font = '16px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#3a5a7a';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                const labelY = rectY + rectH + 28;
+                ctx.fillText('← 近似长方形 →', rectX + rectW / 2, labelY);
+                ctx.restore();
+
+                // ---- 顶部标题水印 ----
+                ctx.save();
+                ctx.font = '13px "PingFang SC", sans-serif';
+                ctx.fillStyle = '#a0b8d0';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'top';
+                ctx.fillText('拼合扇形 · 共12个', W - 16, 12);
+                ctx.restore();
+
+                // ---- 如果选中某个扇形，在信息区显示 ----
+                if (selectedIndex >= 0) {
+                    const idx = selectedIndex;
+                    const isEven = (idx % 2 === 0);
+                    infoEl.textContent = `🔴 扇形 ${idx+1} 的直边（红色虚线）→ 就是长方形的 "宽" ！`;
+                    infoEl.className = 'info-area highlight';
+                } else if (hintActive) {
+                    infoEl.textContent = '💡 左右两端的扇形，它们的直边组成了长方形的宽！';
+                    infoEl.className = 'info-area highlight';
+                } else {
+                    infoEl.textContent = '👆 点击任意一个扇形，观察它的直边';
+                    infoEl.className = 'info-area';
+                }
+            }
+
+            // ---- 交互：点击检测 ----
+            function handleCanvasClick(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width / (window.devicePixelRatio || 1);
+                const scaleY = canvas.height / rect.height / (window.devicePixelRatio || 1);
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (clientX === undefined) return;
+
+                const mx = (clientX - rect.left) * scaleX;
+                const my = (clientY - rect.top) * scaleY;
+
+                // 判断是否在近似长方形区域内
+                if (mx < rectX || mx > rectX + rectW || my < rectY || my > rectY + rectH) {
+                    // 点击外部
+                    if (!hintActive) {
+                        selectedIndex = -1;
+                        drawScene();
+                    }
+                    return;
+                }
+
+                // 计算点击的扇形索引
+                const relX = mx - rectX;
+                let idx = Math.floor(relX / sectorW);
+                idx = Math.max(0, Math.min(SECTOR_COUNT - 1, idx));
+
+                // 切换选中
+                if (selectedIndex === idx) {
+                    selectedIndex = -1;
+                    hintActive = false;
+                } else {
+                    selectedIndex = idx;
+                    hintActive = false;
+                }
+                drawScene();
+            }
+
+            // ---- 按钮事件 ----
+            function onHint() {
+                selectedIndex = -1;
+                hintActive = !hintActive;
+                if (hintActive) {
+                    infoEl.textContent = '💡 左右两端的扇形，它们的直边组成了长方形的宽！';
+                    infoEl.className = 'info-area highlight';
+                } else {
+                    infoEl.textContent = '👆 点击任意一个扇形，观察它的直边';
+                    infoEl.className = 'info-area';
+                }
+                drawScene();
+            }
+
+            function onReset() {
+                selectedIndex = -1;
+                hintActive = false;
+                infoEl.textContent = '👆 点击任意一个扇形，观察它的直边';
+                infoEl.className = 'info-area';
+                drawScene();
+            }
+
+            // ---- 自适应 ----
+            function resizeAndDraw() {
+                computeLayout();
+                drawScene();
+            }
+
+            // ---- 绑定事件 ----
+            canvas.addEventListener('click', handleCanvasClick);
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                if (touch) {
+                    const fakeEvent = { clientX: touch.clientX, clientY: touch.clientY };
+                    handleCanvasClick(fakeEvent);
+                }
+            }, { passive: false });
+
+            document.getElementById('hintBtn').addEventListener('click', onHint);
+            document.getElementById('resetBtn').addEventListener('click', onReset);
+
+            // 窗口改变
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resizeAndDraw, 80);
+            });
+
+            // 初始绘制
+            setTimeout(resizeAndDraw, 20);
+
+            // 额外：双击重置
+            canvas.addEventListener('dblclick', onReset);
+
+            console.log('✅ 教学可视化已加载 | 扇形拼长方形 · 宽边对应');
+        })();
+    </script>
+</body>
+</html>

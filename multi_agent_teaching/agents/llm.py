@@ -12,6 +12,7 @@ from config import (
     LLM_API_KEY,
     LLM_MODEL_NAME,
     LLM_MAX_TOKENS,
+    LLM_TIMEOUT,
     LLM_GENERATOR_MODEL_NAME,
     LLM_VALIDATOR_MODEL_NAME,
     LLM_IMAGE_PARSER_MODEL_NAME,
@@ -46,6 +47,7 @@ def _build_llm(model_name: str, temperature: float, model_kwargs: Optional[Dict[
         "model": model_name,
         "temperature": temperature,
         "max_tokens": int(LLM_MAX_TOKENS),
+        "timeout": int(LLM_TIMEOUT),
         "model_kwargs": normalized_model_kwargs,
     }
     if extra_body is not None:

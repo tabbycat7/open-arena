@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小羊拴木桩 - 圆的周长与面积</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f0e8;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+            user-select: none;
+        }
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 20px 28px 18px 28px;
+        }
+        .header {
+            flex: 0 0 auto;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8e0d6;
+        }
+        .header h1 {
+            font-size: clamp(18px, 2.6vw, 28px);
+            font-weight: 600;
+            color: #3d2c1e;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+        .header h1 .highlight-q {
+            color: #b45f2a;
+        }
+        .header .sub {
+            font-size: clamp(13px, 1.4vw, 17px);
+            color: #7a6a5a;
+            margin-top: 2px;
+            letter-spacing: 2px;
+            font-weight: 400;
+        }
+        .canvas-wrap {
+            flex: 1 1 0;
+            min-height: 0;
+            position: relative;
+            margin: 8px 0 6px 0;
+            background: #eef5e6;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .canvas-wrap canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            touch-action: none;
+        }
+        .controls {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px 32px;
+            padding: 12px 8px 2px 8px;
+            flex-wrap: wrap;
+        }
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 8px 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .ctrl-group label {
+            font-size: clamp(14px, 1.5vw, 18px);
+            font-weight: 500;
+            color: #3d2c1e;
+            white-space: nowrap;
+        }
+        .ctrl-group .r-value {
+            font-size: clamp(16px, 1.6vw, 20px);
+            font-weight: 600;
+            color: #b45f2a;
+            min-width: 42px;
+            text-align: center;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 130px;
+            max-width: 180px;
+            height: 6px;
+            border-radius: 4px;
+            background: #d6cdc0;
+            outline: none;
+            transition: background 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #b45f2a;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #b45f2a;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        .btn {
+            background: #f0e8de;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 22px;
+            font-size: clamp(14px, 1.4vw, 18px);
+            font-weight: 500;
+            color: #3d2c1e;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            transition: background 0.2s, transform 0.12s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            touch-action: manipulation;
+        }
+        .btn:hover {
+            background: #e2d7ca;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-primary {
+            background: #b45f2a;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(180, 95, 42, 0.30);
+        }
+        .btn-primary:hover {
+            background: #9e4f1f;
+        }
+        .btn-primary:active {
+            background: #8a4218;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #b45f2a;
+            color: #b45f2a;
+        }
+        .btn-outline:hover {
+            background: #f5ede4;
+        }
+        .legend-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: clamp(13px, 1.2vw, 16px);
+            color: #3d2c1e;
+            background: #f8f4ee;
+            padding: 4px 14px 4px 12px;
+            border-radius: 30px;
+            box-shadow: inset 0 0 0 1px #e0d6ca;
+        }
+        .legend-tag .dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .legend-tag .dot.red {
+            background: #e04444;
+        }
+        .legend-tag .dot.green {
+            background: #44b86a;
+        }
+        .controls .right-group {
+            display: flex;
+            align-items: center;
+            gap: 10px 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 12px 10px 12px;
+                border-radius: 18px;
+            }
+            .controls {
+                gap: 10px 12px;
+                padding-top: 8px;
+            }
+            .ctrl-group {
+                gap: 4px 10px;
+            }
+            input[type="range"] {
+                width: 90px;
+            }
+            .btn {
+                padding: 6px 16px;
+                font-size: 13px;
+            }
+            .legend-tag {
+                padding: 2px 10px 2px 8px;
+                font-size: 12px;
+            }
+        }
+        @media (max-width: 420px) {
+            .container {
+                padding: 8px 6px 6px 6px;
+                border-radius: 12px;
+            }
+            .header h1 {
+                font-size: 15px;
+            }
+            .header .sub {
+                font-size: 11px;
+            }
+            .controls {
+                gap: 6px 6px;
+                padding-top: 4px;
+            }
+            .ctrl-group label {
+                font-size: 12px;
+            }
+            input[type="range"] {
+                width: 60px;
+            }
+            .btn {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            .legend-tag {
+                font-size: 10px;
+                padding: 2px 6px 2px 6px;
+            }
+            .legend-tag .dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题 -->
+        <div class="header">
+            <h1>
+                <span class="highlight-q">🐑 小羊拴木桩</span>
+                — 脚印与范围
+            </h1>
+            <div class="sub">拉紧绳子走一圈 ↻ 脚印 🐾 对应周长 · 扫过范围 🌿 对应面积</div>
+        </div>
+
+        <!-- 画布 -->
+        <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+
+        <!-- 控制区 -->
+        <div class="controls">
+            <div class="ctrl-group">
+                <label for="radiusSlider">绳子长度</label>
+                <input type="range" id="radiusSlider" min="40" max="170" value="105" step="1">
+                <span class="r-value" id="radiusDisplay">105</span>
+            </div>
+            <div class="right-group">
+                <button class="btn btn-primary" id="playBtn">⏸️ 暂停</button>
+                <button class="btn btn-outline" id="resetBtn">⟳ 重置</button>
+                <span class="legend-tag"><span class="dot red"></span> 周长</span>
+                <span class="legend-tag"><span class="dot green"></span> 面积</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- DOM 引用 ----------
+            const canvas = document.getElementById('mainCanvas');
+            const wrap = document.getElementById('canvasWrap');
+            const slider = document.getElementById('radiusSlider');
+            const radiusDisplay = document.getElementById('radiusDisplay');
+            const playBtn = document.getElementById('playBtn');
+            const resetBtn = document.getElementById('resetBtn');
+
+            // ---------- 状态 ----------
+            const STATE = {
+                radius: 105, // 当前半径 (逻辑像素)
+                angle: 0, // 小羊当前弧度 [0, 2π)
+                isPlaying: true,
+                // 当走完一圈后标记，用于提示
+                fullCircle: false,
+                // 用于平滑动画
+                prevTime: 0,
+                // 角速度 (弧度/秒) —— 约 15 秒走一圈
+                speed: 2 * Math.PI / 15,
+            };
+
+            // ---------- 逻辑尺寸 ----------
+            const LOGICAL_W = 800;
+            const LOGICAL_H = 600;
+            // 左右分区中心
+            const LEFT_CX = 210;
+            const LEFT_CY = 300;
+            const RIGHT_CX = 590;
+            const RIGHT_CY = 300;
+
+            // 小羊绘图参数
+            const SHEEP_BODY_RX = 14;
+            const SHEEP_BODY_RY = 10;
+            const SHEEP_HEAD_R = 7;
+
+            // ---------- Canvas 尺寸适配 ----------
+            function resizeCanvas() {
+                const rect = wrap.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                const w = rect.width;
+                const h = rect.height;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                // 保存缩放因子
+                canvas._scaleX = w / LOGICAL_W;
+                canvas._scaleY = h / LOGICAL_H;
+                canvas._scale = Math.min(canvas._scaleX, canvas._scaleY);
+                canvas._dpr = dpr;
+                canvas._logW = LOGICAL_W;
+                canvas._logH = LOGICAL_H;
+                // 计算逻辑偏移：居中显示
+                canvas._offsetX = (w - LOGICAL_W * canvas._scale) / 2;
+                canvas._offsetY = (h - LOGICAL_H * canvas._scale) / 2;
+                canvas._drawScale = canvas._scale;
+                draw();
+            }
+
+            // ---------- 坐标转换辅助 ----------
+            function toCanvasX(lx, ly) {
+                const s = canvas._drawScale;
+                const ox = canvas._offsetX || 0;
+                const oy = canvas._offsetY || 0;
+                return (lx * s + ox) * canvas._dpr;
+            }
+
+            function toCanvasY(lx, ly) {
+                const s = canvas._drawScale;
+                const ox = canvas._offsetX || 0;
+                const oy = canvas._offsetY || 0;
+                return (ly * s + oy) * canvas._dpr;
+            }
+
+            function toCanvasR(r) {
+                return r * canvas._drawScale * canvas._dpr;
+            }
+
+            // ---------- 绘制函数 ----------
+            function draw() {
+                const ctx = canvas.getContext('2d');
+                const dpr = canvas._dpr;
+                const w = canvas.width;
+                const h = canvas.height;
+                const s = canvas._drawScale;
+                const ox = (canvas._offsetX || 0) * dpr;
+                const oy = (canvas._offsetY || 0) * dpr;
+
+                ctx.clearRect(0, 0, w, h);
+                ctx.save();
+                // 平移缩放
+                ctx.translate(ox, oy);
+                ctx.scale(s * dpr, s * dpr);
+
+                // ----- 背景 (草地) -----
+                ctx.fillStyle = '#dce8d0';
+                ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+                // 浅色纹理点
+                ctx.fillStyle = '#c6dbb8';
+                for (let i = 0; i < 120; i++) {
+                    const x = Math.random() * LOGICAL_W;
+                    const y = Math.random() * LOGICAL_H;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1.2 + Math.random() * 1.8, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+
+                // ----- 分割线 (中间虚线) -----
+                ctx.strokeStyle = '#b8c8aa';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 8]);
+                ctx.beginPath();
+                ctx.moveTo(LOGICAL_W / 2, 20);
+                ctx.lineTo(LOGICAL_W / 2, LOGICAL_H - 20);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // ----- 左侧：周长场景 -----
+                drawScene(ctx, LEFT_CX, LEFT_CY, 'perimeter');
+
+                // ----- 右侧：面积场景 -----
+                drawScene(ctx, RIGHT_CX, RIGHT_CY, 'area');
+
+                // ----- 底部标注 (左右) -----
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+
+                // 左侧标注
+                ctx.font = 'bold 20px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#c0392b';
+                ctx.beginPath();
+                ctx.arc(LEFT_CX, LEFT_CY + 10, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = '#3d2c1e';
+                ctx.fillText('← 脚印轨迹 = 圆的周长', LEFT_CX + 100, LEFT_CY + 240);
+
+                // 右侧标注
+                ctx.font = 'bold 20px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#27ae60';
+                ctx.fillText('← 吃草范围 = 圆的面积', RIGHT_CX - 90, RIGHT_CY + 240);
+                ctx.fillStyle = '#27ae60';
+                ctx.globalAlpha = 0.25;
+                ctx.beginPath();
+                ctx.arc(RIGHT_CX, RIGHT_CY, 18, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+
+                // ----- 顶部提示文字 -----
+                if (STATE.fullCircle) {
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.font = 'bold 22px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#b45f2a';
+                    const msg = '✅ 小羊走完一圈！形成完整的圆';
+                    ctx.fillText(msg, LOGICAL_W / 2, 40);
+                }
+
+                ctx.restore();
+            }
+
+            // ---------- 绘制单个场景 ----------
+            function drawScene(ctx, cx, cy, mode) {
+                const r = STATE.radius;
+                const angle = STATE.angle;
+                const isPerimeter = (mode === 'perimeter');
+
+                // ----- 木桩 (中心) -----
+                ctx.save();
+                // 木桩阴影
+                ctx.shadowColor = 'rgba(0,0,0,0.12)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 3;
+                // 木桩主体
+                ctx.beginPath();
+                ctx.arc(cx, cy, 10, 0, 2 * Math.PI);
+                ctx.fillStyle = '#8b6b4a';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+                // 木桩纹理 (年轮)
+                ctx.strokeStyle = '#7a5c3e';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(cx, cy, 3, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.restore();
+
+                // ----- 绳子 (从木桩到小羊) -----
+                const sheepX = cx + r * Math.cos(angle);
+                const sheepY = cy + r * Math.sin(angle);
+                ctx.save();
+                ctx.strokeStyle = '#7a5c3e';
+                ctx.lineWidth = 2.5;
+                ctx.shadowColor = 'rgba(0,0,0,0.08)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetY = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(sheepX, sheepY);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+
+                // 绳子上的小刻度 (表示绳子)
+                for (let t = 0.2; t < 1.0; t += 0.2) {
+                    const px = cx + (sheepX - cx) * t;
+                    const py = cy + (sheepY - cy) * t;
+                    ctx.fillStyle = '#9a7a5a';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 1.8, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+                ctx.restore();
+
+                // ----- 圆形轨迹 / 区域 -----
+                if (isPerimeter) {
+                    // 左侧：周长 — 红色弧线 (从0到angle)
+                    ctx.save();
+                    ctx.strokeStyle = '#e04444';
+                    ctx.lineWidth = 4;
+                    ctx.shadowColor = 'rgba(224,68,68,0.25)';
+                    ctx.shadowBlur = 12;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.beginPath();
+                    // 画从0到angle的弧 (逆时针)
+                    if (angle > 0.01) {
+                        ctx.arc(cx, cy, r, 0, angle, false);
+                        ctx.stroke();
+                    }
+                    // 如果接近完整圆，补全虚线
+                    ctx.shadowBlur = 0;
+                    if (angle > 2 * Math.PI - 0.05) {
+                        ctx.strokeStyle = '#e04444';
+                        ctx.lineWidth = 4;
+                        ctx.setLineDash([]);
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
+                        ctx.stroke();
+                    } else if (angle > 0.5) {
+                        // 未完成部分用浅色虚线暗示
+                        ctx.strokeStyle = 'rgba(224,68,68,0.20)';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 8]);
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r, angle, 2 * Math.PI, false);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    ctx.restore();
+
+                    // 脚印小点 (沿弧线随机分布)
+                    if (angle > 0.2) {
+                        ctx.save();
+                        const steps = Math.max(6, Math.floor(angle / (2 * Math.PI) * 40));
+                        for (let i = 0; i < steps; i++) {
+                            const a = (i / steps) * angle;
+                            const px = cx + r * Math.cos(a);
+                            const py = cy + r * Math.sin(a);
+                            ctx.fillStyle = `rgba(200,60,60,${0.3 + 0.5 * (i / steps)})`;
+                            ctx.beginPath();
+                            ctx.arc(px, py, 2.5 + 1.2 * (i / steps), 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                        // 最近的一个脚印大一点
+                        if (angle > 0.1) {
+                            const lastA = angle;
+                            const lx = cx + r * Math.cos(lastA);
+                            const ly = cy + r * Math.sin(lastA);
+                            ctx.fillStyle = '#e04444';
+                            ctx.beginPath();
+                            ctx.arc(lx, ly, 4, 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                        ctx.restore();
+                    }
+                } else {
+                    // 右侧：面积 — 绿色扇形 (从0到angle)
+                    ctx.save();
+                    if (angle > 0.02) {
+                        ctx.fillStyle = 'rgba(68, 184, 106, 0.35)';
+                        ctx.shadowColor = 'rgba(68,184,106,0.08)';
+                        ctx.shadowBlur = 20;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.arc(cx, cy, r, 0, angle, false);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        // 边缘高亮
+                        ctx.strokeStyle = 'rgba(68,184,106,0.50)';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r, 0, angle, false);
+                        ctx.stroke();
+                        // 半径线 (两条边界)
+                        ctx.strokeStyle = 'rgba(68,184,106,0.35)';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([4, 6]);
+                        // 起始半径
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.lineTo(cx + r, cy);
+                        ctx.stroke();
+                        // 当前半径
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.lineTo(sheepX, sheepY);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    // 如果接近完整圆，补全
+                    if (angle > 2 * Math.PI - 0.05) {
+                        ctx.fillStyle = 'rgba(68, 184, 106, 0.25)';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(68,184,106,0.45)';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+
+                    // 草地点缀 (在扇形区域内画一些小草)
+                    if (angle > 0.3) {
+                        ctx.save();
+                        const count = Math.max(8, Math.floor(angle / (2 * Math.PI) * 30));
+                        for (let i = 0; i < count; i++) {
+                            const a = Math.random() * angle;
+                            const dist = Math.random() * r * 0.9;
+                            const px = cx + dist * Math.cos(a);
+                            const py = cy + dist * Math.sin(a);
+                            const green = 120 + Math.random() * 80;
+                            ctx.fillStyle = `rgba(40, ${green}, 60, 0.25)`;
+                            ctx.beginPath();
+                            ctx.arc(px, py, 2 + Math.random() * 3, 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                        ctx.restore();
+                    }
+                }
+
+                // ----- 小羊 (俯视图) -----
+                drawSheep(ctx, sheepX, sheepY, angle, isPerimeter);
+
+                // ----- 标签: 周长 / 面积 -----
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.font = 'bold 26px "PingFang SC", "Microsoft YaHei", sans-serif';
+                if (isPerimeter) {
+                    ctx.fillStyle = '#c0392b';
+                    ctx.shadowColor = 'rgba(255,255,255,0.7)';
+                    ctx.shadowBlur = 12;
+                    ctx.fillText('周长', cx, cy - r - 14);
+                    // 小标签 "红色轨迹"
+                    ctx.font = '15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#c0392b';
+                    ctx.shadowBlur = 8;
+                    ctx.fillText('(红色轨迹)', cx, cy - r - 40);
+                } else {
+                    ctx.fillStyle = '#27ae60';
+                    ctx.shadowColor = 'rgba(255,255,255,0.7)';
+                    ctx.shadowBlur = 12;
+                    ctx.fillText('面积', cx, cy - r - 14);
+                    ctx.font = '15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#27ae60';
+                    ctx.shadowBlur = 8;
+                    ctx.fillText('(绿色区域)', cx, cy - r - 40);
+                }
+                ctx.shadowBlur = 0;
+
+                // ----- 半径标注 (动态显示数值) -----
+                if (isPerimeter) {
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.font = '16px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#5a4a3a';
+                    const midA = angle / 2;
+                    const labelR = r * 0.6;
+                    const lx = cx + labelR * Math.cos(midA);
+                    const ly = cy + labelR * Math.sin(midA);
+                    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+                    ctx.fillRect(lx - 4, ly - 10, 58, 24);
+                    ctx.fillStyle = '#5a4a3a';
+                    ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillText('r = ' + Math.round(r), lx, ly - 4);
+                }
+                ctx.restore();
+            }
+
+            // ---------- 绘制小羊 (俯视图) ----------
+            function drawSheep(ctx, x, y, angle, isRed) {
+                ctx.save();
+                ctx.translate(x, y);
+                // 羊身体方向：朝向运动方向 (切向)，但为了可爱，让羊头朝外 (径向)
+                // 头朝外：角度 = angle
+                ctx.rotate(angle);
+
+                // 身体 (白色椭圆)
+                ctx.shadowColor = 'rgba(0,0,0,0.10)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 2;
+                ctx.fillStyle = '#f8f6f2';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, SHEEP_BODY_RX, SHEEP_BODY_RY, 0, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 身体毛绒感
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(240,235,225,0.5)';
+                for (let i = 0; i < 8; i++) {
+                    const bx = (Math.random() - 0.5) * SHEEP_BODY_RX * 1.4;
+                    const by = (Math.random() - 0.5) * SHEEP_BODY_RY * 1.4;
+                    const br = 3 + Math.random() * 4;
+                    ctx.beginPath();
+                    ctx.arc(bx, by, br, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+
+                // 腿 (四条)
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#8a7a6a';
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                const legs = [
+                    [-8, -7],
+                    [-8, 7],
+                    [5, -7],
+                    [5, 7]
+                ];
+                for (let l of legs) {
+                    ctx.beginPath();
+                    ctx.moveTo(l[0], l[1]);
+                    ctx.lineTo(l[0] + (Math.random() - 0.5) * 2, l[1] + 8 * (1 + 0.2 * Math.random()));
+                    ctx.stroke();
+                }
+
+                // 头 (在身体前方，沿径向向外)
+                ctx.fillStyle = '#f5f0e8';
+                ctx.shadowColor = 'rgba(0,0,0,0.06)';
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(SHEEP_BODY_RX + 2, 0, SHEEP_HEAD_R, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 眼睛
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#2a2a2a';
+                ctx.beginPath();
+                ctx.arc(SHEEP_BODY_RX + 4, -2.5, 1.8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(SHEEP_BODY_RX + 4, 2.5, 1.8, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 耳朵
+                ctx.fillStyle = '#e8ddd0';
+                ctx.beginPath();
+                ctx.ellipse(SHEEP_BODY_RX - 1, -6, 4, 2.5, -0.3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(SHEEP_BODY_RX - 1, 6, 4, 2.5, 0.3, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 尾巴 (小绒球)
+                ctx.fillStyle = '#f0e8dc';
+                ctx.beginPath();
+                ctx.arc(-SHEEP_BODY_RX - 2, 0, 4, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 小羊身上的小标记 (红/绿 小点，表示分类)
+                ctx.fillStyle = isRed ? '#e04444' : '#44b86a';
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                ctx.arc(0, 0, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+
+                ctx.restore();
+            }
+
+            // ---------- 更新逻辑 ----------
+            function update(deltaTime) {
+                if (!STATE.isPlaying) return;
+
+                // 角速度 (弧度/秒)
+                const speed = STATE.speed;
+                STATE.angle += speed * deltaTime;
+
+                // 检查是否完成一圈
+                if (STATE.angle >= 2 * Math.PI) {
+                    STATE.angle = 2 * Math.PI;
+                    STATE.fullCircle = true;
+                    STATE.isPlaying = false;
+                    playBtn.textContent = '▶️ 播放';
+                } else {
+                    STATE.fullCircle = false;
+                }
+
+                // 更新滑块显示
+                slider.value = STATE.radius;
+                radiusDisplay.textContent = Math.round(STATE.radius);
+            }
+
+            // ---------- 动画循环 ----------
+            function animationLoop(timestamp) {
+                if (!STATE._lastTime) STATE._lastTime = timestamp;
+                const delta = Math.min((timestamp - STATE._lastTime) / 1000, 0.05);
+                STATE._lastTime = timestamp;
+
+                update(delta);
+                draw();
+
+                requestAnimationFrame(animationLoop);
+            }
+
+            // ---------- 重置 ----------
+            function resetSim() {
+                STATE.angle = 0;
+                STATE.fullCircle = false;
+                STATE.isPlaying = true;
+                playBtn.textContent = '⏸️ 暂停';
+                slider.value = STATE.radius;
+                radiusDisplay.textContent = Math.round(STATE.radius);
+                draw();
+            }
+
+            // ---------- 事件绑定 ----------
+            slider.addEventListener('input', function() {
+                STATE.radius = parseFloat(this.value);
+                radiusDisplay.textContent = Math.round(STATE.radius);
+                // 重置角度，让学生看到不同半径下的变化
+                STATE.angle = 0;
+                STATE.fullCircle = false;
+                STATE.isPlaying = true;
+                playBtn.textContent = '⏸️ 暂停';
+                draw();
+            });
+
+            playBtn.addEventListener('click', function() {
+                if (STATE.fullCircle) {
+                    // 如果已经走完一圈，重置后再播放
+                    resetSim();
+                    return;
+                }
+                STATE.isPlaying = !STATE.isPlaying;
+                playBtn.textContent = STATE.isPlaying ? '⏸️ 暂停' : '▶️ 播放';
+                if (STATE.isPlaying) {
+                    STATE._lastTime = performance.now();
+                }
+                draw();
+            });
+
+            resetBtn.addEventListener('click', resetSim);
+
+            // 窗口尺寸变化
+            window.addEventListener('resize', resizeCanvas);
+
+            // ---------- 启动 ----------
+            function init() {
+                resizeCanvas();
+                STATE._lastTime = performance.now();
+                STATE.angle = 0;
+                STATE.isPlaying = true;
+                playBtn.textContent = '⏸️ 暂停';
+                requestAnimationFrame(animationLoop);
+            }
+
+            // 确保画布在DOM准备好后初始化
+            if (document.readyState === 'complete') {
+                init();
+            } else {
+                window.addEventListener('load', init);
+            }
+
+            // 暴露resize给调试 (非必须)
+            window._resizeCanvas = resizeCanvas;
+        })();
+    </script>
+</body>
+</html>

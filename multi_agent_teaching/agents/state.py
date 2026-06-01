@@ -31,6 +31,10 @@ class Question(TypedDict, total=False):
     from_id: Optional[str]
     to_id: Optional[str]
     parent_id: Optional[str]
+    visual_aid_prompt: str
+    visual_aid_urls: List[str]
+    visual_aid_html: str
+    visual_aid_type: str
 
 
 class Edge(TypedDict, total=False):

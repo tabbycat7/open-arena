@@ -4,6 +4,9 @@
 
 {% block head_extra %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/multi_agent_teaching.css') }}">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mat_pixel.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -321,88 +324,224 @@
             </div>
 
             <div id="progressSection" class="mat-progress-section" style="display:none;">
-                <div class="mat-generation-shell">
-                    <div class="mat-generation-head">
-                        <div>
-                            <span class="mat-generation-eyebrow">教学地图正在生成</span>
-                            <h2 id="matGenerationTitle">正在生成教学地图</h2>
-                            <p id="matGenerationSubtitle">系统正在把教学目标转化为一张可执行的问题地图。</p>
+                <div class="mat-theater mat-theater--pixel" id="matTheater">
+                    <!-- Topbar: compact dot-progress + phase name + timer -->
+                    <div class="mat-theater-topbar">
+                        <div class="mat-theater-dots" id="matTheaterDots">
+                            <div class="mat-dot-step" data-step="prep"><span class="mat-dot-circle"></span><span class="mat-dot-label">平台准备</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="0"><span class="mat-dot-circle"></span><span class="mat-dot-label">学情侦察</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="1"><span class="mat-dot-circle"></span><span class="mat-dot-label">蓝图设计</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="2"><span class="mat-dot-circle"></span><span class="mat-dot-label">主干搭建</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="3"><span class="mat-dot-circle"></span><span class="mat-dot-label">分支生长</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="4"><span class="mat-dot-circle"></span><span class="mat-dot-label">校验打磨</span></div>
+                            <div class="mat-dot-connector"></div>
+                            <div class="mat-dot-step" data-step="5"><span class="mat-dot-circle"></span><span class="mat-dot-label">总装交付</span></div>
                         </div>
-                        <div class="mat-generation-clock" id="generationDurationText">本次用时：--</div>
+                        <div class="mat-theater-clock" id="generationDurationText">本次用时：--</div>
                     </div>
 
-                    <div class="mat-generation-body">
-                        <div class="mat-map-growth-stage" aria-hidden="true">
-                            <svg class="mat-map-growth-svg" viewBox="0 0 760 430" role="img">
-                                <defs>
-                                    <linearGradient id="matGrowthMain" x1="80" y1="0" x2="680" y2="0" gradientUnits="userSpaceOnUse">
-                                        <stop offset="0%" stop-color="#2563eb" />
-                                        <stop offset="55%" stop-color="#14b8a6" />
-                                        <stop offset="100%" stop-color="#22c55e" />
-                                    </linearGradient>
-                                    <filter id="matGrowthGlow" x="-30%" y="-30%" width="160%" height="160%">
-                                        <feGaussianBlur stdDeviation="5" result="blur" />
-                                        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.05 0 0 0 0 0.38 0 0 0 0 0.64 0 0 0 0.24 0" />
-                                        <feMerge>
-                                            <feMergeNode />
-                                            <feMergeNode in="SourceGraphic" />
-                                        </feMerge>
-                                    </filter>
-                                </defs>
-
-                                <path class="mat-growth-grid" d="M88 215H672M150 76V354M300 76V354M460 76V354M610 76V354" />
-
-                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m1" d="M120 215C175 160 215 158 270 215" />
-                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m2" d="M270 215C325 270 365 270 420 215" />
-                                <path class="mat-growth-edge mat-growth-edge-main mat-edge-m3" d="M420 215C475 160 515 160 570 215" />
-                                <path class="mat-growth-edge mat-growth-edge-variant mat-edge-v1" d="M270 215C240 150 210 112 170 92" />
-                                <path class="mat-growth-edge mat-growth-edge-variant mat-edge-v2" d="M420 215C462 148 502 112 552 94" />
-                                <path class="mat-growth-edge mat-growth-edge-scaffold mat-edge-s1" d="M270 215C235 282 198 322 148 342" />
-                                <path class="mat-growth-edge mat-growth-edge-scaffold mat-edge-s2" d="M420 215C462 284 504 326 562 344" />
-                                <path class="mat-growth-edge mat-growth-edge-merge mat-edge-merge" d="M120 215C245 92 445 92 570 215C445 338 245 338 120 215" />
-
-                                <g class="mat-growth-node mat-growth-node-main mat-node-main-1" transform="translate(120 215)">
-                                    <circle r="27"></circle><text>目标</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-main mat-node-main-2" transform="translate(270 215)">
-                                    <circle r="27"></circle><text>主干</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-main mat-node-main-3" transform="translate(420 215)">
-                                    <circle r="27"></circle><text>迁移</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-main mat-node-main-4" transform="translate(570 215)">
-                                    <circle r="27"></circle><text>整合</text>
-                                </g>
-
-                                <g class="mat-growth-node mat-growth-node-variant mat-node-variant-1" transform="translate(170 92)">
-                                    <circle r="22"></circle><text>变式</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-variant mat-node-variant-2" transform="translate(552 94)">
-                                    <circle r="22"></circle><text>变式</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-scaffold mat-node-scaffold-1" transform="translate(148 342)">
-                                    <circle r="22"></circle><text>支架</text>
-                                </g>
-                                <g class="mat-growth-node mat-growth-node-scaffold mat-node-scaffold-2" transform="translate(562 344)">
-                                    <circle r="22"></circle><text>支架</text>
-                                </g>
-
-                                <rect class="mat-growth-scan" x="82" y="64" width="596" height="302" rx="28"></rect>
-                            </svg>
+                    <!-- Stage: scene container -->
+                    <div class="mat-theater-stage" id="matTheaterStage">
+                        <!-- Waiting curtain (before any scene) -->
+                        <div class="mat-scene mat-scene-waiting is-active" data-scene="waiting">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <div class="mat-workshop-sign">
+                                    <span class="mat-sign-light"></span>
+                                    <span class="mat-sign-light"></span>
+                                    <span class="mat-sign-light"></span>
+                                </div>
+                                <h3 class="mat-scene-title">平台准备就绪</h3>
+                                <p class="mat-scene-desc">6 位智能体即将依次登场，为您编排一张教学地图。</p>
+                                <div class="mat-scene-work mat-workshop-idle mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-idle"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mat-generation-status-card" id="progressCurrentCard">
-                            <span class="mat-current-badge" id="currentStepBadge">等待开始</span>
-                            <h3 id="currentAgentName">准备生成</h3>
-                            <p class="mat-current-agent-message" id="currentAgentMessage">提交后，教学地图会在这里逐步生长。</p>
-                            <div class="mat-generation-progress-row">
-                                <span>整体进度</span>
-                                <strong id="matGenerationPercent">0%</strong>
+                        <!-- Act 1: 学情侦察 -->
+                        <div class="mat-scene mat-scene-analysis" data-scene="analysis">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第一步 · 学情侦察</h3>
+                                <p class="mat-scene-desc">侦察员正在拆解学习目标、学生起点和课堂关键障碍</p>
+                                <div class="mat-scene-work mat-analysis-workshop mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-scout"></span>
+                                        <div class="mat-intel-desk">
+                                            <div class="mat-intel-card mat-doc-card mat-doc-card-1">
+                                                <span class="mat-doc-lines"></span><span class="mat-doc-tag"></span>
+                                            </div>
+                                            <div class="mat-intel-card mat-doc-card mat-doc-card-2">
+                                                <span class="mat-doc-lines"></span><span class="mat-doc-tag"></span>
+                                            </div>
+                                            <div class="mat-intel-card mat-doc-card mat-doc-card-3">
+                                                <span class="mat-doc-lines"></span><span class="mat-doc-tag"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mat-progress-bar-container" aria-hidden="true">
-                                <div class="mat-progress-bar" id="progressBar"></div>
+                        </div>
+
+                        <!-- Act 2: 蓝图设计 -->
+                        <div class="mat-scene mat-scene-blueprint" data-scene="blueprint">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第二步 · 蓝图设计</h3>
+                                <p class="mat-scene-desc">设计师正在把目标组织成一条清晰的课堂推进路径</p>
+                                <div class="mat-scene-work mat-blueprint-board mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                    <span class="mat-px-sprite mat-px-drafter is-sm"></span>
+                                    <svg class="mat-blueprint-svg" viewBox="0 0 520 180" aria-hidden="true">
+                                        <path class="mat-route-shadow" d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
+                                        <path class="mat-route-line mat-blueprint-path" d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
+                                        <g class="mat-route-stop mat-bp-dot-1" transform="translate(42 118)"><circle r="9"/><text y="29">起点</text></g>
+                                        <g class="mat-route-stop mat-bp-dot-2" transform="translate(144 58)"><circle r="7"/><text y="-17">概念</text></g>
+                                        <g class="mat-route-stop mat-bp-dot-3" transform="translate(248 108)"><circle r="9"/><text y="31">探究</text></g>
+                                        <g class="mat-route-stop mat-bp-dot-4" transform="translate(356 132)"><circle r="7"/><text y="29">迁移</text></g>
+                                        <g class="mat-route-stop mat-bp-dot-5" transform="translate(480 62)"><circle r="9"/><text y="-18">达成</text></g>
+                                    </svg>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mat-generation-phase-list" id="matGenerationPhases"></div>
+                        </div>
+
+                        <!-- Act 3: 主干搭建 -->
+                        <div class="mat-scene mat-scene-main" data-scene="main">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第三步 · 主干搭建</h3>
+                                <p class="mat-scene-desc">工程师正在让核心问题沿着课堂逻辑逐步连起来</p>
+                                <div class="mat-scene-work mat-main-yard mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-builder"></span>
+                                        <div class="mat-main-track mat-blocks-row" id="matBlocksRow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Act 4: 分支生长 -->
+                        <div class="mat-scene mat-scene-branches" data-scene="branches">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第四步 · 分支生长</h3>
+                                <p class="mat-scene-desc">园丁正在让变式问题和支架提示从主干上冒芽</p>
+                                <div class="mat-scene-work mat-branch-lab mat-px-stage" id="matTreeContainer">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-gardener is-sm"></span>
+                                        <div class="mat-px-content-col">
+                                            <div class="mat-branch-spine">
+                                                <span>M1</span><span>M2</span><span>M3</span><span>M4</span>
+                                            </div>
+                                            <div class="mat-branch-cards" id="matBranchCards"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Act 5: 校验打磨 -->
+                        <div class="mat-scene mat-scene-polish" data-scene="polish">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第五步 · 校验打磨</h3>
+                                <p class="mat-scene-desc">打磨匠正在检查目标对齐、难度梯度和课堂可用性</p>
+                                <div class="mat-scene-work mat-polish-area mat-quality-bench mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-inspector is-sm"></span>
+                                        <div class="mat-px-content-col">
+                                            <div class="mat-scan-line"></div>
+                                            <div class="mat-quality-paper">
+                                                <span></span><span></span><span></span><span></span>
+                                            </div>
+                                            <div class="mat-polish-checks" id="matPolishChecks"></div>
+                                            <div class="mat-quality-stamp" id="matQualityStamp">校验中</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Act 6: 总装交付 -->
+                        <div class="mat-scene mat-scene-assemble" data-scene="assemble">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <h3 class="mat-scene-title">第六步 · 总装交付</h3>
+                                <p class="mat-scene-desc">总装工正在收束节点、连线和优先级，准备交付地图</p>
+                                <div class="mat-scene-work mat-assemble-area mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-assemble-pieces" id="matAssemblePieces"></div>
+                                    <div class="mat-px-actors">
+                                    <span class="mat-px-sprite mat-px-packer is-sm"></span>
+                                    <div class="mat-assemble-target" id="matAssembleTarget">
+                                        <svg class="mat-mini-map" viewBox="0 0 220 130" aria-hidden="true">
+                                            <path class="mat-mini-edge" d="M35 72 L88 42 L142 82 L188 48" />
+                                            <circle class="mat-mini-node mat-mini-node-main" cx="35" cy="72" r="10" />
+                                            <circle class="mat-mini-node mat-mini-node-main" cx="88" cy="42" r="10" />
+                                            <circle class="mat-mini-node mat-mini-node-main" cx="142" cy="82" r="10" />
+                                            <circle class="mat-mini-node mat-mini-node-main" cx="188" cy="48" r="10" />
+                                            <circle class="mat-mini-node mat-mini-node-variant" cx="116" cy="24" r="6" />
+                                            <circle class="mat-mini-node mat-mini-node-scaffold" cx="164" cy="108" r="6" />
+                                        </svg>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final: completion -->
+                        <div class="mat-scene mat-scene-complete" data-scene="complete">
+                            <div class="mat-scene-bg"></div>
+                            <div class="mat-scene-content">
+                                <div class="mat-complete-mark">完成</div>
+                                <h3 class="mat-scene-title">教学地图生成完成</h3>
+                                <p class="mat-scene-desc">所有智能体已完成工作，正在准备最终视图…</p>
+                                <div class="mat-scene-work mat-celebrate-area mat-px-stage">
+                                    <div class="mat-px-floor"></div>
+                                    <div class="mat-firework mat-fw-1"></div>
+                                    <div class="mat-firework mat-fw-2"></div>
+                                    <div class="mat-firework mat-fw-3"></div>
+                                    <div class="mat-px-actors">
+                                        <span class="mat-px-sprite mat-px-celebrate is-lg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product counters -->
+                    <div class="mat-theater-narration" id="matTheaterNarration">
+                        <div class="mat-theater-counters" id="matNodeCounters">
+                            <div class="mat-node-counter mat-node-counter--main">
+                                <span class="mat-counter-dot"></span>
+                                <span class="mat-counter-label">主干</span>
+                                <strong class="mat-counter-value" data-counter="main">0</strong>
+                            </div>
+                            <div class="mat-node-counter mat-node-counter--variant">
+                                <span class="mat-counter-dot"></span>
+                                <span class="mat-counter-label">变式</span>
+                                <strong class="mat-counter-value" data-counter="variant">0</strong>
+                            </div>
+                            <div class="mat-node-counter mat-node-counter--scaffold">
+                                <span class="mat-counter-dot"></span>
+                                <span class="mat-counter-label">支架</span>
+                                <strong class="mat-counter-value" data-counter="scaffold">0</strong>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆形花坛半径变化探究</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            padding: 16px;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+            max-width: 960px;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 32px 20px 32px;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .header {
+            flex: 0 0 auto;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h1 small {
+            font-size: 15px;
+            font-weight: 400;
+            color: #64748b;
+            margin-left: 6px;
+        }
+        .header .question {
+            font-size: 15px;
+            color: #334155;
+            background: #f1f5f9;
+            padding: 8px 18px;
+            border-radius: 40px;
+            margin-top: 6px;
+            display: inline-block;
+            line-height: 1.6;
+            border-left: 4px solid #3b82f6;
+        }
+        .canvas-wrapper {
+            flex: 1 1 0;
+            min-height: 0;
+            position: relative;
+            background: #fafcff;
+            border-radius: 18px;
+            border: 1px solid #e9edf4;
+            overflow: hidden;
+        }
+        #canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #fafcff;
+        }
+        .controls {
+            flex: 0 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px 16px;
+            margin-top: 12px;
+            padding: 10px 14px 6px 14px;
+            background: #f8faff;
+            border-radius: 40px;
+            border: 1px solid #e6edf8;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .control-group label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+        .control-group .k-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            min-width: 28px;
+            text-align: center;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 140px;
+            height: 6px;
+            border-radius: 4px;
+            background: #d1d9e8;
+            outline: none;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.30);
+            cursor: pointer;
+            transition: 0.12s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+            background: #1d4ed8;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.30);
+            cursor: pointer;
+        }
+        .ratio-group {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        .ratio-group span {
+            background: #ffffff;
+            padding: 3px 14px;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        .ratio-group .highlight {
+            color: #2563eb;
+            font-weight: 700;
+        }
+        .ratio-group .highlight-red {
+            color: #dc2626;
+            font-weight: 700;
+        }
+        .footer-hint {
+            flex: 0 0 auto;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 6px 18px;
+            border-radius: 30px;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+        }
+        .footer-hint .blank {
+            display: inline-block;
+            min-width: 44px;
+            border-bottom: 2px solid #94a3b8;
+            margin: 0 4px;
+            text-align: center;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .footer-hint .blank-red {
+            border-bottom-color: #ef4444;
+            color: #dc2626;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px 16px 14px 16px;
+                aspect-ratio: auto;
+                min-height: 480px;
+                max-height: 100vh;
+            }
+            .header h1 {
+                font-size: 17px;
+            }
+            .header .question {
+                font-size: 13px;
+                padding: 5px 14px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                padding: 10px 14px;
+                border-radius: 24px;
+            }
+            .control-group {
+                justify-content: center;
+            }
+            .ratio-group {
+                justify-content: center;
+                gap: 8px;
+            }
+            .ratio-group span {
+                font-size: 12px;
+                padding: 2px 10px;
+            }
+            input[type="range"] {
+                width: 100px;
+            }
+            .footer-hint {
+                font-size: 13px;
+                padding: 4px 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px 10px 10px 10px;
+            }
+            .header h1 {
+                font-size: 15px;
+            }
+            .header .question {
+                font-size: 12px;
+            }
+            .ratio-group span {
+                font-size: 11px;
+                padding: 1px 8px;
+            }
+            .control-group label {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🌸 圆形花坛半径变化
+                <small>六年级 · 数学</small>
+            </h1>
+            <div class="question">
+                半径扩大到原来的 <strong>k</strong> 倍，周长和面积分别扩大到原来的几倍？拖动滑块观察吧！
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="canvas" width="960" height="640"></canvas>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label for="kSlider">扩大倍数 <span class="k-value" id="kDisplay">3</span></label>
+                <input type="range" id="kSlider" min="1" max="5" value="3" step="1">
+            </div>
+            <div class="ratio-group" id="ratioGroup">
+                <span>📏 半径比 <span class="highlight" id="ratioR">3</span> : 1</span>
+                <span>🔄 周长比 <span class="highlight" id="ratioC">3</span> : 1</span>
+                <span>📐 面积比 <span class="highlight-red" id="ratioS">9</span> : 1</span>
+            </div>
+        </div>
+        <div class="footer-hint">
+            💡 半径扩大为原来的 <strong>k</strong> 倍 →
+            周长扩大为原来的 <span class="blank" id="hintC">?</span> 倍，
+            面积扩大为原来的 <span class="blank blank-red" id="hintS">?</span> 倍。
+            用公式怎样解释？
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const slider = document.getElementById('kSlider');
+            const kDisplay = document.getElementById('kDisplay');
+            const ratioR = document.getElementById('ratioR');
+            const ratioC = document.getElementById('ratioC');
+            const ratioS = document.getElementById('ratioS');
+            const hintC = document.getElementById('hintC');
+            const hintS = document.getElementById('hintS');
+
+            // 固定尺寸参数 (画布坐标系 960×640)
+            const W = 960;
+            const H = 640;
+            canvas.width = W;
+            canvas.height = H;
+
+            // 基础半径 (px)
+            const R_BASE = 52;
+
+            // 左侧小圆位置
+            const CX_LEFT = 220;
+            const CY_LEFT = 332;
+
+            // 右侧大圆位置
+            const CX_RIGHT = 660;
+            const CY_RIGHT = 332;
+
+            // 方格边长 = r_base * sqrt(π)  保证每个方格面积 = π r_base²
+            const CELL_SIZE = R_BASE * Math.sqrt(Math.PI);
+
+            // 颜色
+            const COLOR_LEFT_FILL = 'rgba(59, 130, 246, 0.20)';
+            const COLOR_LEFT_STROKE = '#2563eb';
+            const COLOR_LEFT_LABEL = '#1e40af';
+            const COLOR_RIGHT_FILL = 'rgba(239, 68, 68, 0.08)';
+            const COLOR_RIGHT_STROKE = '#dc2626';
+            const COLOR_RIGHT_LABEL = '#b91c1c';
+            const COLOR_CELL_A = 'rgba(59, 130, 246, 0.25)';
+            const COLOR_CELL_B = 'rgba(59, 130, 246, 0.05)';
+            const COLOR_CELL_STROKE = 'rgba(37, 99, 235, 0.30)';
+            const COLOR_GRID_BG = 'rgba(37, 99, 235, 0.04)';
+
+            // ---------- 绘图 ----------
+            function draw(k) {
+                ctx.clearRect(0, 0, W, H);
+
+                // ---- 1. 左侧小圆 ----
+                const rL = R_BASE;
+                // 外发光
+                const gradL = ctx.createRadialGradient(CX_LEFT, CY_LEFT, 0, CX_LEFT, CY_LEFT, rL * 1.4);
+                gradL.addColorStop(0, 'rgba(59, 130, 246, 0.08)');
+                gradL.addColorStop(1, 'rgba(59, 130, 246, 0)');
+                ctx.fillStyle = gradL;
+                ctx.beginPath();
+                ctx.arc(CX_LEFT, CY_LEFT, rL * 1.4, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 填充
+                ctx.fillStyle = COLOR_LEFT_FILL;
+                ctx.beginPath();
+                ctx.arc(CX_LEFT, CY_LEFT, rL, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = COLOR_LEFT_STROKE;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // 半径标注
+                ctx.save();
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(CX_LEFT, CY_LEFT);
+                ctx.lineTo(CX_LEFT + rL, CY_LEFT);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.fillStyle = COLOR_LEFT_LABEL;
+                ctx.font = 'bold 17px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('r', CX_LEFT + rL / 2, CY_LEFT - 8);
+
+                ctx.textBaseline = 'top';
+                ctx.font = '15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#1e293b';
+                ctx.fillText('半径 = r', CX_LEFT, CY_LEFT + rL + 16);
+
+                // 周长公式
+                ctx.textBaseline = 'top';
+                ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#475569';
+                ctx.textAlign = 'left';
+                ctx.fillText('C = 2πr', CX_LEFT - rL * 0.9, CY_LEFT - rL - 46);
+                ctx.fillText('S = πr²', CX_LEFT - rL * 0.9, CY_LEFT - rL - 24);
+
+                // ---- 2. 右侧大圆 ----
+                const rR = R_BASE * k;
+
+                // 外发光
+                const gradR = ctx.createRadialGradient(CX_RIGHT, CY_RIGHT, 0, CX_RIGHT, CY_RIGHT, rR * 1.3);
+                gradR.addColorStop(0, 'rgba(239, 68, 68, 0.06)');
+                gradR.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                ctx.fillStyle = gradR;
+                ctx.beginPath();
+                ctx.arc(CX_RIGHT, CY_RIGHT, rR * 1.3, 0, 2 * Math.PI);
+                ctx.fill();
+
+                ctx.fillStyle = COLOR_RIGHT_FILL;
+                ctx.beginPath();
+                ctx.arc(CX_RIGHT, CY_RIGHT, rR, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = COLOR_RIGHT_STROKE;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // ---- 3. 大圆内部方格 (k×k) ----
+                const n = Math.floor(k);
+                if (n >= 1 && n <= 5) {
+                    // 计算网格总宽度
+                    const totalW = n * CELL_SIZE;
+                    const startX = CX_RIGHT - totalW / 2;
+                    const startY = CY_RIGHT - totalW / 2;
+
+                    // 绘制半透明背景方格区域
+                    ctx.fillStyle = COLOR_GRID_BG;
+                    ctx.fillRect(startX, startY, totalW, totalW);
+
+                    for (let row = 0; row < n; row++) {
+                        for (let col = 0; col < n; col++) {
+                            const x = startX + col * CELL_SIZE;
+                            const y = startY + row * CELL_SIZE;
+                            const isAlt = (row + col) % 2 === 0;
+                            ctx.fillStyle = isAlt ? COLOR_CELL_A : COLOR_CELL_B;
+                            ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                            ctx.strokeStyle = COLOR_CELL_STROKE;
+                            ctx.lineWidth = 1.2;
+                            ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+
+                            // 在每个方格中画一个小圆点 (代表面积单元)
+                            const dotR = CELL_SIZE * 0.16;
+                            ctx.fillStyle = 'rgba(37, 99, 235, 0.35)';
+                            ctx.beginPath();
+                            ctx.arc(x + CELL_SIZE / 2, y + CELL_SIZE / 2, dotR, 0, 2 * Math.PI);
+                            ctx.fill();
+                            // 加一个小光环
+                            ctx.fillStyle = 'rgba(37, 99, 235, 0.10)';
+                            ctx.beginPath();
+                            ctx.arc(x + CELL_SIZE / 2, y + CELL_SIZE / 2, dotR * 2.2, 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                    }
+
+                    // 在网格下方标注 "k×k 个面积单元"
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#1e293b';
+                    const label = n + '×' + n + ' = ' + (n * n) + ' 个单元';
+                    ctx.fillText('⬛ 每个方格面积 = πr²', CX_RIGHT, startY + totalW + 12);
+                    ctx.fillStyle = '#475569';
+                    ctx.font = '13px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillText('共 ' + (n * n) + ' 个方格 = ' + (n * n) + ' × πr²', CX_RIGHT, startY + totalW + 32);
+                }
+
+                // 半径标注 (大圆)
+                ctx.save();
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#dc2626';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(CX_RIGHT, CY_RIGHT);
+                ctx.lineTo(CX_RIGHT + rR, CY_RIGHT);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.fillStyle = COLOR_RIGHT_LABEL;
+                ctx.font = 'bold 17px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('k·r', CX_RIGHT + rR / 2, CY_RIGHT - 8);
+
+                ctx.textBaseline = 'top';
+                ctx.font = '15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#1e293b';
+                ctx.textAlign = 'center';
+                ctx.fillText('半径 = k·r  (k=' + k + ')', CX_RIGHT, CY_RIGHT + rR + 16);
+
+                // 周长公式 (大圆)
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.font = '14px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#b91c1c';
+                const cLabelX = CX_RIGHT - rR * 0.85;
+                ctx.fillText('C = 2π(k·r) = k·2πr', cLabelX, CY_RIGHT - rR - 46);
+                ctx.fillText('S = π(k·r)² = k²·πr²', cLabelX, CY_RIGHT - rR - 24);
+
+                // ---- 4. 连接符号与对比装饰 ----
+                ctx.font = '28px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('⟶', (CX_LEFT + CX_RIGHT) / 2, CY_LEFT - 60);
+
+                // 标注 "×k"
+                ctx.font = 'bold 20px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('× ' + k, (CX_LEFT + CX_RIGHT) / 2, CY_LEFT - 24);
+
+                // ---- 5. 左侧小圆下方显示 "1 份" ----
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.font = '13px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#475569';
+                ctx.fillText('1 份', CX_LEFT, CY_LEFT + rL + 40);
+
+                // ---- 6. 右下角图例 ----
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'bottom';
+                ctx.font = '12px "PingFang SC", "Microsoft YaHei", sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('拖动滑块观察变化', W - 18, H - 12);
+
+                // ---- 7. 如果 k=1 特殊提示 ----
+                if (k === 1) {
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.font = '15px "PingFang SC", "Microsoft YaHei", sans-serif';
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillText('⚖️ k=1 时大小相同', CX_RIGHT, CY_RIGHT - rR - 72);
+                }
+            }
+
+            // ---------- 更新数据 ----------
+            function updateData(k) {
+                const ki = Math.floor(k);
+                kDisplay.textContent = k;
+                ratioR.textContent = k;
+                ratioC.textContent = k;
+                const areaRatio = k * k;
+                ratioS.textContent = areaRatio;
+
+                // 提示填空 (不直接给答案，留引导)
+                if (k === 1) {
+                    hintC.textContent = '1';
+                    hintS.textContent = '1';
+                } else {
+                    hintC.textContent = '?';
+                    hintS.textContent = '?';
+                }
+                // 但为了课堂引导，当 k=2 时给一点线索
+                if (k === 2) {
+                    hintC.textContent = '2';
+                    hintS.textContent = '?';
+                }
+                if (k === 3) {
+                    hintC.textContent = '?';
+                    hintS.textContent = '?';
+                }
+                if (k === 4) {
+                    hintC.textContent = '?';
+                    hintS.textContent = '?';
+                }
+                if (k === 5) {
+                    hintC.textContent = '?';
+                    hintS.textContent = '?';
+                }
+            }
+
+            // ---------- 主更新 ----------
+            function update() {
+                const k = parseFloat(slider.value);
+                draw(k);
+                updateData(k);
+            }
+
+            // ---------- 事件绑定 ----------
+            slider.addEventListener('input', update);
+
+            // ---------- 窗口尺寸自适应 (保证 Canvas 显示比例) ----------
+            function resizeCanvas() {
+                const wrapper = canvas.parentElement;
+                const rect = wrapper.getBoundingClientRect();
+                // Canvas 的 CSS 宽高已设为 100%，无需额外操作
+                // 仅当 wrapper 尺寸变化时重绘 (已经通过 update 保持)
+            }
+
+            // 防抖 resize
+            let resizeTimer = null;
+            window.addEventListener('resize', function() {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    // 只重绘，不改变 canvas 内部坐标系
+                    update();
+                }, 120);
+            });
+
+            // ---------- 初始绘制 ----------
+            update();
+
+            // 附加：若用户点击 canvas 区域可增加探索感 (不做复杂交互，仅聚焦滑块)
+            // 完全符合约束：无 onclick 属性，已用 addEventListener
+
+            console.log('🌸 圆形花坛交互可视化已加载');
+            console.log('💡 提示：拖动滑块观察半径、周长、面积的变化规律');
+        })();
+    </script>
+</body>
+</html>

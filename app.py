@@ -1524,6 +1524,9 @@ AGENT_NAME_MAP = {
     "bump_scaffold_retry": "系统-支架问题重试",
     "mark_variant_done": "系统-变式流水线完成",
     "mark_scaffold_done": "系统-支架流水线完成",
+    "main_visual_aid_generation": "主干问题交互可视化生成Agent",
+    "variant_visual_aid_generation": "变式问题交互可视化生成Agent",
+    "scaffold_visual_aid_generation": "支架问题交互可视化生成Agent",
 }
 
 
@@ -1828,8 +1831,29 @@ def _mat_truncate_text(text: str, limit: int = 140) -> str:
     return text[:limit] + "..."
 
 
+def _mat_preview_value(value, html_limit: int = 240):
+    if isinstance(value, dict):
+        preview = {}
+        for k, v in value.items():
+            if k == "visual_aid_html" and isinstance(v, str):
+                preview[k] = {
+                    "length": len(v),
+                    "preview": _mat_truncate_text(v, html_limit),
+                }
+            else:
+                preview[k] = _mat_preview_value(v, html_limit)
+        return preview
+    if isinstance(value, list):
+        return [_mat_preview_value(v, html_limit) for v in value]
+    return value
+
+
 def _mat_build_output_preview(output: dict) -> dict:
-    return {k: v for k, v in output.items() if k != "progress_messages"}
+    return {
+        k: _mat_preview_value(v)
+        for k, v in output.items()
+        if k != "progress_messages"
+    }
 
 
 def _mat_model_display_name(model_id: str) -> str:
@@ -1957,10 +1981,13 @@ def _mat_build_input_preview(node_name: str, accumulated: dict) -> dict:
         "teaching_logic_design": ["model_id", "temperature", "subject", "grade", "teaching_goals", "analysis_result"],
         "main_question_chain": ["model_id", "temperature", "subject", "grade", "teaching_goals", "student_profile", "difficulty_analysis", "language_style", "attachment", "map_construction_logic", "main_retry_count", "validation_results"],
         "main_question_check": ["subject", "grade", "teaching_goals", "analysis_result", "map_construction_logic", "main_questions", "attachment"],
+        "main_visual_aid_generation": ["subject", "grade", "main_questions"],
         "variant_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "variant_question_plan", "variant_retry_count"],
         "scaffold_question": ["model_id", "temperature", "subject", "grade", "language_style", "main_questions", "scaffold_question_plan", "scaffold_retry_count"],
         "variant_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "variant_questions"],
         "scaffold_check": ["subject", "grade", "language_style", "analysis_result", "teaching_goals", "main_questions", "scaffold_questions"],
+        "variant_visual_aid_generation": ["subject", "grade", "variant_questions"],
+        "scaffold_visual_aid_generation": ["subject", "grade", "scaffold_questions"],
         "map_integration": ["subject", "grade", "teaching_goals", "analysis_result", "main_questions", "variant_questions", "scaffold_questions"],
     }
     scalar_fields = INPUT_FIELDS.get(node_name, [])
@@ -1973,7 +2000,7 @@ def _mat_build_input_preview(node_name: str, accumulated: dict) -> dict:
             if f == "attachment" and isinstance(value, str):
                 preview[f] = _mat_truncate_text(value, 1200)
             else:
-                preview[f] = value
+                preview[f] = _mat_preview_value(value)
     if node_name == "main_question_chain" and isinstance(preview.get("map_construction_logic"), dict):
         map_logic = preview["map_construction_logic"]
         preview["map_construction_logic"] = {"main_question_chain": map_logic.get("main_question_chain", [])}
@@ -1998,6 +2025,7 @@ def _mat_run_workflow(task_id: str):
         selected_model_id = task.get("input", {}).get("model_id")
         initial_state = {
             **task["input"],
+            "_task_id": task_id,
             "main_retry_count": 0,
             "variant_retry_count": 0,
             "scaffold_retry_count": 0,
@@ -2051,7 +2079,7 @@ def _mat_run_workflow(task_id: str):
                                 continue
                             accumulated[key] = value
 
-                        log_output = {k: v for k, v in node_output.items() if k != "progress_messages"}
+                        log_output = _mat_build_output_preview(node_output)
                         try:
                             _mat_save_agent_log(task_id, step_number, agent_display_name, {
                                 "input_preview": input_preview,
@@ -2531,6 +2559,101 @@ def mat_nav_dispatch():
     result["explanation_node"] = node_map.get(explanation_id) if explanation_id else None
 
     return jsonify(result)
+
+
+# ===================== 教学地图节点配图管理 =====================
+from multi_agent_teaching.image_gen import save_uploaded_image, delete_node_image, get_visual_aid_url  # noqa: E402
+
+
+@app.route("/api/mat/node-image/upload", methods=["POST"])
+@login_required
+def mat_node_image_upload():
+    """教师为指定节点上传配图"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+
+    task_id = request.form.get("task_id", "").strip()
+    node_id = request.form.get("node_id", "").strip()
+    if not task_id or not node_id:
+        return jsonify({"error": "task_id and node_id are required"}), 400
+
+    file = request.files.get("image")
+    if not file or not file.filename:
+        return jsonify({"error": "No image file provided"}), 400
+
+    allowed_exts = {".png", ".jpg", ".jpeg", ".webp"}
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in allowed_exts:
+        return jsonify({"error": "Unsupported file type. Allowed: png, jpg, jpeg, webp"}), 400
+
+    max_size = 5 * 1024 * 1024
+    file_data = file.read()
+    if len(file_data) > max_size:
+        return jsonify({"error": "File too large. Max 5MB"}), 400
+
+    url = save_uploaded_image(task_id, node_id, file_data, ext)
+
+    _mat_update_node_visual_aid_url(task_id, node_id, url, session_uid)
+
+    return jsonify({"url": url, "node_id": node_id})
+
+
+@app.route("/api/mat/node-image/<task_id>/<node_id>", methods=["DELETE"])
+@login_required
+def mat_node_image_delete(task_id, node_id):
+    """删除节点配图"""
+    session_uid = _mat_session_user_id()
+    if session_uid is None:
+        return jsonify({"code": 401, "msg": "请先登录"}), 401
+
+    deleted = delete_node_image(task_id, node_id)
+
+    if deleted:
+        _mat_update_node_visual_aid_url(task_id, node_id, None, session_uid)
+
+    return jsonify({"deleted": deleted, "node_id": node_id})
+
+
+def _mat_update_node_visual_aid_url(task_id, node_id, url, session_uid):
+    """Update visual_aid_urls for a node in the stored result JSON."""
+    try:
+        record = _mat_get_history_detail(task_id)
+        if not record or not _mat_history_row_owned_by(record, session_uid):
+            return
+
+        result_json = record.get("result_json")
+        if not result_json:
+            return
+
+        import json as _json
+        teaching_map = _json.loads(result_json) if isinstance(result_json, str) else result_json
+        nodes = teaching_map.get("nodes", [])
+        modified = False
+
+        for node in nodes:
+            if node.get("id") == node_id:
+                if url:
+                    node["visual_aid_urls"] = [url]
+                else:
+                    node["visual_aid_urls"] = []
+                modified = True
+                break
+
+        if modified:
+            new_json = _json.dumps(teaching_map, ensure_ascii=False)
+            conn = _mat_get_conn()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE history SET result_json=%s WHERE id=%s",
+                        (new_json, task_id),
+                    )
+                conn.commit()
+            finally:
+                conn.close()
+    except Exception:
+        app.logger.exception("Failed to update visual_aid_urls for node %s", node_id)
 
 
 # ===================== 启动 =====================

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>化曲为直：剪圆拼方</title>
+    <style>
+        /* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            padding: 16px;
+        }
+        /* 主容器 4:3 比例自适应 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 20, 40, 0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 28px 24px 28px;
+            transition: box-shadow 0.3s;
+            overflow: hidden;
+        }
+        /* 标题区 */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef2f7;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-size: clamp(20px, 4vw, 32px);
+            font-weight: 700;
+            color: #1a2c4e;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header h1 span {
+            background: #2b5f9e;
+            color: #fff;
+            font-size: 0.55em;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .header .hint {
+            font-size: clamp(13px, 1.8vw, 18px);
+            color: #5b6f8a;
+            background: #f0f4fb;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        /* 画布区 */
+        .canvas-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 0;
+        }
+        #mainCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 16px;
+            background: #ffffff;
+            cursor: default;
+        }
+        /* 控制区 */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 16px 24px;
+            padding-top: 14px;
+            border-top: 2px solid #eef2f7;
+            flex-shrink: 0;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .control-group label {
+            font-size: clamp(15px, 1.6vw, 20px);
+            font-weight: 600;
+            color: #1f3a5f;
+            white-space: nowrap;
+        }
+        .control-group .value-display {
+            min-width: 32px;
+            text-align: center;
+            font-size: clamp(18px, 1.8vw, 24px);
+            font-weight: 700;
+            color: #1f3a5f;
+            background: #f0f4fb;
+            border-radius: 8px;
+            padding: 0 8px;
+        }
+        /* 自定义滑块 */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 140px;
+            height: 6px;
+            border-radius: 4px;
+            background: #d0dbe8;
+            outline: none;
+            transition: background 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #2b5f9e;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(43, 95, 158, 0.35);
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.08);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #2b5f9e;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(43, 95, 158, 0.35);
+            cursor: pointer;
+        }
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-group button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 40px;
+            font-size: clamp(14px, 1.5vw, 19px);
+            font-weight: 600;
+            background: #e8edf5;
+            color: #2b4a72;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .btn-group button:hover {
+            background: #d5dfed;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(43, 95, 158, 0.12);
+        }
+        .btn-group button.active {
+            background: #2b5f9e;
+            color: #ffffff;
+            box-shadow: 0 6px 18px rgba(43, 95, 158, 0.28);
+        }
+        .btn-group button.active:hover {
+            background: #1f4c82;
+        }
+        /* 底部引导文字 */
+        .footer-note {
+            text-align: center;
+            font-size: clamp(13px, 1.4vw, 18px);
+            color: #3f5a7a;
+            padding-top: 8px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+            min-height: 32px;
+            transition: opacity 0.25s;
+        }
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .container {
+                padding: 14px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .controls {
+                gap: 12px 14px;
+                padding-top: 10px;
+            }
+            .control-group {
+                gap: 6px;
+            }
+            input[type="range"] {
+                width: 100px;
+            }
+            .btn-group button {
+                padding: 6px 16px;
+                font-size: 14px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .header .hint {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 span {
+                display: none;
+            }
+            .btn-group button {
+                padding: 5px 12px;
+                font-size: 12px;
+            }
+            input[type="range"] {
+                width: 72px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 标题 -->
+        <div class="header">
+            <h1>✂️ 化曲为直 <span>六年级·数学</span></h1>
+            <div class="hint">🔍 拖动滑块 · 点击按钮</div>
+        </div>
+
+        <!-- 画布 -->
+        <div class="canvas-wrapper">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+
+        <!-- 控制区 -->
+        <div class="controls">
+            <!-- 滑块：分割份数 -->
+            <div class="control-group">
+                <label for="sliceSlider">分割份数</label>
+                <input type="range" id="sliceSlider" min="4" max="12" step="2" value="8">
+                <span class="value-display" id="sliceValue">8</span>
+            </div>
+
+            <!-- 按钮：三种状态 -->
+            <div class="btn-group" id="modeButtons">
+                <button data-mode="original" class="active">🔵 完整圆</button>
+                <button data-mode="cut">✂️ 剪开扇形</button>
+                <button data-mode="combined">🧩 拼合图形</button>
+            </div>
+        </div>
+
+        <!-- 底部引导 -->
+        <div class="footer-note" id="footerNote">🔵 这是一个完整的圆形纸片，旁边放着一把剪刀。</div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ---- DOM 引用 ----
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const slider = document.getElementById('sliceSlider');
+            const sliceVal = document.getElementById('sliceValue');
+            const buttons = document.querySelectorAll('#modeButtons button');
+            const footer = document.getElementById('footerNote');
+
+            // ---- 状态 ----
+            let slices = 8; // 4,6,8,10,12
+            let mode = 'original'; // 'original' | 'cut' | 'combined'
+
+            // ---- 画布尺寸管理 (4:3 自适应) ----
+            function resizeCanvas() {
+                const wrapper = canvas.parentElement;
+                const w = wrapper.clientWidth;
+                const h = wrapper.clientHeight;
+                // 保持清晰度，按像素比设置
+                const dpr = window.devicePixelRatio || 1;
+                const logicalW = Math.floor(w);
+                const logicalH = Math.floor(h);
+                canvas.width = logicalW * dpr;
+                canvas.height = logicalH * dpr;
+                canvas.style.width = logicalW + 'px';
+                canvas.style.height = logicalH + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                // 存储逻辑尺寸供绘制使用
+                canvas._w = logicalW;
+                canvas._h = logicalH;
+                draw();
+            }
+
+            // ---- 工具函数 ----
+            function degToRad(deg) { return deg * Math.PI / 180; }
+
+            function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+            // ---- 绘制剪刀 ----
+            function drawScissors(cx, cy, scale) {
+                const s = scale || 1;
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.scale(s, s);
+
+                const handleR = 14;
+                const bladeLen = 58;
+                const offsetX = 6;
+                const pivotY = -4;
+
+                // 把手 (两个椭圆)
+                ctx.strokeStyle = '#4a5c72';
+                ctx.lineWidth = 2.8;
+                ctx.fillStyle = '#dce4ed';
+
+                // 左把手
+                ctx.beginPath();
+                ctx.ellipse(-offsetX - 6, pivotY + 32, handleR * 0.9, handleR * 1.1, -0.25, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+
+                // 右把手
+                ctx.beginPath();
+                ctx.ellipse(offsetX + 6, pivotY + 32, handleR * 0.9, handleR * 1.1, 0.25, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+
+                // 刀刃 (两条交叉线)
+                ctx.strokeStyle = '#6a7e96';
+                ctx.lineWidth = 3.4;
+                ctx.lineCap = 'round';
+
+                // 左刃：从左把手到交叉点再到右上方
+                ctx.beginPath();
+                ctx.moveTo(-offsetX - 2, pivotY + 22);
+                ctx.lineTo(0, pivotY + 2);
+                ctx.lineTo(bladeLen * 0.65, -bladeLen * 0.45);
+                ctx.stroke();
+
+                // 右刃：从右把手到交叉点再到左上方
+                ctx.beginPath();
+                ctx.moveTo(offsetX + 2, pivotY + 22);
+                ctx.lineTo(0, pivotY + 2);
+                ctx.lineTo(-bladeLen * 0.65, -bladeLen * 0.45);
+                ctx.stroke();
+
+                // 铆钉 (小圆)
+                ctx.fillStyle = '#8a9cb0';
+                ctx.strokeStyle = '#4a5c72';
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.arc(0, pivotY + 2, 4.5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+
+                // 小装饰：刀刃尖端圆弧
+                ctx.strokeStyle = '#6a7e96';
+                ctx.lineWidth = 2.8;
+                ctx.beginPath();
+                ctx.arc(bladeLen * 0.65, -bladeLen * 0.45, 3, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(-bladeLen * 0.65, -bladeLen * 0.45, 3, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            // ---- 绘制主题 ----
+            function draw() {
+                const W = canvas._w || 800;
+                const H = canvas._h || 600;
+                ctx.clearRect(0, 0, W, H);
+
+                // 背景微纹理 (极淡)
+                ctx.fillStyle = '#fafcff';
+                ctx.fillRect(0, 0, W, H);
+
+                // 计算布局参数
+                const cx = W * 0.40;
+                const cy = H * 0.52;
+                const radius = Math.min(W, H) * 0.28;
+
+                const N = slices;
+                const angleStep = (2 * Math.PI) / N;
+
+                // 颜色方案 (蓝色系 HSL)
+                const hueBase = 212;
+                const sat = 62;
+                const lightness = 52;
+
+                function sliceColor(index, total, alpha) {
+                    const l = 42 + (index / total) * 30;
+                    return `hsla(${hueBase}, ${sat}%, ${l}%, ${alpha || 1})`;
+                }
+
+                // ---- 根据模式绘制 ----
+                if (mode === 'original') {
+                    // === 完整圆 ===
+                    // 虚线暗示切割线
+                    ctx.save();
+                    ctx.strokeStyle = '#bcccdb';
+                    ctx.lineWidth = 1.2;
+                    ctx.setLineDash([4, 6]);
+                    for (let i = 0; i < N; i++) {
+                        const angle = i * angleStep - Math.PI / 2;
+                        const x1 = cx;
+                        const y1 = cy;
+                        const x2 = cx + radius * Math.cos(angle);
+                        const y2 = cy + radius * Math.sin(angle);
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                    ctx.setLineDash([]);
+                    ctx.restore();
+
+                    // 填充圆 (带轻微渐变)
+                    const grad = ctx.createRadialGradient(cx - radius * 0.2, cy - radius * 0.2, radius * 0.1, cx, cy, radius);
+                    grad.addColorStop(0, '#eaf1fb');
+                    grad.addColorStop(0.7, '#c9dced');
+                    grad.addColorStop(1, '#b0c8de');
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#7e96b0';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    // 圆心小点
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#3a5a7a';
+                    ctx.fill();
+
+                    // 标签 "圆形纸片"
+                    ctx.fillStyle = '#1f3a5f';
+                    ctx.font = `bold ${Math.round(Math.min(W,H)*0.028)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText('⚪ 圆形纸片', cx, cy + radius + 22);
+
+                    // 剪刀 (右侧)
+                    const scX = W * 0.74;
+                    const scY = cy + 10;
+                    const scScale = Math.min(W, H) * 0.0014;
+                    drawScissors(scX, scY, scScale);
+
+                    // 剪刀标签
+                    ctx.fillStyle = '#4a5c72';
+                    ctx.font = `${Math.round(Math.min(W,H)*0.022)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText('✂️ 剪刀', scX, scY + 58 * scScale + 8);
+
+                    // 引导线 (圆→剪刀)
+                    ctx.strokeStyle = '#c8d6e8';
+                    ctx.lineWidth = 1.2;
+                    ctx.setLineDash([3, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(cx + radius + 16, cy - 8);
+                    ctx.lineTo(scX - 42 * scScale, scY - 16 * scScale);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    footer.textContent = '🔵 完整的圆形纸片，旁边放着一把剪刀。想一想：怎样把它变成有直边的图形？';
+
+                } else if (mode === 'cut') {
+                    // === 剪开扇形 ===
+                    const gap = radius * 0.038; // 扇形之间的间距
+                    const offsetMag = radius * 0.055; // 径向偏移
+
+                    for (let i = 0; i < N; i++) {
+                        const startA = i * angleStep - Math.PI / 2;
+                        const endA = (i + 1) * angleStep - Math.PI / 2;
+                        const midA = (startA + endA) / 2;
+
+                        // 径向偏移
+                        const offX = offsetMag * Math.cos(midA);
+                        const offY = offsetMag * Math.sin(midA);
+
+                        const cx2 = cx + offX;
+                        const cy2 = cy + offY;
+
+                        // 扇形路径 (带微小间隙)
+                        const rInner = radius - gap * 0.3;
+                        ctx.beginPath();
+                        ctx.moveTo(cx2, cy2);
+                        ctx.arc(cx2, cy2, rInner, startA + gap * 0.008, endA - gap * 0.008);
+                        ctx.closePath();
+
+                        // 填充
+                        ctx.fillStyle = sliceColor(i, N, 0.92);
+                        ctx.fill();
+                        ctx.strokeStyle = '#4d6d8f';
+                        ctx.lineWidth = 1.6;
+                        ctx.stroke();
+
+                        // 小装饰：弧线加粗一点
+                        ctx.beginPath();
+                        ctx.arc(cx2, cy2, rInner, startA + gap * 0.012, endA - gap * 0.012);
+                        ctx.strokeStyle = 'rgba(55,85,120,0.25)';
+                        ctx.lineWidth = 2.4;
+                        ctx.stroke();
+                    }
+
+                    // 标签
+                    ctx.fillStyle = '#1f3a5f';
+                    ctx.font = `bold ${Math.round(Math.min(W,H)*0.028)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText(`✂️ 剪成 ${N} 个扇形`, cx, cy + radius + 28);
+
+                    // 显示份数标注
+                    ctx.fillStyle = '#3a5a7a';
+                    ctx.font = `${Math.round(Math.min(W,H)*0.02)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textBaseline = 'top';
+                    ctx.fillText('每个扇形都是圆的一部分', cx, cy + radius + 36);
+
+                    // 剪刀 (右侧偏下)
+                    const scX = W * 0.78;
+                    const scY = cy + 30;
+                    const scScale = Math.min(W, H) * 0.00125;
+                    drawScissors(scX, scY, scScale);
+
+                    // 引导标注
+                    ctx.fillStyle = '#4a5c72';
+                    ctx.font = `${Math.round(Math.min(W,H)*0.02)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText('✂️', scX, scY + 52 * scScale + 4);
+
+                    footer.textContent = `✂️ 圆被剪成了 ${N} 个扇形，每块都带有弯曲的弧边。怎样拼出直边图形？`;
+
+                } else if (mode === 'combined') {
+                    // === 拼合图形：扇形→三角形→近似矩形 ===
+                    const triW = (2 * Math.PI * radius) / N; // 每个三角形的底边宽度 (弧长)
+                    const triH = radius; // 高 = 半径
+
+                    // 拼合矩形区域的起始位置 (居中)
+                    const totalW = (N / 2) * triW;
+                    const rectH = triH;
+                    const scaleX = Math.min(1, (W * 0.65) / totalW);
+                    const scaleY = Math.min(1, (H * 0.55) / rectH);
+                    const finalScale = Math.min(scaleX, scaleY, 1.2);
+
+                    const drawW = totalW * finalScale;
+                    const drawH = rectH * finalScale;
+                    const startX = (W - drawW) / 2;
+                    const baseY = (H - drawH) / 2 + drawH;
+
+                    // 绘制每个三角形
+                    for (let i = 0; i < N; i++) {
+                        const w = triW * finalScale;
+                        const h = triH * finalScale;
+                        const col = Math.floor(i / 2);
+                        const isEven = (i % 2 === 0);
+
+                        // 三角形位置
+                        const x0 = startX + col * w;
+                        const x1 = startX + (col + 1) * w;
+                        const xMid = (x0 + x1) / 2;
+
+                        let p1x, p1y, p2x, p2y, p3x, p3y;
+                        if (isEven) {
+                            // 朝上：底边在下，顶点在上
+                            p1x = x0;
+                            p1y = baseY;
+                            p2x = x1;
+                            p2y = baseY;
+                            p3x = xMid;
+                            p3y = baseY - h;
+                        } else {
+                            // 朝下：底边在上，顶点在下
+                            p1x = x0;
+                            p1y = baseY - h;
+                            p2x = x1;
+                            p2y = baseY - h;
+                            p3x = xMid;
+                            p3y = baseY;
+                        }
+
+                        // 绘制三角形
+                        ctx.beginPath();
+                        ctx.moveTo(p1x, p1y);
+                        ctx.lineTo(p2x, p2y);
+                        ctx.lineTo(p3x, p3y);
+                        ctx.closePath();
+
+                        ctx.fillStyle = sliceColor(i, N, 0.92);
+                        ctx.fill();
+                        ctx.strokeStyle = '#4d6d8f';
+                        ctx.lineWidth = 1.2;
+                        ctx.stroke();
+
+                        // 小圆点标记顶点 (帮助观察)
+                        ctx.beginPath();
+                        ctx.arc(p3x, p3y, 2.8, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#2b4a6a';
+                        ctx.fill();
+                    }
+
+                    // 绘制近似矩形的外边框 (虚线)
+                    ctx.strokeStyle = '#2b5f9e';
+                    ctx.lineWidth = 2.2;
+                    ctx.setLineDash([6, 6]);
+                    ctx.strokeRect(startX - 4, baseY - drawH - 4, drawW + 8, drawH + 8);
+                    ctx.setLineDash([]);
+
+                    // 标注 "近似长方形"
+                    ctx.fillStyle = '#1f3a5f';
+                    ctx.font = `bold ${Math.round(Math.min(W,H)*0.032)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    const labelY = baseY - drawH - 18;
+                    ctx.fillText('📐 近似长方形', W / 2, labelY);
+
+                    // 显示 "直直边框" 提示
+                    ctx.fillStyle = '#c0392b';
+                    ctx.font = `bold ${Math.round(Math.min(W,H)*0.024)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textBaseline = 'top';
+                    ctx.fillText('⬜ 有直直边框！', W / 2, baseY + 12);
+
+                    // 在矩形下方显示 "由扇形拼成"
+                    ctx.fillStyle = '#3a5a7a';
+                    ctx.font = `${Math.round(Math.min(W,H)*0.02)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`由 ${N} 个扇形拼合而成`, W / 2, baseY + 44);
+
+                    // 弧长与半径的标注 (用箭头简单示意)
+                    if (N >= 6) {
+                        ctx.strokeStyle = '#7e96b0';
+                        ctx.lineWidth = 1.0;
+                        ctx.fillStyle = '#4a5c72';
+                        ctx.font = `${Math.round(Math.min(W,H)*0.016)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                        // 在左上角标注 "底边 ≈ 弧长"
+                        const annotX = startX + 6;
+                        const annotY = baseY - drawH + 14;
+                        ctx.fillText('底边 ≈ 弧长', annotX, annotY);
+                        ctx.fillText('高 ≈ 半径', annotX, annotY + 22);
+                    }
+
+                    footer.textContent = `🧩 ${N} 个扇形拼成了一个近似的长方形！弯弯的边变成了直直的边。`;
+                }
+
+                // ---- 额外信息：在右上角显示份数 ----
+                ctx.fillStyle = '#8a9db3';
+                ctx.font = `${Math.round(Math.min(W,H)*0.018)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'top';
+                ctx.fillText(`分割 ${N} 份`, W - 18, 14);
+
+                // 状态指示小标签
+                const modeMap = {
+                    'original': '完整圆',
+                    'cut': '剪开扇形',
+                    'combined': '拼合图形'
+                };
+                ctx.fillStyle = '#c8d6e8';
+                ctx.font = `${Math.round(Math.min(W,H)*0.018)}px "PingFang SC","Microsoft YaHei",sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillText(`状态: ${modeMap[mode]}`, 18, 14);
+            }
+
+            // ---- 交互事件 ----
+            // 滑块
+            slider.addEventListener('input', function() {
+                slices = parseInt(this.value, 10);
+                sliceVal.textContent = slices;
+                draw();
+                // 更新footer提示 (简单反馈)
+                if (mode === 'original') {
+                    footer.textContent = `🔵 完整圆 · 准备切成 ${slices} 份`;
+                } else if (mode === 'cut') {
+                    footer.textContent = `✂️ 圆被剪成了 ${slices} 个扇形，观察弧边。`;
+                } else {
+                    footer.textContent = `🧩 ${slices} 个扇形拼成近似长方形，弯边变直边！`;
+                }
+            });
+
+            // 按钮
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    buttons.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    mode = this.dataset.mode;
+                    draw();
+                    // 更新footer
+                    if (mode === 'original') {
+                        footer.textContent = '🔵 完整的圆形纸片，旁边放着一把剪刀。想一想：怎样把它变成有直边的图形？';
+                    } else if (mode === 'cut') {
+                        footer.textContent = `✂️ 圆被剪成了 ${slices} 个扇形，每块都带有弯曲的弧边。怎样拼出直边图形？`;
+                    } else {
+                        footer.textContent = `🧩 ${slices} 个扇形拼成了一个近似的长方形！弯弯的边变成了直直的边。`;
+                    }
+                });
+            });
+
+            // ---- 窗口尺寸变化 ----
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resizeCanvas, 80);
+            });
+
+            // ---- 启动 ----
+            // 初始绘制
+            resizeCanvas();
+
+            // 额外：双击重置提醒（可选小彩蛋）
+            canvas.addEventListener('dblclick', function() {
+                slider.value = 8;
+                slices = 8;
+                sliceVal.textContent = 8;
+                // 切换到 original 模式
+                buttons.forEach(function(b) { b.classList.remove('active'); });
+                document.querySelector('[data-mode="original"]').classList.add('active');
+                mode = 'original';
+                draw();
+                footer.textContent = '🔵 完整的圆形纸片，旁边放着一把剪刀。想一想：怎样把它变成有直边的图形？';
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

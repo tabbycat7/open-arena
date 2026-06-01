@@ -20,7 +20,7 @@ def map_integration_node(state: dict) -> dict:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
         design_intent = q.get("design_intent") or q.get("design_rationale", "")
         lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
-        nodes.append({
+        node = {
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "main",
@@ -31,14 +31,22 @@ def map_integration_node(state: dict) -> dict:
             "difficulty": q.get("difficulty", 0.5),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
-        })
+        }
+        if q.get("visual_aid_prompt"):
+            node["visual_aid_prompt"] = q["visual_aid_prompt"]
+        if q.get("visual_aid_type"):
+            node["visual_aid_type"] = q["visual_aid_type"]
+        if q.get("visual_aid_html"):
+            node["visual_aid_html"] = q["visual_aid_html"]
+        node["visual_aid_urls"] = q.get("visual_aid_urls", [])
+        nodes.append(node)
 
     for q in variant_qs:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
         design_intent = q.get("design_intent") or q.get("design_rationale", "")
         lesson_presentation_script = q.get("lesson_presentation_script") or q.get("commentary") or q.get("Commentary", "")
         main_id = q.get("main_id") or q.get("parent_id") or q.get("linked_main_question", "")
-        nodes.append({
+        node = {
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "variant",
@@ -52,7 +60,15 @@ def map_integration_node(state: dict) -> dict:
             "variation_type": q.get("variation_type", ""),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
-        })
+        }
+        if q.get("visual_aid_prompt"):
+            node["visual_aid_prompt"] = q["visual_aid_prompt"]
+        if q.get("visual_aid_type"):
+            node["visual_aid_type"] = q["visual_aid_type"]
+        if q.get("visual_aid_html"):
+            node["visual_aid_html"] = q["visual_aid_html"]
+        node["visual_aid_urls"] = q.get("visual_aid_urls", [])
+        nodes.append(node)
 
     for q in scaffold_qs:
         cognitive_level = q.get("cognitive_level") or q.get("bloom_level", "")
@@ -61,7 +77,7 @@ def map_integration_node(state: dict) -> dict:
         from_id = q.get("from_id") or q.get("from_main_id") or q.get("source_main_question", "")
         to_id = q.get("to_id") or q.get("to_main_id") or q.get("target_main_question", "")
         bridge_group_id = q.get("bridge_group_id", "")
-        nodes.append({
+        node = {
             "id": q.get("id", ""),
             "content": q.get("content", ""),
             "question_type": "scaffold",
@@ -78,7 +94,15 @@ def map_integration_node(state: dict) -> dict:
             "bridge_function": q.get("bridge_function", ""),
             "design_intent": design_intent,
             "design_rationale": q.get("design_rationale", ""),
-        })
+        }
+        if q.get("visual_aid_prompt"):
+            node["visual_aid_prompt"] = q["visual_aid_prompt"]
+        if q.get("visual_aid_type"):
+            node["visual_aid_type"] = q["visual_aid_type"]
+        if q.get("visual_aid_html"):
+            node["visual_aid_html"] = q["visual_aid_html"]
+        node["visual_aid_urls"] = q.get("visual_aid_urls", [])
+        nodes.append(node)
 
     sorted_main = sorted(main_qs, key=lambda x: _extract_number(x.get("id", "M0")))
     for i in range(len(sorted_main) - 1):
