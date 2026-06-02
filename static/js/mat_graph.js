@@ -3,10 +3,14 @@
  */
 
 var TYPE_COLORS = {
-    main: "#4f46e5",
-    variant: "#10b981",
-    scaffold: "#f59e0b",
+    main: "#3a9bff",
+    variant: "#4fc06a",
+    scaffold: "#ffb33c",
 };
+
+// 像素描边色与字体（与 pixel-theme.css 一致）
+var PX_INK = "#34384f";
+var PX_FONT = '"Press Start 2P", "Zpix", monospace';
 
 var TYPE_LABELS = {
     main: "主干问题",
@@ -81,22 +85,30 @@ function renderGraph(teachingMap) {
         return {
             id: node.id,
             name: node.id,
+            symbol: "rect",
             symbolSize: symbolSize,
             category: isMain ? 0 : qType === "variant" ? 1 : 2,
             itemStyle: {
                 color: TYPE_COLORS[qType] || "#94a3b8",
-                borderColor: "#fff",
-                borderWidth: 2,
-                shadowBlur: 6,
-                shadowColor: "rgba(0,0,0,0.12)",
+                borderColor: PX_INK,
+                borderWidth: 3,
+                shadowBlur: 0,
+                shadowColor: PX_INK,
+                shadowOffsetX: 4,
+                shadowOffsetY: 4,
             },
             label: {
                 show: true,
                 position: "inside",
                 formatter: node.id,
-                fontSize: isMain ? 13 : 11,
+                fontSize: isMain ? 12 : 10,
+                fontFamily: PX_FONT,
                 fontWeight: isMain ? "bold" : "normal",
                 color: "#fff",
+                textShadowColor: PX_INK,
+                textShadowBlur: 0,
+                textShadowOffsetX: 1,
+                textShadowOffsetY: 1,
             },
             tooltip: {
                 formatter: function () {
@@ -123,14 +135,15 @@ function renderGraph(teachingMap) {
     });
 
     var edges = (teachingMap.edges || []).map(function (edge) {
-        var lineStyle = { width: 2, curveness: 0.15 };
+        // 像素直线：去掉曲率，硬朗连线
+        var lineStyle = { width: 3, curveness: 0, cap: "butt" };
         var relation = edge.relation || "";
 
-        if (relation === "sequence") { lineStyle.color = "#4f46e5"; lineStyle.width = 3; lineStyle.type = "solid"; lineStyle.curveness = 0.1; }
-        else if (relation === "variant_of") { lineStyle.color = "#10b981"; lineStyle.type = "dashed"; lineStyle.curveness = 0.2; }
-        else if (relation === "scaffold_from" || relation === "scaffold_to") { lineStyle.color = "#f59e0b"; lineStyle.type = "dotted"; lineStyle.width = 2; lineStyle.curveness = 0.2; }
-        else if (relation === "scaffold_sequence") { lineStyle.color = "#f59e0b"; lineStyle.type = "solid"; lineStyle.width = 2; lineStyle.curveness = 0.1; }
-        else { lineStyle.color = "#94a3b8"; lineStyle.type = "dotted"; }
+        if (relation === "sequence") { lineStyle.color = "#3a9bff"; lineStyle.width = 4; lineStyle.type = "solid"; }
+        else if (relation === "variant_of") { lineStyle.color = "#4fc06a"; lineStyle.type = "dashed"; }
+        else if (relation === "scaffold_from" || relation === "scaffold_to") { lineStyle.color = "#ffb33c"; lineStyle.type = "dotted"; lineStyle.width = 3; }
+        else if (relation === "scaffold_sequence") { lineStyle.color = "#ffb33c"; lineStyle.type = "solid"; lineStyle.width = 3; }
+        else { lineStyle.color = "#8a90ad"; lineStyle.type = "dotted"; }
 
         return { source: edge.source, target: edge.target, lineStyle: lineStyle, _raw: edge };
     });
@@ -139,11 +152,18 @@ function renderGraph(teachingMap) {
     var repulsion = Math.max(400, nodeCount * 35);
 
     var option = {
+        backgroundColor: "transparent",
+        textStyle: { fontFamily: PX_FONT },
         tooltip: {
             trigger: "item",
             confine: true,
             enterable: true,
-            extraCssText: "max-width:440px;white-space:normal;",
+            backgroundColor: "#ffffff",
+            borderColor: PX_INK,
+            borderWidth: 3,
+            padding: 12,
+            textStyle: { color: PX_INK, fontFamily: '"Zpix", monospace' },
+            extraCssText: "max-width:440px;white-space:normal;border-radius:0;box-shadow:4px 4px 0 " + PX_INK + ";",
             formatter: function (params) {
                 if (params.dataType === "edge") {
                     var raw = params.data._raw;

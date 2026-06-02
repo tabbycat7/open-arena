@@ -62,14 +62,18 @@
                 </div>
             </div>
 
+            <div class="nav-dispatch-reason" id="navDispatchReason" style="display:none;" aria-live="polite">
+                <span class="nav-dispatch-reason-label" id="navDispatchReasonLabel">调度理由</span>
+                <p id="navDispatchReasonText"></p>
+            </div>
+
             <div class="nav-stage-body" id="navQuestionBody">
                 <div class="nav-material-panel" id="navVisualAid" style="display:none;">
                     <iframe class="nav-visual-aid-frame" id="navVisualAidFrame" title="交互可视化" sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"></iframe>
                     <img class="nav-visual-aid-img" id="navVisualAidImg" src="" alt="配图">
                     <button class="nav-visual-aid-zoom" id="navVisualAidZoom" type="button" aria-label="放大查看">
                         <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
-                            <path d="M5 8a1 1 0 011-1h3V4a1 1 0 112 0v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0V9H6a1 1 0 01-1-1z"/>
-                            <path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm0-2A6 6 0 108 2a6 6 0 000 12z" clip-rule="evenodd"/>
+                            <path d="M3 8V3h5v2H5v3H3zM12 3h5v5h-2V5h-3V3zM5 12v3h3v2H3v-5h2zM15 15v-3h2v5h-5v-2h3z"/>
                         </svg>
                     </button>
                 </div>
@@ -90,6 +94,7 @@
             <div class="nav-tool-tabs" role="tablist" aria-label="教师工具">
                 <button type="button" class="nav-tool-tab active" data-panel="script">说课稿</button>
                 <button type="button" class="nav-tool-tab" data-panel="explanation">解析</button>
+                <button type="button" class="nav-tool-tab" data-panel="followup">追问</button>
                 <button type="button" class="nav-tool-tab" data-panel="notes">便签</button>
             </div>
             <div class="nav-tool-body">
@@ -98,6 +103,9 @@
                 </div>
                 <div class="nav-tool-pane" id="navExplanationPanel" data-panel="explanation">
                     <div class="nav-tool-content" id="navExplanationBody"></div>
+                </div>
+                <div class="nav-tool-pane" id="navFollowupPanel" data-panel="followup">
+                    <div class="nav-tool-content" id="navFollowupContent"></div>
                 </div>
                 <div class="nav-tool-pane" id="navNotesPanel" data-panel="notes">
                     <textarea id="navTeacherNote" class="nav-note-input" rows="9" placeholder="记录本题课堂观察、学生回答或后续调整。"></textarea>
@@ -114,36 +122,60 @@
             </div>
             <h2>导航完成</h2>
             <p>所有可用的问题节点已遍历完毕</p>
-            <button class="btn btn-primary nav-restart-btn" id="navRestartBtn">重新开始</button>
+            <div class="nav-completed-actions">
+                <button class="btn btn-primary nav-review-btn" id="navReviewBtn" type="button">生成复盘</button>
+                <button class="btn btn-primary nav-restart-btn" id="navRestartBtn" type="button">重新开始</button>
+            </div>
         </section>
 
-        <section class="nav-trail-shell" aria-label="访问路径">
-            <div class="nav-trail" id="navTrail"></div>
-        </section>
     </main>
 
-    <footer class="nav-controls" id="navControls" style="display:none;">
-        <div class="nav-controls-inner">
-            <div class="nav-toggle-section">
-                <div class="nav-toggle-group">
-                    <label class="nav-toggle-label">课堂参与度</label>
-                    <div class="nav-toggle-buttons" id="participationToggle">
-                        <button class="nav-toggle-btn nav-toggle-high active" data-value="high" type="button">高</button>
-                        <button class="nav-toggle-btn nav-toggle-low" data-value="low" type="button">低</button>
-                    </div>
+    <section class="nav-command-deck" id="navControls" style="display:none;">
+        <aside class="nav-mini-map-shell" id="navMiniMapShell" aria-label="教学导航图">
+            <div class="nav-mini-map-head">
+                <div>
+                    <span class="nav-mini-map-eyebrow">节点路径</span>
+                    <strong>教学导航图</strong>
                 </div>
-                <div class="nav-toggle-group">
-                    <label class="nav-toggle-label">回答准确率</label>
-                    <div class="nav-toggle-buttons" id="accuracyToggle">
-                        <button class="nav-toggle-btn nav-toggle-high active" data-value="high" type="button">高</button>
-                        <button class="nav-toggle-btn nav-toggle-low" data-value="low" type="button">低</button>
-                    </div>
+                <div class="nav-mini-map-tools">
+                    <button type="button" class="nav-mini-map-zoom-btn" id="navMiniMapZoomOut" aria-label="缩小">−</button>
+                    <span class="nav-mini-map-zoom-label" id="navMiniMapZoomLabel">100%</span>
+                    <button type="button" class="nav-mini-map-zoom-btn" id="navMiniMapZoomIn" aria-label="放大">+</button>
+                    <button type="button" class="nav-mini-map-zoom-btn nav-mini-map-zoom-reset" id="navMiniMapZoomReset">适应</button>
+                    <button type="button" class="nav-mini-map-toggle" id="navMiniMapToggle" aria-expanded="true">收起</button>
                 </div>
+            </div>
+            <div class="nav-mini-map" id="navMiniMap"></div>
+        </aside>
+        <div class="nav-controls-panel">
+            <div class="nav-strategy-matrix" id="navStrategyMatrix" aria-label="课堂调度四象限">
+                <div class="nav-strategy-axis nav-strategy-axis-y">课堂参与度</div>
+                <div class="nav-strategy-axis nav-strategy-axis-x">回答准确率</div>
+                <button class="nav-strategy-cell active" data-participation="high" data-accuracy="high" type="button">
+                    <span>继续进阶</span>
+                    <b>参与高 / 准确高</b>
+                </button>
+                <button class="nav-strategy-cell" data-participation="high" data-accuracy="low" type="button">
+                    <span>先修复</span>
+                    <b>参与高 / 准确低</b>
+                </button>
+                <button class="nav-strategy-cell" data-participation="low" data-accuracy="high" type="button">
+                    <span>换变式激活</span>
+                    <b>参与低 / 准确高</b>
+                </button>
+                <button class="nav-strategy-cell" data-participation="low" data-accuracy="low" type="button">
+                    <span>支架+激活</span>
+                    <b>参与低 / 准确低</b>
+                </button>
             </div>
 
             <div class="nav-scenario-indicator" id="navScenarioIndicator">
-                <span class="nav-scenario-label">当前策略</span>
-                <strong class="nav-scenario-text" id="navScenarioText">纵向认知进阶</strong>
+                <span class="nav-scenario-label">当前决策</span>
+                <div class="nav-scenario-title-row">
+                    <strong class="nav-scenario-text" id="navScenarioText">纵向认知进阶</strong>
+                    <span class="nav-scenario-state" id="navScenarioState">参与高 / 准确高</span>
+                </div>
+                <span class="nav-scenario-hint" id="navScenarioHint">继续推进到更高阶问题，保持课堂节奏。</span>
             </div>
 
             <div class="nav-dispatch-actions">
@@ -161,7 +193,7 @@
                 </button>
             </div>
         </div>
-    </footer>
+    </section>
 </div>
 
 <div class="nav-lightbox-overlay" id="navLightbox" style="display:none;">

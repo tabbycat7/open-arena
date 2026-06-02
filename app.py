@@ -2484,6 +2484,42 @@ def mat_get_logs(task_id):
 from nav_algorithm import dispatch_next, get_first_main_node  # noqa: E402
 
 
+def _mat_build_dispatch_meta(participation, accuracy, next_node, completed=False):
+    scenario_key = f"{participation}_{accuracy}"
+    scenario_details = {
+        "high_high": ("纵向认知进阶", "继续进阶"),
+        "high_low": ("修复认知障碍", "先修复"),
+        "low_high": ("变式激活参与", "换变式激活"),
+        "low_low": ("支架修复并激活", "支架+激活"),
+    }
+    type_labels = {
+        "main": "主干问题",
+        "variant": "变式问题",
+        "scaffold": "支架问题",
+    }
+    scenario_label, action_label = scenario_details.get(scenario_key, ("课堂调度", "调度下一题"))
+    qtype = (next_node or {}).get("question_type", "main")
+    type_label = type_labels.get(qtype, "问题")
+    if completed:
+        action_label = "导航完成"
+        reason_text = "当前教学地图中可继续调度的节点已经完成，系统结束本次导航。"
+    elif scenario_key == "high_high":
+        reason_text = f"当前参与度和准确率都较高，优先调度{type_label}，推动学生继续进阶。"
+    elif scenario_key == "high_low":
+        reason_text = f"当前参与度较高但准确率偏低，优先调度{type_label}，帮助学生修复关键认知断点。"
+    elif scenario_key == "low_high":
+        reason_text = f"当前准确率较高但参与度偏低，优先调度{type_label}，用新情境或变式重新激活学生。"
+    else:
+        reason_text = f"当前参与度和准确率都偏低，优先调度{type_label}，先降低入口门槛再恢复课堂思考。"
+
+    return {
+        "scenario_key": scenario_key,
+        "scenario_label": scenario_label,
+        "action_label": action_label,
+        "reason_text": reason_text,
+    }
+
+
 @app.route("/app/teaching-nav/<task_id>")
 @login_required
 def teaching_nav_page(task_id):
@@ -2557,6 +2593,12 @@ def mat_nav_dispatch():
     result["next_node"] = node_map.get(next_id) if next_id else None
     explanation_id = result.get("explanation_node_id")
     result["explanation_node"] = node_map.get(explanation_id) if explanation_id else None
+    result["dispatch_meta"] = _mat_build_dispatch_meta(
+        participation,
+        accuracy,
+        result["next_node"],
+        completed=bool(result.get("completed") or not next_id),
+    )
 
     return jsonify(result)
 

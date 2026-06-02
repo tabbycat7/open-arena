@@ -4,8 +4,6 @@
 
 {% block head_extra %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/multi_agent_teaching.css') }}">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/mat_pixel.css') }}">
 {% endblock %}
 
@@ -37,10 +35,13 @@
                     <h2>新建教学地图</h2>
                     <p>按步骤补充基础信息、教学目标与附件材料，生成可执行的课堂问题地图。</p>
                     <div class="mat-quick-actions">
-                        <button type="button" id="loadLastInputBtn" class="mat-load-last-btn mat-load-last-inline" disabled
-                            aria-label="加载上一次填写的教学信息">
-                            <svg class="mat-load-last-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                        <button type="button" id="loadLastInputBtn" class="mat-load-last-btn mat-load-last-inline"
+                            disabled aria-label="加载上一次填写的教学信息">
+                            <svg class="mat-load-last-icon" viewBox="0 0 20 20" fill="currentColor" width="16"
+                                height="16" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                    clip-rule="evenodd" />
                             </svg>
                             <span class="mat-load-last-text">加载上次输入</span>
                         </button>
@@ -51,7 +52,10 @@
                     <button type="button" id="historyDrawerToggle" class="mat-history-trigger"
                         aria-controls="historyDrawer" aria-expanded="false">
                         <svg viewBox="0 0 20 20" fill="none" width="16" height="16" aria-hidden="true">
-                            <path d="M5 4h10M5 8h10M5 12h6M4 17h12a1 1 0 001-1V3a1 1 0 00-1-1H4a1 1 0 00-1 1v13a1 1 0 001 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path
+                                d="M5 4h10M5 8h10M5 12h6M4 17h12a1 1 0 001-1V3a1 1 0 00-1-1H4a1 1 0 00-1 1v13a1 1 0 001 1z"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
                         历史记录
                     </button>
@@ -85,10 +89,10 @@
                         </div>
                         <div class="mat-progress-ring-wrap" title="必填项完成度">
                             <svg class="mat-progress-ring" width="38" height="38" viewBox="0 0 38 38">
-                                <circle class="mat-ring-bg" cx="19" cy="19" r="16" fill="none" stroke-width="3"/>
-                                <circle class="mat-ring-fill" id="formProgressRing" cx="19" cy="19" r="16" fill="none" stroke-width="3"
-                                    stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"
-                                    transform="rotate(-90 19 19)"/>
+                                <circle class="mat-ring-bg" cx="19" cy="19" r="16" fill="none" stroke-width="3" />
+                                <circle class="mat-ring-fill" id="formProgressRing" cx="19" cy="19" r="16" fill="none"
+                                    stroke-width="3" stroke-dasharray="100.53" stroke-dashoffset="100.53"
+                                    stroke-linecap="round" transform="rotate(-90 19 19)" />
                             </svg>
                             <span class="mat-ring-text" id="formProgressText">0%</span>
                         </div>
@@ -97,7 +101,11 @@
                     <div class="mat-form-section mat-form-section-anim is-active" data-section="1">
                         <div class="mat-section-head">
                             <div class="mat-form-section-title">
-                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 1a2 2 0 012 2v1.07A7.002 7.002 0 0116.93 8H18a2 2 0 110 4h-1.07A7.002 7.002 0 0112 16.93V18a2 2 0 11-4 0v-1.07A7.002 7.002 0 013.07 12H2a2 2 0 110-4h1.07A7.002 7.002 0 018 4.07V3a2 2 0 012-2zm0 6a3 3 0 100 6 3 3 0 000-6z" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                                    <path
+                                        d="M10 1a2 2 0 012 2v1.07A7.002 7.002 0 0116.93 8H18a2 2 0 110 4h-1.07A7.002 7.002 0 0112 16.93V18a2 2 0 11-4 0v-1.07A7.002 7.002 0 013.07 12H2a2 2 0 110-4h1.07A7.002 7.002 0 018 4.07V3a2 2 0 012-2zm0 6a3 3 0 100 6 3 3 0 000-6z"
+                                        fill="currentColor" />
+                                </svg>
                                 <span>基础设置</span>
                             </div>
                             <p class="mat-section-desc">这些信息会决定后续问题地图的学段、学科语境与模型生成方式。</p>
@@ -190,7 +198,12 @@
                     <div class="mat-form-section mat-form-section-anim" data-section="2">
                         <div class="mat-section-head">
                             <div class="mat-form-section-title">
-                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                                    <path
+                                        d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V14"
+                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
                                 <span>教学内容</span>
                             </div>
                             <p class="mat-section-desc">把本课要达成的目标、学生起点和关键障碍写清楚，生成结果会更贴近真实课堂。</p>
@@ -199,7 +212,8 @@
                             <div class="mat-form-group mat-field-span-2 mat-writing-field">
                                 <label for="teaching_goals">教学目标</label>
                                 <textarea id="teaching_goals" name="teaching_goals" rows="5"
-                                    placeholder="例如：学生能够理解分数表示平均分后的部分与整体关系，能读写简单分数，并能用图形或生活情境解释 1/2、1/3 的含义。" required></textarea>
+                                    placeholder="例如：学生能够理解分数表示平均分后的部分与整体关系，能读写简单分数，并能用图形或生活情境解释 1/2、1/3 的含义。"
+                                    required></textarea>
                                 <div class="mat-field-meta">
                                     <span>建议写出知识、能力和素养目标。</span>
                                     <span class="mat-field-count" data-count-target="teaching_goals">0 字</span>
@@ -250,7 +264,11 @@
                     <div class="mat-form-section mat-form-section-anim" data-section="3">
                         <div class="mat-section-head">
                             <div class="mat-form-section-title">
-                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                                    <path
+                                        d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                        fill="currentColor" />
+                                </svg>
                                 <span>附件与生成</span>
                             </div>
                             <p class="mat-section-desc">上传教材片段、课标材料或课堂资料，系统会在生成教学地图时一并参考。</p>
@@ -260,13 +278,18 @@
                                 <label>附件（可选）</label>
                                 <div class="mat-dropzone" id="dropzone">
                                     <input type="file" id="attachment" name="attachment" multiple
-                                        accept=".txt,.md,.pdf,.docx,.png,.jpg,.jpeg,.webp,.bmp" class="mat-dropzone-input">
+                                        accept=".txt,.md,.pdf,.docx,.png,.jpg,.jpeg,.webp,.bmp"
+                                        class="mat-dropzone-input">
                                     <div class="mat-dropzone-content">
-                                        <svg class="mat-dropzone-icon" viewBox="0 0 48 48" fill="none" width="40" height="40">
-                                            <path d="M24 4v28m0-28l-8 8m8-8l8 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M8 34v4a4 4 0 004 4h24a4 4 0 004-4v-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <svg class="mat-dropzone-icon" viewBox="0 0 48 48" fill="none" width="40"
+                                            height="40">
+                                            <path d="M24 4v28m0-28l-8 8m8-8l8 8" stroke="currentColor"
+                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M8 34v4a4 4 0 004 4h24a4 4 0 004-4v-4" stroke="currentColor"
+                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        <p class="mat-dropzone-text">拖拽文件到此处，或 <span class="mat-dropzone-link">点击选择</span></p>
+                                        <p class="mat-dropzone-text">拖拽文件到此处，或 <span
+                                                class="mat-dropzone-link">点击选择</span></p>
                                         <p class="mat-dropzone-hint">支持 TXT、PDF、DOCX、图片等格式，可多选</p>
                                     </div>
                                 </div>
@@ -285,11 +308,16 @@
                         </button>
                         <button type="submit" id="submitBtn" class="btn btn-primary mat-form-submit-btn">
                             <svg class="mat-btn-icon" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
                             </svg>
                             <span class="mat-btn-text">开始生成教学地图</span>
                             <span class="mat-btn-spinner" style="display:none;">
-                                <svg class="mat-spinner-svg" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="40 60" stroke-linecap="round"/></svg>
+                                <svg class="mat-spinner-svg" viewBox="0 0 20 20" width="18" height="18">
+                                    <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-dasharray="40 60" stroke-linecap="round" />
+                                </svg>
                             </span>
                         </button>
                         <button type="button" id="newPlanBtn" class="btn btn-outline mat-form-submit-btn"
@@ -328,19 +356,26 @@
                     <!-- Topbar: compact dot-progress + phase name + timer -->
                     <div class="mat-theater-topbar">
                         <div class="mat-theater-dots" id="matTheaterDots">
-                            <div class="mat-dot-step" data-step="prep"><span class="mat-dot-circle"></span><span class="mat-dot-label">平台准备</span></div>
+                            <div class="mat-dot-step" data-step="prep"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">平台准备</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="0"><span class="mat-dot-circle"></span><span class="mat-dot-label">学情侦察</span></div>
+                            <div class="mat-dot-step" data-step="0"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">学情侦察</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="1"><span class="mat-dot-circle"></span><span class="mat-dot-label">蓝图设计</span></div>
+                            <div class="mat-dot-step" data-step="1"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">蓝图设计</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="2"><span class="mat-dot-circle"></span><span class="mat-dot-label">主干搭建</span></div>
+                            <div class="mat-dot-step" data-step="2"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">主干搭建</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="3"><span class="mat-dot-circle"></span><span class="mat-dot-label">分支生长</span></div>
+                            <div class="mat-dot-step" data-step="3"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">分支生长</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="4"><span class="mat-dot-circle"></span><span class="mat-dot-label">校验打磨</span></div>
+                            <div class="mat-dot-step" data-step="4"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">校验打磨</span></div>
                             <div class="mat-dot-connector"></div>
-                            <div class="mat-dot-step" data-step="5"><span class="mat-dot-circle"></span><span class="mat-dot-label">总装交付</span></div>
+                            <div class="mat-dot-step" data-step="5"><span class="mat-dot-circle"></span><span
+                                    class="mat-dot-label">总装交付</span></div>
                         </div>
                         <div class="mat-theater-clock" id="generationDurationText">本次用时：--</div>
                     </div>
@@ -402,16 +437,28 @@
                                 <div class="mat-scene-work mat-blueprint-board mat-px-stage">
                                     <div class="mat-px-floor"></div>
                                     <div class="mat-px-actors">
-                                    <span class="mat-px-sprite mat-px-drafter is-sm"></span>
-                                    <svg class="mat-blueprint-svg" viewBox="0 0 520 180" aria-hidden="true">
-                                        <path class="mat-route-shadow" d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
-                                        <path class="mat-route-line mat-blueprint-path" d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
-                                        <g class="mat-route-stop mat-bp-dot-1" transform="translate(42 118)"><circle r="9"/><text y="29">起点</text></g>
-                                        <g class="mat-route-stop mat-bp-dot-2" transform="translate(144 58)"><circle r="7"/><text y="-17">概念</text></g>
-                                        <g class="mat-route-stop mat-bp-dot-3" transform="translate(248 108)"><circle r="9"/><text y="31">探究</text></g>
-                                        <g class="mat-route-stop mat-bp-dot-4" transform="translate(356 132)"><circle r="7"/><text y="29">迁移</text></g>
-                                        <g class="mat-route-stop mat-bp-dot-5" transform="translate(480 62)"><circle r="9"/><text y="-18">达成</text></g>
-                                    </svg>
+                                        <span class="mat-px-sprite mat-px-drafter is-sm"></span>
+                                        <svg class="mat-blueprint-svg" viewBox="0 0 520 180" aria-hidden="true">
+                                            <path class="mat-route-shadow"
+                                                d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
+                                            <path class="mat-route-line mat-blueprint-path"
+                                                d="M 42 118 C 100 48, 178 48, 236 104 S 374 154, 480 62" />
+                                            <g class="mat-route-stop mat-bp-dot-1" transform="translate(42 118)">
+                                                <circle r="9" /><text y="29">起点</text>
+                                            </g>
+                                            <g class="mat-route-stop mat-bp-dot-2" transform="translate(144 58)">
+                                                <circle r="7" /><text y="-17">概念</text>
+                                            </g>
+                                            <g class="mat-route-stop mat-bp-dot-3" transform="translate(248 108)">
+                                                <circle r="9" /><text y="31">探究</text>
+                                            </g>
+                                            <g class="mat-route-stop mat-bp-dot-4" transform="translate(356 132)">
+                                                <circle r="7" /><text y="29">迁移</text>
+                                            </g>
+                                            <g class="mat-route-stop mat-bp-dot-5" transform="translate(480 62)">
+                                                <circle r="9" /><text y="-18">达成</text>
+                                            </g>
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
@@ -487,18 +534,24 @@
                                     <div class="mat-px-floor"></div>
                                     <div class="mat-assemble-pieces" id="matAssemblePieces"></div>
                                     <div class="mat-px-actors">
-                                    <span class="mat-px-sprite mat-px-packer is-sm"></span>
-                                    <div class="mat-assemble-target" id="matAssembleTarget">
-                                        <svg class="mat-mini-map" viewBox="0 0 220 130" aria-hidden="true">
-                                            <path class="mat-mini-edge" d="M35 72 L88 42 L142 82 L188 48" />
-                                            <circle class="mat-mini-node mat-mini-node-main" cx="35" cy="72" r="10" />
-                                            <circle class="mat-mini-node mat-mini-node-main" cx="88" cy="42" r="10" />
-                                            <circle class="mat-mini-node mat-mini-node-main" cx="142" cy="82" r="10" />
-                                            <circle class="mat-mini-node mat-mini-node-main" cx="188" cy="48" r="10" />
-                                            <circle class="mat-mini-node mat-mini-node-variant" cx="116" cy="24" r="6" />
-                                            <circle class="mat-mini-node mat-mini-node-scaffold" cx="164" cy="108" r="6" />
-                                        </svg>
-                                    </div>
+                                        <span class="mat-px-sprite mat-px-packer is-sm"></span>
+                                        <div class="mat-assemble-target" id="matAssembleTarget">
+                                            <svg class="mat-mini-map" viewBox="0 0 220 130" aria-hidden="true">
+                                                <path class="mat-mini-edge" d="M35 72 L88 42 L142 82 L188 48" />
+                                                <circle class="mat-mini-node mat-mini-node-main" cx="35" cy="72"
+                                                    r="10" />
+                                                <circle class="mat-mini-node mat-mini-node-main" cx="88" cy="42"
+                                                    r="10" />
+                                                <circle class="mat-mini-node mat-mini-node-main" cx="142" cy="82"
+                                                    r="10" />
+                                                <circle class="mat-mini-node mat-mini-node-main" cx="188" cy="48"
+                                                    r="10" />
+                                                <circle class="mat-mini-node mat-mini-node-variant" cx="116" cy="24"
+                                                    r="6" />
+                                                <circle class="mat-mini-node mat-mini-node-scaffold" cx="164" cy="108"
+                                                    r="6" />
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -556,7 +609,9 @@
             <div id="navEntryBar" class="mat-nav-entry-bar" style="display:none;">
                 <a id="startNavBtn" class="mat-nav-entry-btn" href="#">
                     <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                            clip-rule="evenodd" />
                     </svg>
                     开始导航
                 </a>
@@ -587,7 +642,8 @@
             </div>
 
             <div id="placeholder" class="mat-placeholder">
-                <div class="mat-placeholder-icon">&#128218;</div>
+                <img class="mat-placeholder-img"
+                    src="{{ url_for('static', filename='images/pixel/map_placeholder.png') }}" alt="教学地图">
                 <p>填写左侧表单并点击"开始生成"，系统将自动生成教学地图</p>
             </div>
         </section>
@@ -602,7 +658,7 @@
             </div>
             <button type="button" id="historyDrawerClose" class="mat-history-drawer-close" aria-label="关闭历史记录">
                 <svg viewBox="0 0 20 20" fill="none" width="18" height="18" aria-hidden="true">
-                    <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                 </svg>
             </button>
         </div>

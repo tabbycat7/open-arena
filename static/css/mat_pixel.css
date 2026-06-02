@@ -1,0 +1,725 @@
+/* =========================================================
+   mat_pixel.css — 教学地图「像素剧场」专用样式
+   · 把 static/images/mat_pixel/*_sheet.png 接成逐帧动画
+   · 把生成进度剧场整体改造为明亮像素风
+   该文件在 multi_agent_teaching.css 之后加载，负责像素层覆盖。
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. 像素小人 sprite 逐帧动画
+   每张 sheet = 960x240 = 4 帧 240x240，背景透明。
+   用 background-position + steps(4) 循环播放。
+   --------------------------------------------------------- */
+.mat-px-sprite {
+    --pxw: 116px;
+    display: inline-block;
+    width: var(--pxw);
+    height: var(--pxw);
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-size: calc(var(--pxw) * 4) var(--pxw);
+    background-position: 0 0;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    animation: matPxFrames 0.8s steps(4) infinite,
+        matPxBob 1.4s steps(4) infinite;
+    filter: drop-shadow(3px 4px 0 rgba(52, 56, 79, 0.18));
+}
+
+.mat-px-sprite.is-sm {
+    --pxw: 92px;
+}
+
+.mat-px-sprite.is-lg {
+    --pxw: 152px;
+}
+
+@keyframes matPxFrames {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: calc(var(--pxw) * -4) 0;
+    }
+}
+
+@keyframes matPxBob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* 各角色对应 sprite sheet */
+.mat-px-idle {
+    background-image: url("../images/mat_pixel/idle_sheet.png");
+    animation-duration: 1.1s, 2s;
+}
+
+.mat-px-scout {
+    background-image: url("../images/mat_pixel/scout_sheet.png");
+    animation-duration: 0.85s, 1.5s;
+}
+
+.mat-px-drafter {
+    background-image: url("../images/mat_pixel/drafter_sheet.png");
+    animation-duration: 0.8s, 1.6s;
+}
+
+.mat-px-builder {
+    background-image: url("../images/mat_pixel/builder_sheet.png");
+    animation-duration: 0.7s, 1.4s;
+}
+
+.mat-px-gardener {
+    background-image: url("../images/mat_pixel/gardener_sheet.png");
+    animation-duration: 0.85s, 1.5s;
+}
+
+.mat-px-inspector {
+    background-image: url("../images/mat_pixel/inspector_sheet.png");
+    animation-duration: 0.9s, 1.6s;
+}
+
+.mat-px-packer {
+    background-image: url("../images/mat_pixel/packer_sheet.png");
+    animation-duration: 0.8s, 1.5s;
+}
+
+.mat-px-celebrate {
+    background-image: url("../images/mat_pixel/celebrate_sheet.png");
+    animation-duration: 0.55s, 1.1s;
+}
+
+/* ---------------------------------------------------------
+   2. 像素舞台布局：地板 + 演员行
+   .mat-px-stage 同时挂在各场景 work 容器上（覆盖其旧样式）。
+   --------------------------------------------------------- */
+.mat-px-stage {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0;
+    width: min(700px, 100%);
+    min-height: 248px;
+    padding: 16px 16px 30px;
+    border: 3px solid var(--px-ink);
+    box-shadow: 4px 4px 0 var(--px-ink);
+    background:
+        repeating-linear-gradient(0deg, rgba(58, 155, 255, 0.05) 0 15px, transparent 15px 16px),
+        repeating-linear-gradient(90deg, rgba(58, 155, 255, 0.05) 0 15px, transparent 15px 16px),
+        linear-gradient(180deg, #f4fbff 0%, #eaf5ff 100%);
+    background-size: 16px 16px, 16px 16px, auto;
+    overflow: hidden;
+}
+
+/* 像素地板（草地条纹） */
+.mat-px-floor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 28px;
+    z-index: 1;
+    background:
+        repeating-linear-gradient(90deg,
+            #a9e08a 0 14px,
+            #97d676 14px 28px);
+    border-top: 3px solid var(--px-ink);
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* 演员行：小人 + 道具并排，底部对齐站在地板上 */
+.mat-px-actors {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 22px;
+    width: 100%;
+    padding-top: 6px;
+    flex-wrap: wrap;
+}
+
+/* 道具竖列（扫描线/质检纸/分支卡等堆叠） */
+.mat-px-content-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 320px;
+    min-width: 0;
+    position: relative;
+}
+
+/* 让原有道具在像素舞台里收一点边距，避免压住地板 */
+.mat-px-stage .mat-intel-desk,
+.mat-px-stage .mat-blueprint-svg,
+.mat-px-stage .mat-main-track,
+.mat-px-stage .mat-branch-cards,
+.mat-px-stage .mat-quality-paper,
+.mat-px-stage .mat-assemble-target {
+    margin-bottom: 4px;
+}
+
+/* 道具卡片像素描边升级 */
+.mat-px-stage .mat-intel-card,
+.mat-px-stage .mat-branch-card,
+.mat-px-stage .mat-block-item,
+.mat-px-stage .mat-main-node,
+.mat-px-stage .mat-branch-spine span,
+.mat-px-stage .mat-quality-paper {
+    border-width: 2px !important;
+    border-color: var(--px-ink) !important;
+    box-shadow: 3px 3px 0 rgba(52, 56, 79, 0.85) !important;
+}
+
+/* ---------------------------------------------------------
+   3. 剧场外壳像素化
+   --------------------------------------------------------- */
+.mat-theater {
+    border: 3px solid var(--px-ink);
+    box-shadow: 6px 6px 0 var(--px-ink);
+    background: var(--px-paper);
+}
+
+.mat-theater-topbar {
+    background: var(--px-sky);
+    border-bottom: 3px solid var(--px-ink);
+}
+
+.mat-theater-clock {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+    box-shadow: 2px 2px 0 var(--px-ink);
+    font-family: var(--px-font-en);
+    font-size: 11px;
+    color: var(--px-ink);
+}
+
+.mat-theater-stage {
+    background:
+        repeating-linear-gradient(0deg, rgba(58, 155, 255, 0.04) 0 23px, transparent 23px 24px),
+        repeating-linear-gradient(90deg, rgba(58, 155, 255, 0.04) 0 23px, transparent 23px 24px),
+        #f6fbff;
+    background-size: 24px 24px;
+}
+
+.mat-theater-narration {
+    background: var(--px-sky);
+    border-top: 3px solid var(--px-ink);
+}
+
+/* ---- 顶部步骤点：圆点改方块 ---- */
+.mat-dot-circle {
+    border-radius: 0 !important;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid var(--px-ink);
+    background: #fff;
+}
+
+.mat-dot-step.is-done .mat-dot-circle {
+    border-color: var(--px-ink);
+    background: var(--px-green);
+}
+
+.mat-dot-step.is-done .mat-dot-circle::after {
+    color: var(--px-ink);
+}
+
+.mat-dot-step.is-active .mat-dot-circle {
+    border-color: var(--px-ink);
+    background: var(--px-blue);
+    box-shadow: 0 0 0 3px rgba(58, 155, 255, 0.3);
+    animation: matPxDotBlink 0.9s steps(2) infinite;
+}
+
+.mat-dot-step.is-error .mat-dot-circle {
+    border-color: var(--px-ink);
+    background: var(--px-red);
+}
+
+.mat-dot-connector {
+    height: 4px;
+    border-radius: 0 !important;
+    background: #c7d2e8;
+}
+
+.mat-dot-step.is-done+.mat-dot-connector {
+    background: var(--px-green);
+}
+
+.mat-dot-label {
+    font-size: 10px;
+    color: var(--px-ink-soft);
+}
+
+@keyframes matPxDotBlink {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 3px rgba(58, 155, 255, 0.32);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(58, 155, 255, 0.12);
+    }
+}
+
+/* ---- 计数器卡片 ---- */
+.mat-theater-counters .mat-node-counter {
+    border: 2px solid var(--px-ink) !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff;
+}
+
+.mat-theater-counters .mat-counter-dot {
+    border-radius: 0 !important;
+    border: 1px solid var(--px-ink);
+    width: 10px;
+    height: 10px;
+}
+
+.mat-theater-counters .mat-counter-value {
+    font-family: var(--px-font-en);
+    font-size: 16px;
+}
+
+.mat-theater-counters .mat-node-counter.is-bump {
+    animation: matPxPop 0.4s steps(3);
+}
+
+@keyframes matPxPop {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-2px, -2px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* ---- 场景标题/描述 ---- */
+.mat-scene-title {
+    color: var(--px-ink);
+    text-shadow: 2px 2px 0 rgba(58, 155, 255, 0.18);
+}
+
+.mat-scene-desc {
+    color: var(--px-ink-soft);
+}
+
+/* ---- 等待场景：开工牌 ---- */
+.mat-workshop-sign {
+    border: 3px solid var(--px-ink);
+    border-radius: 0 !important;
+    background: var(--px-cream);
+    box-shadow: 4px 4px 0 var(--px-ink);
+}
+
+.mat-sign-light {
+    border-radius: 0 !important;
+    border: 2px solid var(--px-ink);
+    animation: matPxDotBlink 1s steps(2) infinite;
+}
+
+/* ---- 完成场景：完成印章 + 像素烟花 ---- */
+.mat-complete-mark {
+    border-radius: 0 !important;
+    border: 3px solid var(--px-ink);
+    background: var(--px-green);
+    color: #fff;
+    box-shadow: 5px 5px 0 var(--px-ink);
+    font-family: var(--px-font);
+    animation: matPxBob 1s steps(4) infinite;
+}
+
+.mat-firework {
+    border-radius: 0 !important;
+}
+
+/* ---- 校验印章 ---- */
+.mat-quality-stamp {
+    border-radius: 0 !important;
+    border: 3px solid var(--px-amber);
+    background: var(--px-cream);
+}
+
+.mat-quality-stamp.is-passed {
+    border-color: var(--px-green);
+}
+
+/* ---------------------------------------------------------
+   4. 占位图（首次进入右栏）像素化
+   --------------------------------------------------------- */
+.mat-placeholder {
+    border: 3px dashed var(--px-ink);
+    background: var(--px-sky);
+    color: var(--px-ink-soft);
+}
+
+.mat-placeholder-icon {
+    image-rendering: pixelated;
+    animation: matPxBob 1.6s steps(4) infinite;
+}
+
+.mat-placeholder-img {
+    width: min(280px, 70%);
+    height: auto;
+    image-rendering: pixelated;
+    margin-bottom: 14px;
+    filter: drop-shadow(4px 5px 0 rgba(52, 56, 79, 0.16));
+    animation: matPxBob 2.4s steps(6) infinite;
+}
+
+/* ---- 视图切换 tab ---- */
+.mat-view-tab {
+    font-family: var(--px-font);
+}
+
+/* ---------------------------------------------------------
+   5. 结果视图（图形 / 文字 / 日志 / 详情）像素化
+   --------------------------------------------------------- */
+#graphContainer {
+    border: 3px solid var(--px-ink);
+    box-shadow: 4px 4px 0 var(--px-ink);
+    background:
+        repeating-linear-gradient(0deg, rgba(58, 155, 255, 0.05) 0 19px, transparent 19px 20px),
+        repeating-linear-gradient(90deg, rgba(58, 155, 255, 0.05) 0 19px, transparent 19px 20px),
+        #fbfdff;
+    background-size: 20px 20px;
+}
+
+.mat-graph-header {
+    border: 2px solid var(--px-ink);
+    background: var(--px-sky);
+    box-shadow: 3px 3px 0 var(--px-ink);
+}
+
+.mat-dot {
+    border-radius: 0 !important;
+    border: 1px solid var(--px-ink);
+    width: 11px;
+    height: 11px;
+}
+
+.mat-main-dot {
+    background: var(--px-blue) !important;
+}
+
+.mat-variant-dot {
+    background: var(--px-green) !important;
+}
+
+.mat-scaffold-dot {
+    background: var(--px-amber) !important;
+}
+
+/* ---- 视图切换 tab ---- */
+.mat-view-tabs {
+    gap: 8px;
+}
+
+.mat-view-tab {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    color: var(--px-ink);
+    font-weight: 700;
+    transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.mat-view-tab:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--px-ink);
+}
+
+.mat-view-tab.active {
+    background: var(--px-blue);
+    color: #fff;
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--px-ink);
+}
+
+/* ---- 文字 / 日志 / 详情面板 ---- */
+.mat-text-section,
+.mat-logs-section,
+.mat-detail-section {
+    border: 3px solid var(--px-ink) !important;
+    box-shadow: 4px 4px 0 var(--px-ink);
+    background: #fff !important;
+}
+
+.mat-detail-section h3 {
+    color: var(--px-ink);
+}
+
+/* ---- 节点详情标签 ---- */
+.mat-tag {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    font-weight: 700;
+}
+
+/* ---- 开始导航按钮 ---- */
+.mat-nav-entry-btn {
+    border: 3px solid var(--px-ink);
+    background: var(--px-green);
+    color: #fff;
+    box-shadow: 4px 4px 0 var(--px-ink);
+    font-weight: 700;
+    transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.mat-nav-entry-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--px-ink);
+}
+
+.mat-nav-entry-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--px-ink);
+}
+
+/* ---- 生成中横幅 ---- */
+.mat-generating-banner {
+    border: 2px solid var(--px-ink);
+    background: var(--px-cream);
+    box-shadow: 3px 3px 0 var(--px-ink);
+    color: var(--px-ink);
+}
+
+.mat-generating-dot {
+    border-radius: 0 !important;
+    border: 1px solid var(--px-ink);
+    background: var(--px-amber);
+    animation: matPxDotBlink 0.9s steps(2) infinite;
+}
+
+/* ---------------------------------------------------------
+   6. 左侧表单向导像素化
+   --------------------------------------------------------- */
+.mat-panel {
+    border: 3px solid var(--px-ink) !important;
+    box-shadow: 5px 5px 0 var(--px-ink);
+    background: #fff;
+}
+
+.mat-form-step .mat-step-dot {
+    border: 2px solid var(--px-ink);
+    border-radius: 0 !important;
+    background: #fff;
+    color: var(--px-ink);
+    font-family: var(--px-font-en);
+    font-size: 10px;
+}
+
+.mat-form-step.is-active .mat-step-dot {
+    background: var(--px-blue);
+    color: #fff;
+}
+
+.mat-form-step.is-done .mat-step-dot {
+    background: var(--px-green);
+    color: #fff;
+}
+
+.mat-step-line {
+    background: #c7d2e8 !important;
+    height: 3px !important;
+}
+
+.mat-setting-card {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff;
+}
+
+.mat-field-hint,
+.mat-field-meta {
+    color: var(--px-ink-soft);
+}
+
+/* 附件拖拽区 */
+.mat-dropzone {
+    border: 3px dashed var(--px-ink) !important;
+    border-radius: 0 !important;
+    background: var(--px-sky);
+}
+
+.mat-dropzone.is-dragover {
+    background: var(--px-cream);
+    border-style: solid !important;
+}
+
+.mat-dropzone-link {
+    color: var(--px-blue-dark);
+    font-weight: 700;
+}
+
+.mat-file-tags .mat-file-tag,
+.mat-file-tag {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    background: #fff;
+}
+
+/* 模型选择器 */
+.mat-model-picker-trigger {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff;
+}
+
+.mat-model-picker-menu {
+    border: 3px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    box-shadow: 4px 4px 0 var(--px-ink);
+    background: #fff;
+}
+
+.mat-model-picker-item.active {
+    background: var(--px-sky);
+}
+
+.mat-model-picker-icon {
+    border: 1px solid var(--px-ink);
+    image-rendering: auto;
+}
+
+/* Temperature 滑块 */
+.mat-temperature-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    background: var(--px-sky);
+    border: 2px solid var(--px-ink);
+    box-shadow: none;
+}
+
+.mat-temperature-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--px-blue);
+    border: 2px solid var(--px-ink);
+    cursor: pointer;
+}
+
+.mat-temperature-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 0;
+    background: var(--px-blue);
+    border: 2px solid var(--px-ink);
+    cursor: pointer;
+}
+
+.mat-temperature-value {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+    font-family: var(--px-font-en);
+    font-size: 11px;
+    padding: 2px 6px;
+}
+
+/* 进度环文字 */
+.mat-ring-text {
+    font-family: var(--px-font-en);
+    font-size: 9px;
+}
+
+/* 历史记录 / 加载上次按钮 */
+.mat-history-trigger,
+.mat-load-last-btn {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff;
+    font-weight: 700;
+}
+
+.mat-history-trigger:hover,
+.mat-load-last-btn:not(:disabled):hover {
+    background: var(--px-sky);
+}
+
+/* ---------------------------------------------------------
+   7. 历史记录抽屉
+   --------------------------------------------------------- */
+.mat-history-drawer {
+    border-left: 3px solid var(--px-ink);
+    box-shadow: -6px 0 0 rgba(52, 56, 79, 0.18);
+    background: var(--px-paper);
+}
+
+.mat-history-drawer-head {
+    border-bottom: 3px solid var(--px-ink);
+    background: var(--px-sky);
+}
+
+.mat-history-drawer-close {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    background: #fff;
+}
+
+.mat-history-list .mat-history-item,
+.mat-history-item {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff;
+    transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.mat-history-item:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--px-ink);
+}
+
+/* ---- Hero 横幅（教学地图页头）---- */
+.workflow-hero {
+    border-bottom: 3px solid var(--px-ink);
+}
+
+.mat-breadcrumb {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    background: #fff;
+    box-shadow: 2px 2px 0 var(--px-ink);
+}
+
+.hero-badge {
+    border: 2px solid var(--px-ink) !important;
+    border-radius: 0 !important;
+    background: var(--px-cream) !important;
+    color: var(--px-ink) !important;
+}
+
+/* 减弱动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+
+    .mat-px-sprite,
+    .mat-complete-mark,
+    .mat-placeholder-icon {
+        animation-iteration-count: 1;
+    }
+}

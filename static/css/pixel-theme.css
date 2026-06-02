@@ -1,0 +1,474 @@
+/* =========================================================
+   Open Arena — 全局像素皮肤 (Pixel Theme Skin)
+   浅色调 · 轻快明亮 · 生动有趣
+   该文件在 style.css 之后加载，统一覆盖平台视觉为像素风。
+   ========================================================= */
+
+/* ---------- 中文像素字体 Zpix（本地打包）---------- */
+@font-face {
+    font-family: "Zpix";
+    src: url("../fonts/zpix.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- 像素设计 token ---------- */
+:root {
+    /* 字体 */
+    --px-font: "Zpix", "Press Start 2P", "Fusion Pixel", monospace;
+    --px-font-en: "Press Start 2P", "Zpix", monospace;
+
+    /* 明亮配色 */
+    --px-ink: #34384f;
+    /* 主描边 / 深色文字 */
+    --px-ink-soft: #5a6079;
+    --px-paper: #ffffff;
+    --px-page: #f3f8ff;
+    --px-cream: #fff7ea;
+    --px-sky: #e9f4ff;
+
+    --px-blue: #3a9bff;
+    --px-blue-dark: #2176d6;
+    --px-green: #4fc06a;
+    --px-amber: #ffb33c;
+    --px-pink: #ff8fb0;
+    --px-purple: #9b8cff;
+    --px-red: #ff6b6b;
+
+    /* 硬阴影（像素描边投影）*/
+    --px-shadow: 4px 4px 0 var(--px-ink);
+    --px-shadow-sm: 3px 3px 0 var(--px-ink);
+    --px-shadow-lg: 6px 6px 0 var(--px-ink);
+
+    /* 覆盖 Element Plus token，使既有组件自动像素化 */
+    --el-color-primary: #3a9bff;
+    --el-color-primary-light-3: #6fb6ff;
+    --el-color-primary-light-5: #9fcdff;
+    --el-color-primary-light-7: #c7e3ff;
+    --el-color-primary-light-8: #d9ecff;
+    --el-color-primary-light-9: #eaf5ff;
+    --el-color-primary-dark-2: #2176d6;
+    --el-color-success: #4fc06a;
+    --el-color-warning: #ffb33c;
+    --el-color-danger: #ff6b6b;
+    --el-bg-color: #ffffff;
+    --el-bg-color-page: #f3f8ff;
+    --el-text-color-primary: #34384f;
+    --el-text-color-regular: #4a4f6a;
+    --el-text-color-secondary: #71768f;
+    --el-border-color: #34384f;
+    --el-border-color-light: #b9c2dc;
+    --el-border-color-lighter: #ccd4ea;
+    --el-border-radius-base: 0px;
+    --el-border-radius-round: 0px;
+    --el-font-family: var(--px-font);
+}
+
+/* ---------- 全局基础 ---------- */
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--px-font);
+    color: var(--px-ink);
+    background-color: var(--px-page);
+    /* 关掉抗锯齿，让像素字体保持硬朗 */
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.02em;
+    background-image:
+        radial-gradient(rgba(58, 155, 255, 0.06) 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+/* 像素字体在文本输入处保持可读 */
+input,
+textarea,
+select,
+button {
+    font-family: var(--px-font);
+}
+
+/* 圆角统统拍平为像素直角 */
+*,
+*::before,
+*::after {
+    border-radius: 0 !important;
+}
+
+/* 所有位图图片像素化渲染 */
+img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* ---------- 像素滚动条 ---------- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--px-blue) var(--px-sky);
+}
+
+*::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--px-sky);
+    border-left: 2px solid var(--px-ink);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--px-blue);
+    border: 2px solid var(--px-ink);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--px-blue-dark);
+}
+
+/* ---------- 文本选区 ---------- */
+::selection {
+    background: var(--px-amber);
+    color: var(--px-ink);
+}
+
+/* ---------- 标题字重 ---------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--px-ink);
+    letter-spacing: 0.01em;
+}
+
+/* ---------- 按钮（像素硬阴影 + 按压反馈）---------- */
+.btn {
+    border: 3px solid var(--px-ink);
+    box-shadow: var(--px-shadow);
+    font-family: var(--px-font);
+    font-weight: 700;
+    transition: transform 0.08s steps(2), box-shadow 0.08s steps(2),
+        background-color 0.12s;
+    padding: 9px 18px;
+}
+
+.btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--px-ink);
+}
+
+.btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--px-ink);
+}
+
+.btn-primary {
+    background-color: var(--px-blue);
+    color: #fff;
+    border-color: var(--px-ink);
+}
+
+.btn-primary:hover {
+    background-color: var(--px-blue);
+}
+
+.btn-primary:active {
+    background-color: var(--px-blue-dark);
+}
+
+.btn-outline {
+    background-color: #fff;
+    color: var(--px-blue-dark);
+    border-color: var(--px-ink);
+}
+
+.btn-outline:hover {
+    background-color: var(--px-sky);
+}
+
+.btn-outline:disabled {
+    color: var(--px-ink-soft);
+    border-color: var(--px-ink-soft);
+    background-color: #f0f2f7;
+    box-shadow: 2px 2px 0 var(--px-ink-soft);
+    transform: none;
+}
+
+/* ---------- 表单控件 ---------- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+    box-shadow: inset 2px 2px 0 rgba(52, 56, 79, 0.08);
+    color: var(--px-ink);
+    transition: box-shadow 0.12s, border-color 0.12s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--px-blue);
+    box-shadow: 3px 3px 0 var(--px-blue);
+}
+
+::placeholder {
+    color: #a6abc2;
+}
+
+/* ---------- 顶部导航栏 ---------- */
+.navbar {
+    background-color: var(--px-paper);
+    border-bottom: 3px solid var(--px-ink);
+    box-shadow: 0 4px 0 rgba(52, 56, 79, 0.12);
+}
+
+.brand-name {
+    font-family: var(--px-font-en);
+    font-size: 18px;
+    color: var(--px-ink);
+    text-shadow: 2px 2px 0 rgba(58, 155, 255, 0.35);
+}
+
+.brand-sub {
+    border: 2px solid var(--px-ink);
+    background: var(--px-amber);
+    color: var(--px-ink);
+    font-size: 11px;
+    padding: 2px 8px;
+}
+
+.nav-link {
+    border: 2px solid transparent;
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    background-color: var(--px-sky);
+    border-color: var(--px-ink);
+}
+
+.nav-link.active {
+    background-color: var(--px-sky);
+    border-color: var(--px-ink);
+}
+
+.nav-link.active::after {
+    height: 4px;
+    border-radius: 0 !important;
+    bottom: -3px;
+    background-color: var(--px-amber);
+}
+
+/* 品牌 logo 像素图 */
+.brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    animation: pxBob 2.6s steps(6) infinite;
+}
+
+/* ---------- 用户下拉 ---------- */
+.user-dropdown-trigger {
+    border: 2px solid var(--px-ink);
+    box-shadow: var(--px-shadow-sm);
+}
+
+.user-dropdown-trigger:hover {
+    background: var(--px-sky);
+}
+
+.user-avatar,
+.user-avatar-lg {
+    border: 2px solid var(--px-ink);
+    background: var(--px-blue);
+}
+
+.user-dropdown-menu {
+    border: 3px solid var(--px-ink);
+    box-shadow: var(--px-shadow);
+}
+
+/* ---------- 首页 Hero ---------- */
+.hero {
+    background: linear-gradient(135deg, #ffffff 0%, var(--px-sky) 55%, #eafaff 100%);
+    border-bottom: 3px solid var(--px-ink);
+}
+
+.hero-title {
+    font-size: 40px;
+    line-height: 1.3;
+    text-shadow: 3px 3px 0 rgba(58, 155, 255, 0.22);
+}
+
+.hero-badge {
+    border: 2px solid var(--px-ink);
+    background: var(--px-cream);
+    color: var(--px-ink);
+    box-shadow: var(--px-shadow-sm);
+}
+
+.badge-dot {
+    border-radius: 0 !important;
+    background: var(--px-green);
+    animation: pxBlink 1s steps(2) infinite;
+}
+
+.stat-num {
+    font-family: var(--px-font-en);
+    color: var(--px-blue-dark);
+}
+
+.stat-divider {
+    background-color: var(--px-ink);
+    width: 3px;
+}
+
+.hero-svg {
+    filter: none;
+    animation: pxBob 2.4s steps(6) infinite;
+}
+
+/* ---------- 应用卡片 ---------- */
+.app-card {
+    background-color: var(--px-paper);
+    border: 3px solid var(--px-ink);
+    box-shadow: var(--px-shadow);
+    transition: transform 0.1s steps(2), box-shadow 0.1s steps(2);
+}
+
+.app-card.card-visible {
+    transition: opacity 0.4s steps(4), transform 0.1s steps(2),
+        box-shadow 0.1s steps(2);
+}
+
+.app-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--px-shadow-lg);
+    border-color: var(--px-ink);
+}
+
+.app-card:hover .card-illustration svg {
+    transform: scale(1.04);
+}
+
+.card-illustration {
+    border-bottom: 3px solid var(--px-ink);
+}
+
+.card-tag {
+    border: 2px solid var(--px-ink);
+    font-weight: 700;
+}
+
+.card-tag--primary {
+    background-color: var(--px-sky);
+}
+
+.card-tag--success {
+    background-color: #e7f8ea;
+}
+
+.card-tag--warning {
+    background-color: var(--px-cream);
+}
+
+.card-tag--danger {
+    background-color: #ffe9e9;
+}
+
+.card-id {
+    border: 2px solid var(--px-ink);
+    background: var(--px-cream);
+    color: var(--px-ink);
+}
+
+/* ---------- 页脚 ---------- */
+.footer {
+    background-color: var(--px-ink);
+    border-top: 4px solid var(--px-blue);
+}
+
+.footer-col h4 {
+    font-family: var(--px-font);
+    color: var(--px-amber);
+}
+
+/* ---------- 顶部过渡进度条 ---------- */
+.nav-progress-bar {
+    height: 5px;
+    background: repeating-linear-gradient(90deg,
+            var(--px-blue) 0 8px,
+            var(--px-amber) 8px 16px);
+    border-radius: 0 !important;
+}
+
+.nav-progress-bar.active {
+    box-shadow: 0 0 0 1px var(--px-ink);
+    transition: width 2s steps(20), opacity 0.1s;
+}
+
+/* ---------- 像素动画关键帧 ---------- */
+@keyframes pxBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@keyframes pxBob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* ---------- 通用像素卡片工具类 ---------- */
+.px-card {
+    background: var(--px-paper);
+    border: 3px solid var(--px-ink);
+    box-shadow: var(--px-shadow);
+}
+
+.px-tag {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid var(--px-ink);
+    background: var(--px-cream);
+    padding: 2px 8px;
+    font-weight: 700;
+    font-size: 12px;
+}

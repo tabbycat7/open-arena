@@ -1131,10 +1131,12 @@ document.querySelectorAll(".mat-view-tab").forEach(function (btn) {
         if (mode === "text") {
             if (currentResult) {
                 renderTextView(currentResult);
+                requestAnimationFrame(fitAllInteractiveFrames);
             } else if (currentTaskId) {
                 ensureHistoryResultLoaded(currentTaskId).then(function (result) {
                     if (!result) return;
                     renderTextView(result);
+                    requestAnimationFrame(fitAllInteractiveFrames);
                 });
             }
         }
@@ -2650,6 +2652,39 @@ function renderCommentaryBlock(node) {
     return '<div class="mat-text-commentary"><div class="mat-text-commentary-title">说课稿</div><div class="mat-text-commentary-body mat-markdown-content">' + renderMarkdownHtml(commentary) + '</div></div>';
 }
 
+// 交互动画「桌面 4:3 设计视口」尺寸：iframe 以此渲染保持桌面横排布局，
+// 再用 transform 等比缩放塞进定宽 4:3 盒子，确保整幅动画完整可见。
+var VA_DESIGN_W = 960;
+var VA_DESIGN_H = 720;
+
+function fitInteractiveFrame(frameEl) {
+    if (!frameEl) return;
+    var box = frameEl.closest(".mat-visual-aid-frame-box");
+    if (!box) return;
+    var pw = box.clientWidth;
+    var ph = box.clientHeight;
+    if (!pw || !ph) return;
+    var scale = Math.min(pw / VA_DESIGN_W, ph / VA_DESIGN_H);
+    var x = (pw - VA_DESIGN_W * scale) / 2;
+    var y = (ph - VA_DESIGN_H * scale) / 2;
+    frameEl.style.setProperty("--va-w", VA_DESIGN_W + "px");
+    frameEl.style.setProperty("--va-h", VA_DESIGN_H + "px");
+    frameEl.style.setProperty("--va-scale", scale);
+    frameEl.style.setProperty("--va-x", x + "px");
+    frameEl.style.setProperty("--va-y", y + "px");
+}
+window.fitInteractiveFrame = fitInteractiveFrame;
+
+function fitAllInteractiveFrames() {
+    var frames = document.querySelectorAll(".mat-visual-aid-frame");
+    for (var i = 0; i < frames.length; i++) {
+        fitInteractiveFrame(frames[i]);
+    }
+}
+window.fitAllInteractiveFrames = fitAllInteractiveFrames;
+
+window.addEventListener("resize", fitAllInteractiveFrames);
+
 function renderVisualAidBlock(node) {
     var interactiveHtml = node.visual_aid_html || "";
     var urls = node.visual_aid_urls || [];
@@ -2663,7 +2698,9 @@ function renderVisualAidBlock(node) {
 
     if (interactiveHtml) {
         html += '<div class="mat-visual-aid-preview mat-visual-aid-interactive-preview">';
-        html += '<iframe class="mat-visual-aid-frame" title="交互可视化" sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer" srcdoc="' + escapeHtml(interactiveHtml) + '"></iframe>';
+        html += '<div class="mat-visual-aid-frame-box">';
+        html += '<iframe class="mat-visual-aid-frame" title="交互可视化" sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer" onload="window.fitInteractiveFrame&&fitInteractiveFrame(this)" srcdoc="' + escapeHtml(interactiveHtml) + '"></iframe>';
+        html += '</div>';
         html += '<div class="mat-visual-aid-actions">';
         html += "<button type=\"button\" class=\"mat-visual-aid-btn\" onclick=\"openTextViewInteractiveLightbox(this.closest('.mat-visual-aid-section'))\">";
         html += '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M5 8a1 1 0 011-1h3V4a1 1 0 112 0v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0V9H6a1 1 0 01-1-1z"/><path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm0-2A6 6 0 108 2a6 6 0 000 12z" clip-rule="evenodd"/></svg>';
