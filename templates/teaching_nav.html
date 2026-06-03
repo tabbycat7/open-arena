@@ -144,25 +144,36 @@
             <div class="nav-mini-map" id="navMiniMap"></div>
         </aside>
         <div class="nav-controls-panel">
-            <div class="nav-strategy-matrix" id="navStrategyMatrix" aria-label="课堂调度四象限">
-                <div class="nav-strategy-axis nav-strategy-axis-y">课堂参与度</div>
-                <div class="nav-strategy-axis nav-strategy-axis-x">回答准确率</div>
-                <button class="nav-strategy-cell active" data-participation="high" data-accuracy="high" type="button">
-                    <span>继续进阶</span>
-                    <b>参与高 / 准确高</b>
-                </button>
-                <button class="nav-strategy-cell" data-participation="high" data-accuracy="low" type="button">
-                    <span>先修复</span>
-                    <b>参与高 / 准确低</b>
-                </button>
-                <button class="nav-strategy-cell" data-participation="low" data-accuracy="high" type="button">
-                    <span>换变式激活</span>
-                    <b>参与低 / 准确高</b>
-                </button>
-                <button class="nav-strategy-cell" data-participation="low" data-accuracy="low" type="button">
-                    <span>支架+激活</span>
-                    <b>参与低 / 准确低</b>
-                </button>
+            <div class="nav-strategy-matrix" id="navStrategyMatrix" aria-label="课堂学情信号灯">
+                <div class="nav-signal-head">
+                    <strong>学情信号</strong>
+                </div>
+                <div class="nav-signal-toggle is-high" data-metric="participation" data-state="high">
+                    <span class="nav-signal-label">参与度</span>
+                    <div class="nav-signal-choices" role="group" aria-label="课堂参与度">
+                        <button class="nav-signal-choice choice-high is-active" data-value="high" type="button" aria-pressed="true">
+                            <span class="nav-signal-lamp" aria-hidden="true"></span>
+                            <span class="nav-signal-value">高</span>
+                        </button>
+                        <button class="nav-signal-choice choice-low" data-value="low" type="button" aria-pressed="false">
+                            <span class="nav-signal-lamp" aria-hidden="true"></span>
+                            <span class="nav-signal-value">低</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="nav-signal-toggle is-high" data-metric="accuracy" data-state="high">
+                    <span class="nav-signal-label">准确率</span>
+                    <div class="nav-signal-choices" role="group" aria-label="回答准确率">
+                        <button class="nav-signal-choice choice-high is-active" data-value="high" type="button" aria-pressed="true">
+                            <span class="nav-signal-lamp" aria-hidden="true"></span>
+                            <span class="nav-signal-value">高</span>
+                        </button>
+                        <button class="nav-signal-choice choice-low" data-value="low" type="button" aria-pressed="false">
+                            <span class="nav-signal-lamp" aria-hidden="true"></span>
+                            <span class="nav-signal-value">低</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="nav-scenario-indicator" id="navScenarioIndicator">

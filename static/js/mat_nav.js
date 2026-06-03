@@ -170,14 +170,18 @@
 
     function setupStrategyMatrix() {
         if (!strategyMatrixEl) return;
-        var buttons = strategyMatrixEl.querySelectorAll(".nav-strategy-cell");
+        var buttons = strategyMatrixEl.querySelectorAll(".nav-signal-choice");
         buttons.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                var nextParticipation = btn.dataset.participation || "high";
-                var nextAccuracy = btn.dataset.accuracy || "high";
+                var group = btn.closest(".nav-signal-toggle");
+                var metric = group ? group.dataset.metric || "" : "";
+                var nextValue = btn.dataset.value || "high";
                 var prev = getScenarioKey();
-                participation = nextParticipation;
-                accuracy = nextAccuracy;
+                if (metric === "participation") {
+                    participation = nextValue;
+                } else if (metric === "accuracy") {
+                    accuracy = nextValue;
+                }
                 recordStrategyChange(prev);
                 updateScenarioLabel();
             });
@@ -651,10 +655,18 @@
         if (scenarioIndicatorEl) scenarioIndicatorEl.dataset.scenario = key;
         if (strategyMatrixEl) {
             strategyMatrixEl.dataset.scenario = key;
-            strategyMatrixEl.querySelectorAll(".nav-strategy-cell").forEach(function (cell) {
-                var isActive = cell.dataset.participation === participation && cell.dataset.accuracy === accuracy;
-                cell.classList.toggle("active", isActive);
-                cell.setAttribute("aria-pressed", isActive ? "true" : "false");
+            strategyMatrixEl.querySelectorAll(".nav-signal-toggle").forEach(function (btn) {
+                var metric = btn.dataset.metric || "";
+                var value = metric === "participation" ? participation : accuracy;
+                var isHigh = value === "high";
+                btn.dataset.state = value;
+                btn.classList.toggle("is-high", isHigh);
+                btn.classList.toggle("is-low", !isHigh);
+                btn.querySelectorAll(".nav-signal-choice").forEach(function (choice) {
+                    var active = choice.dataset.value === value;
+                    choice.classList.toggle("is-active", active);
+                    choice.setAttribute("aria-pressed", active ? "true" : "false");
+                });
             });
         }
     }
