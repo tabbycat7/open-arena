@@ -85,7 +85,6 @@
     var dispatchReasonTextEl = document.getElementById("navDispatchReasonText");
     var scriptContentEl = document.getElementById("navScriptContent");
     var explanationBodyEl = document.getElementById("navExplanationBody");
-    var followupContentEl = document.getElementById("navFollowupContent");
     var noteEl = document.getElementById("navTeacherNote");
     var toolPanelEl = document.getElementById("navToolPanel");
     var completedCardEl = document.getElementById("navCompletedCard");
@@ -434,6 +433,7 @@
         loadingEl.style.display = "none";
         mainEl.style.display = "grid";
         controlsEl.style.display = "grid";
+        if (pageEl) pageEl.classList.remove("is-completed");
         statusBadgeEl.textContent = "导航中";
         statusBadgeEl.classList.add("active");
         navigationCompleted = false;
@@ -521,6 +521,8 @@
         stopTimer();
         finishCurrentNodeVisit();
         navigationCompleted = false;
+        if (pageEl) pageEl.classList.remove("is-completed");
+        if (controlsEl) controlsEl.style.display = "grid";
         resetReviewState();
         hideDispatchReason();
         if (completedCardEl) completedCardEl.style.display = "none";
@@ -624,7 +626,6 @@
         var explanation = node.explanation || "";
         scriptContentEl.innerHTML = script ? renderMarkdown(script) : '<p class="nav-empty-text">暂无说课稿。</p>';
         explanationBodyEl.innerHTML = explanation ? renderMarkdown(explanation) : '<p class="nav-empty-text">暂无解析。</p>';
-        if (followupContentEl) followupContentEl.innerHTML = renderFollowupPack(node);
     }
 
     function activateToolPanel(panelName) {
@@ -673,9 +674,11 @@
         stopTimer();
         navigationCompleted = true;
         isTransitioning = false;
+        if (pageEl) pageEl.classList.add("is-completed");
         if (questionCardEl) questionCardEl.style.display = "none";
         if (toolPanelEl) toolPanelEl.style.display = "none";
         if (miniMapShellEl) miniMapShellEl.style.display = "none";
+        if (controlsEl) controlsEl.style.display = "none";
         if (completedCardEl) completedCardEl.style.display = "block";
         statusBadgeEl.textContent = "已完成";
         statusBadgeEl.classList.remove("active");
@@ -720,39 +723,6 @@
         if (key === "high_low") return "当前参与度较高但准确率偏低，系统优先调度" + typeText + "，帮助学生修复关键认知断点。";
         if (key === "low_high") return "当前准确率较高但参与度偏低，系统优先调度" + typeText + "，用新情境或变式重新激活学生。";
         return "当前参与度和准确率都偏低，系统优先调度" + typeText + "，先降低入口门槛再恢复课堂思考。";
-    }
-
-    function renderFollowupPack(node) {
-        if (!node) return '<p class="nav-empty-text">暂无追问建议。</p>';
-        var qType = node.question_type || "main";
-        var typeLabel = TYPE_LABELS[qType] || "问题";
-        var knowledge = (node.knowledge_points || []).filter(Boolean);
-        var kpText = knowledge.length ? knowledge.slice(0, 3).join("、") : "本题关键条件";
-        var intent = node.design_intent || node.design_rationale || "帮助学生说清思考过程";
-        var transferTarget = qType === "variant"
-            ? "换一个表面情境后，哪些判断依据仍然不变？"
-            : qType === "scaffold"
-                ? "如果这一步已经能说清，下一步可以尝试连接到哪个主干问题？"
-                : "把这个结论迁移到一个新的例子时，最先要检查什么？";
-        var items = [
-            {
-                title: "观察提示",
-                body: "先请学生指出和“" + kpText + "”最相关的信息，再说它为什么值得关注。",
-            },
-            {
-                title: "理由追问",
-                body: "你这样判断的依据是什么？能不能把题目条件和“" + kpText + "”之间的关系说完整？",
-            },
-            {
-                title: "迁移追问",
-                body: transferTarget,
-            },
-        ];
-        var html = '<div class="nav-followup-intro"><strong>' + escapeHtml(typeLabel) + '追问包</strong><span>' + escapeHtml(intent) + '</span></div>';
-        html += items.map(function (item) {
-            return '<article class="nav-followup-card"><h4>' + escapeHtml(item.title) + '</h4><p>' + escapeHtml(item.body) + '</p></article>';
-        }).join("");
-        return html;
     }
 
     function renderMiniMap() {

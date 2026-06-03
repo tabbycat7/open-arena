@@ -175,6 +175,14 @@
     padding: 24px 0 calc(var(--nav-bottom-height) + 32px);
 }
 
+.nav-page.is-completed .nav-main {
+    padding-bottom: 32px;
+}
+
+.nav-page.is-completed .nav-command-deck {
+    display: none !important;
+}
+
 .nav-stage {
     min-width: 0;
     min-height: 520px;
@@ -476,7 +484,7 @@
 
 .nav-tool-tabs {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 4px;
     padding: 10px;
     border-bottom: 1px solid var(--nav-line);
@@ -532,46 +540,6 @@
 
 .nav-empty-text {
     color: #8a98ad;
-}
-
-.nav-followup-intro {
-    display: grid;
-    gap: 6px;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed #cbd5e1;
-}
-
-.nav-followup-intro strong {
-    color: #1f2937;
-    font-size: 15px;
-}
-
-.nav-followup-intro span {
-    color: #64748b;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-.nav-followup-card {
-    margin: 0 0 12px;
-    padding: 14px;
-    border: 1px solid #d8e3f2;
-    border-radius: 12px;
-    background: #f8fafc;
-}
-
-.nav-followup-card h4 {
-    margin: 0 0 8px;
-    color: #1f2937;
-    font-size: 14px;
-}
-
-.nav-followup-card p {
-    margin: 0;
-    color: #334155;
-    font-size: 14px;
-    line-height: 1.7;
 }
 
 .nav-note-input {
@@ -1291,7 +1259,7 @@
 
     .nav-tool-tabs {
         overflow-x: auto;
-        grid-template-columns: repeat(4, minmax(72px, 1fr));
+        grid-template-columns: repeat(3, minmax(72px, 1fr));
     }
 
     .nav-tool-panel {
@@ -1475,13 +1443,6 @@
     border-color: var(--nav-ink) !important;
     box-shadow: 2px 2px 0 var(--nav-ink);
     background: #fff;
-}
-
-/* 导航图 / 调度按钮 */
-.nav-followup-card {
-    border: 2px solid var(--nav-ink) !important;
-    border-radius: 0;
-    box-shadow: 2px 2px 0 var(--nav-ink);
 }
 
 .nav-dispatch-btn {

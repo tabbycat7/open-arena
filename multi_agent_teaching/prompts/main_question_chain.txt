@@ -83,7 +83,7 @@
 ---
 
 ## 四、lesson_presentation_script 字段要求
-`lesson_presentation_script` 是教师提出问题后，用于引导、点拨、追问或收束的口播逐字稿。
+`lesson_presentation_script` 是教师提出问题后，用于引导、点拨或收束的口播逐字稿。
 
 ### 定位
 它不是教参说明文，不是条目式提示，也不是完整标准答案。

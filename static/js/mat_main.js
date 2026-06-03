@@ -1113,17 +1113,15 @@ document.querySelectorAll(".mat-view-tab").forEach(function (btn) {
 
         if (mode === "graph") {
             if (currentResult) {
-                renderGraph(currentResult);
-                if (typeof chartInstance !== "undefined" && chartInstance) {
-                    chartInstance.resize();
-                }
+                requestAnimationFrame(function () {
+                    renderGraph(currentResult);
+                });
             } else if (currentTaskId) {
                 ensureHistoryResultLoaded(currentTaskId).then(function (result) {
                     if (!result) return;
-                    renderGraph(result);
-                    if (typeof chartInstance !== "undefined" && chartInstance) {
-                        chartInstance.resize();
-                    }
+                    requestAnimationFrame(function () {
+                        renderGraph(result);
+                    });
                 });
             }
         }
@@ -2436,7 +2434,9 @@ function showResult(result, taskId) {
     document.getElementById("textSection").style.display = "none";
     document.getElementById("logsSection").style.display = "none";
     document.getElementById("detailSection").style.display = "none";
-    renderGraph(result);
+    requestAnimationFrame(function () {
+        renderGraph(result);
+    });
     renderTextView(result);
     showNavEntryButton(taskId);
 }

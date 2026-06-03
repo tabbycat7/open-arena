@@ -71,12 +71,29 @@ function renderGraph(teachingMap) {
 
     var container = document.getElementById("graphContainer");
 
-    if (chartInstance) { chartInstance.dispose(); }
+    if (chartInstance) { chartInstance.dispose(); chartInstance = null; }
+
+    if (!container.clientWidth || !container.clientHeight) {
+        requestAnimationFrame(function () { renderGraph(teachingMap); });
+        return;
+    }
+
     chartInstance = echarts.init(container);
 
-    var nodeCount = (teachingMap.nodes || []).length;
+    // 去重：同一 id 多次出现会让 ECharts 报 "Duplicate node id" 并中断渲染（脏数据容错）
+    var seenIds = {};
+    var rawNodes = (teachingMap.nodes || []).filter(function (node) {
+        var nid = node && node.id != null ? String(node.id) : "";
+        if (!nid || seenIds[nid]) {
+            if (nid) console.warn("[teaching-map] 跳过重复节点 id:", nid);
+            return false;
+        }
+        seenIds[nid] = true;
+        return true;
+    });
+    var nodeCount = rawNodes.length;
 
-    var nodes = (teachingMap.nodes || []).map(function (node) {
+    var nodes = rawNodes.map(function (node) {
         var qType = node.question_type || "main";
         var isMain = qType === "main";
         var symbolSize = isMain ? 52 : 38;
@@ -134,7 +151,10 @@ function renderGraph(teachingMap) {
         };
     });
 
-    var edges = (teachingMap.edges || []).map(function (edge) {
+    var edges = (teachingMap.edges || []).filter(function (edge) {
+        // 过滤指向不存在节点的边，避免渲染异常
+        return edge && seenIds[String(edge.source)] && seenIds[String(edge.target)];
+    }).map(function (edge) {
         // 像素直线：去掉曲率，硬朗连线
         var lineStyle = { width: 3, curveness: 0, cap: "butt" };
         var relation = edge.relation || "";
@@ -190,7 +210,18 @@ function renderGraph(teachingMap) {
         }],
     };
 
-    chartInstance.setOption(option);
+    try {
+        chartInstance.setOption(option);
+    } catch (err) {
+        console.error("[teaching-map] 图形渲染失败:", err);
+        container.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-size:14px;padding:20px;text-align:center">' +
+            "图形渲染失败：地图数据存在异常（" + escapeGraphHtml(err && err.message ? err.message : String(err)) + "）。<br/>可切换到「文字视图」查看完整内容。" +
+            "</div>";
+        return;
+    }
+
+    setTimeout(function () { if (chartInstance) chartInstance.resize(); }, 50);
 
     chartInstance.on("click", function (params) {
         if (params.dataType === "node") showNodeDetail(params.data._raw);
