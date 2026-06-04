@@ -45,7 +45,7 @@ app.config["JSON_AS_ASCII"] = False
 db = SQLAlchemy(app)
 
 
-VISITOR_COOKIE_NAME = "open_arena_visitor_id"
+VISITOR_COOKIE_NAME = "paideia_hub_visitor_id"
 
 
 def _get_or_create_visitor_id() -> str:

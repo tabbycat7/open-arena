@@ -10,7 +10,7 @@ def _load_main_config():
     """按绝对路径加载主应用根目录 config.py，避免路径顺序导致自导入。"""
     _main_dir = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
     _main_config_path = _os.path.join(_main_dir, "config.py")
-    _spec = _importlib_util.spec_from_file_location("open_arena_main_config", _main_config_path)
+    _spec = _importlib_util.spec_from_file_location("paideia_hub_main_config", _main_config_path)
     if _spec is None or _spec.loader is None:
         raise ImportError("Cannot load root config.py")
 

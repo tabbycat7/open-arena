@@ -25,7 +25,7 @@ def init_database():
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("  Open Arena - 数据库初始化")
+    print("  Paideia Hub - 数据库初始化")
     print("=" * 50)
     print()
     init_database()

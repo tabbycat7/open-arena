@@ -1306,7 +1306,7 @@
 
 .nav-review-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 14px;
 }
 
@@ -1318,8 +1318,16 @@
     padding: 14px;
 }
 
-.nav-review-card-wide {
+.nav-review-overview-card {
     grid-column: span 2;
+}
+
+.nav-review-card-wide {
+    grid-column: span 3;
+}
+
+.nav-review-signal-card {
+    grid-column: span 3;
 }
 
 .nav-review-card h3 {
@@ -1333,8 +1341,12 @@
     min-height: 230px;
 }
 
+.nav-review-signal-chart {
+    min-height: 330px;
+}
+
 .nav-review-diagnosis-card {
-    grid-column: span 2;
+    grid-column: span 6;
 }
 
 .nav-review-diagnosis {
@@ -1513,7 +1525,9 @@
         grid-template-columns: minmax(0, 1fr);
     }
 
+    .nav-review-overview-card,
     .nav-review-card-wide,
+    .nav-review-signal-card,
     .nav-review-diagnosis-card {
         grid-column: auto;
     }
@@ -1707,6 +1721,10 @@
 
     .nav-review-chart {
         min-height: 220px;
+    }
+
+    .nav-review-signal-chart {
+        min-height: 320px;
     }
 
     .nav-review-path-item {

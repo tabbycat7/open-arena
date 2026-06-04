@@ -1,6 +1,6 @@
-# Open Arena - AI 教育平台
+# Paideia Hub - AI 教育平台
 
-Open Arena 是一个基于大语言模型（LLM）和多智能体（Multi-Agent）技术构建的综合性教师教研辅助与测评平台。本项目旨在通过 AI 的介入，为教师、师范生提供创新的教育研讨、教案测评以及自动化的教案生成工具。
+Paideia Hub 是一个基于大语言模型（LLM）和多智能体（Multi-Agent）技术构建的综合性教师教研辅助与测评平台。本项目旨在通过 AI 的介入，为教师、师范生提供创新的教育研讨、教案测评以及自动化的教案生成工具。
 
 ## 🌟 核心功能模块
 
@@ -32,7 +32,7 @@ Open Arena 是一个基于大语言模型（LLM）和多智能体（Multi-Agent�
 ## 📁 核心目录结构
 
 ```text
-open_arena/
+paideia_hub/
 ├── app.py                      # 主应用入口，Flask 路由映射及应用注册
 ├── config.py                   # 全局环境变量及模型配置参数
 ├── init_db.py                  # 数据库初始化脚本

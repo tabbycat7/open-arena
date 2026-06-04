@@ -63,7 +63,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 # ===================== 数据库配置 =====================
 SQLALCHEMY_DATABASE_URI = os.getenv(
     "DATABASE_URL",
-    "mysql+pymysql://root:371619@localhost:3306/open_arena?charset=utf8mb4",
+    "mysql+pymysql://root:371619@localhost:3306/paideia_hub?charset=utf8mb4",
 )
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ENGINE_OPTIONS = {"pool_recycle": 3600}

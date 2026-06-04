@@ -7,7 +7,7 @@
 
     var TASK_ID = window.NAV_TASK_ID || "";
     var API_PREFIX = "/api/mat/nav";
-    var NOTE_PREFIX = "openArena.nav.note.";
+    var NOTE_PREFIX = "paideiaHub.nav.note.";
     var TIMER_DEFAULT = 180;
 
     // 交互动画「桌面 4:3 设计视口」尺寸：iframe 以此尺寸渲染保持桌面横排布局，
@@ -1173,7 +1173,7 @@
             notes: notes,
             knowledge_items: knowledgeItems,
             strategy_counts: strategyCounts,
-            signal_points: strategyHistory.slice(),
+            signal_points: buildSignalTimelinePoints(),
             path_events: buildPathEvents(),
         };
     }
@@ -1190,6 +1190,48 @@
         return navEvents.filter(function (event) {
             return event.type === "dispatch_result" || event.type === "completed" || event.type === "back";
         });
+    }
+
+    function buildSignalTimelinePoints() {
+        var dispatches = navEvents.filter(function (event) {
+            return event.type === "dispatch_request";
+        });
+        if (dispatches.length) {
+            return dispatches.map(function (event, index) {
+                var detail = event.detail || {};
+                var key = detail.scenario_key || ((detail.participation || "high") + "_" + (detail.accuracy || "high"));
+                return {
+                    sequence: index + 1,
+                    axis_label: "#" + (index + 1),
+                    time: event.time || "",
+                    node_id: detail.from_node_id || "",
+                    participation: detail.participation || "high",
+                    accuracy: detail.accuracy || "high",
+                    scenario_key: key,
+                    scenario_label: (SCENARIO_DETAILS[key] && SCENARIO_DETAILS[key].label) || SCENARIO_LABELS[key] || key,
+                };
+            });
+        }
+
+        var initial = strategyHistory[0] || {
+            participation: "high",
+            accuracy: "high",
+            scenario_key: "high_high",
+            scenario_label: "起始状态",
+            node_id: currentNodeId || "",
+            time: "",
+        };
+        return [{
+            sequence: 0,
+            axis_label: "初始",
+            time: initial.time || "",
+            node_id: initial.node_id || currentNodeId || "",
+            participation: initial.participation || "high",
+            accuracy: initial.accuracy || "high",
+            scenario_key: initial.scenario_key || "high_high",
+            scenario_label: initial.scenario_label || "起始状态",
+            is_initial: true,
+        }];
     }
 
     function collectReviewKnowledge(nodes) {
@@ -1419,33 +1461,177 @@
     function renderSignalChart(data) {
         var chart = initReviewChart("navReviewSignalChart");
         if (!chart) return;
-        var points = data.signal_points.length ? data.signal_points : [{ participation: "high", accuracy: "high", scenario_label: "起始" }];
+        var points = data.signal_points || [];
+        var visibleCount = 8;
+        var showZoom = points.length > visibleCount;
+        var axisLabels = points.map(function (point, index) {
+            return point.axis_label || ("#" + (index + 1));
+        });
+        var participationData = buildSignalLineData(points, "participation");
+        var accuracyData = buildSignalLineData(points, "accuracy");
+        var dataZoom = showZoom ? [
+            {
+                type: "inside",
+                xAxisIndex: [0, 1],
+                startValue: Math.max(0, points.length - visibleCount),
+                endValue: points.length - 1,
+                filterMode: "none",
+                zoomOnMouseWheel: false,
+                moveOnMouseWheel: true,
+                moveOnMouseMove: true,
+            },
+            {
+                type: "slider",
+                xAxisIndex: [0, 1],
+                startValue: Math.max(0, points.length - visibleCount),
+                endValue: points.length - 1,
+                filterMode: "none",
+                height: 14,
+                bottom: 2,
+                brushSelect: false,
+                borderColor: "#a8b3c7",
+                fillerColor: "rgba(58, 155, 255, 0.24)",
+                handleStyle: { color: "#3a9bff", borderColor: "#34384f" },
+                textStyle: { color: "#667085", fontSize: 10 },
+            },
+        ] : [];
+
         chart.setOption({
-            color: ["#4fc06a", "#3a9bff"],
-            grid: { left: 36, right: 16, top: 28, bottom: 32 },
-            legend: { top: 0, data: ["参与度", "准确率"] },
+            animationDuration: 450,
+            title: [
+                {
+                    text: "参与度",
+                    left: 4,
+                    top: 4,
+                    textStyle: { color: "#15803d", fontSize: 13, fontWeight: 900 },
+                },
+                {
+                    text: "准确率",
+                    left: 4,
+                    top: 154,
+                    textStyle: { color: "#1769aa", fontSize: 13, fontWeight: 900 },
+                },
+            ],
+            grid: [
+                { left: 46, right: 16, top: 32, height: 100 },
+                { left: 46, right: 16, top: 182, height: 90 },
+            ],
             tooltip: {
-                trigger: "axis",
+                trigger: "item",
+                confine: true,
+                backgroundColor: "#fff",
+                borderColor: "#34384f",
+                borderWidth: 2,
+                textStyle: { color: "#172033", fontWeight: 700 },
+                extraCssText: "box-shadow:3px 3px 0 rgba(52,56,79,.28);",
                 formatter: function (params) {
-                    var idx = params[0].dataIndex;
+                    var idx = params.dataIndex;
                     var item = points[idx] || {};
-                    return escapeHtml(item.scenario_label || "") + "<br/>参与度：" + labelBinary(item.participation) +
-                        "<br/>准确率：" + labelBinary(item.accuracy);
+                    var title = item.is_initial ? "初始状态" : "第 " + item.sequence + " 次调度";
+                    return "<strong>" + escapeHtml(title) + "</strong><br/>当前节点：" + escapeHtml(item.node_id || "未记录") +
+                        "<br/>参与度：" + labelBinary(item.participation) +
+                        "<br/>准确率：" + labelBinary(item.accuracy) +
+                        "<br/>调度策略：" + escapeHtml(item.scenario_label || "未记录");
                 },
             },
-            xAxis: { type: "category", data: points.map(function (_, i) { return String(i + 1); }) },
-            yAxis: {
-                type: "value",
-                min: 0,
-                max: 1,
-                interval: 1,
-                axisLabel: { formatter: function (v) { return v === 1 ? "高" : "低"; } },
+            axisPointer: {
+                link: [{ xAxisIndex: [0, 1] }],
+                lineStyle: { color: "#667085", type: "dashed" },
             },
+            dataZoom: dataZoom,
+            xAxis: [
+                buildSignalXAxis(axisLabels, 0, false),
+                buildSignalXAxis(axisLabels, 1, true),
+            ],
+            yAxis: [
+                buildSignalYAxis(0),
+                buildSignalYAxis(1),
+            ],
             series: [
-                { name: "参与度", type: "line", step: "end", data: points.map(function (p) { return p.participation === "high" ? 1 : 0; }), symbolSize: 8 },
-                { name: "准确率", type: "line", step: "end", data: points.map(function (p) { return p.accuracy === "high" ? 1 : 0; }), symbolSize: 8 },
+                buildSignalLineSeries("参与度", participationData, "#22a447", 0),
+                buildSignalLineSeries("准确率", accuracyData, "#288df0", 1),
             ],
         });
+    }
+
+    function buildSignalLineData(points, field) {
+        return points.map(function (point) {
+            return point[field] === "high" ? 1 : 0;
+        });
+    }
+
+    function buildSignalXAxis(labels, gridIndex, showLabels) {
+        return {
+            type: "category",
+            gridIndex: gridIndex,
+            data: labels,
+            boundaryGap: true,
+            axisTick: { show: showLabels, alignWithLabel: true },
+            axisLine: { lineStyle: { color: "#a8b3c7", width: 2 } },
+            axisLabel: {
+                show: showLabels,
+                color: "#667085",
+                fontWeight: 800,
+                interval: 0,
+                margin: 10,
+            },
+            axisPointer: { show: true, snap: true },
+        };
+    }
+
+    function buildSignalYAxis(gridIndex) {
+        return {
+            type: "value",
+            gridIndex: gridIndex,
+            min: 0,
+            max: 1,
+            interval: 1,
+            axisTick: { show: false },
+            axisLine: { show: false },
+            axisLabel: {
+                color: "#52637a",
+                fontWeight: 900,
+                formatter: function (value) { return value === 1 ? "高" : "低"; },
+            },
+            splitLine: { lineStyle: { color: "#cbd5e1", type: "dashed" } },
+        };
+    }
+
+    function buildSignalLineSeries(name, values, color, axisIndex) {
+        return {
+            name: name,
+            type: "line",
+            xAxisIndex: axisIndex,
+            yAxisIndex: axisIndex,
+            step: "end",
+            data: values,
+            symbol: "circle",
+            symbolSize: 13,
+            showSymbol: true,
+            connectNulls: true,
+            clip: false,
+            label: { show: false },
+            lineStyle: { color: color, width: 5 },
+            itemStyle: { color: "#fff", borderColor: color, borderWidth: 4 },
+            emphasis: {
+                scale: 1.25,
+                itemStyle: { color: color, borderColor: "#34384f", borderWidth: 3 },
+            },
+            markArea: {
+                silent: true,
+                label: { show: false },
+                data: [
+                    [
+                        { yAxis: 0, itemStyle: { color: "rgba(252, 165, 165, 0.20)" } },
+                        { yAxis: 0.5 },
+                    ],
+                    [
+                        { yAxis: 0.5, itemStyle: { color: "rgba(134, 239, 172, 0.20)" } },
+                        { yAxis: 1 },
+                    ],
+                ],
+            },
+        };
     }
 
     function renderStrategyChart(data) {

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}教学导航 - Open Arena{% endblock %}
+{% block title %}教学导航 - Paideia Hub{% endblock %}
 
 {% block head_extra %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/mat_nav.css') }}">
@@ -230,21 +230,21 @@
         <div class="nav-review-body">
             <section class="nav-review-summary" id="navReviewSummary"></section>
             <section class="nav-review-grid">
-                <article class="nav-review-card">
+                <article class="nav-review-card nav-review-overview-card">
                     <h3>节点类型覆盖</h3>
                     <div class="nav-review-chart" id="navReviewTypeChart"></div>
                 </article>
-                <article class="nav-review-card">
+                <article class="nav-review-card nav-review-overview-card">
                     <h3>节点停留时长</h3>
                     <div class="nav-review-chart" id="navReviewTimeChart"></div>
                 </article>
-                <article class="nav-review-card">
-                    <h3>学情信号变化</h3>
-                    <div class="nav-review-chart" id="navReviewSignalChart"></div>
-                </article>
-                <article class="nav-review-card">
+                <article class="nav-review-card nav-review-overview-card">
                     <h3>策略分布</h3>
                     <div class="nav-review-chart" id="navReviewStrategyChart"></div>
+                </article>
+                <article class="nav-review-card nav-review-signal-card">
+                    <h3>学情信号变化</h3>
+                    <div class="nav-review-chart nav-review-signal-chart" id="navReviewSignalChart"></div>
                 </article>
                 <article class="nav-review-card nav-review-card-wide">
                     <h3>知识点覆盖</h3>

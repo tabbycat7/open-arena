@@ -775,7 +775,7 @@ def _deep_find_image_ref(obj: Any, depth: int = 0, prefer_url: bool = False) -> 
 
 
 _DOWNLOAD_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; OpenArena/1.0)",
+    "User-Agent": "Mozilla/5.0 (compatible; PaideiaHub/1.0)",
     "Accept": "image/*,*/*",
 }
 

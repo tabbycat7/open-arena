@@ -698,6 +698,7 @@ var workspaceLayoutEl = document.getElementById("workspaceLayout");
 var languageStyleSelectEl = document.getElementById("language_style");
 var customLanguageWrapEl = document.getElementById("languageStyleCustomWrap");
 var customLanguageInputEl = document.getElementById("custom_language_style");
+var choicePickerEls = Array.from(document.querySelectorAll("[data-choice-picker]"));
 var modelPickerEl = document.getElementById("modelPicker");
 var modelPickerTriggerEl = document.getElementById("modelPickerTrigger");
 var modelPickerMenuEl = document.getElementById("modelPickerMenu");
@@ -976,6 +977,303 @@ function syncModelPickerFromInput() {
     setModelPickerValue(target.dataset.value, target.dataset.label, target.dataset.icon);
 }
 
+function getChoicePickerTrigger(field) {
+    var picker = field && field.closest ? field.closest("[data-choice-picker]") : null;
+    return picker ? picker.querySelector("[data-choice-trigger]") : null;
+}
+
+function getChoicePickerItems(picker) {
+    return picker ? Array.from(picker.querySelectorAll(".mat-choice-option")) : [];
+}
+
+function closeChoicePicker(picker, restoreFocus) {
+    if (!picker) return;
+    var trigger = picker.querySelector("[data-choice-trigger]");
+    var panel = picker.querySelector("[data-choice-panel]");
+    picker.classList.remove("open", "open-up");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    if (panel) panel.setAttribute("aria-hidden", "true");
+    if (restoreFocus && trigger) trigger.focus();
+}
+
+function closeChoicePickers(exceptPicker) {
+    choicePickerEls.forEach(function (picker) {
+        if (picker !== exceptPicker) closeChoicePicker(picker, false);
+    });
+}
+
+function focusChoicePickerItem(picker, index) {
+    var items = getChoicePickerItems(picker);
+    if (!items.length) return;
+    var normalized = (index + items.length) % items.length;
+    items[normalized].focus();
+}
+
+function positionChoicePickerPanel(picker) {
+    var trigger = picker ? picker.querySelector("[data-choice-trigger]") : null;
+    var panel = picker ? picker.querySelector("[data-choice-panel]") : null;
+    if (!trigger || !panel) return;
+    var triggerRect = trigger.getBoundingClientRect();
+    var panelHeight = panel.offsetHeight;
+    var bottomBoundary = window.innerHeight;
+    var formActions = document.querySelector(".mat-form-actions");
+    if (formActions) {
+        var actionsRect = formActions.getBoundingClientRect();
+        if (actionsRect.top > triggerRect.bottom) bottomBoundary = Math.min(bottomBoundary, actionsRect.top);
+    }
+    var spaceBelow = bottomBoundary - triggerRect.bottom - 16;
+    var spaceAbove = triggerRect.top - 16;
+    picker.classList.toggle("open-up", spaceBelow < panelHeight && spaceAbove > spaceBelow);
+}
+
+function openChoicePicker(picker, focusMode) {
+    if (!picker) return;
+    var trigger = picker.querySelector("[data-choice-trigger]");
+    var panel = picker.querySelector("[data-choice-panel]");
+    closeChoicePickers(picker);
+    closeModelPicker();
+    picker.classList.add("open");
+    if (trigger) trigger.setAttribute("aria-expanded", "true");
+    if (panel) panel.setAttribute("aria-hidden", "false");
+    positionChoicePickerPanel(picker);
+
+    if (!focusMode) return;
+    var items = getChoicePickerItems(picker);
+    var selectedIndex = items.findIndex(function (item) {
+        return item.getAttribute("aria-selected") === "true";
+    });
+    var targetIndex = focusMode === "last" ? items.length - 1 : selectedIndex >= 0 ? selectedIndex : 0;
+    setTimeout(function () { focusChoicePickerItem(picker, targetIndex); }, 0);
+}
+
+function setChoicePickerValue(picker, value, dispatchEvents) {
+    if (!picker) return;
+    var nativeSelect = picker.querySelector("[data-choice-native]");
+    if (!nativeSelect) return;
+    nativeSelect.value = value || "";
+    syncChoicePickerFromInput(picker);
+    markFieldValidity(nativeSelect, !nativeSelect.required || !!nativeSelect.value);
+
+    if (dispatchEvents) {
+        nativeSelect.dispatchEvent(new Event("input", { bubbles: true }));
+        nativeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+}
+
+function createChoicePickerItem(picker, nativeOption) {
+    var item = document.createElement("button");
+    var marker = document.createElement("span");
+    var copy = document.createElement("span");
+    var title = document.createElement("span");
+    var check = document.createElement("span");
+    var description = nativeOption.dataset.description || "";
+    var accent = nativeOption.dataset.accent || "#2563eb";
+
+    item.type = "button";
+    item.className = "mat-choice-option";
+    item.dataset.value = nativeOption.value;
+    item.setAttribute("role", "option");
+    item.setAttribute("aria-selected", "false");
+    item.tabIndex = -1;
+    item.style.setProperty("--mat-choice-accent", accent);
+
+    marker.className = "mat-choice-option-marker";
+    marker.setAttribute("aria-hidden", "true");
+    copy.className = "mat-choice-option-copy";
+    title.className = "mat-choice-option-title";
+    title.textContent = nativeOption.textContent;
+    check.className = "mat-choice-option-check";
+    check.setAttribute("aria-hidden", "true");
+    check.textContent = "✓";
+
+    copy.appendChild(title);
+    if (description) {
+        var descriptionEl = document.createElement("span");
+        descriptionEl.className = "mat-choice-option-description";
+        descriptionEl.textContent = description;
+        copy.appendChild(descriptionEl);
+    }
+
+    item.appendChild(marker);
+    item.appendChild(copy);
+    item.appendChild(check);
+
+    item.addEventListener("click", function () {
+        setChoicePickerValue(picker, nativeOption.value, true);
+        closeChoicePicker(picker, true);
+    });
+
+    item.addEventListener("keydown", function (event) {
+        var items = getChoicePickerItems(picker);
+        var currentIndex = items.indexOf(item);
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+            event.preventDefault();
+            focusChoicePickerItem(picker, currentIndex + 1);
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+            event.preventDefault();
+            focusChoicePickerItem(picker, currentIndex - 1);
+        } else if (event.key === "Home") {
+            event.preventDefault();
+            focusChoicePickerItem(picker, 0);
+        } else if (event.key === "End") {
+            event.preventDefault();
+            focusChoicePickerItem(picker, items.length - 1);
+        } else if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setChoicePickerValue(picker, nativeOption.value, true);
+            closeChoicePicker(picker, true);
+        } else if (event.key === "Escape") {
+            event.preventDefault();
+            event.stopPropagation();
+            closeChoicePicker(picker, true);
+        } else if (event.key === "Tab") {
+            closeChoicePicker(picker, false);
+        }
+    });
+
+    return item;
+}
+
+function buildChoicePickerPanel(picker) {
+    var nativeSelect = picker.querySelector("[data-choice-native]");
+    var panel = picker.querySelector("[data-choice-panel]");
+    if (!nativeSelect || !panel) return;
+
+    var options = Array.from(nativeSelect.options).filter(function (option) {
+        return !!option.value && !option.disabled;
+    });
+    var groups = [];
+    var groupedOptions = {};
+
+    options.forEach(function (option) {
+        var groupName = option.dataset.group || "";
+        if (!Object.prototype.hasOwnProperty.call(groupedOptions, groupName)) {
+            groupedOptions[groupName] = [];
+            groups.push(groupName);
+        }
+        groupedOptions[groupName].push(option);
+    });
+
+    panel.replaceChildren();
+    groups.forEach(function (groupName) {
+        var optionsWrap = document.createElement("div");
+        optionsWrap.className = groupName ? "mat-choice-group-options" : "mat-choice-picker-options";
+        optionsWrap.setAttribute("role", "presentation");
+
+        groupedOptions[groupName].forEach(function (option) {
+            optionsWrap.appendChild(createChoicePickerItem(picker, option));
+        });
+
+        if (!groupName) {
+            panel.appendChild(optionsWrap);
+            return;
+        }
+
+        var group = document.createElement("div");
+        var groupTitle = document.createElement("div");
+        group.className = "mat-choice-group";
+        group.setAttribute("role", "group");
+        group.setAttribute("aria-label", groupName);
+        groupTitle.className = "mat-choice-group-title";
+        groupTitle.textContent = groupName;
+        group.appendChild(groupTitle);
+        group.appendChild(optionsWrap);
+        panel.appendChild(group);
+    });
+}
+
+function syncChoicePickerFromInput(picker) {
+    if (!picker) return;
+    var nativeSelect = picker.querySelector("[data-choice-native]");
+    var trigger = picker.querySelector("[data-choice-trigger]");
+    var label = picker.querySelector("[data-choice-label]");
+    var marker = picker.querySelector("[data-choice-marker]");
+    var placeholder = picker.dataset.placeholder || "请选择";
+    if (!nativeSelect) return;
+
+    var selectedOption = nativeSelect.options[nativeSelect.selectedIndex];
+    var hasValue = !!nativeSelect.value;
+    var selectedLabel = hasValue && selectedOption ? selectedOption.textContent : placeholder;
+    var accent = selectedOption && selectedOption.dataset.accent ? selectedOption.dataset.accent : "#2563eb";
+
+    picker.classList.toggle("is-empty", !hasValue);
+    if (label) label.textContent = selectedLabel;
+    if (marker) marker.style.setProperty("--mat-choice-accent", accent);
+    if (trigger) {
+        var formGroup = picker.closest(".mat-form-group");
+        var fieldLabel = formGroup ? formGroup.querySelector("label") : null;
+        trigger.setAttribute("aria-label", (fieldLabel ? fieldLabel.textContent : "选择") + "：" + selectedLabel);
+    }
+
+    getChoicePickerItems(picker).forEach(function (item) {
+        item.setAttribute("aria-selected", item.dataset.value === nativeSelect.value ? "true" : "false");
+    });
+}
+
+function syncChoicePickersFromInputs() {
+    choicePickerEls.forEach(syncChoicePickerFromInput);
+}
+
+function initChoicePickers() {
+    choicePickerEls.forEach(function (picker) {
+        var nativeSelect = picker.querySelector("[data-choice-native]");
+        var trigger = picker.querySelector("[data-choice-trigger]");
+        var panel = picker.querySelector("[data-choice-panel]");
+        if (!nativeSelect || !trigger || !panel) return;
+
+        buildChoicePickerPanel(picker);
+        picker.classList.add("is-enhanced");
+        panel.setAttribute("aria-hidden", "true");
+        nativeSelect.tabIndex = -1;
+        nativeSelect.setAttribute("aria-hidden", "true");
+        var formGroup = picker.closest(".mat-form-group");
+        var fieldLabel = formGroup ? formGroup.querySelector("label") : null;
+        if (fieldLabel && trigger.id) fieldLabel.htmlFor = trigger.id;
+
+        trigger.addEventListener("click", function () {
+            if (picker.classList.contains("open")) {
+                closeChoicePicker(picker, false);
+            } else {
+                openChoicePicker(picker, false);
+            }
+        });
+
+        trigger.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown" ||
+                event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+                event.preventDefault();
+                var focusMode = event.key === "ArrowUp" || event.key === "End" ? "last" : "selected";
+                openChoicePicker(picker, focusMode);
+            } else if (event.key === "Escape") {
+                closeChoicePicker(picker, false);
+            }
+        });
+
+        nativeSelect.addEventListener("change", function () {
+            syncChoicePickerFromInput(picker);
+        });
+
+        syncChoicePickerFromInput(picker);
+    });
+
+    document.addEventListener("click", function (event) {
+        choicePickerEls.forEach(function (picker) {
+            if (!picker.contains(event.target)) closeChoicePicker(picker, false);
+        });
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeChoicePickers();
+    });
+
+    var form = document.getElementById("generateForm");
+    if (form) {
+        form.addEventListener("reset", function () {
+            setTimeout(syncChoicePickersFromInputs, 0);
+        });
+    }
+}
+
 function initModelPicker() {
     if (!modelPickerEl || !modelPickerTriggerEl || !modelPickerMenuEl || !modelIdInputEl) {
         updateTemperatureControlForModel(modelIdInputEl ? modelIdInputEl.value : "");
@@ -985,6 +1283,7 @@ function initModelPicker() {
     modelPickerTriggerEl.addEventListener("click", function () {
         var willOpen = !modelPickerEl.classList.contains("open");
         if (willOpen) {
+            closeChoicePickers();
             modelPickerEl.classList.add("open");
             modelPickerTriggerEl.setAttribute("aria-expanded", "true");
         } else {
@@ -1179,6 +1478,7 @@ if (languageStyleSelectEl) {
     updateLanguageStyleCustomVisibility();
 }
 
+initChoicePickers();
 initModelPicker();
 
 // ---------------------------------------------------------------------------
@@ -1199,7 +1499,8 @@ function isRequiredFieldFilled(field) {
 function markFieldValidity(field, isValid) {
     if (!field) return;
     field.classList.toggle("is-invalid", !isValid);
-    var picker = field.id === "model_id" ? document.getElementById("modelPickerTrigger") : null;
+    var picker = getChoicePickerTrigger(field);
+    if (!picker && field.id === "model_id") picker = document.getElementById("modelPickerTrigger");
     if (picker) picker.classList.toggle("is-invalid", !isValid);
 }
 
@@ -1217,10 +1518,14 @@ function validateWizardStep(step, focusInvalid) {
 
     if (firstInvalid && focusInvalid) {
         setWizardStep(step);
-        var focusTarget = firstInvalid.id === "model_id" ? document.getElementById("modelPickerTrigger") : firstInvalid;
+        var focusTarget = getChoicePickerTrigger(firstInvalid);
+        if (!focusTarget && firstInvalid.id === "model_id") focusTarget = document.getElementById("modelPickerTrigger");
+        if (!focusTarget) focusTarget = firstInvalid;
         setTimeout(function () {
             if (focusTarget && typeof focusTarget.focus === "function") focusTarget.focus();
-            if (firstInvalid && firstInvalid.type !== "hidden" && typeof firstInvalid.reportValidity === "function") {
+            if (firstInvalid && firstInvalid.type !== "hidden" &&
+                !firstInvalid.classList.contains("mat-native-select") &&
+                typeof firstInvalid.reportValidity === "function") {
                 firstInvalid.reportValidity();
             }
         }, 30);
@@ -1253,6 +1558,8 @@ function setWizardStep(step) {
     var normalized = Math.max(1, Math.min(3, parseInt(step, 10) || 1));
     currentWizardStep = normalized;
     var meta = MAT_FORM_STEP_META[normalized] || MAT_FORM_STEP_META[1];
+    closeChoicePickers();
+    closeModelPicker();
 
     document.querySelectorAll(".mat-form-section[data-section]").forEach(function (section) {
         section.classList.toggle("is-active", section.dataset.section === String(normalized));
@@ -1497,6 +1804,7 @@ function applyMatInputRecord(record) {
     }
 
     clearManagedAttachments();
+    syncChoicePickersFromInputs();
     triggerFormProgressRefresh();
     refreshFieldCounts();
 }
@@ -1870,6 +2178,7 @@ function startNewPlan() {
     document.getElementById("generateForm").reset();
     clearManagedAttachments();
     updateLanguageStyleCustomVisibility();
+    syncChoicePickersFromInputs();
     syncModelPickerFromInput();
     refreshFieldCounts();
     setWizardStep(1);

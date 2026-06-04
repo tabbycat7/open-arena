@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}多智能体教学地图 - Open Arena{% endblock %}
+{% block title %}多智能体教学地图 - Paideia Hub{% endblock %}
 
 {% block head_extra %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/multi_agent_teaching.css') }}">
@@ -113,38 +113,70 @@
                         <div class="mat-form-grid mat-form-grid-2 mat-setting-grid">
                             <div class="mat-form-group mat-setting-card">
                                 <label for="subject">学科</label>
-                                <select id="subject" name="subject" required>
-                                    <option value="">请选择学科</option>
-                                    <option value="数学">数学</option>
-                                    <option value="语文">语文</option>
-                                    <option value="英语">英语</option>
-                                    <option value="物理">物理</option>
-                                    <option value="化学">化学</option>
-                                    <option value="生物">生物</option>
-                                    <option value="历史">历史</option>
-                                    <option value="地理">地理</option>
-                                    <option value="政治">政治</option>
-                                </select>
+                                <div class="mat-choice-picker mat-choice-picker--subject" data-choice-picker
+                                    data-placeholder="请选择学科">
+                                    <select id="subject" name="subject" class="mat-native-select" data-choice-native
+                                        required>
+                                        <option value="">请选择学科</option>
+                                        <option value="数学" data-accent="#3b82f6">数学</option>
+                                        <option value="语文" data-accent="#f43f5e">语文</option>
+                                        <option value="英语" data-accent="#8b5cf6">英语</option>
+                                        <option value="物理" data-accent="#06b6d4">物理</option>
+                                        <option value="化学" data-accent="#f97316">化学</option>
+                                        <option value="生物" data-accent="#22c55e">生物</option>
+                                        <option value="历史" data-accent="#a16207">历史</option>
+                                        <option value="地理" data-accent="#0d9488">地理</option>
+                                        <option value="政治" data-accent="#dc2626">政治</option>
+                                    </select>
+                                    <button type="button" class="mat-choice-picker-trigger" id="subjectPickerTrigger"
+                                        data-choice-trigger aria-haspopup="listbox" aria-expanded="false"
+                                        aria-controls="subjectPickerPanel">
+                                        <span class="mat-choice-picker-current">
+                                            <span class="mat-choice-picker-marker" data-choice-marker
+                                                aria-hidden="true"></span>
+                                            <span data-choice-label>请选择学科</span>
+                                        </span>
+                                        <span class="mat-choice-picker-caret" aria-hidden="true">&#9662;</span>
+                                    </button>
+                                    <div class="mat-choice-picker-panel" id="subjectPickerPanel" data-choice-panel
+                                        role="listbox" aria-label="学科选项"></div>
+                                </div>
                                 <div class="mat-field-hint">用于匹配学科术语和常见课堂活动。</div>
                             </div>
 
                             <div class="mat-form-group mat-setting-card">
                                 <label for="grade">年级</label>
-                                <select id="grade" name="grade" required>
-                                    <option value="">请选择年级</option>
-                                    <option value="一年级">一年级</option>
-                                    <option value="二年级">二年级</option>
-                                    <option value="三年级">三年级</option>
-                                    <option value="四年级">四年级</option>
-                                    <option value="五年级">五年级</option>
-                                    <option value="六年级">六年级</option>
-                                    <option value="七年级">七年级</option>
-                                    <option value="八年级">八年级</option>
-                                    <option value="九年级">九年级</option>
-                                    <option value="高一">高一</option>
-                                    <option value="高二">高二</option>
-                                    <option value="高三">高三</option>
-                                </select>
+                                <div class="mat-choice-picker mat-choice-picker--grade" data-choice-picker
+                                    data-placeholder="请选择年级">
+                                    <select id="grade" name="grade" class="mat-native-select" data-choice-native
+                                        required>
+                                        <option value="">请选择年级</option>
+                                        <option value="一年级" data-group="小学">一年级</option>
+                                        <option value="二年级" data-group="小学">二年级</option>
+                                        <option value="三年级" data-group="小学">三年级</option>
+                                        <option value="四年级" data-group="小学">四年级</option>
+                                        <option value="五年级" data-group="小学">五年级</option>
+                                        <option value="六年级" data-group="小学">六年级</option>
+                                        <option value="七年级" data-group="初中">七年级</option>
+                                        <option value="八年级" data-group="初中">八年级</option>
+                                        <option value="九年级" data-group="初中">九年级</option>
+                                        <option value="高一" data-group="高中">高一</option>
+                                        <option value="高二" data-group="高中">高二</option>
+                                        <option value="高三" data-group="高中">高三</option>
+                                    </select>
+                                    <button type="button" class="mat-choice-picker-trigger" id="gradePickerTrigger"
+                                        data-choice-trigger aria-haspopup="listbox" aria-expanded="false"
+                                        aria-controls="gradePickerPanel">
+                                        <span class="mat-choice-picker-current">
+                                            <span class="mat-choice-picker-marker" data-choice-marker
+                                                aria-hidden="true"></span>
+                                            <span data-choice-label>请选择年级</span>
+                                        </span>
+                                        <span class="mat-choice-picker-caret" aria-hidden="true">&#9662;</span>
+                                    </button>
+                                    <div class="mat-choice-picker-panel" id="gradePickerPanel" data-choice-panel
+                                        role="listbox" aria-label="年级选项"></div>
+                                </div>
                                 <div class="mat-field-hint">用于控制问题难度、认知层级和表达方式。</div>
                             </div>
 
@@ -242,13 +274,34 @@
 
                             <div class="mat-form-group mat-field-span-2 mat-setting-card">
                                 <label for="language_style">语言风格</label>
-                                <select id="language_style" name="language_style">
-                                    <option value="严谨学术">严谨学术</option>
-                                    <option value="生动活泼">生动活泼</option>
-                                    <option value="通俗易懂">通俗易懂</option>
-                                    <option value="启发引导">启发引导</option>
-                                    <option value="自定义">自定义</option>
-                                </select>
+                                <div class="mat-choice-picker mat-choice-picker--language" data-choice-picker
+                                    data-placeholder="请选择语言风格">
+                                    <select id="language_style" name="language_style" class="mat-native-select"
+                                        data-choice-native>
+                                        <option value="严谨学术" data-accent="#2563eb"
+                                            data-description="概念准确、结构清晰，适合正式教学设计。">严谨学术</option>
+                                        <option value="生动活泼" data-accent="#f97316"
+                                            data-description="节奏轻快、富有画面感，增强课堂参与。">生动活泼</option>
+                                        <option value="通俗易懂" data-accent="#16a34a"
+                                            data-description="使用日常表达，降低理解门槛。">通俗易懂</option>
+                                        <option value="启发引导" data-accent="#8b5cf6"
+                                            data-description="通过追问和提示，引导学生主动思考。">启发引导</option>
+                                        <option value="自定义" data-accent="#64748b"
+                                            data-description="填写更符合本节课需要的表达风格。">自定义</option>
+                                    </select>
+                                    <button type="button" class="mat-choice-picker-trigger"
+                                        id="languageStylePickerTrigger" data-choice-trigger aria-haspopup="listbox"
+                                        aria-expanded="false" aria-controls="languageStylePickerPanel">
+                                        <span class="mat-choice-picker-current">
+                                            <span class="mat-choice-picker-marker" data-choice-marker
+                                                aria-hidden="true"></span>
+                                            <span data-choice-label>严谨学术</span>
+                                        </span>
+                                        <span class="mat-choice-picker-caret" aria-hidden="true">&#9662;</span>
+                                    </button>
+                                    <div class="mat-choice-picker-panel" id="languageStylePickerPanel" data-choice-panel
+                                        role="listbox" aria-label="语言风格选项"></div>
+                                </div>
                                 <div class="mat-field-hint">影响生成问题和课堂引导语的表达气质。</div>
                             </div>
 

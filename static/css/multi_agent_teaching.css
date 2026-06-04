@@ -423,6 +423,261 @@
     color: #1d4ed8;
 }
 
+/* ---- Enhanced choice panels (subject / grade / language style) ---- */
+.mat-choice-picker {
+    position: relative;
+}
+
+.mat-choice-picker-trigger,
+.mat-choice-picker-panel {
+    display: none;
+}
+
+.mat-choice-picker.is-enhanced .mat-native-select {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    pointer-events: none;
+}
+
+.mat-choice-picker.is-enhanced .mat-choice-picker-trigger {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 1px solid #d7e0ec;
+    background: #fbfdff;
+    color: var(--el-text-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    font-family: "Space Grotesk", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    text-align: left;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+.mat-choice-picker-trigger:hover {
+    border-color: #b9c7d8;
+    background: #ffffff;
+}
+
+.mat-choice-picker.open .mat-choice-picker-trigger,
+.mat-choice-picker-trigger:focus-visible {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.mat-choice-picker-trigger.is-invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.mat-choice-picker-current {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 650;
+}
+
+.mat-choice-picker-marker,
+.mat-choice-option-marker {
+    --mat-choice-accent: #2563eb;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    border: 2px solid #ffffff;
+    background: var(--mat-choice-accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--mat-choice-accent) 68%, #334155);
+}
+
+.mat-choice-picker.is-empty .mat-choice-picker-marker {
+    background: #ffffff;
+    border-color: #d7e0ec;
+    box-shadow: 0 0 0 1px #94a3b8;
+}
+
+.mat-choice-picker-caret {
+    flex: 0 0 auto;
+    color: #5f7f9f;
+    font-size: 12px;
+    transition: transform 0.18s ease;
+}
+
+.mat-choice-picker.open .mat-choice-picker-caret {
+    transform: rotate(180deg);
+}
+
+.mat-choice-picker.is-enhanced.open .mat-choice-picker-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 60;
+    max-height: 360px;
+    padding: 10px;
+    border: 1px solid #d9e2ee;
+    background: #ffffff;
+    box-shadow: 0 22px 42px -20px rgba(15, 23, 42, 0.48);
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    animation: matChoicePanelIn 0.16s ease-out;
+}
+
+.mat-choice-picker.is-enhanced.open.open-up .mat-choice-picker-panel {
+    top: auto;
+    bottom: calc(100% + 8px);
+    transform-origin: bottom center;
+}
+
+@keyframes matChoicePanelIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mat-choice-picker-options,
+.mat-choice-group-options {
+    display: grid;
+    gap: 7px;
+}
+
+.mat-choice-picker--subject .mat-choice-picker-options,
+.mat-choice-picker--grade .mat-choice-group-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mat-choice-picker--language .mat-choice-picker-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mat-choice-group + .mat-choice-group {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px dashed #d7e0ec;
+}
+
+.mat-choice-group-title {
+    margin: 0 0 7px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.mat-choice-option {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 9px 10px;
+    border: 1px solid #dbe5ee;
+    background: #fbfdff;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.14s, box-shadow 0.14s;
+}
+
+.mat-choice-option:hover,
+.mat-choice-option:focus-visible {
+    outline: none;
+    border-color: #93c5fd;
+    background: #eff6ff;
+    color: #1d4ed8;
+    box-shadow: 0 7px 16px -14px rgba(37, 99, 235, 0.9);
+    transform: translateY(-1px);
+}
+
+.mat-choice-option[aria-selected="true"] {
+    border-color: #60a5fa;
+    background: #dbeafe;
+    color: #1d4ed8;
+    box-shadow: inset 3px 0 0 #2563eb;
+}
+
+.mat-choice-option-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.mat-choice-option-title {
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.mat-choice-option-description {
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.mat-choice-option-check {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    border: 1px solid #bfdbfe;
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 16px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.mat-choice-option[aria-selected="true"] .mat-choice-option-check {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.mat-choice-picker--language .mat-choice-option {
+    align-items: flex-start;
+    min-height: 68px;
+}
+
+.mat-choice-picker--language .mat-choice-option-marker {
+    margin-top: 2px;
+}
+
+.mat-setting-card:has(.mat-choice-picker.open) {
+    z-index: 50;
+}
+
+.mat-form-section:has(.mat-choice-picker.open) {
+    position: relative;
+    z-index: 20;
+    overflow: visible;
+}
+
+.mat-input-panel:has(.mat-choice-picker.open) {
+    overflow: visible;
+}
+
 #teaching_goals {
     min-height: 120px;
 }
@@ -4046,6 +4301,19 @@
 
     .mat-form-grid-2 {
         grid-template-columns: 1fr;
+    }
+
+    .mat-choice-picker--subject .mat-choice-picker-options,
+    .mat-choice-picker--grade .mat-choice-group-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mat-choice-picker--language .mat-choice-picker-options {
+        grid-template-columns: 1fr;
+    }
+
+    .mat-choice-picker.is-enhanced.open .mat-choice-picker-panel {
+        max-height: min(340px, 58vh);
     }
 
     .mat-field-span-2 {

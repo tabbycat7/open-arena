@@ -604,6 +604,105 @@
     image-rendering: auto;
 }
 
+/* 学科 / 年级 / 语言风格选择面板 */
+.mat-choice-picker-trigger {
+    border: 2px solid var(--px-ink) !important;
+    box-shadow: 3px 3px 0 var(--px-ink);
+    background: #fff !important;
+    color: var(--px-ink);
+}
+
+.mat-choice-picker-trigger:hover {
+    background: var(--px-sky) !important;
+}
+
+.mat-choice-picker.open .mat-choice-picker-trigger,
+.mat-choice-picker-trigger:focus-visible {
+    border-color: var(--px-blue-dark) !important;
+    box-shadow: 3px 3px 0 var(--px-blue-dark);
+}
+
+.mat-choice-picker-trigger.is-invalid {
+    border-color: var(--px-red) !important;
+    box-shadow: 3px 3px 0 var(--px-red);
+}
+
+.mat-choice-picker-marker,
+.mat-choice-option-marker {
+    border: 2px solid var(--px-ink);
+    box-shadow: none;
+}
+
+.mat-choice-picker.is-empty .mat-choice-picker-marker {
+    border: 2px dashed var(--px-ink-soft);
+    background: #fff;
+    box-shadow: none;
+}
+
+.mat-choice-picker-caret {
+    color: var(--px-blue-dark);
+}
+
+.mat-choice-picker.is-enhanced.open .mat-choice-picker-panel {
+    padding: 12px;
+    border: 3px solid var(--px-ink) !important;
+    box-shadow: 5px 5px 0 var(--px-ink);
+    background:
+        linear-gradient(90deg, var(--px-blue) 0 12px, var(--px-amber) 12px 24px, var(--px-pink) 24px 36px) top left / 36px 4px repeat-x,
+        #fff;
+}
+
+.mat-choice-group + .mat-choice-group {
+    border-top: 2px dashed #b8c3d8;
+}
+
+.mat-choice-group-title {
+    display: inline-block;
+    padding: 2px 6px;
+    border: 2px solid var(--px-ink);
+    background: var(--px-cream);
+    color: var(--px-ink);
+    letter-spacing: 0.04em;
+}
+
+.mat-choice-option {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+    color: var(--px-ink);
+    box-shadow: 2px 2px 0 #b8c3d8;
+}
+
+.mat-choice-option:hover,
+.mat-choice-option:focus-visible {
+    border-color: var(--px-ink);
+    background: var(--px-cream);
+    color: var(--px-ink);
+    box-shadow: 3px 3px 0 var(--px-blue);
+    transform: translate(-1px, -1px);
+}
+
+.mat-choice-option[aria-selected="true"] {
+    border-color: var(--px-ink);
+    background: var(--px-sky);
+    color: var(--px-ink);
+    box-shadow: 3px 3px 0 var(--px-blue);
+}
+
+.mat-choice-option-description {
+    color: var(--px-ink-soft);
+}
+
+.mat-choice-option-check {
+    border: 2px solid var(--px-ink);
+    background: #fff;
+}
+
+.mat-choice-option[aria-selected="true"] .mat-choice-option-check {
+    border-color: var(--px-ink);
+    background: var(--px-blue);
+    color: #fff;
+}
+
 /* Temperature 滑块 */
 .mat-temperature-slider {
     -webkit-appearance: none;
