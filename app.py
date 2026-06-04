@@ -1723,6 +1723,79 @@ def _mat_get_agent_logs(task_id: str) -> List[dict]:
     return rows
 
 
+def _mat_extract_knowledge_point_map_from_analysis(analysis_result: Optional[dict]) -> dict:
+    """Build kp_id -> display metadata from the learning-analysis result."""
+    if not isinstance(analysis_result, dict):
+        return {}
+    graph = analysis_result.get("knowledge_graph")
+    if not isinstance(graph, dict):
+        return {}
+    nodes = graph.get("nodes")
+    if not isinstance(nodes, list):
+        return {}
+
+    kp_map = {}
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        kp_id = str(node.get("kp_id") or node.get("id") or "").strip()
+        if not kp_id:
+            continue
+        name = str(node.get("name") or "").strip()
+        description = str(node.get("description") or "").strip()
+        kp_map[kp_id] = {
+            "name": name,
+            "description": description,
+            "difficulty": node.get("difficulty", ""),
+            "is_key_point": bool(node.get("is_key_point")),
+            "is_difficult_point": bool(node.get("is_difficult_point")),
+        }
+    return kp_map
+
+
+def _mat_extract_knowledge_point_map_from_log_payload(payload: Optional[dict]) -> dict:
+    if not isinstance(payload, dict):
+        return {}
+    candidates = [
+        payload.get("analysis_result"),
+    ]
+    nested_output = payload.get("output")
+    if isinstance(nested_output, dict):
+        candidates.append(nested_output.get("analysis_result"))
+    output_preview = payload.get("output_preview")
+    if isinstance(output_preview, dict):
+        candidates.append(output_preview.get("analysis_result"))
+    for candidate in candidates:
+        kp_map = _mat_extract_knowledge_point_map_from_analysis(candidate)
+        if kp_map:
+            return kp_map
+    return {}
+
+
+def _mat_extract_knowledge_point_map_from_task(task: Optional[dict]) -> dict:
+    if not isinstance(task, dict):
+        return {}
+    for item in task.get("progress", []) or []:
+        kp_map = _mat_extract_knowledge_point_map_from_log_payload(item if isinstance(item, dict) else {})
+        if kp_map:
+            return kp_map
+    return {}
+
+
+def _mat_get_history_knowledge_point_map(task_id: str) -> dict:
+    try:
+        logs = _mat_get_agent_logs(task_id)
+    except Exception:
+        app.logger.exception("[教学地图] 读取知识点映射日志失败")
+        return {}
+    for log in logs:
+        payload = log.get("output")
+        kp_map = _mat_extract_knowledge_point_map_from_log_payload(payload if isinstance(payload, dict) else {})
+        if kp_map:
+            return kp_map
+    return {}
+
+
 def _mat_get_history(limit: int = 50, user_id: Optional[int] = None) -> List[dict]:
     conn = _mat_get_conn()
     with conn.cursor() as cur:
@@ -2487,10 +2560,10 @@ from nav_algorithm import dispatch_next, get_first_main_node  # noqa: E402
 def _mat_build_dispatch_meta(participation, accuracy, next_node, completed=False):
     scenario_key = f"{participation}_{accuracy}"
     scenario_details = {
-        "high_high": ("纵向认知进阶", "继续进阶"),
-        "high_low": ("修复认知障碍", "先修复"),
-        "low_high": ("变式激活参与", "换变式激活"),
-        "low_low": ("支架修复并激活", "支架+激活"),
+        "high_high": ("纵向认知进阶", "纵向认知进阶"),
+        "high_low": ("修复认知障碍", "修复认知障碍"),
+        "low_high": ("激活参与兴趣", "激活参与兴趣"),
+        "low_low": ("降低认知门槛", "降低认知门槛"),
     }
     type_labels = {
         "main": "主干问题",
@@ -2551,15 +2624,18 @@ def mat_nav_load(task_id):
         if task["status"] != "done":
             return jsonify({"error": "Task not completed yet"}), 400
         teaching_map = task.get("result", {})
+        knowledge_point_map = _mat_extract_knowledge_point_map_from_task(task)
     else:
         record = _mat_get_history_detail(task_id)
         if not record or not _mat_history_row_owned_by(record, session_uid):
             return jsonify({"error": "Not found"}), 404
         teaching_map = record.get("result", {})
+        knowledge_point_map = _mat_get_history_knowledge_point_map(task_id)
 
     first_node = get_first_main_node(teaching_map)
     return jsonify({
         "teaching_map": teaching_map,
+        "knowledge_point_map": knowledge_point_map,
         "first_node_id": first_node["id"] if first_node else None,
     })
 

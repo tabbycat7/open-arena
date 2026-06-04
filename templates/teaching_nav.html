@@ -213,12 +213,69 @@
     </div>
 </div>
 
+<div class="nav-review-overlay" id="navReviewOverlay" style="display:none;">
+    <div class="nav-review-backdrop"></div>
+    <section class="nav-review-shell" aria-label="教学导航复盘">
+        <header class="nav-review-head">
+            <div>
+                <span class="nav-review-eyebrow">课堂导航复盘</span>
+                <h2>学情数据仪表盘</h2>
+            </div>
+            <div class="nav-review-actions">
+                <button class="nav-review-action-btn" id="navReviewExportBtn" type="button">导出 Markdown</button>
+                <button class="nav-review-action-btn" id="navReviewRestartBtn" type="button">重新开始</button>
+                <button class="nav-review-close" id="navReviewCloseBtn" type="button" aria-label="关闭复盘">&times;</button>
+            </div>
+        </header>
+        <div class="nav-review-body">
+            <section class="nav-review-summary" id="navReviewSummary"></section>
+            <section class="nav-review-grid">
+                <article class="nav-review-card">
+                    <h3>节点类型覆盖</h3>
+                    <div class="nav-review-chart" id="navReviewTypeChart"></div>
+                </article>
+                <article class="nav-review-card">
+                    <h3>节点停留时长</h3>
+                    <div class="nav-review-chart" id="navReviewTimeChart"></div>
+                </article>
+                <article class="nav-review-card">
+                    <h3>学情信号变化</h3>
+                    <div class="nav-review-chart" id="navReviewSignalChart"></div>
+                </article>
+                <article class="nav-review-card">
+                    <h3>策略分布</h3>
+                    <div class="nav-review-chart" id="navReviewStrategyChart"></div>
+                </article>
+                <article class="nav-review-card nav-review-card-wide">
+                    <h3>知识点覆盖</h3>
+                    <div class="nav-review-chart" id="navReviewKnowledgeChart"></div>
+                </article>
+                <article class="nav-review-card nav-review-diagnosis-card">
+                    <h3>复盘诊断</h3>
+                    <div class="nav-review-diagnosis" id="navReviewDiagnosis"></div>
+                </article>
+            </section>
+            <section class="nav-review-lower">
+                <article class="nav-review-card">
+                    <h3>调度路径</h3>
+                    <div class="nav-review-path" id="navReviewPath"></div>
+                </article>
+                <article class="nav-review-card">
+                    <h3>教师便签</h3>
+                    <div class="nav-review-notes" id="navReviewNotes"></div>
+                </article>
+            </section>
+        </div>
+    </section>
+</div>
+
 <script>
     window.NAV_TASK_ID = "{{ task_id }}";
 </script>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <script src="{{ url_for('static', filename='js/mat_nav.js') }}"></script>

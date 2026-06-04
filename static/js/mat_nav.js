@@ -24,34 +24,35 @@
     var TYPE_LABELS = { main: "主干问题", variant: "变式问题", scaffold: "支架问题" };
     var SCENARIO_LABELS = {
         "high_high": "纵向认知进阶",
-        "high_low": "保热修障",
-        "low_high": "激活参与",
-        "low_low": "修障激活",
+        "high_low": "修复认知障碍",
+        "low_high": "激活参与兴趣",
+        "low_low": "降低认知门槛",
     };
     var SCENARIO_DETAILS = {
         "high_high": {
             label: "纵向认知进阶",
-            action: "继续进阶",
+            action: "纵向认知进阶",
             hint: "学生参与和准确率都较好，适合推进到下一组更高阶问题。",
         },
         "high_low": {
             label: "修复认知障碍",
-            action: "先修复",
+            action: "修复认知障碍",
             hint: "学生愿意投入但出现误差，优先用支架题定位并修复关键断点。",
         },
         "low_high": {
-            label: "变式激活参与",
-            action: "换变式激活",
+            label: "激活参与兴趣",
+            action: "激活参与兴趣",
             hint: "学生能答对但参与不足，适合用变式或新情境提高卷入度。",
         },
         "low_low": {
-            label: "支架修复并激活",
-            action: "支架+激活",
+            label: "降低认知门槛",
+            action: "降低认知门槛",
             hint: "参与和准确率都偏低，先降低入口门槛，再逐步唤回思考。",
         },
     };
 
     var teachingMap = null;
+    var knowledgePointMap = {};
     var currentNodeId = null;
     var currentNode = null;
     var visited = [];
@@ -66,6 +67,8 @@
     var strategyHistory = [];
     var currentNodeEnteredAt = null;
     var lastDispatchMeta = null;
+    var reviewCharts = [];
+    var reviewWasTiming = false;
 
     var pageEl = document.getElementById("navPage");
     var loadingEl = document.getElementById("navLoading");
@@ -120,6 +123,14 @@
     var lightboxImgEl = document.getElementById("navLightboxImg");
     var lightboxTextEl = document.getElementById("navLightboxText");
     var lightboxCloseEl = document.getElementById("navLightboxClose");
+    var reviewOverlayEl = document.getElementById("navReviewOverlay");
+    var reviewSummaryEl = document.getElementById("navReviewSummary");
+    var reviewDiagnosisEl = document.getElementById("navReviewDiagnosis");
+    var reviewPathEl = document.getElementById("navReviewPath");
+    var reviewNotesEl = document.getElementById("navReviewNotes");
+    var reviewCloseBtnEl = document.getElementById("navReviewCloseBtn");
+    var reviewExportBtnEl = document.getElementById("navReviewExportBtn");
+    var reviewRestartBtnEl = document.getElementById("navReviewRestartBtn");
 
     function init() {
         if (!TASK_ID) {
@@ -135,7 +146,14 @@
         if (dispatchBtnEl) dispatchBtnEl.addEventListener("click", handleDispatch);
         if (backBtnEl) backBtnEl.addEventListener("click", handleGoBack);
         if (restartBtnEl) restartBtnEl.addEventListener("click", handleRestart);
-        if (reviewBtnEl) reviewBtnEl.addEventListener("click", downloadReviewMarkdown);
+        if (reviewBtnEl) reviewBtnEl.addEventListener("click", openReviewDashboard);
+        if (reviewCloseBtnEl) reviewCloseBtnEl.addEventListener("click", closeReviewDashboard);
+        if (reviewExportBtnEl) reviewExportBtnEl.addEventListener("click", downloadReviewMarkdown);
+        if (reviewRestartBtnEl) reviewRestartBtnEl.addEventListener("click", function () {
+            reviewWasTiming = false;
+            closeReviewDashboard();
+            handleRestart();
+        });
         if (miniMapToggleEl) miniMapToggleEl.addEventListener("click", toggleMiniMap);
         if (miniMapZoomInEl) miniMapZoomInEl.addEventListener("click", function () { zoomMiniMapByStep(MINI_MAP_ZOOM_STEP); });
         if (miniMapZoomOutEl) miniMapZoomOutEl.addEventListener("click", function () { zoomMiniMapByStep(-MINI_MAP_ZOOM_STEP); });
@@ -151,7 +169,10 @@
         setupLightbox();
         setupMiniMapInteraction();
 
-        window.addEventListener("resize", fitVisualAidFrame);
+        window.addEventListener("resize", function () {
+            fitVisualAidFrame();
+            resizeReviewCharts();
+        });
         if (typeof ResizeObserver !== "undefined" && visualAidEl) {
             new ResizeObserver(fitVisualAidFrame).observe(visualAidEl);
         }
@@ -389,7 +410,10 @@
             if (backdrop) backdrop.addEventListener("click", closeLightbox);
         }
         document.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") closeLightbox();
+            if (event.key === "Escape") {
+                closeLightbox();
+                closeReviewDashboard();
+            }
         });
     }
 
@@ -405,6 +429,7 @@
                     return;
                 }
                 teachingMap = data.teaching_map;
+                knowledgePointMap = data.knowledge_point_map || {};
                 if (!data.first_node_id || !teachingMap || !teachingMap.nodes || !teachingMap.nodes.length) {
                     showError("教学地图为空或格式错误");
                     return;
@@ -1085,6 +1110,396 @@
         return participation + "_" + accuracy;
     }
 
+    function openReviewDashboard() {
+        reviewWasTiming = !!currentNodeEnteredAt;
+        if (reviewWasTiming) finishCurrentNodeVisit();
+        if (reviewOverlayEl) reviewOverlayEl.style.display = "flex";
+        renderReviewDashboard(buildReviewData());
+        requestAnimationFrame(resizeReviewCharts);
+    }
+
+    function closeReviewDashboard() {
+        if (!reviewOverlayEl || reviewOverlayEl.style.display === "none") return;
+        reviewOverlayEl.style.display = "none";
+        if (reviewWasTiming && !navigationCompleted) {
+            beginNodeVisit(currentNodeId, "review_resume");
+        }
+        reviewWasTiming = false;
+    }
+
+    function buildReviewData() {
+        var uniqueVisited = getUniqueVisitedNodeIds();
+        var totalNodes = teachingMap && teachingMap.nodes ? teachingMap.nodes.length : 0;
+        var visitedNodes = uniqueVisited.map(function (id) { return findNode(id) || { id: id }; });
+        var typeCounts = { main: 0, variant: 0, scaffold: 0 };
+        var nodeDurations = [];
+        var notes = [];
+        var totalSeconds = 0;
+
+        visitedNodes.forEach(function (node) {
+            var qType = node.question_type || "main";
+            typeCounts[qType] = (typeCounts[qType] || 0) + 1;
+            var seconds = nodeTimeStats[node.id] || 0;
+            totalSeconds += seconds;
+            nodeDurations.push({
+                id: node.id,
+                label: node.id || "",
+                type: qType,
+                seconds: seconds,
+            });
+            var note = localStorage.getItem(noteKey(node.id)) || "";
+            if (note.trim()) {
+                notes.push({ node_id: node.id, type: qType, text: note.trim() });
+            }
+        });
+
+        var knowledgeItems = collectReviewKnowledge(visitedNodes);
+        var strategyCounts = {};
+        strategyHistory.forEach(function (item) {
+            var key = item.scenario_key || (item.participation + "_" + item.accuracy);
+            if (!key) return;
+            strategyCounts[key] = (strategyCounts[key] || 0) + 1;
+        });
+
+        return {
+            generated_at: new Date(),
+            total_nodes: totalNodes,
+            visited_ids: uniqueVisited,
+            visited_nodes: visitedNodes,
+            coverage_rate: totalNodes ? uniqueVisited.length / totalNodes : 0,
+            type_counts: typeCounts,
+            node_durations: nodeDurations,
+            total_seconds: totalSeconds,
+            notes: notes,
+            knowledge_items: knowledgeItems,
+            strategy_counts: strategyCounts,
+            signal_points: strategyHistory.slice(),
+            path_events: buildPathEvents(),
+        };
+    }
+
+    function getUniqueVisitedNodeIds() {
+        var unique = [];
+        visited.forEach(function (id) {
+            if (id && unique.indexOf(id) < 0) unique.push(id);
+        });
+        return unique;
+    }
+
+    function buildPathEvents() {
+        return navEvents.filter(function (event) {
+            return event.type === "dispatch_result" || event.type === "completed" || event.type === "back";
+        });
+    }
+
+    function collectReviewKnowledge(nodes) {
+        var byId = {};
+        var fallbackIndex = 1;
+        nodes.forEach(function (node) {
+            (node && node.knowledge_points || []).forEach(function (kp) {
+                if (!kp) return;
+                if (!byId[kp]) {
+                    byId[kp] = {
+                        id: kp,
+                        label: getKnowledgeDisplayName(kp, fallbackIndex),
+                        count: 0,
+                        nodes: [],
+                    };
+                    if (isUnnamedKnowledgeLabel(byId[kp].label)) fallbackIndex += 1;
+                }
+                byId[kp].count += 1;
+                if (node.id && byId[kp].nodes.indexOf(node.id) < 0) byId[kp].nodes.push(node.id);
+            });
+        });
+        return Object.keys(byId).map(function (kp) { return byId[kp]; })
+            .sort(function (a, b) { return b.count - a.count; });
+    }
+
+    function getKnowledgeDisplayName(kpId, fallbackIndex) {
+        var meta = knowledgePointMap && knowledgePointMap[kpId];
+        if (meta) {
+            var name = sanitizeKnowledgeLabel(meta.name || meta.description || "");
+            if (name) return name;
+        }
+        return "未命名知识点 " + fallbackIndex;
+    }
+
+    function sanitizeKnowledgeLabel(text) {
+        var value = String(text || "").replace(/\s+/g, " ").trim();
+        if (!value || /^KP\d+$/i.test(value)) return "";
+        return clipText(value, 18);
+    }
+
+    function isUnnamedKnowledgeLabel(label) {
+        return /^未命名知识点/.test(label || "");
+    }
+
+    function renderReviewDashboard(data) {
+        disposeReviewCharts();
+        renderReviewSummary(data);
+        renderReviewDiagnosis(data);
+        renderReviewPath(data);
+        renderReviewNotes(data);
+        renderReviewCharts(data);
+    }
+
+    function renderReviewSummary(data) {
+        if (!reviewSummaryEl) return;
+        var items = [
+            { label: "覆盖节点", value: data.visited_ids.length + " / " + data.total_nodes },
+            { label: "覆盖率", value: Math.round(data.coverage_rate * 100) + "%" },
+            { label: "总停留", value: formatDuration(data.total_seconds) },
+            { label: "策略切换", value: Math.max(0, strategyHistory.length - 1) + " 次" },
+            { label: "教师便签", value: data.notes.length + " 条" },
+        ];
+        reviewSummaryEl.innerHTML = items.map(function (item) {
+            return '<article class="nav-review-stat"><span>' + escapeHtml(item.label) + '</span><strong>' +
+                escapeHtml(item.value) + '</strong></article>';
+        }).join("");
+    }
+
+    function renderReviewDiagnosis(data) {
+        if (!reviewDiagnosisEl) return;
+        var messages = [];
+        var lowLow = data.strategy_counts.low_low || 0;
+        var highLow = data.strategy_counts.high_low || 0;
+        var lowHigh = data.strategy_counts.low_high || 0;
+        var highHigh = data.strategy_counts.high_high || 0;
+        if (lowLow > 0) messages.push("多次进入支架修复状态，课堂中可能存在需要拆解的小台阶。");
+        if (highLow > 0) messages.push("参与度较高但准确率偏低时，适合优先定位关键误差。");
+        if (lowHigh > 0) messages.push("准确率较高但参与偏低时，变式和新情境能帮助重新激活讨论。");
+        if (highHigh >= Math.max(lowLow, highLow, lowHigh) && highHigh > 0) messages.push("多数时段适合继续进阶，整体推进较顺畅。");
+        if (!messages.length) messages.push("本次导航数据较少，可在后续课堂中记录更多信号与便签。");
+
+        reviewDiagnosisEl.innerHTML = messages.map(function (msg) {
+            return '<p>' + escapeHtml(msg) + '</p>';
+        }).join("");
+    }
+
+    function renderReviewPath(data) {
+        if (!reviewPathEl) return;
+        if (!data.visited_nodes.length) {
+            reviewPathEl.innerHTML = '<p class="nav-review-empty">暂无访问路径。</p>';
+            return;
+        }
+        reviewPathEl.innerHTML = data.visited_nodes.map(function (node, index) {
+            var type = node.question_type || "main";
+            var reason = findDispatchReasonForNode(node.id, data.path_events);
+            return '<article class="nav-review-path-item type-' + escapeAttr(type) + '">' +
+                '<span class="nav-review-path-index">' + (index + 1) + '</span>' +
+                '<div><strong>' + escapeHtml(node.id || "") + ' ' + escapeHtml(TYPE_LABELS[type] || type) + '</strong>' +
+                '<p>' + escapeHtml(clipText(node.content || "暂无题目内容", 42)) + '</p>' +
+                (reason ? '<small>' + escapeHtml(reason) + '</small>' : '') + '</div>' +
+                '<b>' + escapeHtml(formatDuration(nodeTimeStats[node.id] || 0)) + '</b>' +
+                '</article>';
+        }).join("");
+    }
+
+    function findDispatchReasonForNode(nodeId, events) {
+        for (var i = 0; i < events.length; i++) {
+            var detail = events[i].detail || {};
+            if (detail.to_node_id === nodeId && detail.dispatch_meta && detail.dispatch_meta.reason_text) {
+                return detail.dispatch_meta.reason_text;
+            }
+        }
+        return "";
+    }
+
+    function renderReviewNotes(data) {
+        if (!reviewNotesEl) return;
+        if (!data.notes.length) {
+            reviewNotesEl.innerHTML = '<p class="nav-review-empty">暂无教师便签。</p>';
+            return;
+        }
+        reviewNotesEl.innerHTML = data.notes.map(function (note) {
+            return '<article class="nav-review-note type-' + escapeAttr(note.type) + '">' +
+                '<strong>' + escapeHtml(note.node_id) + ' ' + escapeHtml(TYPE_LABELS[note.type] || note.type) + '</strong>' +
+                '<p>' + escapeHtml(note.text) + '</p></article>';
+        }).join("");
+    }
+
+    function renderReviewCharts(data) {
+        renderTypeChart(data);
+        renderTimeChart(data);
+        renderSignalChart(data);
+        renderStrategyChart(data);
+        renderKnowledgeChart(data);
+    }
+
+    function initReviewChart(id) {
+        var el = document.getElementById(id);
+        if (!el) return null;
+        if (typeof echarts === "undefined" || !echarts || typeof echarts.init !== "function") {
+            el.innerHTML = '<p class="nav-review-empty">图表组件未加载。</p>';
+            return null;
+        }
+        var chart = echarts.init(el);
+        reviewCharts.push(chart);
+        return chart;
+    }
+
+    function renderTypeChart(data) {
+        var chart = initReviewChart("navReviewTypeChart");
+        if (!chart) return;
+        var rows = ["main", "variant", "scaffold"].map(function (type) {
+            return { name: TYPE_LABELS[type], value: data.type_counts[type] || 0 };
+        });
+        var total = rows.reduce(function (sum, row) { return sum + row.value; }, 0);
+        var countByName = {};
+        rows.forEach(function (row) {
+            countByName[row.name] = row.value;
+        });
+        chart.setOption({
+            color: ["#3a9bff", "#4fc06a", "#ffb33c"],
+            tooltip: {
+                trigger: "item",
+                confine: true,
+                triggerOn: "click",
+                backgroundColor: "#fff",
+                borderColor: "#34384f",
+                borderWidth: 2,
+                textStyle: { color: "#172033", fontWeight: 700 },
+                extraCssText: "box-shadow:3px 3px 0 rgba(52,56,79,.28);",
+                formatter: function (params) {
+                    return escapeHtml(params.name) + "<br/>" + params.value + " / " + total;
+                },
+            },
+            legend: {
+                orient: "vertical",
+                right: 4,
+                top: "center",
+                itemWidth: 12,
+                itemHeight: 12,
+                itemGap: 10,
+                textStyle: { color: "#34384f", fontWeight: 700, fontSize: 12 },
+                formatter: function (name) {
+                    return name + "  " + (countByName[name] || 0);
+                },
+            },
+            graphic: [{
+                type: "text",
+                left: "31%",
+                top: "47%",
+                silent: true,
+                style: {
+                    text: String(total),
+                    fill: "#172033",
+                    font: "900 22px sans-serif",
+                    textAlign: "center",
+                    textVerticalAlign: "middle",
+                },
+            }],
+            series: [{
+                type: "pie",
+                radius: ["43%", "67%"],
+                center: ["36%", "52%"],
+                avoidLabelOverlap: true,
+                stillShowZeroSum: false,
+                data: rows,
+                label: { show: false },
+                labelLine: { show: false },
+            }],
+        });
+    }
+
+    function renderTimeChart(data) {
+        var chart = initReviewChart("navReviewTimeChart");
+        if (!chart) return;
+        var rows = data.node_durations.slice(0, 12);
+        chart.setOption({
+            color: ["#3a9bff"],
+            grid: { left: 36, right: 14, top: 18, bottom: 36 },
+            tooltip: { trigger: "axis", formatter: "{b}<br/>停留：{c} 秒" },
+            xAxis: { type: "category", data: rows.map(function (r) { return r.label; }), axisLabel: { color: "#34384f" } },
+            yAxis: { type: "value", minInterval: 1, axisLabel: { color: "#34384f" } },
+            series: [{ type: "bar", data: rows.map(function (r) { return r.seconds; }), barMaxWidth: 26 }],
+        });
+    }
+
+    function renderSignalChart(data) {
+        var chart = initReviewChart("navReviewSignalChart");
+        if (!chart) return;
+        var points = data.signal_points.length ? data.signal_points : [{ participation: "high", accuracy: "high", scenario_label: "起始" }];
+        chart.setOption({
+            color: ["#4fc06a", "#3a9bff"],
+            grid: { left: 36, right: 16, top: 28, bottom: 32 },
+            legend: { top: 0, data: ["参与度", "准确率"] },
+            tooltip: {
+                trigger: "axis",
+                formatter: function (params) {
+                    var idx = params[0].dataIndex;
+                    var item = points[idx] || {};
+                    return escapeHtml(item.scenario_label || "") + "<br/>参与度：" + labelBinary(item.participation) +
+                        "<br/>准确率：" + labelBinary(item.accuracy);
+                },
+            },
+            xAxis: { type: "category", data: points.map(function (_, i) { return String(i + 1); }) },
+            yAxis: {
+                type: "value",
+                min: 0,
+                max: 1,
+                interval: 1,
+                axisLabel: { formatter: function (v) { return v === 1 ? "高" : "低"; } },
+            },
+            series: [
+                { name: "参与度", type: "line", step: "end", data: points.map(function (p) { return p.participation === "high" ? 1 : 0; }), symbolSize: 8 },
+                { name: "准确率", type: "line", step: "end", data: points.map(function (p) { return p.accuracy === "high" ? 1 : 0; }), symbolSize: 8 },
+            ],
+        });
+    }
+
+    function renderStrategyChart(data) {
+        var chart = initReviewChart("navReviewStrategyChart");
+        if (!chart) return;
+        var keys = ["high_high", "high_low", "low_high", "low_low"];
+        chart.setOption({
+            color: ["#93c5fd"],
+            grid: { left: 42, right: 16, top: 18, bottom: 42 },
+            tooltip: { trigger: "axis" },
+            xAxis: { type: "category", data: keys.map(function (k) { return (SCENARIO_DETAILS[k] && SCENARIO_DETAILS[k].action) || k; }), axisLabel: { interval: 0, rotate: 18 } },
+            yAxis: { type: "value", minInterval: 1 },
+            series: [{ type: "bar", data: keys.map(function (k) { return data.strategy_counts[k] || 0; }), barMaxWidth: 28 }],
+        });
+    }
+
+    function renderKnowledgeChart(data) {
+        var chart = initReviewChart("navReviewKnowledgeChart");
+        if (!chart) return;
+        var rows = data.knowledge_items.slice(0, 8);
+        if (!rows.length) {
+            chart.getDom().innerHTML = '<p class="nav-review-empty">暂无知识点覆盖数据。</p>';
+            return;
+        }
+        chart.setOption({
+            color: ["#4fc06a"],
+            grid: { left: 90, right: 20, top: 18, bottom: 24 },
+            tooltip: {
+                trigger: "axis",
+                formatter: function (params) {
+                    var idx = params[0].dataIndex;
+                    var row = rows[idx];
+                    return escapeHtml(row.label) + "<br/>覆盖节点：" + row.nodes.map(escapeHtml).join("、");
+                },
+            },
+            xAxis: { type: "value", minInterval: 1 },
+            yAxis: { type: "category", data: rows.map(function (r) { return r.label; }), axisLabel: { color: "#34384f" } },
+            series: [{ type: "bar", data: rows.map(function (r) { return r.count; }), barMaxWidth: 22 }],
+        });
+    }
+
+    function disposeReviewCharts() {
+        reviewCharts.forEach(function (chart) {
+            if (chart && typeof chart.dispose === "function") chart.dispose();
+        });
+        reviewCharts = [];
+    }
+
+    function resizeReviewCharts() {
+        reviewCharts.forEach(function (chart) {
+            if (chart && typeof chart.resize === "function") chart.resize();
+        });
+    }
+
     function downloadReviewMarkdown() {
         var wasTiming = !!currentNodeEnteredAt;
         if (wasTiming) finishCurrentNodeVisit();
@@ -1125,7 +1540,7 @@
             lines.push("");
             lines.push("### " + id + " " + (TYPE_LABELS[node.question_type || "main"] || ""));
             lines.push("- 停留时间：" + formatDuration(nodeTimeStats[id] || 0));
-            lines.push("- 知识点：" + ((node.knowledge_points || []).join("、") || "未记录"));
+            lines.push("- 知识点：" + (formatKnowledgePoints(node.knowledge_points || []) || "未记录"));
             lines.push("- 问题：" + sanitizeMarkdownLine(node.content || ""));
             if (note) lines.push("- 教师便签：" + sanitizeMarkdownLine(note));
         });
@@ -1155,10 +1570,17 @@
         nodeIds.forEach(function (id) {
             var node = findNode(id);
             (node && node.knowledge_points || []).forEach(function (kp) {
-                if (kp) seen[kp] = true;
+                if (kp) seen[kp] = getKnowledgeDisplayName(kp, Object.keys(seen).length + 1);
             });
         });
-        return Object.keys(seen);
+        return Object.keys(seen).map(function (kp) { return seen[kp]; });
+    }
+
+    function formatKnowledgePoints(points) {
+        if (!points || !points.length) return "";
+        return points.map(function (kp, index) {
+            return getKnowledgeDisplayName(kp, index + 1);
+        }).join("、");
     }
 
     function openLightbox(html, src, text) {
@@ -1241,6 +1663,13 @@
 
     function sanitizeMarkdownLine(text) {
         return String(text || "").replace(/\s+/g, " ").trim();
+    }
+
+    function clipText(text, limit) {
+        var value = String(text || "").replace(/\s+/g, " ").trim();
+        var max = Math.max(1, Number(limit) || 20);
+        if (value.length <= max) return value;
+        return value.slice(0, max) + "...";
     }
 
     function labelBinary(value) {
