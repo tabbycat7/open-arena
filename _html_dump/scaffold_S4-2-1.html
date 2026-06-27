@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图形化编程：多条件嵌套可视化教学</title>
+    <style>
+        /* 全局样式与大屏适配 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background-color: #eef2f7;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例课堂投屏容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid #4a90e2;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 15px 24px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 可视化交互主区域 */
+        .workspace {
+            flex: 1;
+            position: relative;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+
+        /* SVG 绘图区 */
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 控制与信息面板 */
+        .control-panel {
+            background-color: #ffffff;
+            border-top: 2px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #4a90e2;
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-text {
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* 交互按钮样式 */
+        .btn {
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 动画特效辅助类 */
+        .pulse {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0% { stroke-width: 2px; opacity: 0.6; }
+            50% { stroke-width: 6px; opacity: 1; }
+            100% { stroke-width: 2px; opacity: 0.6; }
+        }
+
+        /* 咔哒声效视觉化 */
+        .snap-effect {
+            position: absolute;
+            color: #ff5722;
+            font-size: 28px;
+            font-weight: 900;
+            font-style: italic;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff;
+        }
+        .snap-effect.active {
+            opacity: 1;
+            transform: scale(1.3) rotate(-15deg);
+        }
+
+        /* 烟花/粒子特效 */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>探索“与 (and)”积木的嵌套魔法</h1>
+        <p>知识点：多条件并列组合 | 适合五年级信息技术课堂演示</p>
+    </div>
+
+    <!-- 交互主区 -->
+    <div class="workspace" id="workspace">
+        <!-- 咔哒特效文字 -->
+        <div class="snap-effect" id="snap-text">咔哒！</div>
+
+        <svg viewBox="0 0 800 420">
+            <defs>
+                <!-- 积木阴影 -->
+                <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.15"/>
+                </filter>
+                <!-- 积木渐变色 -->
+                <linearGradient id="blockGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#59C059" />
+                    <stop offset="100%" stop-color="#46A046" />
+                </linearGradient>
+                <!-- 插槽渐变色 -->
+                <linearGradient id="slotGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2e7a2e" />
+                    <stop offset="100%" stop-color="#389438" />
+                </linearGradient>
+            </defs>
+
+            <!-- 背景网格线，增加科技感 -->
+            <g stroke="#f1f5f9" stroke-width="1">
+                <path d="M 0,50 L 800,50 M 0,100 L 800,100 M 0,150 L 800,150 M 0,200 L 800,200 M 0,250 L 800,250 M 0,300 L 800,300 M 0,350 L 800,350" />
+                <path d="M 100,0 L 100,420 M 200,0 L 200,420 M 300,0 L 300,420 M 400,0 L 400,420 M 500,0 L 500,420 M 600,0 L 600,420 M 700,0 L 700,420" />
+            </g>
+
+            <!-- 积木 A (外部积木) -->
+            <g id="group-a" transform="translate(120, 100)" filter="url(#shadow)">
+                <!-- 左半部分（含左插槽和“与”字） -->
+                <path d="M 30 0 L 120 0 L 120 60 L 30 60 L 0 30 Z" fill="url(#blockGrad)" />
+                <!-- 伸缩中间区域 -->
+                <rect id="block-a-middle" x="120" y="0" width="100" height="60" fill="url(#blockGrad)" style="transition: width 1s cubic-bezier(0.25, 1, 0.5, 1);" />
+                
+                <!-- 右半部分（含右插槽，会向右平移） -->
+                <g id="block-a-right-group" transform="translate(220, 0)" style="transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);">
+                    <path d="M 0 0 L 30 0 L 60 30 L 30 60 L 0 60 Z" fill="url(#blockGrad)" />
+                    <!-- 右插槽 A2 -->
+                    <path id="slot-a2" d="M 12 0 L 48 0 L 60 18 L 48 36 L 12 36 L 0 18 Z" fill="url(#slotGrad)" stroke="#2e7a2e" stroke-width="1.5" transform="translate(-30, 12)" style="transition: opacity 0.5s;" />
+                </g>
+
+                <!-- 左插槽 A1 -->
+                <path id="slot-a1" d="M 12 0 L 48 0 L 60 18 L 48 36 L 12 36 L 0 18 Z" fill="url(#slotGrad)" stroke="#2e7a2e" stroke-width="1.5" transform="translate(40, 12)" />
+                <!-- 文本 “与” -->
+                <text x="140" y="32" fill="white" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle">与</text>
+            </g>
+
+            <!-- 积木 B (内部嵌套积木) -->
+            <g id="group-b" transform="translate(420, 240)" filter="url(#shadow)" style="transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);">
+                <!-- 积木主体 -->
+                <path d="M 30 0 L 220 0 L 250 30 L 220 60 L 30 60 L 0 30 Z" fill="url(#blockGrad)" />
+                <!-- 插槽 B1 -->
+                <path id="slot-b1" d="M 12 0 L 48 0 L 60 18 L 48 36 L 12 36 L 0 18 Z" fill="url(#slotGrad)" stroke="#2e7a2e" stroke-width="1.5" transform="translate(35, 12)" />
+                <!-- 文本 “与” -->
+                <text x="125" y="32" fill="white" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle">与</text>
+                <!-- 插槽 B2 -->
+                <path id="slot-b2" d="M 12 0 L 48 0 L 60 18 L 48 36 L 12 36 L 0 18 Z" fill="url(#slotGrad)" stroke="#2e7a2e" stroke-width="1.5" transform="translate(155, 12)" />
+            </g>
+
+            <!-- 动态高亮与引导线 (初始隐藏) -->
+            <g id="highlights" style="opacity: 0; transition: opacity 0.5s;">
+                <!-- 最终形成的三个可用插槽高亮 -->
+                <!-- 插槽 1 -->
+                <circle cx="190" cy="130" r="24" fill="none" stroke="#FFD700" stroke-width="3" class="pulse" />
+                <text x="190" y="85" fill="#e67e22" font-size="14" font-weight="bold" text-anchor="middle">条件 ①</text>
+                <path d="M 190,95 L 190,115" stroke="#e67e22" stroke-width="1.5" stroke-dasharray="3,3" />
+
+                <!-- 插槽 2 -->
+                <circle cx="378" cy="130" r="18" fill="none" stroke="#FFD700" stroke-width="3" class="pulse" />
+                <text x="378" y="85" fill="#e67e22" font-size="14" font-weight="bold" text-anchor="middle">条件 ②</text>
+                <path d="M 378,95 L 378,118" stroke="#e67e22" stroke-width="1.5" stroke-dasharray="3,3" />
+
+                <!-- 插槽 3 -->
+                <circle cx="468" cy="130" r="18" fill="none" stroke="#FFD700" stroke-width="3" class="pulse" />
+                <text x="468" y="85" fill="#e67e22" font-size="14" font-weight="bold" text-anchor="middle">条件 ③</text>
+                <path d="M 468,95 L 468,118" stroke="#e67e22" stroke-width="1.5" stroke-dasharray="3,3" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="info-box">
+            <p class="info-text" id="info-text">
+                💡 <b>观察：</b>画面上有两个绿色的“与”积木。每个积木都只有左、右两个空位。我们怎么用它们组合出3个空位呢？
+            </p>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-secondary" id="btn-observe">🔍 观察空位</button>
+            <button class="btn btn-primary" id="btn-nest">✨ 尝试嵌套组合</button>
+            <button class="btn btn-secondary" id="btn-reset" disabled>🔄 重置</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const btnObserve = document.getElementById('btn-observe');
+    const btnNest = document.getElementById('btn-nest');
+    const btnReset = document.getElementById('btn-reset');
+    const infoText = document.getElementById('info-text');
+    const workspace = document.getElementById('workspace');
+    const snapText = document.getElementById('snap-text');
+
+    // SVG 动画元素
+    const blockAMiddle = document.getElementById('block-a-middle');
+    const blockARightGroup = document.getElementById('block-a-right-group');
+    const slotA2 = document.getElementById('slot-a2');
+    const groupB = document.getElementById('group-b');
+    const highlights = document.getElementById('highlights');
+
+    // 初始状态记录
+    const initBTransform = "translate(420, 240)";
+
+    // 1. 观察按钮事件
+    btnObserve.addEventListener('click', () => {
+        infoText.innerHTML = "👉 <b>思考：</b>每个“与”积木只能连接2个条件。如果把其中一个积木，塞进另一个积木的空位里，会发生什么？点击<b>【尝试嵌套组合】</b>看看吧！";
+        // 闪烁提示一下积木B，吸引注意力
+        groupB.style.transform = "translate(420, 220)";
+        setTimeout(() => {
+            groupB.style.transform = initBTransform;
+        }, 200);
+    });
+
+    // 2. 嵌套组合按钮事件
+    btnNest.addEventListener('click', () => {
+        // 禁用相关按钮
+        btnNest.disabled = true;
+        btnObserve.disabled = true;
+        btnReset.disabled = true;
+
+        infoText.innerHTML = "🚀 <b>正在嵌套：</b>看！右边的积木正在缩小，并向左边积木的右空位飞去...";
+
+        // 第一阶段：左边积木拉伸，右侧组向右平移
+        blockAMiddle.style.width = "280px";
+        blockARightGroup.style.transform = "translate(400px, 0)";
+        
+        // 隐藏原本的右插槽 A2
+        slotA2.style.opacity = "0";
+
+        // 第二阶段：右边积木B移动并缩放，完美嵌入到拉伸出来的空间中
+        // 目标位置计算：X = 120 (A起点) + 180 (嵌入偏移) = 300, Y = 100 (A起点) + 7.5 (垂直居中偏移) = 107.5
+        // 缩放比例 0.75
+        setTimeout(() => {
+            groupB.style.transform = "translate(300px, 107.5px) scale(0.75)";
+        }, 100);
+
+        // 第三阶段：动画完成，触发“咔哒”特效和烟花
+        setTimeout(() => {
+            // 显示“咔哒！”文字
+            snapText.style.left = "410px";
+            snapText.style.top = "110px";
+            snapText.classList.add('active');
+
+            // 释放粒子烟花
+            createFireworks(440, 130);
+
+            // 显示最终的3个条件高亮
+            highlights.style.opacity = "1";
+
+            infoText.innerHTML = "🎉 <b>成功了！</b>我们把一个积木嵌套进了另一个积木中。现在，原来的2个空位变成了<b>3个全新的空位</b>！我们可以同时填入3个余数条件了！";
+            
+            btnReset.disabled = false;
+        }, 1100);
+    });
+
+    // 3. 重置按钮事件
+    btnReset.addEventListener('click', () => {
+        // 恢复初始状态
+        blockAMiddle.style.width = "100px";
+        blockARightGroup.style.transform = "translate(220px, 0)";
+        slotA2.style.opacity = "1";
+        groupB.style.transform = initBTransform;
+        highlights.style.opacity = "0";
+        snapText.classList.remove('active');
+
+        infoText.innerHTML = "💡 <b>观察：</b>画面上有两个绿色的“与”积木。每个积木都只有左、右两个空位。我们怎么用它们组合出3个空位呢？";
+
+        btnNest.disabled = false;
+        btnObserve.disabled = false;
+        btnReset.disabled = true;
+    });
+
+    // 简易粒子烟花效果
+    function createFireworks(x, y) {
+        const colors = ['#FFD700', '#FF5722', '#2ecc71', '#3498db', '#9b59b6'];
+        const particleCount = 24;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            workspace.appendChild(particle);
+
+            // 随机角度和距离
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 40 + Math.random() * 60;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            // 随机颜色
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            particle.style.backgroundColor = color;
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.setProperty('--tx', `${tx}px`);
+            particle.style.setProperty('--ty', `${ty}px`);
+
+            // 启动动画
+            particle.style.animation = 'explode 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards';
+
+            // 动画结束后移除
+            setTimeout(() => {
+                particle.remove();
+            }, 800);
+        }
+    }
+</script>
+
+</body>
+</html>

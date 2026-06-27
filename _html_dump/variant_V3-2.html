@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <title>逻辑集合滤镜：且(AND) vs 或(OR)</title>
+  <style>
+    /* 全局重置与大屏适配 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #f0f4f8;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例教学投屏容器 */
+    .screen-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 4px solid #3b82f6;
+    }
+
+    /* 顶部导航/标题 */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #ffffff;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .header .badge {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    /* 主交互区域 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 左侧控制面板 */
+    .control-panel {
+      width: 35%;
+      background-color: #f8fafc;
+      border-right: 2px solid #e2e8f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 16px;
+      color: #64748b;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    /* 模式切换按钮 */
+    .mode-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .btn-mode {
+      padding: 14px 20px;
+      border-radius: 10px;
+      border: 2px solid #cbd5e1;
+      background-color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-mode:hover {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    .btn-mode.active-and {
+      background-color: #1d4ed8;
+      color: #ffffff;
+      border-color: #1d4ed8;
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+    }
+    .btn-mode.active-or {
+      background-color: #ea580c;
+      color: #ffffff;
+      border-color: #ea580c;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+    }
+    .btn-mode .symbol {
+      font-size: 22px;
+    }
+
+    /* 概念说明卡片 */
+    .concept-card {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 16px;
+      border-left: 5px solid #3b82f6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      flex: 1;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .concept-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .concept-desc {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* 触发按钮 */
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+    .btn-action:hover {
+      background-color: #059669;
+    }
+
+    /* 右侧可视化画布 */
+    .visualization-panel {
+      width: 65%;
+      position: relative;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+
+    /* SVG 样式 */
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 集合圆圈基础样式 */
+    .set-circle {
+      transition: all 0.5s ease;
+      fill-opacity: 0.12;
+      stroke-width: 3;
+    }
+    .set-circle.active {
+      fill-opacity: 0.25;
+      stroke-width: 5;
+    }
+
+    /* 集合A: mod 3 = 2 */
+    .set-a {
+      fill: #ef4444;
+      stroke: #ef4444;
+    }
+    /* 集合B: mod 5 = 4 */
+    .set-b {
+      fill: #3b82f6;
+      stroke: #3b82f6;
+    }
+    /* 集合C: mod 7 = 6 */
+    .set-c {
+      fill: #10b981;
+      stroke: #10b981;
+    }
+
+    /* 交集高亮区域 */
+    .intersection-glow {
+      fill: #eab308;
+      fill-opacity: 0;
+      stroke: #eab308;
+      stroke-width: 0;
+      transition: all 0.5s ease;
+    }
+    .intersection-glow.active {
+      fill-opacity: 0.6;
+      stroke-width: 3;
+      filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.8));
+    }
+
+    /* 文本标签 */
+    .set-label {
+      font-size: 14px;
+      font-weight: bold;
+      fill: #334155;
+    }
+    .set-math {
+      font-size: 12px;
+      fill: #64748b;
+    }
+
+    /* 底部图例 */
+    .legend {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="screen-container">
+    <!-- 顶部标题栏 -->
+    <div class="header">
+      <h1>逻辑集合滤镜：探究“且”与“或”</h1>
+      <span class="badge">五年级信息技术 · 算法与控制</span>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+      <!-- 左侧控制面板 -->
+      <div class="control-panel">
+        <div>
+          <div class="section-title">第一步：选择逻辑运算符</div>
+          <div class="mode-selector">
+            <button id="btn-and" class="btn-mode active-and">
+              <span>且 (AND) 模式</span>
+              <span class="symbol">∩</span>
+            </button>
+            <button id="btn-or" class="btn-mode">
+              <span>或 (OR) 模式</span>
+              <span class="symbol">∪</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 动态概念卡片 -->
+        <div class="concept-card" id="concept-card">
+          <div class="concept-title" id="concept-title">且 (AND) 模式</div>
+          <div class="concept-desc" id="concept-desc">
+            <strong>数学模型：交集 (Intersection)</strong><br>
+            必须<strong>同时满足</strong>三个余数条件！<br>
+            筛选标准极其严格，只有极少数完美的数字能够通过滤镜。
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">第二步：观察筛选结果</div>
+          <button id="btn-filter" class="btn-action">⚡ 启动逻辑滤镜</button>
+        </div>
+      </div>
+
+      <!-- 右侧可视化画布 -->
+      <div class="visualization-panel">
+        <svg viewBox="0 0 500 450" id="svg-canvas">
+          <!-- 滤镜光晕定义 -->
+          <defs>
+            <radialGradient id="gold-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fffbeb" />
+              <stop offset="100%" stop-color="#fef08a" />
+            </radialGradient>
+          </defs>
+
+          <!-- 集合 A 圆圈 -->
+          <circle id="circle-a" class="set-circle set-a active" cx="250" cy="160" r="100" />
+          <!-- 集合 B 圆圈 -->
+          <circle id="circle-b" class="set-circle set-b active" cx="170" cy="260" r="100" />
+          <!-- 集合 C 圆圈 -->
+          <circle id="circle-c" class="set-circle set-c active" cx="330" cy="260" r="100" />
+
+          <!-- 三圆交集高亮区域 (近似用一个小圆表示，位于中心重叠处) -->
+          <circle id="intersection" class="intersection-glow active" cx="250" cy="230" r="32" />
+
+          <!-- 集合标签 -->
+          <g transform="translate(250, 45)" text-anchor="middle">
+            <text class="set-label">集合 A</text>
+            <text class="set-math" dy="16">x mod 3 = 2</text>
+          </g>
+          <g transform="translate(80, 310)" text-anchor="middle">
+            <text class="set-label">集合 B</text>
+            <text class="set-math" dy="16">x mod 5 = 4</text>
+          </g>
+          <g transform="translate(420, 310)" text-anchor="middle">
+            <text class="set-label">集合 C</text>
+            <text class="set-math" dy="16">x mod 7 = 6</text>
+          </g>
+
+          <!-- 动态数字渲染容器 -->
+          <g id="numbers-layer"></g>
+        </svg>
+
+        <!-- 图例 -->
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #eab308; border: 1px solid #ca8a04;"></div>
+            <span>符合全部条件的数 (如 104, 209)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #cbd5e1; border: 1px solid #94a3b8;"></div>
+            <span>只符合部分条件的数</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    let currentMode = 'AND'; // 'AND' 或 'OR'
+    let animationFrameId = null;
+    let activeBalls = [];
+
+    // DOM 元素
+    const btnAnd = document.getElementById('btn-and');
+    const btnOr = document.getElementById('btn-or');
+    const btnFilter = document.getElementById('btn-filter');
+    const conceptTitle = document.getElementById('concept-title');
+    const conceptDesc = document.getElementById('concept-desc');
+    const conceptCard = document.getElementById('concept-card');
+    const circleA = document.getElementById('circle-a');
+    const circleB = document.getElementById('circle-b');
+    const circleC = document.getElementById('circle-c');
+    const intersectionGlow = document.getElementById('intersection');
+    const numbersLayer = document.getElementById('numbers-layer');
+
+    // 集合圆心与半径定义
+    const circles = {
+      A: { cx: 250, cy: 160, r: 100 },
+      B: { cx: 170, cy: 260, r: 100 },
+      C: { cx: 330, cy: 260, r: 100 }
+    };
+
+    // 模式切换事件
+    btnAnd.addEventListener('click', () => {
+      if (currentMode === 'AND') return;
+      currentMode = 'AND';
+      updateUI();
+    });
+
+    btnOr.addEventListener('click', () => {
+      if (currentMode === 'OR') return;
+      currentMode = 'OR';
+      updateUI();
+    });
+
+    btnFilter.addEventListener('click', () => {
+      startFilteringAnimation();
+    });
+
+    // 更新UI样式与文字
+    function updateUI() {
+      // 清空当前数字
+      clearNumbers();
+
+      if (currentMode === 'AND') {
+        btnAnd.classList.add('active-and');
+        btnOr.classList.remove('active-or');
+        conceptCard.style.borderLeftColor = '#1d4ed8';
+        conceptTitle.textContent = '且 (AND) 模式';
+        conceptTitle.style.color = '#1d4ed8';
+        conceptDesc.innerHTML = `
+          <strong>数学模型：交集 (Intersection)</strong><br>
+          必须<strong>同时满足</strong>三个余数条件！<br>
+          筛选标准极其严格，只有极少数完美的数字能够通过滤镜。
+        `;
+        // 视觉高亮：突出中心交集
+        circleA.classList.remove('active');
+        circleB.classList.remove('active');
+        circleC.classList.remove('active');
+        intersectionGlow.classList.add('active');
+      } else {
+        btnOr.classList.add('active-or');
+        btnAnd.classList.remove('active-and');
+        conceptCard.style.borderLeftColor = '#ea580c';
+        conceptTitle.textContent = '或 (OR) 模式';
+        conceptTitle.style.color = '#ea580c';
+        conceptDesc.innerHTML = `
+          <strong>数学模型：并集 (Union)</strong><br>
+          满足<strong>任意一个</strong>余数条件即可！<br>
+          筛选标准非常宽松，大量不合规的“杂质数字”都会混进来。
+        `;
+        // 视觉高亮：三个圆全部亮起
+        circleA.classList.add('active');
+        circleB.classList.add('active');
+        circleC.classList.add('active');
+        intersectionGlow.classList.remove('active');
+      }
+    }
+
+    // 清理数字动画
+    function clearNumbers() {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      numbersLayer.innerHTML = '';
+      activeBalls = [];
+    }
+
+    // 产生圆内随机点
+    function getRandomPointInCircle(cx, cy, r, padding = 20) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.sqrt(Math.random()) * (r - padding);
+      return {
+        x: cx + radius * Math.cos(angle),
+        y: cy + radius * Math.sin(angle)
+      };
+    }
+
+    // 产生交集内随机点 (靠近中心点)
+    function getRandomPointInIntersection() {
+      // 三圆交集中心大约在 (250, 230)
+      const cx = 250;
+      const cy = 230;
+      const r = 22; // 限制在极小范围内
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.sqrt(Math.random()) * r;
+      return {
+        x: cx + radius * Math.cos(angle),
+        y: cy + radius * Math.sin(angle)
+      };
+    }
+
+    // 弹球类定义
+    class NumberBall {
+      constructor(value, targetX, targetY, isGold) {
+        this.value = value;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.isGold = isGold;
+        
+        // 初始位置在上方，模拟喷涌而出的效果
+        this.x = 250 + (Math.random() * 60 - 30);
+        this.y = -20;
+        
+        // 物理运动参数
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = Math.random() * 2 + 2;
+        this.friction = 0.82;
+        this.spring = 0.06;
+        
+        // 创建 DOM 元素
+        this.element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('r', '14');
+        if (this.isGold) {
+          circle.setAttribute('fill', 'url(#gold-glow)');
+          circle.setAttribute('stroke', '#ca8a04');
+          circle.setAttribute('stroke-width', '2');
+          circle.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(234,179,8,0.5))');
+        } else {
+          circle.setAttribute('fill', '#f1f5f9');
+          circle.setAttribute('stroke', '#94a3b8');
+          circle.setAttribute('stroke-width', '1.5');
+        }
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.textContent = this.value;
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dy', '4');
+        text.setAttribute('font-size', '10px');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('fill', this.isGold ? '#854d0e' : '#475569');
+        
+        this.element.appendChild(circle);
+        this.element.appendChild(text);
+        numbersLayer.appendChild(this.element);
+      }
+
+      update() {
+        // 弹簧拉力算法，使数字球平滑落入目标区域并产生弹性抖动
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        
+        this.vx += dx * this.spring;
+        this.vy += dy * this.spring;
+        
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        this.element.setAttribute('transform', `translate(${this.x}, ${this.y})`);
+      }
+    }
+
+    // 启动筛选动画
+    function startFilteringAnimation() {
+      clearNumbers();
+
+      if (currentMode === 'AND') {
+        // 且模式：只生成符合全部条件的黄金数字
+        const goldNumbers = [104, 209, 314];
+        goldNumbers.forEach(num => {
+          const target = getRandomPointInIntersection();
+          activeBalls.push(new NumberBall(num, target.x, target.y, true));
+        });
+      } else {
+        // 或模式：生成大量只符合单一或部分条件的普通数字，以及极少数黄金数字
+        const goldNumbers = [104, 209];
+        const setANumbers = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]; // mod 3 = 2
+        const setBNumbers = [4, 9, 14, 19, 24, 29, 34, 39, 44, 49];       // mod 5 = 4
+        const setCNumbers = [6, 13, 20, 27, 34, 41, 48, 55, 62];           // mod 7 = 6
+
+        // 放入黄金数字
+        goldNumbers.forEach(num => {
+          const target = getRandomPointInIntersection();
+          activeBalls.push(new NumberBall(num, target.x, target.y, true));
+        });
+
+        // 放入集合A的数字
+        setANumbers.forEach(num => {
+          const target = getRandomPointInCircle(circles.A.cx, circles.A.cy, circles.A.r, 25);
+          activeBalls.push(new NumberBall(num, target.x, target.y, false));
+        });
+
+        // 放入集合B的数字
+        setBNumbers.forEach(num => {
+          const target = getRandomPointInCircle(circles.B.cx, circles.B.cy, circles.B.r, 25);
+          activeBalls.push(new NumberBall(num, target.x, target.y, false));
+        });
+
+        // 放入集合C的数字
+        setCNumbers.forEach(num => {
+          const target = getRandomPointInCircle(circles.C.cx, circles.C.cy, circles.C.r, 25);
+          activeBalls.push(new NumberBall(num, target.x, target.y, false));
+        });
+      }
+
+      // 启动动画循环
+      function animate() {
+        activeBalls.forEach(ball => ball.update());
+        animationFrameId = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // 初始化默认状态
+    updateUI();
+  </script>
+</body>
+</html>

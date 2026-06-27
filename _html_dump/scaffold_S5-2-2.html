@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法优化教学可视化：寻找规律，天生免检！</title>
+    <style>
+        :root {
+            --primary-color: #4c97ff;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --dark-bg: #2c3e50;
+            --light-bg: #f8f9fa;
+            --scratch-orange: #ff8c1a;
+            --scratch-yellow: #ffab19;
+            --scratch-green: #59c059;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #eef2f7;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 4:3 宽高自适应容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 1024px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--dark-bg);
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* 主对比区域 */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .scheme-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scheme-card.active-b {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
+        }
+
+        .scheme-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .scheme-a-title { background-color: #7f8c8d; }
+        .scheme-b-title { background-color: #d4af37; background-image: linear-gradient(135deg, #d4af37, #f1c40f); }
+
+        /* Scratch 积木样式 */
+        .code-window {
+            background-color: #1e1e24;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 13px;
+            min-height: 160px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .scratch-block {
+            color: white;
+            padding: 5px 10px;
+            margin: 3px 0;
+            border-radius: 4px;
+            display: inline-block;
+            width: 95%;
+            box-sizing: border-box;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .block-control { background-color: var(--scratch-yellow); border-left: 4px solid #cf8b10; }
+        .block-variable { background-color: var(--scratch-orange); border-left: 4px solid #cf6f10; }
+        .block-operator { background-color: var(--scratch-green); border-left: 4px solid #3fa33f; }
+        .block-motion { background-color: var(--primary-color); border-left: 4px solid #3373cc; }
+        .block-indent { margin-left: 15px; width: calc(95% - 15px); }
+        .block-indent-2 { margin-left: 30px; width: calc(95% - 30px); }
+
+        .highlight-block {
+            animation: pulse-highlight 0.4s ease infinite alternate;
+            box-shadow: 0 0 12px #fff;
+        }
+
+        @keyframes pulse-highlight {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
+        }
+
+        /* 动画沙盒区域 */
+        .animation-sandbox {
+            height: 220px;
+            background-color: #111;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #2c3e50;
+        }
+
+        /* 传送带背景 */
+        .conveyor-belt {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: repeating-linear-gradient(90deg, #555, #555 10px, #333 10px, #333 20px);
+            animation: scroll-belt 2s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .running .conveyor-belt {
+            animation-play-state: running;
+        }
+
+        @keyframes scroll-belt {
+            from { background-position: 0 0; }
+            to { background-position: 40px 0; }
+        }
+
+        /* 滤网/闸门 */
+        .filter-gate {
+            position: absolute;
+            left: 50%;
+            top: 15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .gate-a {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            border: 2px solid #bdc3c7;
+        }
+
+        .gate-b {
+            background: linear-gradient(135deg, #d4af37, #f1c40f);
+            border: 2px solid #fff;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.6);
+            animation: gold-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes gold-glow {
+            from { box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+            to { box-shadow: 0 0 25px rgba(241, 196, 15, 0.9); }
+        }
+
+        /* 收集箱 */
+        .bin {
+            position: absolute;
+            bottom: 10px;
+            width: 70px;
+            height: 50px;
+            border-radius: 4px 4px 8px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .bin-success {
+            right: 15px;
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 2px dashed var(--success-color);
+            color: var(--success-color);
+        }
+
+        .bin-fail {
+            left: 15px;
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 2px dashed var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* 动态数字节点 */
+        .num-node {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 5;
+            left: -40px;
+            top: 28px;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* 火箭特效（方案B专属） */
+        .rocket-node::after {
+            content: '🚀';
+            position: absolute;
+            font-size: 16px;
+            left: -14px;
+            top: 8px;
+            transform: rotate(-45deg);
+        }
+
+        /* 统计面板 */
+        .stats-panel {
+            background-color: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 5px;
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .stat-val {
+            font-weight: bold;
+            color: var(--dark-bg);
+        }
+
+        .stat-val.highlight {
+            color: var(--success-color);
+        }
+
+        /* 控制栏 */
+        .control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--dark-bg);
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            gap: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #3373cc; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .speed-slider {
+            width: 100px;
+            cursor: pointer;
+        }
+
+        /* 课堂探究问题区 */
+        .quiz-section {
+            background-color: #e8f4fd;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .quiz-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1px solid #b3d7ff;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background-color: #f0f7ff;
+            border-color: var(--primary-color);
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .option-btn.wrong {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .feedback-text {
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            min-height: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>算法优化对比：寻找规律，天生免检！</h1>
+        <p>探究：起点设为 1007，步长设为 7，如何让程序运行效率实现火箭般飞跃？</p>
+    </div>
+
+    <!-- 主对比区域 -->
+    <div class="comparison-grid" id="mainGrid">
+        <!-- 方案 A -->
+        <div class="scheme-card" id="cardA">
+            <div class="scheme-title scheme-a-title">方案 A：常规逐个检查 (步长=1)</div>
+            
+            <!-- Scratch 积木 -->
+            <div class="code-window">
+                <div class="scratch-block block-variable" id="blockA-init">将 [数字] 设为 [1000]</div>
+                <div class="scratch-block block-control">重复执行</div>
+                <div class="scratch-block block-control block-indent" id="blockA-if">如果 &lt;([数字] 除以 [7] 的余数) = [6]&gt; 那么</div>
+                <div class="scratch-block block-motion block-indent-2" id="blockA-add">加入候选列表 (符合条件)</div>
+                <div class="scratch-block block-variable block-indent" id="blockA-step">将 [数字] 增加 [1]</div>
+            </div>
+
+            <!-- 动画沙盒 -->
+            <div class="animation-sandbox" id="sandboxA">
+                <div class="conveyor-belt"></div>
+                <div class="filter-gate gate-a" id="gateA">
+                    <span>检测滤网</span>
+                    <span style="font-size: 9px; color: #f1c40f;">÷7 余 6?</span>
+                </div>
+                <div class="bin bin-fail">废弃数</div>
+                <div class="bin bin-success">候选列表</div>
+            </div>
+
+            <!-- 统计 -->
+            <div class="stats-panel">
+                <div class="stat-item"><span>当前检测值:</span><span class="stat-val" id="valA-current">1000</span></div>
+                <div class="stat-item"><span>检测次数:</span><span class="stat-val" id="valA-checked">0</span></div>
+                <div class="stat-item"><span>符合条件数:</span><span class="stat-val highlight" id="valA-found">0</span></div>
+                <div class="stat-item"><span>过滤网状态:</span><span class="stat-val" style="color:var(--danger-color)">频繁拦截</span></div>
+            </div>
+        </div>
+
+        <!-- 方案 B -->
+        <div class="scheme-card" id="cardB">
+            <div class="scheme-title scheme-b-title">方案 B：步长优化法 (步长=7)</div>
+            
+            <!-- Scratch 积木 -->
+            <div class="code-window">
+                <div class="scratch-block block-variable" id="blockB-init">将 [数字] 设为 [1007]</div>
+                <div class="scratch-block block-control">重复执行</div>
+                <div class="scratch-block block-motion block-indent" id="blockB-add" style="background-color: #d4af37; border-left-color: #b8860b;">直接加入候选列表 (免检!)</div>
+                <div class="scratch-block block-variable block-indent" id="blockB-step">将 [数字] 增加 [7]</div>
+                <div style="color: #7f8c8d; font-size: 11px; margin-left: 15px; margin-top: 5px;">* 省略了“如果”判断滤网！</div>
+            </div>
+
+            <!-- 动画沙盒 -->
+            <div class="animation-sandbox" id="sandboxB">
+                <div class="conveyor-belt"></div>
+                <div class="filter-gate gate-b" id="gateB">
+                    <span>✨免检通道</span>
+                    <span style="font-size: 9px; color: #fff;">天生余6!</span>
+                </div>
+                <div class="bin bin-success" style="right: auto; left: 50%; transform: translateX(-50%); width: 100px;">候选列表</div>
+            </div>
+
+            <!-- 统计 -->
+            <div class="stats-panel">
+                <div class="stat-item"><span>当前检测值:</span><span class="stat-val" id="valB-current">1007</span></div>
+                <div class="stat-item"><span>检测次数:</span><span class="stat-val" id="valB-checked">0</span></div>
+                <div class="stat-item"><span>符合条件数:</span><span class="stat-val highlight" id="valB-found">0</span></div>
+                <div class="stat-item"><span>过滤网状态:</span><span class="stat-val" style="color:var(--success-color)">✨100%免检</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制栏 -->
+    <div class="control-bar">
+        <div class="btn-group">
+            <button class="btn btn-success" id="btnPlay">开始对比运行</button>
+            <button class="btn btn-primary" id="btnStep">单步调试</button>
+            <button class="btn btn-danger" id="btnReset">重置</button>
+        </div>
+        <div class="speed-control">
+            <span>演示速度:</span>
+            <input type="range" class="speed-slider" id="speedSlider" min="1" max="4" step="1" value="1">
+            <span id="speedText">1x</span>
+        </div>
+    </div>
+
+    <!-- 课堂探究问题区 -->
+    <div class="quiz-section">
+        <div class="quiz-title">💡 课堂思考：为什么方案 B 可以直接省去“除以 7 余 6”的判断滤网？</div>
+        <div>当我们把起点设为 1007（已满足余数是6），并且每次增加 7 时：</div>
+        <div class="quiz-options">
+            <button class="option-btn" data-correct="true">A. 因为 1007 满足条件，每次加 7 得到的数，余数永远都是 6！</button>
+            <button class="option-btn" data-correct="false">B. 因为电脑变聪明了，会自动帮我们挑选数字。</button>
+            <button class="option-btn" data-correct="false">C. 因为 1007 是一个幸运数字，所以不需要检查。</button>
+            <button class="option-btn" data-correct="false">D. 只是碰巧前几个数满足，后面还是需要检查的。</button>
+        </div>
+        <div class="feedback-text" id="feedback"></div>
+    </div>
+</div>
+
+<script>
+    // 状态变量
+    let isRunning = false;
+    let speed = 1;
+    let timerId = null;
+
+    const state = {
+        A: { current: 1000, checked: 0, found: 0, step: 1 },
+        B: { current: 1007, checked: 0, found: 0, step: 7 }
+    };
+
+    // DOM 元素
+    const btnPlay = document.getElementById('btnPlay');
+    const btnStep = document.getElementById('btnStep');
+    const btnReset = document.getElementById('btnReset');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedText = document.getElementById('speedText');
+    const feedback = document.getElementById('feedback');
+
+    const sandboxA = document.getElementById('sandboxA');
+    const sandboxB = document.getElementById('sandboxB');
+
+    // 初始化/重置数据
+    function resetSimulation() {
+        stopSimulation();
+        state.A = { current: 1000, checked: 0, found: 0, step: 1 };
+        state.B = { current: 1007, checked: 0, found: 0, step: 7 };
+        updateStatsDOM();
+        
+        // 清除沙盒中的数字节点
+        document.querySelectorAll('.num-node').forEach(node => node.remove());
+        
+        // 移除高亮
+        document.querySelectorAll('.scratch-block').forEach(b => b.classList.remove('highlight-block'));
+        document.getElementById('sandboxA').classList.remove('running');
+        document.getElementById('sandboxB').classList.remove('running');
+    }
+
+    function updateStatsDOM() {
+        document.getElementById('valA-current').innerText = state.A.current;
+        document.getElementById('valA-checked').innerText = state.A.checked;
+        document.getElementById('valA-found').innerText = state.A.found;
+
+        document.getElementById('valB-current').innerText = state.B.current;
+        document.getElementById('valB-checked').innerText = state.B.checked;
+        document.getElementById('valB-found').innerText = state.B.found;
+    }
+
+    // 单步执行逻辑
+    function executeStep() {
+        // 方案 A 执行一步
+        executeSideA();
+        // 方案 B 执行一步
+        executeSideB();
+        
+        updateStatsDOM();
+    }
+
+    function executeSideA() {
+        const num = state.A.current;
+        const isMatch = (num % 7 === 6);
+        state.A.checked++;
+        
+        // 积木高亮逻辑
+        highlightBlock('A', 'blockA-init', false);
+        highlightBlock('A', 'blockA-if', true);
+        
+        if (isMatch) {
+            state.A.found++;
+            setTimeout(() => highlightBlock('A', 'blockA-add', true), 200 / speed);
+        } else {
+            setTimeout(() => highlightBlock('A', 'blockA-add', false), 200 / speed);
+        }
+        setTimeout(() => highlightBlock('A', 'blockA-step', true), 400 / speed);
+
+        // 动画节点
+        createNode('A', num, isMatch);
+
+        state.A.current += state.A.step;
+    }
+
+    function executeSideB() {
+        const num = state.B.current;
+        // 方案B天生免检，全部都是Match
+        const isMatch = true; 
+        state.B.checked++;
+
+        // 积木高亮逻辑
+        highlightBlock('B', 'blockB-init', false);
+        highlightBlock('B', 'blockB-add', true);
+        setTimeout(() => highlightBlock('B', 'blockB-step', true), 300 / speed);
+
+        // 动画节点（带火箭特效）
+        createNode('B', num, isMatch, true);
+
+        state.B.current += state.B.step;
+    }
+
+    function highlightBlock(side, blockId, active) {
+        const block = document.getElementById(blockId);
+        if (active) {
+            block.classList.add('highlight-block');
+        } else {
+            block.classList.remove('highlight-block');
+        }
+    }
+
+    // 创建动画数字节点
+    function createNode(side, value, isMatch, isRocket = false) {
+        const sandbox = side === 'A' ? sandboxA : sandboxB;
+        const node = document.createElement('div');
+        node.className = 'num-node' + (isRocket ? ' rocket-node' : '');
+        node.innerText = value;
+        sandbox.appendChild(node);
+
+        const duration = 1000 / speed;
+
+        // 动画阶段 1：生成并移动到滤网
+        setTimeout(() => {
+            node.style.left = '50%';
+            node.style.transform = 'translateX(-50%)';
+        }, 50);
+
+        // 动画阶段 2：滤网判定并分流
+        setTimeout(() => {
+            if (side === 'A') {
+                const gate = document.getElementById('gateA');
+                if (isMatch) {
+                    gate.style.backgroundColor = 'var(--success-color)';
+                    node.style.left = '80%';
+                    node.style.top = '160px';
+                    node.style.opacity = '0';
+                } else {
+                    gate.style.backgroundColor = 'var(--danger-color)';
+                    node.style.left = '20%';
+                    node.style.top = '160px';
+                    node.style.opacity = '0';
+                }
+                setTimeout(() => {
+                    gate.style.backgroundColor = '';
+                }, 300 / speed);
+            } else {
+                // 方案B直接飞速通过
+                node.style.left = '50%';
+                node.style.top = '160px';
+                node.style.opacity = '0';
+            }
+        }, duration * 0.5);
+
+        // 动画阶段 3：清理节点
+        setTimeout(() => {
+            node.remove();
+        }, duration * 1.1);
+    }
+
+    // 自动运行控制
+    function startSimulation() {
+        if (isRunning) return;
+        isRunning = true;
+        btnPlay.innerText = '暂停';
+        btnPlay.className = 'btn btn-danger';
+        document.getElementById('sandboxA').classList.add('running');
+        document.getElementById('sandboxB').classList.add('running');
+        
+        const intervalTime = 1200 / speed;
+        timerId = setInterval(executeStep, intervalTime);
+    }
+
+    function stopSimulation() {
+        isRunning = false;
+        btnPlay.innerText = '开始对比运行';
+        btnPlay.className = 'btn btn-success';
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+        document.getElementById('sandboxA').classList.remove('running');
+        document.getElementById('sandboxB').classList.remove('running');
+    }
+
+    // 事件监听
+    btnPlay.addEventListener('click', () => {
+        if (isRunning) {
+            stopSimulation();
+        } else {
+            startSimulation();
+        }
+    });
+
+    btnStep.addEventListener('click', () => {
+        stopSimulation();
+        executeStep();
+    });
+
+    btnReset.addEventListener('click', resetSimulation);
+
+    speedSlider.addEventListener('input', (e) => {
+        speed = parseInt(e.target.value);
+        speedText.innerText = speed + 'x';
+        if (isRunning) {
+            stopSimulation();
+            startSimulation();
+        }
+    });
+
+    // 课堂互动答题
+    const optionBtns = document.querySelectorAll('.option-btn');
+    optionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // 清除之前的状态
+            optionBtns.forEach(b => {
+                b.classList.remove('correct', 'wrong');
+            });
+
+            const isCorrect = btn.getAttribute('data-correct') === 'true';
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedback.innerHTML = '🎉 答对了！数学规律太神奇了！起点 1007 满足条件，每次加 7 相当于在数学上保持余数不变，所以我们直接省去了繁琐的“如果”判断，效率提升了 7 倍！';
+                feedback.style.color = 'var(--success-color)';
+                
+                // 方案B卡片触发金色闪烁特效
+                document.getElementById('cardB').classList.add('active-b');
+            } else {
+                btn.classList.add('wrong');
+                feedback.innerHTML = '❌ 再想想看，试着算一下：1007 + 7 = 1014，1014 除以 7 的余数是多少？';
+                feedback.style.color = 'var(--danger-color)';
+                document.getElementById('cardB').classList.remove('active-b');
+            }
+        });
+    });
+
+    // 默认初始化
+    resetSimulation();
+</script>
+
+</body>
+</html>

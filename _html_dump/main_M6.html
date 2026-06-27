@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>算法优化对比：寻找7的倍数</title>
+  <style>
+    :root {
+      --primary-red: #ef4444;
+      --primary-green: #10b981;
+      --bg-slate: #f8fafc;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+      background-color: #e2e8f0;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--bg-slate);
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 4px solid #ffffff;
+    }
+
+    /* 头部区域 */
+    .header {
+      background-color: #ffffff;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* 主工作区 */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 12px;
+      padding: 12px;
+      min-height: 0; /* 防止溢出 */
+    }
+
+    /* 卡片通用样式 */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .track-card {
+      justify-content: space-between;
+    }
+
+    .chart-card {
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 跑道区域 */
+    .track-container {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 8px 0;
+      overflow: hidden;
+    }
+
+    .track-label-group {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .label-red { color: var(--primary-red); }
+    .label-green { color: var(--primary-green); }
+
+    /* SVG 跑道 */
+    #track-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 图表区域 */
+    .chart-wrapper {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 勋章提示 */
+    .badge-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      margin-top: 5px;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .badge.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background-color: #ffffff;
+      padding: 12px 20px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover { background-color: #2563eb; }
+    .btn-primary:disabled { background-color: #93c5fd; cursor: not-allowed; }
+
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: var(--text-dark);
+    }
+
+    .btn-secondary:hover { background-color: #cbd5e1; }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .slider-group input {
+      cursor: pointer;
+      width: 100px;
+    }
+
+    .teaching-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 350px;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    /* 闪烁动画 */
+    @keyframes pulse-glow {
+      0% { r: 4px; opacity: 1; }
+      100% { r: 20px; opacity: 0; }
+    }
+
+    .ripple {
+      animation: pulse-glow 0.4s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>算法效率大比拼：寻找 0-100 内 7 的倍数</h1>
+      <p>观察两辆小车的检测过程，思考：为什么右边的算法能如此高效？</p>
+    </div>
+
+    <!-- 主工作区 -->
+    <div class="workspace">
+      <!-- 左侧：跑道 -->
+      <div class="card track-card">
+        <div class="card-title">
+          <span>🏃 算法运行跑道</span>
+        </div>
+        
+        <div class="track-container">
+          <div class="track-label-group">
+            <span class="label-red">🔴 普通枚举算法 (每次+1)</span>
+            <span id="counter1" class="label-red">已检测: 0 次</span>
+          </div>
+          
+          <div class="track-label-group" style="margin-top: 90px;">
+            <span class="label-green">🟢 优化枚举算法 (每次+7)</span>
+            <span id="counter2" class="label-green">已检测: 0 次</span>
+          </div>
+
+          <!-- 绝对定位的 SVG 覆盖在跑道容器上 -->
+          <div style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;">
+            <svg id="track-svg" viewBox="0 0 500 240" preserveAspectRatio="none">
+              <!-- 终点线 (格子旗) -->
+              <g transform="translate(460, 15)">
+                <rect x="0" y="0" width="12" height="70" fill="#1e293b"/>
+                <rect x="0" y="0" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="10" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="20" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="30" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="40" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="50" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="60" width="6" height="10" fill="#ffffff"/>
+              </g>
+              <g transform="translate(460, 125)">
+                <rect x="0" y="0" width="12" height="70" fill="#1e293b"/>
+                <rect x="0" y="0" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="10" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="20" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="30" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="40" width="6" height="10" fill="#ffffff"/>
+                <rect x="6" y="50" width="6" height="10" fill="#ffffff"/>
+                <rect x="0" y="60" width="6" height="10" fill="#ffffff"/>
+              </g>
+
+              <!-- 跑道1 轴线 -->
+              <line x1="30" y1="50" x2="460" y2="50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+              <!-- 跑道2 轴线 -->
+              <line x1="30" y1="160" x2="460" y2="160" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+
+              <!-- 动态生成的刻度将插入到这里 -->
+              <g id="ticks-group"></g>
+
+              <!-- 动态检测波纹 -->
+              <circle id="ripple1" cx="30" cy="50" r="0" fill="none" stroke="var(--primary-red)" stroke-width="3" opacity="0"/>
+              <circle id="ripple2" cx="30" cy="160" r="0" fill="none" stroke="var(--primary-green)" stroke-width="3" opacity="0"/>
+
+              <!-- 小车1 (普通) -->
+              <g id="car1" transform="translate(30, 50)">
+                <path d="M-14,6 L-14,-3 Q-14,-8 -9,-8 L-4,-8 Q-2,-13 6,-13 L11,-13 Q15,-13 15,-5 L15,6 Z" fill="var(--primary-red)"/>
+                <rect x="-9" y="-7" width="6" height="4" fill="#ffffff" rx="1"/>
+                <rect x="1" y="-10" width="8" height="6" fill="#ffffff" rx="1"/>
+                <circle cx="-8" cy="8" r="3.5" fill="#1e293b"/>
+                <circle cx="-8" cy="8" r="1" fill="#ffffff"/>
+                <circle cx="8" cy="8" r="3.5" fill="#1e293b"/>
+                <circle cx="8" cy="8" r="1" fill="#ffffff"/>
+              </g>
+
+              <!-- 小车2 (优化) -->
+              <g id="car2" transform="translate(30, 160)">
+                <path d="M-15,5 L-15,-4 Q-15,-7 -8,-7 L4,-7 Q14,-7 16,0 Q14,7 4,7 L-8,7 Z" fill="var(--primary-green)"/>
+                <path d="M-4,-4 L4,-4 Q8,-4 8,0 Q8,4 4,4 L-4,4 Z" fill="#ffffff" opacity="0.8"/>
+                <path d="M-15,-4 L-18,-8 L-13,-8 L-11,-4 Z" fill="#047857"/>
+                <circle cx="-8" cy="7" r="3.5" fill="#1e293b"/>
+                <circle cx="-8" cy="7" r="1" fill="#ffffff"/>
+                <circle cx="8" cy="7" r="3.5" fill="#1e293b"/>
+                <circle cx="8" cy="7" r="1" fill="#ffffff"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：图表 -->
+      <div class="card chart-card">
+        <div class="card-title" style="width: 100%;">
+          <span>📊 累计检测次数对比</span>
+        </div>
+
+        <div class="chart-wrapper">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <!-- 坐标轴 -->
+            <line x1="30" y1="20" x2="30" y2="150" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="30" y1="150" x2="170" y2="150" stroke="#94a3b8" stroke-width="2"/>
+            
+            <!-- 刻度线 -->
+            <line x1="25" y1="150" x2="30" y2="150" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="20" y="153" font-size="9" fill="#64748b" text-anchor="end">0</text>
+            
+            <line x1="25" y1="85" x2="30" y2="85" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="20" y="88" font-size="9" fill="#64748b" text-anchor="end">50</text>
+
+            <line x1="25" y1="20" x2="30" y2="20" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="20" y="23" font-size="9" fill="#64748b" text-anchor="end">100</text>
+
+            <!-- 柱子1 (普通) -->
+            <rect id="bar1" x="55" y="150" width="30" height="0" fill="var(--primary-red)" rx="3"/>
+            <text id="bar1-text" x="70" y="145" font-size="11" font-weight="bold" fill="var(--primary-red)" text-anchor="middle">0</text>
+            <text x="70" y="165" font-size="10" fill="#64748b" text-anchor="middle">普通</text>
+
+            <!-- 柱子2 (优化) -->
+            <rect id="bar2" x="115" y="150" width="30" height="0" fill="var(--primary-green)" rx="3"/>
+            <text id="bar2-text" x="130" y="145" font-size="11" font-weight="bold" fill="var(--primary-green)" text-anchor="middle">0</text>
+            <text x="130" y="165" font-size="10" fill="#64748b" text-anchor="middle">优化</text>
+          </svg>
+        </div>
+
+        <!-- 勋章 -->
+        <div class="badge-container">
+          <div id="efficiency-badge" class="badge">
+            <span>🏆 效率提升 85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <div class="btn-group">
+        <button id="btn-start" class="btn btn-primary">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          开始运行
+        </button>
+        <button id="btn-pause" class="btn btn-secondary" disabled>
+          暂停
+        </button>
+        <button id="btn-reset" class="btn btn-secondary">
+          重置
+        </button>
+      </div>
+
+      <div class="slider-group">
+        <label for="speed-slider">演示速度</label>
+        <input type="range" id="speed-slider" min="50" max="400" value="200" step="50">
+      </div>
+
+      <div class="teaching-tip">
+        <strong>思考：</strong> 优化算法利用了“7的倍数”这一数学规律，直接跨步，从而跳过了大量无用的检测！
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    const state = {
+      running: false,
+      pos1: 0,       // 0 到 100
+      pos2: 0,       // 0 到 14 (代表 0, 7, 14... 98)
+      checks1: 0,
+      checks2: 0,
+      speed: 200,    // 毫秒/步
+      timer: null
+    };
+
+    // DOM 元素
+    const svg = document.getElementById('track-svg');
+    const ticksGroup = document.getElementById('ticks-group');
+    const car1 = document.getElementById('car1');
+    const car2 = document.getElementById('car2');
+    const ripple1 = document.getElementById('ripple1');
+    const ripple2 = document.getElementById('ripple2');
+    const counter1 = document.getElementById('counter1');
+    const counter2 = document.getElementById('counter2');
+    const bar1 = document.getElementById('bar1');
+    const bar2 = document.getElementById('bar2');
+    const bar1Text = document.getElementById('bar1-text');
+    const bar2Text = document.getElementById('bar2-text');
+    const badge = document.getElementById('efficiency-badge');
+    
+    const btnStart = document.getElementById('btn-start');
+    const btnPause = document.getElementById('btn-pause');
+    const btnReset = document.getElementById('btn-reset');
+    const speedSlider = document.getElementById('speed-slider');
+
+    // 跑道物理参数
+    const startX = 30;
+    const endX = 460;
+    const trackWidth = endX - startX; // 430px
+
+    // 初始化跑道刻度
+    function initTicks() {
+      ticksGroup.innerHTML = '';
+      
+      // 跑道1：0-100 刻度 (每10个标数字)
+      for (let i = 0; i <= 100; i++) {
+        const x = startX + (i / 100) * trackWidth;
+        const isMajor = i % 10 === 0;
+        
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x);
+        line.setAttribute('x2', x);
+        line.setAttribute('y1', isMajor ? 42 : 46);
+        line.setAttribute('y2', 50);
+        line.setAttribute('stroke', isMajor ? '#64748b' : '#cbd5e1');
+        line.setAttribute('stroke-width', isMajor ? '1.5' : '1');
+        ticksGroup.appendChild(line);
+
+        if (isMajor) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', x);
+          text.setAttribute('y', 36);
+          text.setAttribute('font-size', '8');
+          text.setAttribute('fill', '#64748b');
+          text.setAttribute('text-anchor', 'middle');
+          text.textContent = i;
+          ticksGroup.appendChild(text);
+        }
+      }
+
+      // 跑道2：7的倍数刻度 (0, 7, 14... 98)
+      for (let i = 0; i <= 14; i++) {
+        const val = i * 7;
+        const x = startX + (val / 100) * trackWidth;
+        
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x);
+        line.setAttribute('x2', x);
+        line.setAttribute('y1', 160);
+        line.setAttribute('y2', 168);
+        line.setAttribute('stroke', 'var(--primary-green)');
+        line.setAttribute('stroke-width', '1.5');
+        ticksGroup.appendChild(line);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', 178);
+        text.setAttribute('font-size', '8');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('fill', 'var(--primary-green)');
+        text.setAttribute('text-anchor', 'middle');
+        text.textContent = val;
+        ticksGroup.appendChild(text);
+      }
+    }
+
+    // 触发检测波纹效果
+    function triggerRipple(rippleEl, x, y, isTarget) {
+      rippleEl.setAttribute('cx', x);
+      rippleEl.setAttribute('cy', y);
+      rippleEl.setAttribute('stroke', isTarget ? 'var(--primary-green)' : 'var(--primary-red)');
+      
+      // 重置动画
+      rippleEl.setAttribute('r', '0');
+      rippleEl.setAttribute('opacity', '1');
+      
+      // 强制重绘以触发动画
+      rippleEl.classList.remove('ripple');
+      void rippleEl.offsetWidth; 
+      rippleEl.classList.add('ripple');
+    }
+
+    // 更新界面
+    function updateUI() {
+      // 1. 更新小车位置
+      const x1 = startX + (state.pos1 / 100) * trackWidth;
+      car1.setAttribute('transform', `translate(${x1}, 50)`);
+
+      const val2 = state.pos2 * 7;
+      const x2 = startX + (val2 / 100) * trackWidth;
+      car2.setAttribute('transform', `translate(${x2}, 160)`);
+
+      // 2. 更新计数器
+      counter1.textContent = `已检测: ${state.checks1} 次`;
+      counter2.textContent = `已检测: ${state.checks2} 次`;
+
+      // 3. 更新柱状图 (最大高度 130px 对应 110 次检测)
+      const maxChartHeight = 130;
+      const scale = maxChartHeight / 110;
+
+      const h1 = state.checks1 * scale;
+      bar1.setAttribute('height', h1);
+      bar1.setAttribute('y', 150 - h1);
+      bar1Text.textContent = state.checks1;
+      bar1Text.setAttribute('y', 145 - h1);
+
+      const h2 = state.checks2 * scale;
+      bar2.setAttribute('height', h2);
+      bar2.setAttribute('y', 150 - h2);
+      bar2Text.textContent = state.checks2;
+      bar2Text.setAttribute('y', 145 - h2);
+
+      // 4. 勋章展示逻辑 (当优化算法运行完毕时即可展示)
+      if (state.pos2 >= 14) {
+        badge.classList.add('show');
+      } else {
+        badge.classList.remove('show');
+      }
+    }
+
+    // 单步执行逻辑
+    function step() {
+      if (!state.running) return;
+
+      let hasActive = false;
+
+      // 普通小车：每次走 1 格，检测 1 次
+      if (state.pos1 <= 100) {
+        state.checks1 = state.pos1 + 1;
+        const x = startX + (state.pos1 / 100) * trackWidth;
+        const isMultipleOf7 = state.pos1 % 7 === 0;
+        triggerRipple(ripple1, x, 50, isMultipleOf7);
+        
+        state.pos1++;
+        hasActive = true;
+      }
+
+      // 优化小车：每次走 7 格，检测 1 次
+      if (state.pos2 <= 14) {
+        state.checks2 = state.pos2 + 1;
+        const val = state.pos2 * 7;
+        const x = startX + (val / 100) * trackWidth;
+        triggerRipple(ripple2, x, 160, true); // 每次落点都是7的倍数，必然成功
+        
+        state.pos2++;
+        hasActive = true;
+      }
+
+      updateUI();
+
+      if (hasActive) {
+        state.timer = setTimeout(step, state.speed);
+      } else {
+        // 全部运行完毕
+        state.running = false;
+        btnStart.disabled = true;
+        btnPause.disabled = true;
+      }
+    }
+
+    // 控制函数
+    function startSimulation() {
+      if (state.running) return;
+      state.running = true;
+      btnStart.disabled = true;
+      btnPause.disabled = false;
+      step();
+    }
+
+    function pauseSimulation() {
+      state.running = false;
+      clearTimeout(state.timer);
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+    }
+
+    function resetSimulation() {
+      state.running = false;
+      clearTimeout(state.timer);
+      state.pos1 = 0;
+      state.pos2 = 0;
+      state.checks1 = 0;
+      state.checks2 = 0;
+      
+      updateUI();
+      
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+    }
+
+    // 事件监听
+    btnStart.addEventListener('click', startSimulation);
+    btnPause.addEventListener('click', pauseSimulation);
+    btnReset.addEventListener('click', resetSimulation);
+    
+    speedSlider.addEventListener('input', (e) => {
+      // 滑块值越小，延迟越低，速度越快。这里做个反转映射
+      state.speed = 450 - parseInt(e.target.value);
+    });
+
+    // 初始化
+    initTicks();
+    resetSimulation();
+  </script>
+</body>
+</html>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>不重不漏的枚举思想 - 课堂教学交互课件</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --warning: #f59e0b;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+      background-color: #f0f4f8;
+      color: var(--gray-800);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 4px solid #e2e8f0;
+    }
+
+    /* 头部区域 */
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #ffffff;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header .subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* 主体内容区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 24px;
+      justify-content: space-between;
+      background-color: #fafbfd;
+    }
+
+    /* 任务条件面板 */
+    .mission-panel {
+      background: #f8fafc;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mission-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mission-title::before {
+      content: "🎯";
+      font-size: 18px;
+    }
+
+    .mission-conds {
+      display: flex;
+      gap: 12px;
+    }
+
+    .cond-tag {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* 统计面板 */
+    .stats-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .stat-box {
+      background: #ffffff;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .stat-box.warning {
+      border-color: #fde047;
+      background: #fefce8;
+    }
+
+    .stat-box.danger {
+      border-color: #fca5a5;
+      background: #fef2f2;
+    }
+
+    .stat-box.success {
+      border-color: #6ee7b7;
+      background: #ecfdf5;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    /* 卡片墙区域 */
+    .cards-wall {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin: 12px 0;
+      perspective: 1000px;
+    }
+
+    /* 单张卡片样式 */
+    .card {
+      flex: 1;
+      height: 185px;
+      background: #ffffff;
+      border: 2px solid var(--gray-300);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 4px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      box-shadow: var(--card-shadow);
+      user-select: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    /* 扫描高亮状态 */
+    .card.scanning {
+      border-color: var(--warning);
+      box-shadow: 0 0 12px var(--warning);
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    /* 检验结果状态 */
+    .card.checked-wrong {
+      border-color: var(--danger);
+      background-color: var(--danger-bg);
+    }
+
+    .card.checked-correct {
+      border-color: var(--success);
+      background-color: var(--success-bg);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    /* 卡片内部元素 */
+    .card-num {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+
+    .card.checked-correct .card-num {
+      color: #065f46;
+    }
+
+    .card.checked-wrong .card-num {
+      color: #991b1b;
+    }
+
+    .status-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: var(--gray-700);
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .card.checked-wrong .status-icon {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .card.checked-correct .status-icon {
+      background: var(--success);
+      color: #ffffff;
+    }
+
+    /* 检测框细节 */
+    .check-details {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: auto;
+    }
+
+    .check-row {
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      text-align: center;
+      background: var(--gray-100);
+      color: #64748b;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    /* 详细检测结果高亮 */
+    .card.expanded .check-row.match {
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: bold;
+    }
+
+    .card.expanded .check-row.mismatch {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* 控制台区域 */
+    .control-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 12px 20px;
+      border-radius: 10px;
+      gap: 12px;
+    }
+
+    .mode-indicator {
+      font-size: 14px;
+      font-weight: bold;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-badge {
+      background: #cbd5e1;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .mode-badge.manual {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .mode-badge.auto {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      border: 1px solid var(--gray-300);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--gray-100);
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 速度选择器 */
+    .speed-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .speed-selector select {
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--gray-300);
+      outline: none;
+    }
+
+    /* 底部教学引导 */
+    .teacher-tips {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      padding: 10px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .teacher-tips strong {
+      color: #1e293b;
+    }
+
+    /* 动态提示气泡 */
+    .status-message {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      text-align: center;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <header>
+      <h1>探究：如何不重不漏地找出目标数？</h1>
+      <span class="subtitle">五年级 · 信息技术 · 枚举算法基础</span>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+      
+      <!-- 任务条件 -->
+      <div class="mission-panel">
+        <div class="mission-title">寻找 1000 ~ 1010 之间满足以下所有条件的数：</div>
+        <div class="mission-conds">
+          <span class="cond-tag">① ÷3 余 1</span>
+          <span class="cond-tag">② ÷5 余 3</span>
+          <span class="cond-tag">③ ÷7 余 2</span>
+        </div>
+      </div>
+
+      <!-- 统计面板 -->
+      <div class="stats-panel">
+        <div class="stat-box" id="box-checked">
+          <div class="stat-label">已检查卡片</div>
+          <div class="stat-value" id="val-checked">0 / 11</div>
+        </div>
+        <div class="stat-box warning" id="box-repeated">
+          <div class="stat-label">重复检查（无序弊端）</div>
+          <div class="stat-value" id="val-repeated">0 次</div>
+        </div>
+        <div class="stat-box danger" id="box-omitted">
+          <div class="stat-label">遗漏数量</div>
+          <div class="stat-value" id="val-omitted">11 个</div>
+        </div>
+        <div class="stat-box success" id="box-status">
+          <div class="stat-label">当前状态</div>
+          <div class="stat-value" id="val-status" style="font-size: 15px; color: #059669;">等待探索...</div>
+        </div>
+      </div>
+
+      <!-- 动态提示 -->
+      <div class="status-message" id="status-msg">
+        💡 提示：点击下方任意灰色卡片进行手动检验，体验“无序凑数”的过程。
+      </div>
+
+      <!-- 卡片墙 -->
+      <div class="cards-wall" id="cards-wall">
+        <!-- JS 动态生成 1000 到 1010 的卡片 -->
+      </div>
+
+      <!-- 控制台 -->
+      <div class="control-panel">
+        <div class="mode-indicator">
+          <span>当前模式:</span>
+          <span class="mode-badge manual" id="mode-badge">手动尝试</span>
+        </div>
+
+        <div class="speed-selector" id="speed-container" style="display: none;">
+          <span>演示速度:</span>
+          <select id="select-speed">
+            <option value="1000">正常 (1.0s)</option>
+            <option value="500" selected>快速 (0.5s)</option>
+            <option value="200">极速 (0.2s)</option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="btn-manual-mode">手动模式</button>
+          <button class="btn btn-primary" id="btn-start-auto">▶ 依次检验（自动枚举）</button>
+          <button class="btn btn-danger" id="btn-reset">🔄 重置</button>
+        </div>
+      </div>
+
+      <!-- 教学引导 -->
+      <div class="teacher-tips">
+        <strong>💡 课堂思考：</strong>
+        1. 手动乱猜时，我们容易<strong>重复</strong>或<strong>遗漏</strong>。
+        2. 自动“依次检验”从1000到1010，如何做到<strong>不重不漏</strong>？
+        3. 如果范围扩大到 100 万，人工还能数得清吗？（引出计算机算力）
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 初始化数据
+    const startNum = 1000;
+    const endNum = 1010;
+    const cardsWall = document.getElementById('cards-wall');
+    
+    // 目标条件
+    const targetCond = { r3: 1, r5: 3, r7: 2 };
+    
+    // 状态变量
+    let currentMode = 'manual'; // 'manual' or 'auto'
+    let clickedHistory = []; // 记录点击历史，用于统计重复
+    let uniqueClicked = new Set(); // 记录不重复点击
+    let autoTimer = null;
+    let isScanning = false;
+
+    // 生成卡片数据
+    const cardsData = [];
+    for (let i = startNum; i <= endNum; i++) {
+      cardsData.push({
+        num: i,
+        r3: i % 3,
+        r5: i % 5,
+        r7: i % 7,
+        isTarget: (i % 3 === 1 && i % 5 === 3 && i % 7 === 2)
+      });
+    }
+
+    // 渲染卡片墙
+    function renderCards() {
+      cardsWall.innerHTML = '';
+      cardsData.forEach((data, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('data-index', index);
+        card.setAttribute('data-num', data.num);
+
+        card.innerHTML = `
+          <div class="card-num">${data.num}</div>
+          <div class="status-icon">?</div>
+          <div class="check-details">
+            <div class="check-row" data-cond="3">÷3余?</div>
+            <div class="check-row" data-cond="5">÷5余?</div>
+            <div class="check-row" data-cond="7">÷7余?</div>
+          </div>
+        `;
+
+        // 绑定点击事件
+        card.addEventListener('click', () => handleCardClick(index));
+        cardsWall.appendChild(card);
+      });
+    }
+
+    // 更新统计面板
+    function updateStats() {
+      const total = endNum - startNum + 1;
+      const checkedCount = uniqueClicked.size;
+      const omittedCount = total - checkedCount;
+      
+      // 计算重复次数
+      let repeatedCount = 0;
+      const counts = {};
+      clickedHistory.forEach(num => {
+        counts[num] = (counts[num] || 0) + 1;
+        if (counts[num] > 1) {
+          repeatedCount++;
+        }
+      });
+
+      document.getElementById('val-checked').innerText = `${checkedCount} / ${total}`;
+      document.getElementById('val-repeated').innerText = `${repeatedCount} 次`;
+      document.getElementById('val-omitted').innerText = `${omittedCount} 个`;
+
+      // 状态显示
+      const statusVal = document.getElementById('val-status');
+      if (uniqueClicked.has(1003)) {
+        statusVal.innerText = "🎉 已找到目标!";
+        statusVal.style.color = "var(--success)";
+      } else if (currentMode === 'manual' && checkedCount > 0) {
+        statusVal.innerText = "🔍 寻找中...";
+        statusVal.style.color = "var(--primary)";
+      } else if (currentMode === 'auto' && isScanning) {
+        statusVal.innerText = "⚡ 自动枚举中...";
+        statusVal.style.color = "var(--warning)";
+      } else {
+        statusVal.innerText = "等待探索...";
+        statusVal.style.color = "#64748b";
+      }
+    }
+
+    // 揭晓单张卡片结果
+    function revealCard(index, isAuto = false) {
+      const card = cardsWall.children[index];
+      const data = cardsData[index];
+
+      if (card.classList.contains('expanded')) return; // 避免重复揭晓
+
+      card.classList.add('expanded');
+      
+      // 填充余数并高亮
+      const r3Row = card.querySelector('[data-cond="3"]');
+      const r5Row = card.querySelector('[data-cond="5"]');
+      const r7Row = card.querySelector('[data-cond="7"]');
+
+      r3Row.innerText = `÷3余${data.r3}`;
+      r5Row.innerText = `÷5余${data.r5}`;
+      r7Row.innerText = `÷7余${data.r7}`;
+
+      // 判断单项条件是否符合
+      if (data.r3 === targetCond.r3) r3Row.classList.add('match'); else r3Row.classList.add('mismatch');
+      if (data.r5 === targetCond.r5) r5Row.classList.add('match'); else r5Row.classList.add('mismatch');
+      if (data.r7 === targetCond.r7) r7Row.classList.add('match'); else r7Row.classList.add('mismatch');
+
+      // 判断整体结果
+      const icon = card.querySelector('.status-icon');
+      if (data.isTarget) {
+        card.classList.add('checked-correct');
+        icon.innerText = "✔";
+        document.getElementById('status-msg').innerHTML = `🎉 恭喜！在 <strong>${data.num}</strong> 处找到了符合所有条件的数！`;
+      } else {
+        card.classList.add('checked-wrong');
+        icon.innerText = "✖";
+        if (!isAuto) {
+          document.getElementById('status-msg').innerText = `❌ ${data.num} 不符合条件，再试试其他数。`;
+        }
+      }
+    }
+
+    // 手动点击处理
+    function handleCardClick(index) {
+      if (currentMode !== 'manual' || isScanning) return;
+
+      const data = cardsData[index];
+      clickedHistory.push(data.num);
+      uniqueClicked.add(data.num);
+
+      // 检查是否重复点击
+      const occurrences = clickedHistory.filter(x => x === data.num).length;
+      if (occurrences > 1) {
+        // 闪烁提示重复
+        const card = cardsWall.children[index];
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => card.style.transform = '', 100);
+        document.getElementById('status-msg').innerHTML = `⚠️ <strong>${data.num}</strong> 之前已经检查过了！这造成了重复计算。`;
+      }
+
+      revealCard(index, false);
+      updateStats();
+    }
+
+    // 切换到手动模式
+    function setManualMode() {
+      stopAutoScan();
+      currentMode = 'manual';
+      document.getElementById('mode-badge').innerText = "手动尝试";
+      document.getElementById('mode-badge').className = "mode-badge manual";
+      document.getElementById('speed-container').style.display = 'none';
+      document.getElementById('btn-manual-mode').style.border = '2px solid var(--primary)';
+      document.getElementById('btn-start-auto').disabled = false;
+      document.getElementById('status-msg').innerText = "💡 已切换到手动模式。点击灰色卡片进行检验。";
+      resetData();
+    }
+
+    // 重置所有状态
+    function resetData() {
+      stopAutoScan();
+      clickedHistory = [];
+      uniqueClicked.clear();
+      renderCards();
+      updateStats();
+      if (currentMode === 'manual') {
+        document.getElementById('status-msg').innerText = "💡 提示：点击任意灰色卡片进行手动检验，体验“无序凑数”的过程。";
+      } else {
+        document.getElementById('status-msg').innerText = "💡 准备就绪，点击“开始自动枚举”观察不重不漏的检验过程。";
+      }
+    }
+
+    // 停止自动扫描
+    function stopAutoScan() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      isScanning = false;
+      document.getElementById('btn-start-auto').innerText = "▶ 依次检验（自动枚举）";
+      document.getElementById('btn-start-auto').disabled = false;
+    }
+
+    // 开始自动枚举扫描
+    function startAutoScan() {
+      if (isScanning) return;
+      
+      // 切换模式
+      currentMode = 'auto';
+      document.getElementById('mode-badge').innerText = "自动枚举";
+      document.getElementById('mode-badge').className = "mode-badge auto";
+      document.getElementById('speed-container').style.display = 'flex';
+      document.getElementById('btn-manual-mode').style.border = 'none';
+
+      // 重置数据
+      clickedHistory = [];
+      uniqueClicked.clear();
+      renderCards();
+      updateStats();
+
+      isScanning = true;
+      document.getElementById('btn-start-auto').innerText = "⚡ 正在枚举...";
+      document.getElementById('btn-start-auto').disabled = true;
+
+      let currentIndex = 0;
+      const speed = parseInt(document.getElementById('select-speed').value);
+
+      document.getElementById('status-msg').innerText = "🚀 启动自动枚举：从 1000 开始，依次、不重不漏地向后检验...";
+
+      autoTimer = setInterval(() => {
+        if (currentIndex > 0) {
+          // 移除上一个卡片的扫描高亮
+          cardsWall.children[currentIndex - 1].classList.remove('scanning');
+        }
+
+        if (currentIndex < cardsData.length) {
+          const currentCard = cardsWall.children[currentIndex];
+          const data = cardsData[currentIndex];
+
+          // 添加当前扫描高亮
+          currentCard.classList.add('scanning');
+          document.getElementById('status-msg').innerHTML = `🔍 正在检验 <strong>${data.num}</strong> ...`;
+
+          // 记录统计
+          clickedHistory.push(data.num);
+          uniqueClicked.add(data.num);
+          
+          // 揭晓结果
+          revealCard(currentIndex, true);
+          updateStats();
+
+          currentIndex++;
+        } else {
+          // 扫描结束
+          stopAutoScan();
+          // 移除最后一个的扫描高亮
+          cardsWall.children[cardsData.length - 1].classList.remove('scanning');
+          document.getElementById('status-msg').innerHTML = "🏁 <strong>枚举结束！</strong> 11个数字全部检验完毕。无重复，无遗漏！";
+          updateStats();
+        }
+      }, speed);
+    }
+
+    // 绑定控制台按钮事件
+    document.getElementById('btn-manual-mode').addEventListener('click', setManualMode);
+    document.getElementById('btn-start-auto').addEventListener('addEventListener' in document ? 'click' : 'onclick', () => {
+      if (currentMode !== 'auto') {
+        currentMode = 'auto';
+        document.getElementById('mode-badge').innerText = "自动枚举";
+        document.getElementById('mode-badge').className = "mode-badge auto";
+        document.getElementById('speed-container').style.display = 'flex';
+        document.getElementById('btn-manual-mode').style.border = 'none';
+      }
+      startAutoScan();
+    });
+    document.getElementById('btn-reset').addEventListener('click', resetData);
+    document.getElementById('select-speed').addEventListener('change', () => {
+      if (isScanning) {
+        // 如果正在扫描，重启扫描以应用新速度
+        stopAutoScan();
+        startAutoScan();
+      }
+    });
+
+    // 初始化运行
+    setManualMode();
+
+  </script>
+</body>
+</html>

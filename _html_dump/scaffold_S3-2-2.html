@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环与分支的嵌套关系 - 教学可视化</title>
+    <style>
+        :root {
+            --primary-blue: #0284c7;
+            --primary-blue-light: #e0f2fe;
+            --accent-orange: #f97316;
+            --accent-orange-light: #ffedd5;
+            --accent-amber: #f59e0b;
+            --slate-100: #f1f5f9;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --success-green: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .aspect-ratio-container {
+            width: 100vw;
+            height: 75vw; /* 4:3 */
+            max-width: 960px;
+            max-height: 720px;
+            background-color: #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 4px solid #334155;
+        }
+
+        /* 头部区域 */
+        .header {
+            padding: 20px;
+            background: linear-gradient(to right, #0f172a, #1e293b);
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #38bdf8;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: #94a3b8;
+        }
+
+        /* 主体可视化区域 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 16px;
+            padding: 16px;
+            height: calc(100% - 160px); /* 留出头部和控制栏空间 */
+        }
+
+        /* 左侧画布区 */
+        .canvas-container {
+            background-color: #0f172a;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 右侧控制与观察面板 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #1e293b;
+        }
+
+        .panel-card {
+            background-color: #111827;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-left: 4px solid #0284c7;
+            padding-left: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* 数据监视器样式 */
+        .monitor-box {
+            background-color: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #34d399;
+            margin-top: 6px;
+            min-height: 80px;
+        }
+
+        .monitor-line {
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .monitor-val {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        /* 引导思考区 */
+        .question-box {
+            background-color: #1e1b4b;
+            border: 1px solid #312e81;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #c7d2fe;
+        }
+
+        /* 底部控制栏 */
+        .bottom-bar {
+            height: 70px;
+            background-color: #0f172a;
+            border-top: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            background-color: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary {
+            background-color: #475569;
+        }
+
+        button.secondary:hover {
+            background-color: #334155;
+        }
+
+        /* 滑块样式 */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 120px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        /* 流程图高亮动画效果 */
+        .flow-node {
+            transition: all 0.3s ease;
+        }
+
+        .flow-node.active {
+            filter: drop-shadow(0 0 12px var(--active-color, #38bdf8));
+        }
+
+        .flow-node.active rect {
+            stroke: #38bdf8;
+            stroke-width: 3px;
+        }
+
+        .flow-node.active polygon {
+            stroke: var(--accent-orange);
+            stroke-width: 3px;
+        }
+
+        /* 呼吸灯效果 */
+        @keyframes pulse {
+            0% { r: 8; opacity: 0.8; }
+            50% { r: 14; opacity: 0.4; }
+            100% { r: 8; opacity: 0.8; }
+        }
+
+        .pulse-glow {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>循环体与分支结构的“套娃”奥秘</h1>
+            <p>观察数据流动的轨迹，思考：判断框到底在循环的“里面”还是“外面”？</p>
+        </div>
+
+        <!-- 主体可视化 -->
+        <div class="main-content">
+            <!-- 左侧：SVG 动态流程图 -->
+            <div class="canvas-container">
+                <svg viewBox="0 0 500 400" id="flowchart-svg">
+                    <!-- 定义渐变和滤镜 -->
+                    <defs>
+                        <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0284c7" />
+                            <stop offset="100%" stop-color="#0369a1" />
+                        </linearGradient>
+                        <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f97316" />
+                            <stop offset="100%" stop-color="#c2410c" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="6" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+
+                    <!-- 1. 循环大肚子轨道 (背景宽轨) -->
+                    <!-- 路径：从上方进入 -> 经过取数 -> 经过判断 -> 向下 -> 向左绕回 -> 向上 -> 回到取数上方 -->
+                    <path id="loop-track-bg" 
+                          d="M 250,40 L 250,110 L 250,210 L 250,310 C 250,340 120,340 120,310 L 120,90 C 120,60 250,60 250,85" 
+                          fill="none" 
+                          stroke="#1e293b" 
+                          stroke-width="32" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" />
+
+                    <path id="loop-track-border" 
+                          d="M 250,40 L 250,110 L 250,210 L 250,310 C 250,340 120,340 120,310 L 120,90 C 120,60 250,60 250,85" 
+                          fill="none" 
+                          stroke="#334155" 
+                          stroke-width="20" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" />
+
+                    <!-- 激活时的亮色轨道 -->
+                    <path id="loop-track-active" 
+                          d="M 250,40 L 250,110 L 250,210 L 250,310 C 250,340 120,340 120,310 L 120,90 C 120,60 250,60 250,85" 
+                          fill="none" 
+                          stroke="#0284c7" 
+                          stroke-width="6" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round"
+                          opacity="0.4" />
+
+                    <!-- 轨道方向箭头指示 -->
+                    <path d="M 120,180 L 115,170 M 120,180 L 125,170" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" />
+                    <path d="M 250,70 L 245,65 M 250,70 L 255,65" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" />
+
+                    <!-- 2. 流程图节点 -->
+                    
+                    <!-- 节点 A: 取数框 (蓝色) -->
+                    <g id="node-get" class="flow-node" style="--active-color: #38bdf8;">
+                        <rect x="180" y="110" width="140" height="46" rx="8" fill="url(#blueGrad)" stroke="#0284c7" stroke-width="2" />
+                        <text x="250" y="138" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">① 取一个数</text>
+                    </g>
+
+                    <!-- 节点 B: 菱形判断框 (橙色 - 嵌套在循环轨道内部) -->
+                    <g id="node-judge" class="flow-node" style="--active-color: #f97316;">
+                        <polygon points="250,180 320,215 250,250 180,215" fill="url(#orangeGrad)" stroke="#ea580c" stroke-width="2" />
+                        <text x="250" y="212" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">② 余数是0吗？</text>
+                        <text x="250" y="228" fill="#ffedd5" font-size="10" text-anchor="middle">(判断条件)</text>
+                    </g>
+
+                    <!-- 标签：循环的大肚子 -->
+                    <rect x="30" y="180" width="64" height="40" rx="4" fill="#1e293b" stroke="#0284c7" stroke-width="1" opacity="0.9"/>
+                    <text x="62" y="198" fill="#38bdf8" font-size="11" text-anchor="middle" font-weight="bold">循环轨道</text>
+                    <text x="62" y="212" fill="#38bdf8" font-size="10" text-anchor="middle">(大肚子)</text>
+                    <path d="M 94,200 L 110,200" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="2 2" />
+
+                    <!-- 3. 动态运行的小光点 (数据包) -->
+                    <circle id="glow-shadow" cx="250" cy="40" r="10" fill="#fbbf24" opacity="0.5" filter="url(#glow)" style="display: none;" />
+                    <circle id="data-glow" class="pulse-glow" cx="250" cy="40" r="8" fill="#fbbf24" style="display: none;" />
+                    <circle id="data-dot" cx="250" cy="40" r="6" fill="#fff" style="display: none;" />
+
+                    <!-- 起点标识 -->
+                    <circle cx="250" cy="40" r="5" fill="#38bdf8" />
+                    <text x="250" y="30" fill="#94a3b8" font-size="11" text-anchor="middle">数据入口</text>
+                </svg>
+            </div>
+
+            <!-- 右侧：控制与观察面板 -->
+            <div class="control-panel">
+                <!-- 实时状态监视器 -->
+                <div class="panel-card">
+                    <div>
+                        <div class="panel-title">数据流监视器</div>
+                        <div class="monitor-box" id="monitor">
+                            <div class="monitor-line"><span>当前待处理数列:</span><span style="color:#94a3b8;">[12, 7, 15, 8]</span></div>
+                            <div class="monitor-line"><span>当前循环圈数:</span><span id="mon-loop" class="monitor-val">-</span></div>
+                            <div class="monitor-line"><span>当前取出的数:</span><span id="mon-num" class="monitor-val">-</span></div>
+                            <div class="monitor-line"><span>余数判断结果:</span><span id="mon-result" class="monitor-val">-</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 动态文字说明 -->
+                    <div id="step-desc" style="font-size: 13px; color: #e2e8f0; line-height: 1.6; min-height: 60px; border-top: 1px solid #334155; padding-top: 10px;">
+                        点击下方“开始运行”按钮，观察数据是如何在轨道中流动的。
+                    </div>
+                </div>
+
+                <!-- 引导思考 -->
+                <div class="panel-card" style="flex: 0.8; justify-content: flex-start; gap: 8px;">
+                    <div class="panel-title">课堂思考</div>
+                    <div class="question-box">
+                        <strong>思考：</strong><br>
+                        小光点每跑一圈（代表取一个数），是不是<strong>必须</strong>进入橙色菱形框里闪烁一下（代表判断一次）？<br><br>
+                        如果把判断框放在循环的<strong>外面</strong>，它还能对每次新取出的数进行判断吗？
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部控制栏 -->
+        <div class="bottom-bar">
+            <div class="btn-group">
+                <button id="btn-play">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <span>自动运行</span>
+                </button>
+                <button id="btn-step" class="secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                    <span>单步执行</span>
+                </button>
+                <button id="btn-reset" class="secondary">重置</button>
+            </div>
+
+            <div class="slider-container">
+                <span>演示速度:</span>
+                <input type="range" id="speed-slider" min="1" max="3" value="2">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取 DOM 元素
+        const playBtn = document.getElementById('btn-play');
+        const stepBtn = document.getElementById('btn-step');
+        const resetBtn = document.getElementById('btn-reset');
+        const speedSlider = document.getElementById('speed-slider');
+        
+        const trackActive = document.getElementById('loop-track-active');
+        const dataDot = document.getElementById('data-dot');
+        const dataGlow = document.getElementById('data-glow');
+        const glowShadow = document.getElementById('glow-shadow');
+        
+        const nodeGet = document.getElementById('node-get');
+        const nodeJudge = document.getElementById('node-judge');
+        
+        const monLoop = document.getElementById('mon-loop');
+        const monNum = document.getElementById('mon-num');
+        const monResult = document.getElementById('mon-result');
+        const stepDesc = document.getElementById('step-desc');
+
+        // 动画路径定义
+        const pathEl = document.getElementById('loop-track-active');
+        const pathLength = pathEl.getTotalLength();
+
+        // 模拟数据
+        const numbersToProcess = [12, 7, 15, 8];
+        let currentNumberIndex = 0;
+        let loopCount = 0;
+
+        // 动画状态控制
+        let isPlaying = false;
+        let progress = 0; // 0 to 1
+        let animationFrameId = null;
+        let currentStepState = 'idle'; // idle, entering, getting, judging, looping
+
+        // 速度映射
+        const speedMap = {
+            1: 0.002, // 慢
+            2: 0.005, // 中
+            3: 0.01   // 快
+        };
+        let speed = speedMap[2];
+
+        // 初始化显示
+        function init() {
+            progress = 0;
+            currentNumberIndex = 0;
+            loopCount = 0;
+            isPlaying = false;
+            currentStepState = 'idle';
+            
+            // 隐藏光点
+            dataDot.style.display = 'none';
+            dataGlow.style.display = 'none';
+            glowShadow.style.display = 'none';
+            
+            // 重置高亮
+            nodeGet.classList.remove('active');
+            nodeJudge.classList.remove('active');
+            trackActive.setAttribute('stroke', '#0284c7');
+            trackActive.setAttribute('opacity', '0.4');
+
+            // 重置监视器
+            monLoop.textContent = '-';
+            monNum.textContent = '-';
+            monResult.textContent = '-';
+            stepDesc.innerHTML = '点击“自动运行”或“单步执行”，观察数据流动的轨迹。';
+            
+            playBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>自动运行</span>`;
+        }
+
+        // 更新光点位置
+        function updateDotPosition(p) {
+            const point = pathEl.getPointAtLength(p * pathLength);
+            
+            dataDot.setAttribute('cx', point.x);
+            dataDot.setAttribute('cy', point.y);
+            dataGlow.setAttribute('cx', point.x);
+            dataGlow.setAttribute('cy', point.y);
+            glowShadow.setAttribute('cx', point.x);
+            glowShadow.setAttribute('cy', point.y);
+            
+            dataDot.style.display = 'block';
+            dataGlow.style.display = 'block';
+            glowShadow.style.display = 'block';
+        }
+
+        // 状态机：根据当前进度更新UI和文本
+        function updateState(p) {
+            // 将 0-1 的进度划分为不同阶段
+            // 路径总长中各节点的大致位置：
+            // 0.0 ~ 0.15 : 从入口到“取数框”上方
+            // 0.15 ~ 0.30 : 在“取数框”内
+            // 0.30 ~ 0.50 : 从“取数框”到“判断框”
+            // 0.50 ~ 0.65 : 在“判断框”内
+            // 0.65 ~ 1.0  : 沿着大肚子轨道返回
+
+            const currentNum = numbersToProcess[currentNumberIndex];
+
+            if (p < 0.15) {
+                if (currentStepState !== 'entering') {
+                    currentStepState = 'entering';
+                    nodeGet.classList.remove('active');
+                    nodeJudge.classList.remove('active');
+                    if (loopCount === 0) {
+                        stepDesc.innerHTML = '数据准备进入循环结构...';
+                    } else {
+                        stepDesc.innerHTML = '准备开始下一轮循环...';
+                    }
+                }
+            } 
+            else if (p >= 0.15 && p < 0.35) {
+                if (currentStepState !== 'getting') {
+                    currentStepState = 'getting';
+                    nodeGet.classList.add('active');
+                    nodeJudge.classList.remove('active');
+                    
+                    if (p > 0.15) {
+                        loopCount++;
+                        monLoop.textContent = `第 ${loopCount} 圈`;
+                        monNum.textContent = currentNum;
+                        monResult.textContent = '等待判断...';
+                        stepDesc.innerHTML = `<strong>步骤 ①【取数】：</strong><br>从数列中取出了数字 <span style="color:#fbbf24; font-weight:bold;">${currentNum}</span>。此时数据刚进入循环体。`;
+                    }
+                }
+            } 
+            else if (p >= 0.35 && p < 0.65) {
+                if (currentStepState !== 'judging') {
+                    currentStepState = 'judging';
+                    nodeGet.classList.remove('active');
+                    nodeJudge.classList.add('active');
+                    
+                    const isEven = currentNum % 2 === 0; // 简化为是否为偶数判断
+                    const resultText = isEven ? "是 (余数为0)" : "否 (余数不为0)";
+                    monResult.textContent = resultText;
+                    monResult.style.color = isEven ? '#22c55e' : '#ef4444';
+                    
+                    stepDesc.innerHTML = `<strong>步骤 ②【判断】：</strong><br>对刚取出的数 <span style="color:#fbbf24; font-weight:bold;">${currentNum}</span> 进行余数判断。<br>结果是：<span style="color:${isEven?'#22c55e':'#ef4444'}; font-weight:bold;">${resultText}</span>！`;
+                }
+            } 
+            else {
+                if (currentStepState !== 'looping') {
+                    currentStepState = 'looping';
+                    nodeGet.classList.remove('active');
+                    nodeJudge.classList.remove('active');
+                    trackActive.setAttribute('stroke', '#38bdf8');
+                    trackActive.setAttribute('opacity', '0.9');
+                    
+                    stepDesc.innerHTML = `<strong>步骤 ③【返回】：</strong><br>判断结束。小光点沿着蓝色的<strong>循环大肚子轨道</strong>绕回上方，准备取下一个数。`;
+                }
+            }
+        }
+
+        // 动画主循环
+        function animate() {
+            if (!isPlaying) return;
+
+            progress += speed;
+            
+            if (progress >= 1) {
+                progress = 0.05; // 绕回后直接进入循环内部
+                currentNumberIndex = (currentNumberIndex + 1) % numbersToProcess.length;
+            }
+
+            updateDotPosition(progress);
+            updateState(progress);
+
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // 自动运行控制
+        function togglePlay() {
+            if (isPlaying) {
+                // 暂停
+                isPlaying = false;
+                cancelAnimationFrame(animationFrameId);
+                playBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>自动运行</span>`;
+            } else {
+                // 播放
+                isPlaying = true;
+                animate();
+                playBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2v10c0 1.1.9 2 2 2z"/></svg><span>暂停演示</span>`;
+            }
+        }
+
+        // 单步执行
+        function stepForward() {
+            if (isPlaying) {
+                togglePlay(); // 如果正在自动运行，先暂停
+            }
+
+            // 每次点击，进度向前推进一个阶段
+            if (progress < 0.15) {
+                progress = 0.25; // 直接到取数
+            } else if (progress >= 0.15 && progress < 0.45) {
+                progress = 0.55; // 直接到判断
+            } else if (progress >= 0.45 && progress < 0.8) {
+                progress = 0.85; // 直接到返回轨道
+            } else {
+                progress = 0.15; // 回到取数
+                currentNumberIndex = (currentNumberIndex + 1) % numbersToProcess.length;
+            }
+
+            updateDotPosition(progress);
+            updateState(progress);
+        }
+
+        // 监听事件
+        playBtn.addEventListener('click', togglePlay);
+        stepBtn.addEventListener('click', stepForward);
+        resetBtn.addEventListener('click', init);
+        
+        speedSlider.addEventListener('input', (e) => {
+            speed = speedMap[e.target.value];
+        });
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>

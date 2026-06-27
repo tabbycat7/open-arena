@@ -127,6 +127,7 @@
                                         <option value="历史" data-accent="#a16207">历史</option>
                                         <option value="地理" data-accent="#0d9488">地理</option>
                                         <option value="政治" data-accent="#dc2626">政治</option>
+                                        <option value="信息技术" data-accent="#6366f1">信息技术</option>
                                     </select>
                                     <button type="button" class="mat-choice-picker-trigger" id="subjectPickerTrigger"
                                         data-choice-trigger aria-haspopup="listbox" aria-expanded="false"
@@ -211,18 +212,6 @@
                                     </div>
                                 </div>
                                 <div class="mat-field-hint">选择负责分析教学目标并生成问题地图的模型。</div>
-                            </div>
-
-                            <div class="mat-form-group mat-field-span-2 mat-setting-card mat-temperature-field">
-                                <label for="temperature">Temperature</label>
-                                <div class="mat-temperature-slider-wrap">
-                                    <input type="range" id="temperature" name="temperature"
-                                        class="mat-temperature-slider" min="0" max="2" step="0.1"
-                                        value="{{ default_temperature }}" required>
-                                    <span class="mat-temperature-value" id="temperatureValue">{{ default_temperature
-                                        }}</span>
-                                </div>
-                                <div class="mat-field-hint" id="temperatureHint">控制生成随机性，范围 0~2，数值越高越发散。</div>
                             </div>
                         </div>
                     </div>

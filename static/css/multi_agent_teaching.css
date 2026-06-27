@@ -668,13 +668,15 @@
     z-index: 50;
 }
 
-.mat-form-section:has(.mat-choice-picker.open) {
+.mat-form-section:has(.mat-choice-picker.open),
+.mat-form-section:has(.mat-model-picker.open) {
     position: relative;
     z-index: 20;
     overflow: visible;
 }
 
-.mat-input-panel:has(.mat-choice-picker.open) {
+.mat-input-panel:has(.mat-choice-picker.open),
+.mat-input-panel:has(.mat-model-picker.open) {
     overflow: visible;
 }
 

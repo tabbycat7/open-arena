@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韩信点兵：数学建模翻译器</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #10b981;
+            --accent-bg: #ecfdf5;
+            --warning: #f59e0b;
+            --warning-bg: #fffbeb;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: var(--slate-100);
+            color: var(--slate-800);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid var(--primary);
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 20px;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        /* 控制面板：滑块 */
+        .control-panel {
+            background-color: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--slate-700);
+        }
+
+        .slider-label .value {
+            color: var(--primary-light);
+            font-family: monospace;
+            font-size: 18px;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--slate-200);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 数值数轴可视化 */
+        .visualizer-box {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 翻译对照表 */
+        .translator-table {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1.2fr 1.2fr 1.6fr;
+            padding: 8px 12px;
+            background-color: var(--slate-200);
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--slate-700);
+            text-align: center;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1.2fr 1.6fr;
+            padding: 12px;
+            background-color: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .table-row.highlight-row {
+            border-color: var(--warning);
+            background-color: var(--warning-bg);
+        }
+
+        .col-lang {
+            font-size: 14px;
+            color: var(--slate-700);
+            font-weight: 500;
+        }
+
+        .col-arrow {
+            color: var(--slate-700);
+            font-weight: bold;
+        }
+
+        .col-math {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            background: white;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px dashed var(--slate-200);
+        }
+
+        /* 动态变化高亮 */
+        .dynamic-val {
+            color: var(--accent);
+            background-color: var(--accent-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+
+        .static-op {
+            color: var(--primary-light);
+            padding: 0 4px;
+        }
+
+        /* 底部交互验证区 */
+        .interactive-footer {
+            background-color: var(--slate-50);
+            border-top: 1px solid var(--slate-200);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tester-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--slate-700);
+        }
+
+        .tester-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tester-input {
+            width: 100px;
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid var(--slate-200);
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .tester-input:focus {
+            border-color: var(--primary-light);
+            outline: none;
+        }
+
+        .tester-results {
+            display: flex;
+            gap: 15px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background-color: var(--slate-200);
+            color: var(--slate-700);
+        }
+
+        .badge.pass {
+            background-color: var(--accent-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .badge.fail {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>韩信点兵：数学建模翻译器</h1>
+        <p>拖动滑块改变损失人数，观察计算机如何将“生活情境”翻译为“数学模型”</p>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>战斗损失人数下限 (Min)</span>
+                    <span class="value"><span id="lbl-loss-min">500</span> 人</span>
+                </div>
+                <input type="range" id="slide-loss-min" class="slider-input" min="400" max="700" value="500">
+            </div>
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>战斗损失人数上限 (Max)</span>
+                    <span class="value"><span id="lbl-loss-max">600</span> 人</span>
+                </div>
+                <input type="range" id="slide-loss-max" class="slider-input" min="400" max="700" value="600">
+            </div>
+        </div>
+
+        <!-- 数轴可视化 -->
+        <div class="visualizer-box">
+            <svg id="axis-svg" viewBox="0 0 800 120" width="100%" height="100%">
+                <!-- 背景总人数轴 -->
+                <rect x="50" y="40" width="700" height="16" rx="8" fill="#e2e8f0" />
+                
+                <!-- 损失人数区间 (灰色) -->
+                <rect id="lost-bar" x="473" y="40" width="47" height="16" fill="#cbd5e1" />
+                
+                <!-- 剩余人数可能区间 (高亮橙色) -->
+                <rect id="remain-bar" x="426" y="40" width="47" height="16" fill="#f59e0b" opacity="0.85" />
+                
+                <!-- 刻度与标注 -->
+                <line x1="50" y1="35" x2="50" y2="61" stroke="#64748b" stroke-width="2" />
+                <text x="50" y="25" font-size="12" fill="#64748b" text-anchor="middle">0人</text>
+
+                <line x1="750" y1="35" x2="750" y2="61" stroke="#64748b" stroke-width="2" />
+                <text x="750" y="25" font-size="12" fill="#64748b" text-anchor="middle">1500人 (原队伍)</text>
+
+                <!-- 动态刻度线 -->
+                <line id="tick-remain-min" x1="426" y1="40" x2="426" y2="75" stroke="#f59e0b" stroke-width="2" stroke-dasharray="2,2" />
+                <text id="txt-remain-min" x="426" y="92" font-size="13" font-weight="bold" fill="#d97706" text-anchor="middle">900人</text>
+
+                <line id="tick-remain-max" x1="473" y1="40" x2="473" y2="75" stroke="#f59e0b" stroke-width="2" stroke-dasharray="2,2" />
+                <text id="txt-remain-max" x="473" y="92" font-size="13" font-weight="bold" fill="#d97706" text-anchor="middle">1000人</text>
+                
+                <!-- 区域标签 -->
+                <text id="txt-range-desc" x="450" y="112" font-size="12" font-weight="bold" fill="#b45309" text-anchor="middle">🔍 枚举搜索范围</text>
+            </svg>
+        </div>
+
+        <!-- 翻译对照表 -->
+        <div class="translator-table">
+            <div class="table-header">
+                <div>生活情境 (输入)</div>
+                <div>数学分析 (桥梁)</div>
+                <div>计算机代码 (输出)</div>
+            </div>
+            
+            <!-- 范围条件 -->
+            <div class="table-row highlight-row">
+                <div class="col-lang">
+                    损失 <span class="dynamic-val" id="t1-loss-min">500</span> ~ <span class="dynamic-val" id="t1-loss-max">600</span> 人
+                </div>
+                <div class="col-arrow">剩余人数在区间</div>
+                <div class="col-math">
+                    <span class="dynamic-val" id="t1-math-min">900</span>
+                    <span class="static-op">&lt;=</span>
+                    <span>x</span>
+                    <span class="static-op">and</span>
+                    <span>x</span>
+                    <span class="static-op">&lt;=</span>
+                    <span class="dynamic-val" id="t1-math-max">1000</span>
+                </div>
+            </div>
+
+            <!-- 条件1 -->
+            <div class="table-row">
+                <div class="col-lang">3 人一排多 1 人</div>
+                <div class="col-arrow">人数除以 3 余 1</div>
+                <div class="col-math">
+                    <span>x</span>
+                    <span class="static-op">%</span>
+                    <span class="dynamic-val" style="color:#3b82f6; background-color:#eff6ff;">3</span>
+                    <span class="static-op">==</span>
+                    <span class="dynamic-val" style="color:#3b82f6; background-color:#eff6ff;">1</span>
+                </div>
+            </div>
+
+            <!-- 条件2 -->
+            <div class="table-row">
+                <div class="col-lang">5 人一排多 2 人</div>
+                <div class="col-arrow">人数除以 5 余 2</div>
+                <div class="col-math">
+                    <span>x</span>
+                    <span class="static-op">%</span>
+                    <span class="dynamic-val" style="color:#3b82f6; background-color:#eff6ff;">5</span>
+                    <span class="static-op">==</span>
+                    <span class="dynamic-val" style="color:#3b82f6; background-color:#eff6ff;">2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部交互验证区 -->
+    <div class="interactive-footer">
+        <div class="tester-title">💡 课堂互动：输入一个数尝试验证是否符合模型？</div>
+        <div class="tester-input-group">
+            <input type="number" id="tester-num" class="tester-input" value="907" min="1" max="1500">
+            <div class="tester-results">
+                <span id="chk-range" class="badge">范围检查</span>
+                <span id="chk-mod3" class="badge">除3余1</span>
+                <span id="chk-mod5" class="badge">除5余2</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slideLossMin = document.getElementById('slide-loss-min');
+    const slideLossMax = document.getElementById('slide-loss-max');
+    
+    const lblLossMin = document.getElementById('lbl-loss-min');
+    const lblLossMax = document.getElementById('lbl-loss-max');
+    
+    const t1LossMin = document.getElementById('t1-loss-min');
+    const t1LossMax = document.getElementById('t1-loss-max');
+    const t1MathMin = document.getElementById('t1-math-min');
+    const t1MathMax = document.getElementById('t1-math-max');
+
+    // SVG元素
+    const lostBar = document.getElementById('lost-bar');
+    const remainBar = document.getElementById('remain-bar');
+    const tickRemainMin = document.getElementById('tick-remain-min');
+    const tickRemainMax = document.getElementById('tick-remain-max');
+    const txtRemainMin = document.getElementById('txt-remain-min');
+    const txtRemainMax = document.getElementById('txt-remain-max');
+    const txtRangeDesc = document.getElementById('txt-range-desc');
+
+    // 验证器元素
+    const testerNum = document.getElementById('tester-num');
+    const chkRange = document.getElementById('chk-range');
+    const chkMod3 = document.getElementById('chk-mod3');
+    const chkMod5 = document.getElementById('chk-mod5');
+
+    // 常量定义
+    const TOTAL_SOLDIERS = 1500;
+    const SVG_WIDTH = 700; // 对应 50px 到 750px 的宽度
+    const SVG_START_X = 50;
+
+    // 转换人数到SVG坐标
+    function valToX(val) {
+        return SVG_START_X + (val / TOTAL_SOLDIERS) * SVG_WIDTH;
+    }
+
+    // 更新视图主函数
+    function updateVisualization() {
+        let lossMin = parseInt(slideLossMin.value);
+        let lossMax = parseInt(slideLossMax.value);
+
+        // 约束关系：下限不能大于上限
+        if (lossMin > lossMax) {
+            if (this === slideLossMin) {
+                slideLossMax.value = lossMin;
+                lossMax = lossMin;
+            } else {
+                slideLossMin.value = lossMax;
+                lossMin = lossMax;
+            }
+        }
+
+        // 计算剩余人数区间
+        const remainMin = TOTAL_SOLDIERS - lossMax;
+        const remainMax = TOTAL_SOLDIERS - lossMin;
+
+        // 1. 更新文本标签
+        lblLossMin.textContent = lossMin;
+        lblLossMax.textContent = lossMax;
+        t1LossMin.textContent = lossMin;
+        t1LossMax.textContent = lossMax;
+        t1MathMin.textContent = remainMin;
+        t1MathMax.textContent = remainMax;
+
+        // 2. 更新SVG图形
+        const xRemainMin = valToX(remainMin);
+        const xRemainMax = valToX(remainMax);
+        const xTotalEnd = valToX(TOTAL_SOLDIERS);
+
+        // 损失人数条 (从剩余最大值到总人数)
+        const lostWidth = xTotalEnd - xRemainMax;
+        lostBar.setAttribute('x', xRemainMax);
+        lostBar.setAttribute('width', lostWidth);
+
+        // 剩余人数可能区间条
+        const remainWidth = xRemainMax - xRemainMin;
+        remainBar.setAttribute('x', xRemainMin);
+        remainBar.setAttribute('width', Math.max(2, remainWidth)); // 至少保留2px可见
+
+        // 刻度线与文字位置
+        tickRemainMin.setAttribute('x1', xRemainMin);
+        tickRemainMin.setAttribute('x2', xRemainMin);
+        txtRemainMin.setAttribute('x', xRemainMin);
+        txtRemainMin.textContent = `${remainMin}人`;
+
+        tickRemainMax.setAttribute('x1', xRemainMax);
+        tickRemainMax.setAttribute('x2', xRemainMax);
+        txtRemainMax.setAttribute('x', xRemainMax);
+        txtRemainMax.textContent = `${remainMax}人`;
+
+        // 搜索范围描述文字居中
+        txtRangeDesc.setAttribute('x', xRemainMin + remainWidth / 2);
+
+        // 3. 触发验证器更新
+        validateNumber();
+    }
+
+    // 验证输入的数字
+    function validateNumber() {
+        const val = parseInt(testerNum.value);
+        const remainMin = TOTAL_SOLDIERS - parseInt(slideLossMax.value);
+        const remainMax = TOTAL_SOLDIERS - parseInt(slideLossMin.value);
+
+        if (isNaN(val)) {
+            resetBadges();
+            return;
+        }
+
+        // 验证范围
+        if (val >= remainMin && val <= remainMax) {
+            setBadgeStatus(chkRange, true, `范围符合 [${remainMin}, ${remainMax}]`);
+        } else {
+            setBadgeStatus(chkRange, false, '范围不符');
+        }
+
+        // 验证模3余1
+        if (val % 3 === 1) {
+            setBadgeStatus(chkMod3, true, `${val} % 3 == 1`);
+        } else {
+            setBadgeStatus(chkMod3, false, `${val} % 3 == ${val % 3}`);
+        }
+
+        // 验证模5余2
+        if (val % 5 === 2) {
+            setBadgeStatus(chkMod5, true, `${val} % 5 == 2`);
+        } else {
+            setBadgeStatus(chkMod5, false, `${val} % 5 == ${val % 5}`);
+        }
+    }
+
+    function setBadgeStatus(element, isPass, text) {
+        element.textContent = text;
+        if (isPass) {
+            element.className = 'badge pass';
+        } else {
+            element.className = 'badge fail';
+        }
+    }
+
+    function resetBadges() {
+        chkRange.className = 'badge';
+        chkRange.textContent = '范围检查';
+        chkMod3.className = 'badge';
+        chkMod3.textContent = '除3余1';
+        chkMod5.className = 'badge';
+        chkMod5.textContent = '除5余2';
+    }
+
+    // 绑定事件监听器
+    slideLossMin.addEventListener('input', updateVisualization);
+    slideLossMax.addEventListener('input', updateVisualization);
+    testerNum.addEventListener('input', validateNumber);
+
+    // 初始化运行
+    updateVisualization();
+</script>
+
+</body>
+</html>

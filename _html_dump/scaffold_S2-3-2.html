@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逻辑锁链：多条件绑定</title>
+    <style>
+        /* 全局样式与大屏适配 */
+        :root {
+            --bg-color: #0f141c;
+            --panel-bg: #1a2333;
+            --text-color: #e2e8f0;
+            --text-muted: #8a99ad;
+            --primary-gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --and-color: #00e676;
+            --and-glow: rgba(0, 230, 118, 0.3);
+            --or-color: #ff3d00;
+            --or-glow: rgba(255, 61, 0, 0.3);
+            --ring-border: #4a5a70;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 4:3 比例教学投影容器 */
+        .presentation-container {
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f141c 100%);
+            border: 3px solid #2e3e56;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 装饰性背景网格 */
+        .presentation-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 头部信息 */
+        .header {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 26px;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        /* 主操作区：逻辑锁链 */
+        .chain-stage {
+            position: relative;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            margin: 20px 0;
+        }
+
+        /* 背景连接线 */
+        .chain-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 8px;
+            background: #2e3e56;
+            transform: translateY(-50%);
+            z-index: 1;
+            border-radius: 4px;
+            transition: all 0.8s ease;
+        }
+
+        .chain-line.active {
+            background: linear-gradient(90deg, var(--primary-gold), #fff, var(--primary-gold));
+            box-shadow: 0 0 20px var(--primary-gold);
+        }
+
+        /* 铁环与插槽容器 */
+        .chain-elements {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 2;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* 铁环样式 */
+        .ring {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            border: 8px solid var(--ring-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 4px 10px rgba(255,255,255,0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .ring::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            pointer-events: none;
+        }
+
+        .ring-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ring-formula {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* 锁扣插槽 */
+        .slot {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            border: 3px dashed #4a5a70;
+            background: rgba(15, 20, 28, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .slot:hover {
+            border-color: #718096;
+            background: rgba(26, 35, 51, 0.8);
+        }
+
+        .slot.drag-over {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+            transform: scale(1.05);
+        }
+
+        .slot-placeholder {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            pointer-events: none;
+            line-height: 1.4;
+        }
+
+        /* 成功激活状态下的铁环 */
+        .ring.active {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 30px var(--gold-glow), inset 0 0 15px var(--gold-glow);
+            transform: scale(1.05);
+        }
+
+        .ring.active .ring-formula {
+            color: var(--primary-gold);
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+
+        /* 工具箱（符号选择区） */
+        .toolbox {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #2e3e56;
+            z-index: 2;
+        }
+
+        .toolbox-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+            text-align: center;
+        }
+
+        .symbol-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        /* 可拖拽/点击的符号卡片 */
+        .symbol-card {
+            width: 120px;
+            height: 54px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .symbol-card:active {
+            cursor: grabbing;
+        }
+
+        .symbol-card[data-type="and"] {
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: #ffffff;
+        }
+
+        .symbol-card[data-type="and"]:hover {
+            box-shadow: 0 0 15px var(--and-glow);
+            transform: translateY(-2px);
+        }
+
+        .symbol-card[data-type="or"] {
+            background: linear-gradient(135deg, #ff3d00 0%, #dd2c00 100%);
+            color: #ffffff;
+        }
+
+        .symbol-card[data-type="or"]:hover {
+            box-shadow: 0 0 15px var(--or-glow);
+            transform: translateY(-2px);
+        }
+
+        /* 选中状态（用于点击交互） */
+        .symbol-card.selected {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px #ffffff;
+            transform: scale(1.05);
+        }
+
+        .symbol-title {
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .symbol-desc {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        /* 已放入插槽的符号样式 */
+        .placed-symbol {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .placed-symbol[data-type="and"] {
+            background: var(--and-color);
+            color: #000;
+            box-shadow: 0 0 15px var(--and-glow);
+        }
+
+        .placed-symbol[data-type="or"] {
+            background: var(--or-color);
+            color: #fff;
+            box-shadow: 0 0 15px var(--or-glow);
+        }
+
+        /* 反馈与控制区 */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            z-index: 2;
+        }
+
+        .feedback-box {
+            flex-grow: 1;
+            background: rgba(15, 20, 28, 0.8);
+            border-radius: 8px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 15px;
+            border-left: 4px solid #4a5a70;
+            margin-right: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-box.success {
+            border-left-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+            font-weight: bold;
+        }
+
+        .feedback-box.warning {
+            border-left-color: var(--or-color);
+            background: rgba(255, 61, 0, 0.1);
+            color: #ff8a65;
+        }
+
+        .btn-reset {
+            height: 100%;
+            padding: 0 24px;
+            background: #2e3e56;
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-reset:hover {
+            background: #4a5a70;
+        }
+
+        .btn-reset:active {
+            transform: scale(0.95);
+        }
+
+        /* 成功时的特效粒子 */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            animation: sparkleAnim 1s linear infinite;
+        }
+
+        @keyframes sparkleAnim {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) rotate(360deg); opacity: 0; }
+        }
+
+        /* 提示操作的小手动画 */
+        .guide-tip {
+            position: absolute;
+            bottom: -25px;
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>逻辑锁链：多条件绑定</h1>
+            <p>拖拽或点击下方的逻辑符号，将三个余数等式连接成“必须同时成立”的整体</p>
+        </div>
+
+        <!-- 逻辑锁链展示区 -->
+        <div class="chain-stage" id="chainStage">
+            <div class="chain-line" id="chainLine"></div>
+            <div class="chain-elements">
+                <!-- 铁环 1 -->
+                <div class="ring" id="ring1">
+                    <span class="ring-title">条件一</span>
+                    <span class="ring-formula">x % 3 == 2</span>
+                </div>
+
+                <!-- 插槽 1 -->
+                <div class="slot" id="slot0" data-index="0">
+                    <div class="slot-placeholder">放入<br>符号</div>
+                    <div class="guide-tip">点击或拖入</div>
+                </div>
+
+                <!-- 铁环 2 -->
+                <div class="ring" id="ring2">
+                    <span class="ring-title">条件二</span>
+                    <span class="ring-formula">x % 5 == 3</span>
+                </div>
+
+                <!-- 插槽 2 -->
+                <div class="slot" id="slot1" data-index="1">
+                    <div class="slot-placeholder">放入<br>符号</div>
+                </div>
+
+                <!-- 铁环 3 -->
+                <div class="ring" id="ring3">
+                    <span class="ring-title">条件三</span>
+                    <span class="ring-formula">x % 7 == 2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具箱 -->
+        <div class="toolbox">
+            <p class="toolbox-title">可用逻辑符号（支持拖拽，或先点符号再点空格）</p>
+            <div class="symbol-container">
+                <div class="symbol-card" draggable="true" data-type="and" id="symAnd">
+                    <span class="symbol-title">且 (and)</span>
+                    <span class="symbol-desc">必须同时成立</span>
+                </div>
+                <div class="symbol-card" draggable="true" data-type="or" id="symOr">
+                    <span class="symbol-title">或 (or)</span>
+                    <span class="symbol-desc">满足任意一个</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 反馈与控制 -->
+        <div class="control-panel">
+            <div class="feedback-box" id="feedback">
+                请选择合适的逻辑符号，将三个独立的数学条件绑定在一起。
+            </div>
+            <button class="btn-reset" id="btnReset">重置锁链</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slots = document.querySelectorAll('.slot');
+            const symbols = document.querySelectorAll('.symbol-card');
+            const feedback = document.getElementById('feedback');
+            const btnReset = document.getElementById('btnReset');
+            const chainLine = document.getElementById('chainLine');
+            const rings = document.querySelectorAll('.ring');
+            const chainStage = document.getElementById('chainStage');
+
+            // 状态变量
+            let selectedSymbolType = null;
+            let slotStates = [null, null]; // 存储两个插槽的状态: 'and', 'or' 或 null
+            let sparkleInterval = null;
+
+            // --- 交互逻辑一：点击选择与放置 (对触屏/白板极友好) ---
+            
+            symbols.forEach(symbol => {
+                symbol.addEventListener('click', () => {
+                    // 如果已经选中，则取消选中
+                    if (symbol.classList.contains('selected')) {
+                        symbol.classList.remove('selected');
+                        selectedSymbolType = null;
+                    } else {
+                        // 清除其他选中
+                        symbols.forEach(s => s.classList.remove('selected'));
+                        symbol.classList.add('selected');
+                        selectedSymbolType = symbol.getAttribute('data-type');
+                    }
+                });
+            });
+
+            slots.forEach(slot => {
+                slot.addEventListener('click', () => {
+                    const index = parseInt(slot.getAttribute('data-index'));
+                    
+                    if (selectedSymbolType) {
+                        // 放置选中的符号
+                        placeSymbol(index, selectedSymbolType);
+                        // 清除符号选中状态
+                        symbols.forEach(s => s.classList.remove('selected'));
+                        selectedSymbolType = null;
+                    } else if (slotStates[index]) {
+                        // 如果插槽有东西且没选择新符号，点击则清空
+                        clearSlot(index);
+                    }
+                });
+            });
+
+            // --- 交互逻辑二：拖拽 (Drag and Drop) ---
+
+            symbols.forEach(symbol => {
+                symbol.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', symbol.getAttribute('data-type'));
+                    symbol.classList.add('selected');
+                });
+
+                symbol.addEventListener('dragend', () => {
+                    symbol.classList.remove('selected');
+                });
+            });
+
+            slots.forEach(slot => {
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    slot.classList.add('drag-over');
+                });
+
+                slot.addEventListener('dragleave', () => {
+                    slot.classList.remove('drag-over');
+                });
+
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slot.classList.remove('drag-over');
+                    const type = e.dataTransfer.getData('text/plain');
+                    const index = parseInt(slot.getAttribute('data-index'));
+                    if (type === 'and' || type === 'or') {
+                        placeSymbol(index, type);
+                    }
+                });
+            });
+
+            // --- 核心业务逻辑 ---
+
+            // 放置符号
+            function placeSymbol(slotIndex, type) {
+                slotStates[slotIndex] = type;
+                const slot = document.getElementById(`slot${slotIndex}`);
+                
+                // 渲染插槽内部
+                const label = type === 'and' ? '且 (and)' : '或 (or)';
+                slot.innerHTML = `
+                    <div class="placed-symbol" data-type="${type}">
+                        <span style="font-size: 15px;">${label}</span>
+                    </div>
+                `;
+                
+                checkLogic();
+            }
+
+            // 清空插槽
+            function clearSlot(slotIndex) {
+                slotStates[slotIndex] = null;
+                const slot = document.getElementById(`slot${slotIndex}`);
+                slot.innerHTML = `<div class="slot-placeholder">放入<br>符号</div>`;
+                
+                checkLogic();
+            }
+
+            // 逻辑判定
+            function checkLogic() {
+                // 停止之前的特效
+                stopSparkles();
+                chainLine.classList.remove('active');
+                rings.forEach(r => r.classList.remove('active'));
+
+                const [s1, s2] = slotStates;
+
+                if (s1 === null || s2 === null) {
+                    // 未填满
+                    feedback.className = 'feedback-box';
+                    feedback.textContent = '锁链还未闭合，请继续连接剩下的空缺。';
+                } else if (s1 === 'and' && s2 === 'and') {
+                    // 成功：全部为“且”
+                    feedback.className = 'feedback-box success';
+                    feedback.textContent = '🎉 太棒了！“且”将三个条件完美绑定！表示它们必须【同时成立】。';
+                    
+                    // 激活金色特效
+                    chainLine.classList.add('active');
+                    rings.forEach(r => r.classList.add('active'));
+                    startSparkles();
+                } else {
+                    // 错误：包含“或”
+                    feedback.className = 'feedback-box warning';
+                    if (s1 === 'or' && s2 === 'or') {
+                        feedback.textContent = '⚠️ 提示：“或”表示只要满足其中任意一个就可以。但我们需要三个条件【同时成立】哦！';
+                    } else {
+                        feedback.textContent = '⚠️ 提示：锁链中混入了“或”，这会导致部分条件变成“可选”，无法保证三个条件【同时成立】。';
+                    }
+                }
+            }
+
+            // 重置
+            btnReset.addEventListener('click', () => {
+                slotStates = [null, null];
+                slots.forEach((slot, index) => {
+                    if (index === 0) {
+                        slot.innerHTML = `
+                            <div class="slot-placeholder">放入<br>符号</div>
+                            <div class="guide-tip">点击或拖入</div>
+                        `;
+                    } else {
+                        slot.innerHTML = `<div class="slot-placeholder">放入<br>符号</div>`;
+                    }
+                });
+                symbols.forEach(s => s.classList.remove('selected'));
+                selectedSymbolType = null;
+                checkLogic();
+                feedback.className = 'feedback-box';
+                feedback.textContent = '请选择合适的逻辑符号，将三个独立的数学条件绑定在一起。';
+            });
+
+            // --- 视觉特效：金色粒子 ---
+
+            function startSparkles() {
+                sparkleInterval = setInterval(() => {
+                    createSparkle();
+                }, 150);
+            }
+
+            function stopSparkles() {
+                clearInterval(sparkleInterval);
+                const sparkles = document.querySelectorAll('.sparkle');
+                sparkles.forEach(s => s.remove());
+            }
+
+            function createSparkle() {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                
+                // 随机大小
+                const size = Math.random() * 8 + 6;
+                sparkle.style.width = `${size}px`;
+                sparkle.style.height = `${size}px`;
+                
+                // 在锁链区域内随机位置
+                const stageRect = chainStage.getBoundingClientRect();
+                const containerRect = document.querySelector('.presentation-container').getBoundingClientRect();
+                
+                const left = Math.random() * (stageRect.width - 100) + 50;
+                const top = Math.random() * (stageRect.height - 60) + 30;
+                
+                sparkle.style.left = `${left}px`;
+                sparkle.style.top = `${top}px`;
+                
+                chainStage.appendChild(sparkle);
+                
+                // 动画结束后移除
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

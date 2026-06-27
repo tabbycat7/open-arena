@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S1-2-1 检验复印机 - 探究规则的一致性</title>
+    <style>
+        /* 全局样式与课堂投影优化 */
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --highlight-yellow: #f1c40f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 4 / 3;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #e2e8f0;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #bdc3c7;
+        }
+
+        /* 主工作区 */
+        .workspace {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            background-color: #f8fafc;
+        }
+
+        /* 左侧：复印机动画区 */
+        .visual-panel {
+            flex: 1.2;
+            background: #edf2f7;
+            border-radius: 12px;
+            border: 2px dashed #cbd5e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        /* 右侧：控制与引导区 */
+        .control-panel {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 引导卡片 */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        /* 交互控制区 */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 0 #2980b9;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            box-shadow: 0 4px 0 #7f8c8d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-secondary.active {
+            background-color: #27ae60;
+            box-shadow: 0 4px 0 #219653;
+        }
+
+        /* 复印机组件样式 */
+        .copier-system {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 输入纸张 */
+        .paper-input-slot {
+            width: 160px;
+            height: 40px;
+            background: #718096;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .input-paper {
+            width: 130px;
+            height: 60px;
+            background: #fff;
+            border: 2px solid #cbd5e0;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .input-paper.feed-in {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        /* 复印机主体 */
+        .copier-body {
+            width: 280px;
+            height: 160px;
+            background: linear-gradient(135deg, #a0aec0, #718096);
+            border-radius: 12px;
+            border: 4px solid #4a5568;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        /* 扫描激光线 */
+        .laser-line {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            height: 4px;
+            background: rgba(46, 204, 113, 0.8);
+            box-shadow: 0 0 12px #2ecc71, 0 0 4px #2ecc71;
+            top: 10px;
+            opacity: 0;
+            z-index: 12;
+        }
+
+        @keyframes scan {
+            0% { top: 10px; opacity: 1; }
+            50% { top: 140px; opacity: 1; }
+            100% { top: 10px; opacity: 0; }
+        }
+
+        .scanning .laser-line {
+            animation: scan 1.2s ease-in-out infinite;
+        }
+
+        /* 机器面板细节 */
+        .copier-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: #ebf8ff;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .indicators {
+            display: flex;
+            gap: 6px;
+        }
+
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4a5568;
+        }
+
+        .led.green { background-color: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
+        .led.yellow { background-color: #f1c40f; }
+        .led.red { background-color: #e74c3c; }
+
+        .scanning .led.yellow {
+            animation: blink 0.3s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { background-color: #f1c40f; box-shadow: 0 0 6px #f1c40f; }
+            to { background-color: #718096; box-shadow: none; }
+        }
+
+        .copier-screen {
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 6px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #63b3ed;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 输出纸张 */
+        .paper-output-slot {
+            width: 220px;
+            height: 20px;
+            background: #2d3748;
+            border-radius: 0 0 10px 10px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .output-paper {
+            width: 200px;
+            height: 180px;
+            background: #fff;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            position: absolute;
+            top: -10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.5s;
+            z-index: 2;
+            transform: translateY(0);
+            opacity: 0;
+        }
+
+        .output-paper.spit-out {
+            transform: translateY(25px);
+            opacity: 1;
+        }
+
+        /* 报告单内部样式 */
+        .report-title {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--text-muted);
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .formula-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* 高亮模式下的样式变化 */
+        .highlight-active .formula-row {
+            background-color: #f7fafc;
+        }
+
+        .highlight-active .constant-part {
+            background-color: #ffe082;
+            color: #b7791f;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 1px solid #f6ad55;
+        }
+
+        .highlight-active .variable-part {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .highlight-active .result-part {
+            color: var(--success-color);
+        }
+
+        /* 底部提示区 */
+        .footer-tips {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: auto;
+        }
+
+        .footer-tips p {
+            font-size: 14px;
+            color: #2b6cb0;
+            line-height: 1.5;
+        }
+
+        /* 动画辅助类 */
+        .shake {
+            animation: shake-anim 0.5s linear;
+        }
+
+        @keyframes shake-anim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>S1-2-1 检验复印机</h1>
+        <p>仔细观察：当我们手动检验不同的数字时，我们做的事情是不是一模一样的？</p>
+    </div>
+
+    <!-- 主工作区 -->
+    <div class="workspace">
+        <!-- 左侧：复印机动画 -->
+        <div class="visual-panel">
+            <div class="copier-system">
+                <!-- 输入槽 -->
+                <div class="paper-input-slot">
+                    <div class="input-paper" id="inputPaper">1001</div>
+                </div>
+
+                <!-- 复印机主体 -->
+                <div class="copier-body" id="copierBody">
+                    <div class="laser-line"></div>
+                    <div class="copier-panel">
+                        <span class="brand">ALGO-PRINT 500</span>
+                        <div class="indicators">
+                            <span class="led green" id="ledGreen"></span>
+                            <span class="led yellow" id="ledYellow"></span>
+                            <span class="led red" id="ledRed"></span>
+                        </div>
+                    </div>
+                    <div class="copier-screen" id="copierScreen">
+                        READY TO CHECK
+                    </div>
+                </div>
+
+                <!-- 输出槽 -->
+                <div class="paper-output-slot">
+                    <div class="output-paper" id="outputPaper">
+                        <div class="report-title">🔍 检验报告单</div>
+                        <div class="formula-row">
+                            <span class="variable-part" id="v1">1001</span>
+                            <span class="constant-part">÷ 3</span>
+                            <span>=</span>
+                            <span class="result-part" id="r1">333...2</span>
+                        </div>
+                        <div class="formula-row">
+                            <span class="variable-part" id="v2">1001</span>
+                            <span class="constant-part">÷ 5</span>
+                            <span>=</span>
+                            <span class="result-part" id="r2">200...1</span>
+                        </div>
+                        <div class="formula-row">
+                            <span class="variable-part" id="v3">1001</span>
+                            <span class="constant-part">÷ 7</span>
+                            <span>=</span>
+                            <span class="result-part" id="r3">143...0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：控制与引导 -->
+        <div class="control-panel">
+            <!-- 交互控制 -->
+            <div class="card controls">
+                <h3>⚙️ 控制台</h3>
+                <div class="input-group">
+                    <label for="numInput">输入待检数字:</label>
+                    <input type="number" id="numInput" value="1001" min="1" max="99999">
+                </div>
+                <button class="btn btn-primary" id="btnNext">
+                    <span>📥 送入复印机检验</span>
+                </button>
+                <button class="btn btn-secondary" id="btnHighlight">
+                    <span>💡 对比：找相同点</span>
+                </button>
+            </div>
+
+            <!-- 思考引导 -->
+            <div class="card">
+                <h3>🤔 课堂思考</h3>
+                <p>1. 试着连续点击“送入复印机检验”，观察输入数字变为 <strong>1002</strong>、<strong>1003</strong> 时，报告单上的计算公式。</p>
+                <p style="margin-top: 8px;">2. 开启<strong>“对比：找相同点”</strong>，看看哪些部分被高亮了？这些高亮的部分在每次检验中变过吗？</p>
+            </div>
+
+            <!-- 底部知识总结 -->
+            <div class="footer-tips">
+                <p><strong>💡 老师引导语：</strong><br>
+                “看！无论我们输入什么数字，复印机吐出的报告单格式都是一模一样的。它每次都在雷打不动地计算<strong>除以3、除以5、除以7</strong>这三道题。这就是算法的<strong>‘规则一致性’</strong>！”</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const inputPaper = document.getElementById('inputPaper');
+    const outputPaper = document.getElementById('outputPaper');
+    const copierBody = document.getElementById('copierBody');
+    const copierScreen = document.getElementById('copierScreen');
+    const numInput = document.getElementById('numInput');
+    const btnNext = document.getElementById('btnNext');
+    const btnHighlight = document.getElementById('btnHighlight');
+
+    const ledGreen = document.getElementById('ledGreen');
+    const ledYellow = document.getElementById('ledYellow');
+
+    // 报告单内部元素
+    const v1 = document.getElementById('v1');
+    const v2 = document.getElementById('v2');
+    const v3 = document.getElementById('v3');
+    const r1 = document.getElementById('r1');
+    const r2 = document.getElementById('r2');
+    const r3 = document.getElementById('r3');
+
+    let isRunning = false;
+    let highlightActive = false;
+
+    // 计算除法结果
+    function calculateDivisions(num) {
+        const d3 = Math.floor(num / 3);
+        const m3 = num % 3;
+        const d5 = Math.floor(num / 5);
+        const m5 = num % 5;
+        const d7 = Math.floor(num / 7);
+        const m7 = num % 7;
+
+        return {
+            r3: `${d3}...${m3}`,
+            r5: `${d5}...${m5}`,
+            r7: `${d7}...${m7}`
+        };
+    }
+
+    // 执行复印动画
+    function runCopier(targetNum) {
+        if (isRunning) return;
+        isRunning = true;
+        btnNext.disabled = true;
+
+        // 1. 更新输入纸张上的数字，并准备送入
+        inputPaper.textContent = targetNum;
+        inputPaper.classList.remove('feed-in');
+        outputPaper.classList.remove('spit-out');
+
+        // 强刷DOM
+        void inputPaper.offsetWidth;
+
+        // 2. 纸张送入机器
+        setTimeout(() => {
+            inputPaper.classList.add('feed-in');
+            copierScreen.textContent = "FEEDING...";
+            copierScreen.style.color = "#f1c40f";
+        }, 100);
+
+        // 3. 机器开始震动和扫描
+        setTimeout(() => {
+            copierBody.classList.add('scanning', 'shake');
+            copierScreen.textContent = "CHECKING...";
+            copierScreen.style.color = "#2ecc71";
+            ledGreen.classList.remove('green');
+            ledYellow.classList.add('yellow');
+        }, 700);
+
+        // 4. 停止扫描，生成结果并吐出报告单
+        setTimeout(() => {
+            copierBody.classList.remove('scanning', 'shake');
+            ledYellow.classList.remove('yellow');
+            ledGreen.classList.add('green');
+            copierScreen.textContent = "PRINTING...";
+            copierScreen.style.color = "#63b3ed";
+
+            // 计算并填入新数据
+            const results = calculateDivisions(targetNum);
+            v1.textContent = targetNum;
+            v2.textContent = targetNum;
+            v3.textContent = targetNum;
+            r1.textContent = results.r3;
+            r2.textContent = results.r5;
+            r3.textContent = results.r7;
+
+            // 吐出纸张
+            outputPaper.classList.add('spit-out');
+        }, 2000);
+
+        // 5. 恢复就绪状态
+        setTimeout(() => {
+            copierScreen.textContent = "READY";
+            copierScreen.style.color = "#63b3ed";
+            btnNext.disabled = false;
+            isRunning = false;
+        }, 2800);
+    }
+
+    // 初始化运行一次
+    runCopier(1001);
+
+    // 事件监听：点击检验下一个
+    btnNext.addEventListener('click', () => {
+        let currentNum = parseInt(numInput.value, 10);
+        if (isNaN(currentNum)) currentNum = 1001;
+        
+        // 自动递增输入框的值，方便连续演示
+        const nextNum = currentNum + 1;
+        numInput.value = nextNum;
+        
+        runCopier(nextNum);
+    });
+
+    // 监听手动输入变化
+    numInput.addEventListener('change', () => {
+        let val = parseInt(numInput.value, 10);
+        if (isNaN(val) || val < 1) {
+            numInput.value = 1001;
+        }
+    });
+
+    // 事件监听：高亮对比
+    btnHighlight.addEventListener('click', () => {
+        highlightActive = !highlightActive;
+        if (highlightActive) {
+            outputPaper.classList.add('highlight-active');
+            btnHighlight.classList.add('active');
+            btnHighlight.innerHTML = "✨ 正在高亮相同规则";
+        } else {
+            outputPaper.classList.remove('highlight-active');
+            btnHighlight.classList.remove('active');
+            btnHighlight.innerHTML = "💡 对比：找相同点";
+        }
+    });
+</script>
+
+</body>
+</html>

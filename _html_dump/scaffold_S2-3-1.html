@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韩信点兵：多条件逻辑过滤器</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 100vw;
+            height: 75vw; /* 4:3 */
+            max-width: 1024px;
+            max-height: 768px;
+            background-color: var(--card-bg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            padding: 20px 30px;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0));
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .title-area h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .title-area p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .question-badge {
+            background-color: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* 主交互区域 */
+        .main-layout {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 85px);
+        }
+
+        /* 左侧可视化画布 */
+        .canvas-panel {
+            flex: 1.3;
+            background-color: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #filter-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 右侧控制面板 */
+        .control-panel {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 数字发射器按钮 */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .num-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .num-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(56, 189, 248, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .num-btn .sub-desc {
+            font-size: 10px;
+            font-weight: normal;
+            color: var(--text-muted);
+        }
+
+        /* 滤网控制开关 */
+        .filter-switch-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-switch-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .filter-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .filter-formula {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* 现代滑动开关 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #475569;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* 实时结论与教学引导 */
+        .edu-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+
+        .edu-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .highlight-box {
+            background-color: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 10px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .highlight-box.success-box {
+            background-color: rgba(74, 222, 128, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--bg-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #7dd3fc;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 滤网SVG样式 */
+        .filter-mesh {
+            stroke-dasharray: 6 4;
+            transition: stroke 0.3s, stroke-width 0.3s;
+        }
+        .filter-mesh.active {
+            stroke: var(--primary);
+            stroke-width: 4;
+            animation: mesh-flow 2s linear infinite;
+        }
+        .filter-mesh.inactive {
+            stroke: #475569;
+            stroke-width: 2;
+            stroke-dasharray: none;
+        }
+
+        @keyframes mesh-flow {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="title-area">
+            <h1>韩信点兵：多条件逻辑过滤器</h1>
+            <p>探索“且（AND）”逻辑在多条件筛选中的关键作用</p>
+        </div>
+        <div class="question-badge">问题节点 S2-3-1</div>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-layout">
+        <!-- 左侧：SVG 物理过滤器动画 -->
+        <div class="canvas-panel">
+            <svg id="filter-svg" viewBox="0 0 480 520">
+                <!-- 渐变定义 -->
+                <defs>
+                    <linearGradient id="pipe-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#1e293b" />
+                        <stop offset="50%" stop-color="#334155" />
+                        <stop offset="100%" stop-color="#1e293b" />
+                    </linearGradient>
+                    <linearGradient id="bucket-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#0f172a" />
+                        <stop offset="100%" stop-color="#1e293b" />
+                    </linearGradient>
+                </defs>
+
+                <!-- 背景管道/轨道 -->
+                <rect x="160" y="20" width="80" height="400" fill="url(#pipe-grad)" rx="10" opacity="0.5" />
+                
+                <!-- 垃圾滑道（分流不满足条件的数） -->
+                <path d="M 240 100 Q 340 120 360 200 T 380 420" fill="none" stroke="#334155" stroke-width="4" stroke-dasharray="5 5" />
+                <path d="M 240 210 Q 340 230 360 290 T 380 420" fill="none" stroke="#334155" stroke-width="4" stroke-dasharray="5 5" />
+                <path d="M 240 320 Q 340 340 360 380 T 380 420" fill="none" stroke="#334155" stroke-width="4" stroke-dasharray="5 5" />
+
+                <!-- 滤网 1 (÷3余2) -->
+                <g id="gate-0">
+                    <line x1="150" y1="100" x2="250" y2="100" class="filter-mesh active" id="mesh-0" />
+                    <circle cx="200" cy="100" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+                    <text x="200" y="104" font-size="11" fill="#38bdf8" font-weight="bold" text-anchor="middle">3n+2</text>
+                    <text x="85" y="104" font-size="12" fill="#94a3b8" text-anchor="end">滤网一 (÷3余2)</text>
+                    <!-- 状态指示灯 -->
+                    <circle cx="140" cy="100" r="5" fill="#4ade80" id="light-0" />
+                </g>
+
+                <!-- 滤网 2 (÷5余4) -->
+                <g id="gate-1">
+                    <line x1="150" y1="210" x2="250" y2="210" class="filter-mesh active" id="mesh-1" />
+                    <circle cx="200" cy="210" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+                    <text x="200" y="214" font-size="11" fill="#38bdf8" font-weight="bold" text-anchor="middle">5n+4</text>
+                    <text x="85" y="214" font-size="12" fill="#94a3b8" text-anchor="end">滤网二 (÷5余4)</text>
+                    <circle cx="140" cy="210" r="5" fill="#4ade80" id="light-1" />
+                </g>
+
+                <!-- 滤网 3 (÷7余6) -->
+                <g id="gate-2">
+                    <line x1="150" y1="320" x2="250" y2="320" class="filter-mesh active" id="mesh-2" />
+                    <circle cx="200" cy="320" r="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+                    <text x="200" y="324" font-size="11" fill="#38bdf8" font-weight="bold" text-anchor="middle">7n+6</text>
+                    <text x="85" y="324" font-size="12" fill="#94a3b8" text-anchor="end">滤网三 (÷7余6)</text>
+                    <circle cx="140" cy="320" r="5" fill="#4ade80" id="light-2" />
+                </g>
+
+                <!-- 底部目标桶 -->
+                <g transform="translate(150, 420)">
+                    <path d="M 10 0 L 0 50 Q 0 60 10 60 L 90 60 Q 100 60 100 50 L 90 0 Z" fill="url(#bucket-grad)" stroke="#4ade80" stroke-width="2" />
+                    <text x="50" y="35" font-size="12" fill="#4ade80" font-weight="bold" text-anchor="middle">符合条件桶</text>
+                </g>
+
+                <!-- 侧边废弃桶 -->
+                <g transform="translate(330, 420)">
+                    <path d="M 10 0 L 0 50 Q 0 60 10 60 L 90 60 Q 100 60 100 50 L 90 0 Z" fill="url(#bucket-grad)" stroke="#f87171" stroke-width="2" />
+                    <text x="50" y="35" font-size="12" fill="#f87171" font-weight="bold" text-anchor="middle">未全满足/废弃</text>
+                </g>
+
+                <!-- 动态小球容器 -->
+                <g id="balls-container"></g>
+            </svg>
+        </div>
+
+        <!-- 右侧：控制与教学引导 -->
+        <div class="control-panel">
+            <!-- 滤网开关控制 -->
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    过滤器开关控制 (点击切换)
+                </div>
+                <div class="filter-switch-list">
+                    <div class="filter-switch-item">
+                        <div class="filter-info">
+                            <span class="filter-name">滤网一 (除以3余2)</span>
+                            <span class="filter-formula">满足条件：X % 3 == 2</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-0" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter-switch-item">
+                        <div class="filter-info">
+                            <span class="filter-name">滤网二 (除以5余4)</span>
+                            <span class="filter-formula">满足条件：X % 5 == 4</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-1" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter-switch-item">
+                        <div class="filter-info">
+                            <span class="filter-name">滤网三 (除以7余6)</span>
+                            <span class="filter-formula">满足条件：X % 7 == 6</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-2" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 投放测试数字 -->
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    选择数字进行测试投放
+                </div>
+                <div class="number-grid">
+                    <button class="num-btn" data-val="17">
+                        <span>17</span>
+                        <span class="sub-desc">全不满足</span>
+                    </button>
+                    <button class="num-btn" data-val="8">
+                        <span>8</span>
+                        <span class="sub-desc">仅满足÷3</span>
+                    </button>
+                    <button class="num-btn" data-val="14">
+                        <span>14</span>
+                        <span class="sub-desc">满足÷3,÷5</span>
+                    </button>
+                    <button class="num-btn" data-val="20">
+                        <span>20</span>
+                        <span class="sub-desc">满足÷3,÷7</span>
+                    </button>
+                    <button class="num-btn" data-val="34">
+                        <span>34</span>
+                        <span class="sub-desc">满足÷5,÷7</span>
+                    </button>
+                    <button class="num-btn" data-val="104">
+                        <span>104</span>
+                        <span class="sub-desc">完美满足!</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 教学引导与结论 -->
+            <div class="card edu-panel">
+                <div>
+                    <div class="card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        课堂观察与思考
+                    </div>
+                    <div class="edu-text" id="edu-feedback">
+                        请点击上方数字，观察它是如何通过或被滤网拦截的。尝试关闭某些滤网，看看会发生什么。
+                    </div>
+                </div>
+                
+                <div id="status-box" class="highlight-box">
+                    💡 思考：如果只满足“除以3余2”，像 8 这样的数就会混入最终的目标桶。所以三个条件必须<strong>同时满足（逻辑“与”关系）</strong>！
+                </div>
+
+                <div class="action-bar">
+                    <button class="action-btn btn-secondary" id="btn-clear">清空小球</button>
+                    <button class="action-btn btn-primary" id="btn-auto">自动连续投放</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 状态管理
+    const state = {
+        gates: [true, true, true], // 滤网1, 2, 3 是否启用
+        balls: [],
+        autoInterval: null,
+        isAuto: false
+    };
+
+    // 滤网数学条件
+    const gateConditions = [
+        (val) => val % 3 === 2,
+        (val) => val % 5 === 4,
+        (val) => val % 7 === 6
+    ];
+
+    // DOM 元素
+    const svg = document.getElementById('filter-svg');
+    const ballsContainer = document.getElementById('balls-container');
+    const eduFeedback = document.getElementById('edu-feedback');
+    const statusBox = document.getElementById('status-box');
+    const btnAuto = document.getElementById('btn-auto');
+    const btnClear = document.getElementById('btn-clear');
+
+    // 初始化开关监听
+    for (let i = 0; i < 3; i++) {
+        const sw = document.getElementById(`switch-${i}`);
+        sw.addEventListener('change', (e) => {
+            state.gates[i] = e.target.checked;
+            updateGateVisuals(i);
+            updateEduFeedback();
+        });
+    }
+
+    // 按钮投放监听
+    document.querySelectorAll('.num-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = parseInt(btn.getAttribute('data-val'));
+            spawnBall(val);
+        });
+    });
+
+    // 清空按钮
+    btnClear.addEventListener('click', () => {
+        state.balls = [];
+        ballsContainer.innerHTML = '';
+    });
+
+    // 自动投放
+    btnAuto.addEventListener('click', () => {
+        if (state.isAuto) {
+            clearInterval(state.autoInterval);
+            btnAuto.textContent = '自动连续投放';
+            btnAuto.classList.remove('btn-secondary');
+            btnAuto.classList.add('btn-primary');
+            state.isAuto = false;
+        } else {
+            btnAuto.textContent = '停止投放';
+            btnAuto.classList.remove('btn-primary');
+            btnAuto.classList.add('btn-secondary');
+            state.isAuto = true;
+            state.autoInterval = setInterval(() => {
+                // 随机产生一些测试数
+                const testPool = [8, 14, 17, 20, 34, 104, 29, 44, 59, 11];
+                const randomVal = testPool[Math.floor(Math.random() * testPool.length)];
+                spawnBall(randomVal);
+            }, 1200);
+        }
+    });
+
+    // 更新滤网视觉状态
+    function updateGateVisuals(index) {
+        const mesh = document.getElementById(`mesh-${index}`);
+        const light = document.getElementById(`light-${index}`);
+        if (state.gates[index]) {
+            mesh.setAttribute('class', 'filter-mesh active');
+            light.setAttribute('fill', '#4ade80');
+        } else {
+            mesh.setAttribute('class', 'filter-mesh inactive');
+            light.setAttribute('fill', '#94a3b8');
+        }
+    }
+
+    // 动态更新教学反馈文字
+    function updateEduFeedback() {
+        const activeCount = state.gates.filter(g => g).length;
+        if (activeCount === 3) {
+            eduFeedback.innerHTML = "<strong>当前状态：严格筛选（三条件并存）</strong><br>只有同时满足三个条件的完美数字（如 104）才能安全落入左侧的【符合条件桶】。其余数字都会被精准拦截并分流。";
+            statusBox.className = "highlight-box success-box";
+            statusBox.innerHTML = "✅ 完美！这说明在编程解决韩信点兵时，必须使用 <strong>条件1 且 条件2 且 条件3</strong> 的并列逻辑。";
+        } else if (activeCount > 0) {
+            const disabledGates = [];
+            if (!state.gates[0]) disabledGates.push("一");
+            if (!state.gates[1]) disabledGates.push("二");
+            if (!state.gates[2]) disabledGates.push("三");
+            eduFeedback.innerHTML = `<strong>当前状态：滤网 ${disabledGates.join('、')} 已关闭！</strong><br>注意观察！现在一些原本不符合完整条件的数字（例如，若关闭滤网二和三，数字 8 就会通过）也混入了【符合条件桶】！`;
+            statusBox.className = "highlight-box";
+            statusBox.innerHTML = "⚠️ 警告：如果只满足部分条件，就会筛选出错误的答案！这证明了多条件必须<strong>同时满足</strong>，缺一不可。";
+        } else {
+            eduFeedback.innerHTML = "<strong>当前状态：所有滤网已关闭！</strong><br>没有任何筛选限制，所有数字都直接掉落进目标桶。这显然无法帮韩信点出正确的兵力。";
+            statusBox.className = "highlight-box";
+            statusBox.innerHTML = "❌ 提示：不设置任何条件，程序将无法进行任何有效筛选。";
+        }
+    }
+
+    // 产生小球
+    function spawnBall(value) {
+        const id = 'ball-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        const ballEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        ballEl.setAttribute('id', id);
+        
+        // 小球外壳
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('r', '16');
+        circle.setAttribute('fill', '#38bdf8');
+        circle.setAttribute('stroke', '#0f172a');
+        circle.setAttribute('stroke-width', '2');
+        
+        // 小球文字
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dy', '4');
+        text.setAttribute('fill', '#0f172a');
+        text.setAttribute('font-size', '12');
+        text.setAttribute('font-weight', 'bold');
+        text.textContent = value;
+
+        ballEl.appendChild(circle);
+        ballEl.appendChild(text);
+        ballsContainer.appendChild(ballEl);
+
+        const ballState = {
+            id: id,
+            element: ballEl,
+            value: value,
+            x: 200,
+            y: 30,
+            targetY: 100,
+            currentGate: 0,
+            status: 'falling', // falling, checking, deflecting, done
+            deflectPath: null,
+            deflectProgress: 0
+        };
+
+        state.balls.push(ballState);
+    }
+
+    // 动画主循环
+    function animate() {
+        const speed = 3;
+        const deflectSpeed = 0.04;
+
+        for (let i = state.balls.length - 1; i >= 0; i--) {
+            const ball = state.balls[i];
+
+            if (ball.status === 'falling') {
+                if (ball.y < ball.targetY) {
+                    ball.y += speed;
+                } else {
+                    // 到达滤网，进行判定
+                    const gateIdx = ball.currentGate;
+                    if (gateIdx < 3) {
+                        const gateActive = state.gates[gateIdx];
+                        const conditionMet = gateConditions[gateIdx](ball.value);
+
+                        if (!gateActive || conditionMet) {
+                            // 滤网关闭，或者数字满足条件 -> 通过
+                            ball.currentGate++;
+                            if (ball.currentGate < 3) {
+                                ball.targetY = ball.currentGate === 1 ? 210 : 320;
+                            } else {
+                                ball.targetY = 430; // 掉入目标桶
+                            }
+                        } else {
+                            // 滤网开启且不满足条件 -> 弹走分流
+                            ball.status = 'deflecting';
+                            ball.deflectProgress = 0;
+                            // 规划分流曲线路径
+                            ball.deflectPath = getDeflectPath(gateIdx);
+                            // 改变球的颜色表示被拦截
+                            ball.element.firstChild.setAttribute('fill', '#f87171');
+                        }
+                    } else {
+                        // 成功落入目标桶
+                        ball.status = 'done';
+                        // 渐隐消失
+                        fadeOutBall(ball);
+                    }
+                }
+            } else if (ball.status === 'deflecting') {
+                if (ball.deflectProgress < 1) {
+                    ball.deflectProgress += deflectSpeed;
+                    const pt = ball.deflectPath.getPointAtLength(ball.deflectProgress * ball.deflectPath.getTotalLength());
+                    ball.x = pt.x;
+                    ball.y = pt.y;
+                } else {
+                    ball.status = 'done';
+                    fadeOutBall(ball);
+                }
+            }
+
+            // 更新DOM位置
+            ball.element.setAttribute('transform', `translate(${ball.x}, ${ball.y})`);
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    // 获取分流曲线路径
+    function getDeflectPath(gateIdx) {
+        const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        let d = '';
+        if (gateIdx === 0) {
+            d = "M 200 100 Q 340 120 360 200 T 380 430";
+        } else if (gateIdx === 1) {
+            d = "M 200 210 Q 340 230 360 290 T 380 430";
+        } else {
+            d = "M 200 320 Q 340 340 360 380 T 380 430";
+        }
+        pathEl.setAttribute('d', d);
+        return pathEl;
+    }
+
+    // 渐隐并移除小球
+    function fadeOutBall(ball) {
+        ball.element.style.transition = 'opacity 0.8s ease';
+        ball.element.style.opacity = '0';
+        setTimeout(() => {
+            if (ball.element.parentNode) {
+                ball.element.parentNode.removeChild(ball.element);
+            }
+            const idx = state.balls.indexOf(ball);
+            if (idx > -1) state.balls.splice(idx, 1);
+        }, 800);
+    }
+
+    // 启动动画
+    requestAnimationFrame(animate);
+    updateEduFeedback();
+</script>
+</body>
+</html>

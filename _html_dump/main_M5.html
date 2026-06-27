@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多重逻辑条件探索器</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --success-color: #2ecc71;
+            --warning-color: #e74c3c;
+            --control-color: #ffab19;
+            --control-dark: #cf8b10;
+            --operator-color: #59c059;
+            --operator-dark: #3e8e3e;
+            --block-text: #ffffff;
+            --bg-workspace: #f8f9fa;
+            --bg-stage: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #eaeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .classroom-container {
+            width: 1024px;
+            height: 768px;
+            background-color: #ffffff;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 顶部导航/标题 */
+        .header {
+            background-color: #34495e;
+            color: #ffffff;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #2c3e50;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 左侧：代码构建区 */
+        .workspace-panel {
+            width: 60%;
+            background-color: var(--bg-workspace);
+            border-right: 2px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+        }
+
+        /* 右侧：运行模拟器 */
+        .simulator-panel {
+            width: 40%;
+            background-color: #f1f2f6;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        /* 结构选择器选项卡 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 12px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 0 #357abd;
+        }
+
+        /* 积木搭建区 */
+        .blocks-area {
+            flex: 1;
+            background-color: #ffffff;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+        }
+
+        /* Scratch 风格积木样式 */
+        .scratch-block {
+            color: var(--block-text);
+            font-weight: bold;
+            font-size: 16px;
+            user-select: none;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+            font-family: Consolas, Monaco, monospace, sans-serif;
+        }
+
+        /* 控制类积木 (C型) */
+        .control-block {
+            background-color: var(--control-color);
+            border-left: 8px solid var(--control-dark);
+            border-radius: 8px;
+            padding: 12px 16px;
+            width: 100%;
+            margin: 6px 0;
+        }
+
+        .control-block-nested {
+            background-color: var(--control-color);
+            border-left: 8px solid var(--control-dark);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0 8px 24px;
+            width: calc(100% - 24px);
+        }
+
+        /* 运算类积木 (六角形/椭圆) */
+        .operator-block {
+            background-color: var(--operator-color);
+            border: 2px solid var(--operator-dark);
+            border-radius: 20px;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px;
+            vertical-align: middle;
+        }
+
+        .operator-select {
+            background-color: var(--operator-dark);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .cond-tag {
+            background-color: rgba(255,255,255,0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        /* 动作积木 */
+        .action-block {
+            background-color: #4c97ff;
+            border-left: 8px solid #3373cc;
+            border-radius: 4px;
+            padding: 8px 16px;
+            margin: 8px 0 8px 24px;
+            display: inline-block;
+        }
+
+        /* 提示面板 */
+        .info-panel {
+            background-color: #eef5fc;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .info-panel strong {
+            color: var(--primary-color);
+        }
+
+        /* 模拟器舞台 */
+        .stage {
+            flex: 1;
+            background-color: var(--bg-stage);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* 舞台角色与对话框 */
+        .sprite-area {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .sprite {
+            width: 70px;
+            height: 70px;
+            background-color: #ff8c1a;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 3px solid white;
+            position: relative;
+        }
+
+        /* 拟人化眼睛 */
+        .sprite::before, .sprite::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 20px;
+        }
+        .sprite::before { left: 20px; }
+        .sprite::after { right: 20px; }
+
+        .bubble {
+            background-color: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            position: relative;
+            max-width: 220px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            line-height: 1.4;
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 20px;
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* 运行结果显示器 */
+        .monitor {
+            background-color: rgba(0, 0, 0, 0.75);
+            border: 2px solid #4f5d73;
+            border-radius: 6px;
+            padding: 12px;
+            flex: 1;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            font-family: monospace;
+        }
+
+        .monitor-header {
+            color: #00ffcc;
+            font-size: 12px;
+            border-bottom: 1px solid #4f5d73;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .monitor-screen {
+            flex: 1;
+            color: #ffffff;
+            font-size: 15px;
+            overflow-y: auto;
+            line-height: 1.6;
+            word-break: break-all;
+            max-height: 160px;
+        }
+
+        .number-tag {
+            display: inline-block;
+            background-color: #34495e;
+            padding: 2px 6px;
+            margin: 3px;
+            border-radius: 4px;
+            border: 1px solid #4f5d73;
+        }
+
+        .number-tag.correct {
+            background-color: #27ae60;
+            border-color: #2ecc71;
+            color: #fff;
+            font-weight: bold;
+            animation: pulse 1s infinite alternate;
+        }
+
+        /* 调试反馈面板 */
+        .feedback-panel {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .feedback-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .feedback-content {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .status-success {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        /* 控制按钮 */
+        .control-bar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-run {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 0 #27ae60;
+        }
+
+        .btn-run:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #27ae60;
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+            box-shadow: 0 4px 0 #7f8c8d;
+        }
+
+        .btn-reset:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #7f8c8d;
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.3);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 顶部标题栏 -->
+    <div class="header">
+        <h1>🧩 多重逻辑条件探索器</h1>
+        <div class="subtitle">寻找 1000 到 1100 之间，除以3余2、除以5余4、且除以7余6的神秘数字</div>
+    </div>
+
+    <!-- 主体交互区 -->
+    <div class="main-content">
+        <!-- 左侧：代码构建区 -->
+        <div class="workspace-panel">
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-single">单一如果 + 组合条件</button>
+                <button class="tab-btn" id="id-tab-nested">多重嵌套如果</button>
+                <button class="tab-btn" id="id-tab-parallel">三个并列如果</button>
+            </div>
+
+            <!-- 积木展示区 -->
+            <div class="blocks-area" id="blocks-workspace">
+                <!-- 动态渲染积木结构 -->
+            </div>
+
+            <!-- 提示面板 -->
+            <div class="info-panel">
+                <strong>💡 教学提示：</strong>
+                <span id="info-text">尝试切换不同的逻辑结构和算子（且/或），观察输出结果的变化。思考：为什么有些组合会输出一大串错误数字？</span>
+            </div>
+        </div>
+
+        <!-- 右侧：运行模拟器 -->
+        <div class="simulator-panel">
+            <!-- 舞台 -->
+            <div class="stage">
+                <div class="sprite-area">
+                    <div class="sprite">🐱</div>
+                    <div class="bubble" id="sprite-bubble">点击“运行程序”，帮我找出那个神秘的数字吧！</div>
+                </div>
+
+                <!-- 运行结果显示器 -->
+                <div class="monitor">
+                    <div class="monitor-header">
+                        <span>[ 运行结果输出 ]</span>
+                        <span id="scan-range">区间: 1000 ~ 1100</span>
+                    </div>
+                    <div class="monitor-screen" id="output-screen">
+                        <span style="color: #888;">等待程序运行...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 调试反馈 -->
+            <div class="feedback-panel">
+                <div class="feedback-title">🔍 逻辑诊断报告</div>
+                <div class="feedback-content" id="feedback-text">
+                    请先选择逻辑结构，然后点击下方运行按钮进行测试。
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="control-bar">
+                <button class="btn btn-reset" id="btn-reset">🔄 重置</button>
+                <button class="btn btn-run" id="btn-run">▶ 运行程序</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 状态管理
+    let currentTab = 'single'; // 'single', 'nested', 'parallel'
+    let op1 = 'AND'; // 'AND', 'OR'
+    let op2 = 'AND'; // 'AND', 'OR'
+
+    // DOM 元素
+    const tabSingle = document.getElementById('tab-single');
+    const tabNested = document.getElementById('id-tab-nested');
+    const tabParallel = document.getElementById('id-tab-parallel');
+    const workspace = document.getElementById('blocks-workspace');
+    const infoText = document.getElementById('info-text');
+    const spriteBubble = document.getElementById('sprite-bubble');
+    const outputScreen = document.getElementById('output-screen');
+    const feedbackText = document.getElementById('feedback-text');
+    const btnRun = document.getElementById('btn-run');
+    const btnReset = document.getElementById('btn-reset');
+
+    // 初始化渲染
+    renderWorkspace();
+
+    // 事件监听：选项卡切换
+    tabSingle.addEventListener('click', () => switchTab('single'));
+    tabNested.addEventListener('click', () => switchTab('nested'));
+    tabParallel.addEventListener('click', () => switchTab('parallel'));
+
+    // 运行与重置
+    btnRun.addEventListener('click', runSimulation);
+    btnReset.addEventListener('click', resetSimulation);
+
+    function switchTab(tab) {
+        currentTab = tab;
+        [tabSingle, tabNested, tabParallel].forEach(btn => btn.classList.remove('active'));
+        if (tab === 'single') tabSingle.classList.add('active');
+        if (tab === 'nested') tabNested.classList.add('active');
+        if (tab === 'parallel') tabParallel.classList.add('active');
+        
+        renderWorkspace();
+        clearOutput();
+    }
+
+    // 渲染积木区
+    function renderWorkspace() {
+        workspace.innerHTML = '';
+
+        // 外部循环积木
+        const loopBlock = document.createElement('div');
+        loopBlock.className = 'scratch-block control-block';
+        loopBlock.style.backgroundColor = '#ff8c1a';
+        loopBlock.style.borderLeftColor = '#e67e22';
+        loopBlock.innerHTML = `重复执行 变量 <span style="background:rgba(0,0,0,0.15); padding:2px 6px; border-radius:4px;">i</span> 从 1000 到 1100`;
+        workspace.appendChild(loopBlock);
+
+        if (currentTab === 'single') {
+            infoText.innerHTML = "在单一如果结构中，你可以通过下拉菜单修改<strong>逻辑算子</strong>。思考：要同时满足三个条件，应该用“且”还是“或”？";
+            
+            const ifBlock = document.createElement('div');
+            ifBlock.className = 'scratch-block control-block';
+            ifBlock.style.marginTop = '12px';
+            
+            // 构建组合条件 HTML
+            ifBlock.innerHTML = `
+                如果 
+                <div class="scratch-block operator-block">
+                    <span class="cond-tag">i ÷ 3 余 2</span>
+                    <select class="operator-select" id="op1-select">
+                        <option value="AND" ${op1 === 'AND' ? 'selected' : ''}>且 (AND)</option>
+                        <option value="OR" ${op1 === 'OR' ? 'selected' : ''}>或 (OR)</option>
+                    </select>
+                    <span class="cond-tag">i ÷ 5 余 4</span>
+                    <select class="operator-select" id="op2-select">
+                        <option value="AND" ${op2 === 'AND' ? 'selected' : ''}>且 (AND)</option>
+                        <option value="OR" ${op2 === 'OR' ? 'selected' : ''}>或 (OR)</option>
+                    </select>
+                    <span class="cond-tag">i ÷ 7 余 6</span>
+                </div> 那么
+                <br>
+                <div class="scratch-block action-block">说出 i</div>
+            `;
+            workspace.appendChild(ifBlock);
+
+            // 绑定下拉框事件
+            document.getElementById('op1-select').addEventListener('change', (e) => {
+                op1 = e.target.value;
+                clearOutput();
+            });
+            document.getElementById('op2-select').addEventListener('change', (e) => {
+                op2 = e.target.value;
+                clearOutput();
+            });
+
+        } else if (currentTab === 'nested') {
+            infoText.innerHTML = "<strong>多重嵌套如果</strong>：只有当外层条件满足时，才会判断内层条件。这在逻辑上等同于什么算子？";
+
+            const if1 = document.createElement('div');
+            if1.className = 'scratch-block control-block';
+            if1.style.marginTop = '12px';
+            if1.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 3 余 2</span></div> 那么`;
+
+            const if2 = document.createElement('div');
+            if2.className = 'scratch-block control-block-nested';
+            if2.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 5 余 4</span></div> 那么`;
+
+            const if3 = document.createElement('div');
+            if3.className = 'scratch-block control-block-nested';
+            if3.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 7 余 6</span></div> 那么<br><div class="scratch-block action-block" style="margin-left:12px;">说出 i</div>`;
+
+            if2.appendChild(if3);
+            if1.appendChild(if2);
+            workspace.appendChild(if1);
+
+        } else if (currentTab === 'parallel') {
+            infoText.innerHTML = "<strong>三个并列如果</strong>：每个条件都是独立判断的。如果一个数字满足多个条件，会发生什么？";
+
+            const container = document.createElement('div');
+            container.style.width = '100%';
+            container.style.marginTop = '12px';
+
+            const if1 = document.createElement('div');
+            if1.className = 'scratch-block control-block';
+            if1.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 3 余 2</span></div> 那么<br><div class="scratch-block action-block">说出 i</div>`;
+
+            const if2 = document.createElement('div');
+            if2.className = 'scratch-block control-block';
+            if2.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 5 余 4</span></div> 那么<br><div class="scratch-block action-block">说出 i</div>`;
+
+            const if3 = document.createElement('div');
+            if3.className = 'scratch-block control-block';
+            if3.innerHTML = `如果 <div class="scratch-block operator-block"><span class="cond-tag">i ÷ 7 余 6</span></div> 那么<br><div class="scratch-block action-block">说出 i</div>`;
+
+            container.appendChild(if1);
+            container.appendChild(if2);
+            container.appendChild(if3);
+            workspace.appendChild(container);
+        }
+    }
+
+    // 清理输出
+    function clearOutput() {
+        outputScreen.innerHTML = '<span style="color: #888;">等待程序运行...</span>';
+        spriteBubble.innerHTML = '点击“运行程序”，帮我找出那个神秘的数字吧！';
+        feedbackText.innerHTML = '请先选择逻辑结构，然后点击下方运行按钮进行测试。';
+        feedbackText.className = 'feedback-content';
+    }
+
+    // 重置
+    function resetSimulation() {
+        op1 = 'AND';
+        op2 = 'AND';
+        currentTab = 'single';
+        [tabSingle, tabNested, tabParallel].forEach(btn => btn.classList.remove('active'));
+        tabSingle.classList.add('active');
+        renderWorkspace();
+        clearOutput();
+    }
+
+    // 运行模拟
+    function runSimulation() {
+        outputScreen.innerHTML = '<span style="color: #00ffcc;">正在扫描区间 1000 ~ 1100...</span>';
+        spriteBubble.innerHTML = '让我想想... 正在逐个检查数字...';
+        
+        btnRun.disabled = true;
+        btnReset.disabled = true;
+
+        // 模拟计算延迟，增强教学仪式感
+        setTimeout(() => {
+            executeLogic();
+            btnRun.disabled = false;
+            btnReset.disabled = false;
+        }, 1000);
+    }
+
+    // 核心逻辑执行
+    function executeLogic() {
+        let results = [];
+        let isParallel = (currentTab === 'parallel');
+
+        for (let i = 1000; i <= 1100; i++) {
+            let c1 = (i % 3 === 2);
+            let c2 = (i % 5 === 4);
+            let c3 = (i % 7 === 6);
+
+            if (currentTab === 'single') {
+                // 模拟 Scratch 从左到右的结合律
+                let step1 = false;
+                if (op1 === 'AND') {
+                    step1 = c1 && c2;
+                } else {
+                    step1 = c1 || c2;
+                }
+
+                let finalStep = false;
+                if (op2 === 'AND') {
+                    finalStep = step1 && c3;
+                } else {
+                    finalStep = step1 || c3;
+                }
+
+                if (finalStep) {
+                    results.push(i);
+                }
+            } else if (currentTab === 'nested') {
+                // 嵌套如果等同于 AND
+                if (c1) {
+                    if (c2) {
+                        if (c3) {
+                            results.push(i);
+                        }
+                    }
+                }
+            } else if (isParallel) {
+                // 并列如果：每个条件独立判断，可能重复添加同一个数
+                if (c1) results.push(i);
+                if (c2) results.push(i);
+                if (c3) results.push(i);
+            }
+        }
+
+        displayResults(results);
+    }
+
+    // 展示结果与诊断
+    function displayResults(results) {
+        outputScreen.innerHTML = '';
+        
+        if (results.length === 0) {
+            outputScreen.innerHTML = '<span style="color: #ff4757;">没有找到符合条件的数字。</span>';
+            spriteBubble.innerHTML = '奇怪，一个数字都没找到，是不是条件太苛刻了？';
+            feedbackText.innerHTML = '<span class="status-error">❌ 逻辑错误：</span>当前逻辑无法筛选出任何数字。请重新检查你的逻辑算子。';
+            return;
+        }
+
+        // 渲染数字标签
+        results.forEach(num => {
+            const span = document.createElement('span');
+            span.className = 'number-tag';
+            if (num === 1049) {
+                span.classList.add('correct');
+            }
+            span.innerText = num;
+            outputScreen.appendChild(span);
+        });
+
+        // 诊断逻辑
+        if (currentTab === 'single') {
+            if (op1 === 'AND' && op2 === 'AND') {
+                showSuccess();
+            } else {
+                showTooManyWarning("条件过于宽松，请检查逻辑算子！");
+            }
+        } else if (currentTab === 'nested') {
+            showSuccess();
+        } else if (currentTab === 'parallel') {
+            showParallelWarning();
+        }
+    }
+
+    // 成功反馈
+    function showSuccess() {
+        spriteBubble.innerHTML = '🎉 太棒了！我找到了唯一的神秘数字：<strong>1049</strong>！';
+        feedbackText.innerHTML = `
+            <span class="status-success">✅ 逻辑完全正确！</span><br>
+            在 1000 到 1100 之间，只有 <strong>1049</strong> 同时满足三个余数条件。<br>
+            <small>💡 思考：多重嵌套的“如果”在效果上等同于使用“且 (AND)”连接所有条件。</small>
+        `;
+    }
+
+    // 过于宽松反馈
+    function showTooManyWarning(msg) {
+        spriteBubble.innerHTML = '哎呀，输出了太多数字！里面混进了好多错误答案。';
+        feedbackText.innerHTML = `
+            <span class="status-error">⚠️ ${msg}</span><br>
+            你使用了<strong>“或 (OR)”</strong>算子。这导致只要满足其中一部分条件，数字就会被输出。<br>
+            我们需要寻找<strong>同时满足</strong>三个条件的数，请尝试将算子改为<strong>“且 (AND)”</strong>。
+        `;
+    }
+
+    // 并列如果反馈
+    function showParallelWarning() {
+        spriteBubble.innerHTML = '哇！怎么输出了这么多数字？而且 1049 好像出现了好几次？';
+        feedbackText.innerHTML = `
+            <span class="status-error">⚠️ 逻辑错误：并列“如果”导致逻辑混乱</span><br>
+            1. 并列的“如果”是<strong>独立运行</strong>的。只要满足任意一个条件，数字就会被输出。<br>
+            2. 像 1049 这样同时满足三个条件的数字，会被三个“如果”分别输出一次，导致<strong>重复输出</strong>！
+        `;
+    }
+</script>
+
+</body>
+</html>

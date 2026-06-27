@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法效率终极PK - 教学可视化</title>
+    <style>
+        /* 全局样式重置与课堂投屏优化 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background-color: #f0f2f5;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            max-width: 800px;
+            height: 71.25vw; /* 95 * 0.75 */
+            max-height: 600px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部标题 */
+        header {
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            color: white;
+            padding: 15px 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            position: relative;
+            background: #fafafa;
+        }
+
+        /* 左侧图表区域 */
+        .chart-area {
+            flex: 1.2;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            position: relative;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 右侧交互控制区 */
+        .control-panel {
+            flex: 0.8;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        .question-box {
+            background: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 15px;
+        }
+        .question-box h3 {
+            font-size: 15px;
+            color: #0050b3;
+            margin-bottom: 6px;
+        }
+        .question-box p {
+            font-size: 13px;
+            color: #434343;
+            line-height: 1.5;
+        }
+
+        /* 交互输入与按钮 */
+        .interactive-zone {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-group label {
+            font-size: 14px;
+            color: #595959;
+            font-weight: bold;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #d9d9d9;
+            border-radius: 6px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #1890ff;
+        }
+        .input-group span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #262626;
+        }
+
+        .btn {
+            background: #52c41a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(82, 196, 26, 0.3);
+            text-align: center;
+        }
+        .btn:hover {
+            background: #73d13d;
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            background: #389e0d;
+            transform: translateY(1px);
+        }
+        .btn-reset {
+            background: #bfbfbf;
+            box-shadow: none;
+            margin-top: 8px;
+            padding: 8px;
+            font-size: 13px;
+        }
+        .btn-reset:hover {
+            background: #8c8c8c;
+        }
+
+        /* 结果解析展示 */
+        .result-analysis {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px dashed #d9d9d9;
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .result-analysis p {
+            font-size: 13px;
+            color: #595959;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        .result-analysis strong {
+            color: #1890ff;
+        }
+
+        /* SVG 柱状图样式 */
+        .bar {
+            transition: height 1s cubic-bezier(0.18, 0.89, 0.32, 1.28), y 1s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        .bar-label {
+            font-size: 12px;
+            fill: #595959;
+            text-anchor: middle;
+        }
+        .bar-value {
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+            transition: opacity 0.5s;
+        }
+
+        /* 勋章与全屏高亮庆祝层 */
+        .celebration-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .celebration-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .medal-card {
+            background: radial-gradient(circle, #ffffff 60%, #fffbe6 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            transform: scale(0.5);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 320px;
+            border: 4px solid #ffd666;
+        }
+        .celebration-overlay.active .medal-card {
+            transform: scale(1);
+        }
+
+        .medal-svg {
+            width: 120px;
+            height: 120px;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .medal-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #d4b106;
+            margin-top: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .medal-desc {
+            font-size: 14px;
+            color: #595959;
+            margin: 10px 0 20px 0;
+            line-height: 1.4;
+        }
+
+        /* 粒子画布 */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 101;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 2px 5px rgba(250,219,20,0.4)); }
+            100% { transform: scale(1.08); filter: drop-shadow(0 8px 20px rgba(250,219,20,0.8)); }
+        }
+
+        /* 辅助类 */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <header>
+        <h1>算法效率终极PK</h1>
+        <p>信息技术 · 五年级 · 算法优化威力体验</p>
+    </header>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：直观对比图表 -->
+        <div class="chart-area">
+            <div class="chart-title">计算机执行检查次数对比</div>
+            <svg width="100%" height="90%" viewBox="0 0 360 320" id="chart-svg">
+                <!-- 背景网格线 -->
+                <line x1="40" y1="50" x2="320" y2="50" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="112.5" x2="320" y2="112.5" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="175" x2="320" y2="175" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="237.5" x2="320" y2="237.5" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="262.5" x2="320" y2="262.5" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="280" x2="320" y2="280" stroke="#f0f0f0" stroke-width="1" />
+                <line x1="40" y1="300" x2="320" y2="300" stroke="#bfbfbf" stroke-width="1.5" />
+
+                <!-- Y轴刻度标签 -->
+                <text x="30" y="54" font-size="10" fill="#8c8c8c" text-anchor="end">100次</text>
+                <text x="30" y="179" font-size="10" fill="#8c8c8c" text-anchor="end">50次</text>
+                <text x="30" y="266" font-size="10" fill="#8c8c8c" text-anchor="end">15次</text>
+                <text x="30" y="304" font-size="10" fill="#8c8c8c" text-anchor="end">0次</text>
+
+                <!-- 普通算法柱子 (101次) -->
+                <!-- 比例换算：300是0，50是100。高度 = 101 * 2.5 = 252.5. y = 300 - 252.5 = 47.5 -->
+                <rect class="bar" id="bar-normal" x="75" y="300" width="65" height="0" fill="#ff4d4f" rx="6" />
+                <text class="bar-value" id="val-normal" x="107.5" y="40" fill="#ff4d4f" opacity="0">101次</text>
+                <text class="bar-label" x="107.5" y="318">普通算法</text>
+
+                <!-- 优化算法柱子 (15次) -->
+                <!-- 高度 = 15 * 2.5 = 37.5. y = 300 - 37.5 = 262.5 -->
+                <rect class="bar" id="bar-optimized" x="220" y="300" width="65" height="0" fill="#52c41a" rx="6" />
+                <text class="bar-value" id="val-optimized" x="252.5" y="255" fill="#52c41a" opacity="0">15次</text>
+                <text class="bar-label" x="252.5" y="318">优化算法</text>
+            </svg>
+        </div>
+
+        <!-- 右侧：交互控制面板 -->
+        <div class="control-panel">
+            <div class="question-box">
+                <h3>思考与计算：</h3>
+                <p>我们仅仅在代码里修改了<strong>起点</strong>和<strong>步长</strong>两个数字，检查次数就从 <strong>101次</strong> 骤降到 <strong>15次</strong>！</p>
+            </div>
+
+            <div class="interactive-zone">
+                <div class="input-group">
+                    <label for="guess-input">估算工作量减少了：</label>
+                    <input type="number" id="guess-input" min="1" max="100" placeholder="?" autocomplete="off">
+                    <span>%</span>
+                </div>
+                <button class="btn" id="btn-calc">验证并计算减少百分比</button>
+                <button class="btn btn-reset hidden" id="btn-reset">重新对比</button>
+            </div>
+
+            <!-- 逐步引导解析 -->
+            <div class="result-analysis" id="analysis-box">
+                <p><strong>计算大揭秘：</strong></p>
+                <p>① 减少的检查次数：101 - 15 = <strong>86 次</strong></p>
+                <p>② 减少的比例：86 ÷ 101 ≈ <strong>85.15%</strong></p>
+                <p id="feedback-text" style="margin-top: 6px; font-weight: bold; color: #389e0d;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 庆祝高亮弹窗 -->
+    <div class="celebration-overlay" id="celebration">
+        <div class="medal-card">
+            <!-- 闪闪发光的金色勋章 SVG -->
+            <svg class="medal-svg" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffe58f" />
+                        <stop offset="50%" stop-color="#d4b106" />
+                        <stop offset="100%" stop-color="#ad8b00" />
+                    </linearGradient>
+                </defs>
+                <!-- 绶带 -->
+                <path d="M35 40 L20 85 L45 80 Z" fill="#ff4d4f" />
+                <path d="M65 40 L80 85 L55 80 Z" fill="#1890ff" />
+                <!-- 奖牌外圈 -->
+                <circle cx="50" cy="45" r="30" fill="url(#gold)" />
+                <circle cx="50" cy="45" r="25" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 2" />
+                <!-- 奖牌内星 -->
+                <polygon points="50,27 55,38 67,38 58,46 61,58 50,50 39,58 42,46 33,38 45,38" fill="#fff" />
+            </svg>
+            <div class="medal-title">效率暴增 85%！</div>
+            <div class="medal-desc">太不可思议了！仅仅修改两个数字，就帮计算机省去了绝大部分无用功！</div>
+            <button class="btn" id="btn-close-celebration" style="background: #d4b106; box-shadow: 0 4px 10px rgba(212,177,6,0.4);">太棒了，收下勋章</button>
+        </div>
+    </div>
+
+    <!-- 粒子特效画布 -->
+    <canvas id="confetti-canvas"></canvas>
+</div>
+
+<script>
+    // 获取DOM元素
+    const barNormal = document.getElementById('bar-normal');
+    const barOptimized = document.getElementById('bar-optimized');
+    const valNormal = document.getElementById('val-normal');
+    const valOptimized = document.getElementById('val-optimized');
+    const btnCalc = document.getElementById('btn-calc');
+    const btnReset = document.getElementById('btn-reset');
+    const guessInput = document.getElementById('guess-input');
+    const analysisBox = document.getElementById('analysis-box');
+    const feedbackText = document.getElementById('feedback-text');
+    const celebration = document.getElementById('celebration');
+    const btnCloseCelebration = document.getElementById('btn-close-celebration');
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // 页面加载时柱状图动画
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            // 普通算法柱子动画 (101次)
+            barNormal.setAttribute('y', '47.5');
+            barNormal.setAttribute('height', '252.5');
+            valNormal.style.opacity = '1';
+
+            // 优化算法柱子动画 (15次)
+            barOptimized.setAttribute('y', '262.5');
+            barOptimized.setAttribute('height', '37.5');
+            valOptimized.style.opacity = '1';
+        }, 300);
+    });
+
+    // 声音合成器 (Web Audio API) - 避免外部音频文件依赖
+    function playSuccessSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+            
+            // 连续三个欢快的上升音符
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            notes.forEach((freq, index) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + index * 0.1);
+                
+                gain.gain.setValueAtTime(0, now + index * 0.1);
+                gain.gain.linearRampToValueAtTime(0.2, now + index * 0.1 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.1 + 0.25);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now + index * 0.1);
+                osc.stop(now + index * 0.1 + 0.3);
+            });
+        } catch (e) {
+            console.log("AudioContext not supported or blocked.");
+        }
+    }
+
+    // 粒子特效系统
+    let particles = [];
+    let animationFrameId;
+
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.x = canvas.width / 2;
+            this.y = canvas.height / 2 + 50;
+            this.size = Math.random() * 8 + 4;
+            this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 8 + 4;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed - 3; // 向上偏移
+            this.gravity = 0.15;
+            this.alpha = 1;
+            this.decay = Math.random() * 0.015 + 0.01;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += this.gravity;
+            this.alpha -= this.decay;
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    function startConfetti() {
+        resizeCanvas();
+        particles = [];
+        for (let i = 0; i < 120; i++) {
+            particles.push(new Particle());
+        }
+        animateParticles();
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+            p.update();
+            p.draw();
+            if (p.alpha <= 0) {
+                particles.splice(index, 1);
+            }
+        });
+        if (particles.length > 0) {
+            animationFrameId = requestAnimationFrame(animateParticles);
+        }
+    }
+
+    // 验证与计算逻辑
+    btnCalc.addEventListener('click', () => {
+        const userGuess = parseFloat(guessInput.value);
+        
+        if (isNaN(userGuess) || userGuess < 0 || userGuess > 100) {
+            alert("请输入一个 0 到 100 之间的估算百分比哦！");
+            guessInput.focus();
+            return;
+        }
+
+        // 计算精确值：(101 - 15) / 101 = 86 / 101 ≈ 85.15%
+        const actualReduction = 85.15;
+        const diff = Math.abs(userGuess - actualReduction);
+
+        // 给出个性化反馈
+        if (diff <= 5) {
+            feedbackText.textContent = `🎯 太厉害了！你的估算非常精准！实际减少了 ${actualReduction.toFixed(1)}%！`;
+        } else if (diff <= 15) {
+            feedbackText.textContent = `👍 很接近了！实际减少了 ${actualReduction.toFixed(1)}%！`;
+        } else {
+            feedbackText.textContent = `💡 实际减少了 ${actualReduction.toFixed(1)}%！让我们看看这个惊人的差距！`;
+        }
+
+        // 显示解析面板
+        analysisBox.style.display = 'block';
+        btnCalc.classList.add('hidden');
+        btnReset.classList.remove('hidden');
+
+        // 触发全屏高亮庆祝
+        setTimeout(() => {
+            celebration.classList.add('active');
+            playSuccessSound();
+            startConfetti();
+        }, 600);
+    });
+
+    // 关闭庆祝弹窗
+    btnCloseCelebration.addEventListener('click', () => {
+        celebration.classList.remove('active');
+        cancelAnimationFrame(animationFrameId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    // 重置按钮逻辑
+    btnReset.addEventListener('click', () => {
+        guessInput.value = '';
+        analysisBox.style.display = 'none';
+        btnReset.classList.add('hidden');
+        btnCalc.classList.remove('hidden');
+        
+        // 重新播放柱状图动画
+        barNormal.setAttribute('height', '0');
+        barNormal.setAttribute('y', '300');
+        barOptimized.setAttribute('height', '0');
+        barOptimized.setAttribute('y', '300');
+        valNormal.style.opacity = '0';
+        valOptimized.style.opacity = '0';
+
+        setTimeout(() => {
+            barNormal.setAttribute('y', '47.5');
+            barNormal.setAttribute('height', '252.5');
+            valNormal.style.opacity = '1';
+
+            barOptimized.setAttribute('y', '262.5');
+            barOptimized.setAttribute('height', '37.5');
+            valOptimized.style.opacity = '1';
+        }, 200);
+    });
+
+    // 监听窗口大小变化调整画布
+    window.addEventListener('resize', resizeCanvas);
+</script>
+
+</body>
+</html>

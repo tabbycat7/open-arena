@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韩信点兵的奥秘：算法与无解的证明</title>
+    <style>
+        :root {
+            --primary-color: #2b5876;
+            --secondary-color: #4e4376;
+            --accent-color: #ff4757;
+            --success-color: #2ed573;
+            --warning-color: #ffa502;
+            --bg-color: #f1f2f6;
+            --card-bg: #ffffff;
+            --text-color: #2f3542;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例容器 */
+        .classroom-container {
+            width: 1000px;
+            height: 750px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 160px);
+        }
+
+        /* 左侧：控制与数据区 */
+        .left-panel {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 右侧：天平与原理区 */
+        .right-panel {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* 数字卡片区 */
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .num-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            position: relative;
+        }
+
+        .num-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .num-card.active {
+            border-color: var(--primary-color);
+            background-color: #ebf8ff;
+            color: var(--primary-color);
+        }
+
+        .num-card.checked-fail {
+            background-color: #ffeef0;
+            border-color: #ffa39e;
+            color: #f5222d;
+        }
+
+        .num-card.checked-fail::after {
+            content: "❌";
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 10px;
+        }
+
+        /* 步骤控制 */
+        .control-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3f56;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* 状态显示 */
+        .status-box {
+            background: #fff;
+            border-left: 4px solid var(--warning-color);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            flex-grow: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        /* 天平SVG样式 */
+        .balance-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        #balance-svg {
+            width: 100%;
+            height: 100%;
+            max-height: 280px;
+        }
+
+        /* 数学原理面板 */
+        .math-panel {
+            background: #fffbe6;
+            border: 1px solid #ffe58f;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+            display: none; /* 默认隐藏，点击后显示 */
+        }
+
+        .math-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .math-formula {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            background: rgba(0,0,0,0.04);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #c41d7f;
+        }
+
+        /* 页脚总结 */
+        .footer {
+            background: #f1f2f6;
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conclusion-highlight {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-1deg); }
+            75% { transform: rotate(1deg); }
+        }
+
+        .shaking {
+            animation: shake 0.15s ease-in-out infinite;
+        }
+
+        /* 提示引导 */
+        .guide-tip {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 头部 -->
+    <div class="header">
+        <span class="badge">五年级 · 信息技术</span>
+        <h1>韩信点兵的奥秘：无解的寻找</h1>
+        <p>探索区间 [1000, 1010]：当条件变为“除以3余2，且除以6余1”时会发生什么？</p>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧控制与数据 -->
+        <div class="left-panel">
+            <div>
+                <div class="section-title">
+                    <span>🔍 待检测的数字区间 (1000 - 1010)</span>
+                </div>
+                <div class="guide-tip">点击任意数字，手动放入天平进行条件冲突测试：</div>
+                <div class="number-grid" id="number-grid">
+                    <!-- JS 动态生成 1000 到 1010 的卡片 -->
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="section-title">⚙️ 算法执行控制</div>
+                <div class="btn-group">
+                    <button class="btn-primary" id="btn-auto">▶ 自动一键枚举</button>
+                    <button class="btn-secondary" id="btn-reset">🔄 重置状态</button>
+                    <button class="btn-secondary" style="background-color: #ffe58f; color: #b78103;" id="btn-math">💡 显示数学原理</button>
+                </div>
+            </div>
+
+            <div class="status-box" id="status-box">
+                <strong>💡 课堂思考：</strong><br>
+                请点击“自动一键枚举”或依次点击数字卡片。观察当所有数字都检测完毕后，我们是否能找到符合条件的答案？这说明了什么？
+            </div>
+        </div>
+
+        <!-- 右侧天平与原理 -->
+        <div class="right-panel">
+            <div class="section-title">⚖️ 条件冲突天平</div>
+            <div class="balance-container">
+                <!-- SVG 天平 -->
+                <svg id="balance-svg" viewBox="0 0 400 280">
+                    <!-- 底座 -->
+                    <rect x="170" y="220" width="60" height="15" rx="5" fill="#475569" />
+                    <path d="M 185 220 L 195 100 L 205 100 L 215 220 Z" fill="#64748b" />
+                    
+                    <!-- 支点 -->
+                    <circle cx="200" cy="100" r="8" fill="#334155" />
+
+                    <!-- 摇臂组 (包含横梁和两端盘子，用于整体倾斜/晃动动画) -->
+                    <g id="balance-beam">
+                        <!-- 横梁 -->
+                        <line x1="80" y1="100" x2="320" y2="100" stroke="#475569" stroke-width="6" stroke-linecap="round" />
+                        
+                        <!-- 左吊线与托盘 -->
+                        <line x1="80" y1="100" x2="50" y2="170" stroke="#94a3b8" stroke-width="2" />
+                        <line x1="80" y1="100" x2="110" y2="170" stroke="#94a3b8" stroke-width="2" />
+                        <path d="M 40 170 L 120 170 A 40 40 0 0 0 40 170 Z" fill="#cbd5e1" stroke="#475569" stroke-width="2" />
+                        <!-- 左盘文字 -->
+                        <rect x="45" y="180" width="70" height="22" rx="4" fill="#3b82f6" />
+                        <text x="80" y="195" fill="white" font-size="11" font-weight="bold" text-anchor="middle">除以 3 余 2</text>
+                        <text id="left-val" x="80" y="155" fill="#1e3a8a" font-size="14" font-weight="bold" text-anchor="middle">-</text>
+
+                        <!-- 右吊线与托盘 -->
+                        <line x1="320" y1="100" x2="290" y2="170" stroke="#94a3b8" stroke-width="2" />
+                        <line x1="320" y1="100" x2="350" y2="170" stroke="#94a3b8" stroke-width="2" />
+                        <path d="M 280 170 L 360 170 A 40 40 0 0 0 280 170 Z" fill="#cbd5e1" stroke="#475569" stroke-width="2" />
+                        <!-- 右盘文字 -->
+                        <rect x="285" y="180" width="70" height="22" rx="4" fill="#8b5cf6" />
+                        <text x="320" y="195" fill="white" font-size="11" font-weight="bold" text-anchor="middle">除以 6 余 1</text>
+                        <text id="right-val" x="320" y="155" fill="#4c1d95" font-size="14" font-weight="bold" text-anchor="middle">-</text>
+                    </g>
+
+                    <!-- 中央冲突指示灯/警报 -->
+                    <circle id="alert-light" cx="200" cy="60" r="15" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" />
+                    <text id="alert-text" x="200" y="64" fill="#64748b" font-size="12" font-weight="bold" text-anchor="middle">待测</text>
+
+                    <!-- 当前测试数字显示 -->
+                    <rect x="160" y="10" width="80" height="30" rx="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2" />
+                    <text id="current-test-num" x="200" y="30" fill="#0f172a" font-size="16" font-weight="bold" text-anchor="middle">未选择</text>
+                </svg>
+            </div>
+
+            <!-- 数学原理推导 -->
+            <div class="math-panel" id="math-panel">
+                <strong>数学原理剖析：为什么永远无解？</strong><br>
+                设数字为 <span class="math-formula">x</span>：<br>
+                1. 由条件二可知：<span class="math-formula">x = 6k + 1</span> (k为整数)<br>
+                2. 我们将此代入条件一变形：<br>
+                &nbsp;&nbsp;&nbsp;<span class="math-formula">x = 3(2k) + 1</span><br>
+                3. 这说明：<strong>任何满足“除以6余1”的数，除以3必然余1！</strong><br>
+                4. 这与条件一“除以3余2”<strong>永远冲突</strong>！因此数学上证明此题无解。
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="conclusion-highlight" id="conclusion-area">
+            <span>💡 算法发现：</span>
+            <span id="conclusion-text" style="color: #64748b;">等待枚举算法执行完毕...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const startNum = 1000;
+    const endNum = 1010;
+    let testedCount = 0;
+    let isRunning = false;
+    const results = {};
+
+    const grid = document.getElementById('number-grid');
+    const statusBox = document.getElementById('status-box');
+    const currentTestNumText = document.getElementById('current-test-num');
+    const leftValText = document.getElementById('left-val');
+    const rightValText = document.getElementById('right-val');
+    const alertLight = document.getElementById('alert-light');
+    const alertText = document.getElementById('alert-text');
+    const balanceBeam = document.getElementById('balance-beam');
+    const mathPanel = document.getElementById('math-panel');
+    const conclusionText = document.getElementById('conclusion-text');
+
+    // 初始化数字卡片
+    for (let i = startNum; i <= endNum; i++) {
+        const card = document.createElement('div');
+        card.className = 'num-card';
+        card.id = `card-${i}`;
+        card.innerText = i;
+        card.addEventListener('click', () => {
+            if (isRunning) return;
+            testNumber(i);
+        });
+        grid.appendChild(card);
+        results[i] = false;
+    }
+
+    // 测试单个数字
+    function testNumber(num) {
+        // 移除其他卡片的激活状态
+        document.querySelectorAll('.num-card').forEach(c => c.classList.remove('active'));
+        
+        const card = document.getElementById(`card-${num}`);
+        card.classList.add('active');
+        card.classList.add('checked-fail');
+
+        currentTestNumText.textContent = num;
+
+        // 计算余数
+        const rem3 = num % 3;
+        const rem6 = num % 6;
+
+        leftValText.textContent = `${num} ÷ 3 余 ${rem3}`;
+        rightValText.textContent = `${num} ÷ 6 余 ${rem6}`;
+
+        // 判断条件
+        const cond1 = (rem3 === 2);
+        const cond2 = (rem6 === 1);
+
+        // 更新天平视觉效果
+        if (cond1 && !cond2) {
+            // 左盘满足，右盘不满足 -> 偏向左边
+            balanceBeam.setAttribute('transform', 'rotate(-4, 200, 100)');
+            setAlert('冲突', '#ef4444');
+        } else if (!cond1 && cond2) {
+            // 右盘满足，左盘不满足 -> 偏向右边
+            balanceBeam.setAttribute('transform', 'rotate(4, 200, 100)');
+            setAlert('冲突', '#ef4444');
+        } else {
+            // 都不满足 -> 剧烈晃动表示完全不匹配
+            balanceBeam.setAttribute('transform', 'rotate(0, 200, 100)');
+            balanceBeam.classList.add('shaking');
+            setTimeout(() => balanceBeam.classList.remove('shaking'), 300);
+            setAlert('不符', '#94a3b8');
+        }
+
+        // 记录测试进度
+        if (!results[num]) {
+            results[num] = true;
+            testedCount = Object.values(results).filter(v => v).length;
+        }
+
+        updateStatus(num, rem3, rem6);
+    }
+
+    function setAlert(text, color) {
+        alertLight.setAttribute('fill', color);
+        alertText.textContent = text;
+        alertText.setAttribute('fill', '#ffffff');
+    }
+
+    function updateStatus(num, rem3, rem6) {
+        let html = `<strong>正在检测数字 ${num}：</strong><br>`;
+        html += `• 条件一（除以3余2）：${num} % 3 = ${rem3} ${rem3 === 2 ? '✅' : '❌'}<br>`;
+        html += `• 条件二（除以6余1）：${num} % 6 = ${rem6} ${rem6 === 1 ? '✅' : '❌'}<br>`;
+        html += `<strong>结果：</strong> 两个条件无法同时满足！`;
+        statusBox.innerHTML = html;
+
+        checkCompletion();
+    }
+
+    function checkCompletion() {
+        if (testedCount === (endNum - startNum + 1)) {
+            conclusionText.innerHTML = `<strong>全部检测完毕！未找到任何符合条件的数字。这证明了：该问题在此区间内【无解】！</strong>`;
+            conclusionText.style.color = 'var(--accent-color)';
+            statusBox.innerHTML = `<strong>🎉 遍历完毕！</strong><br>我们依次检测了 1000 到 1010 的所有数字，发现<strong>没有一个数字</strong>能同时满足这两个条件。这说明枚举算法不仅能帮我们“找到答案”，在没有答案时，它还能帮我们<strong>“确定无解”</strong>！`;
+        }
+    }
+
+    // 自动一键枚举
+    async function autoRun() {
+        if (isRunning) return;
+        isRunning = true;
+        document.getElementById('btn-auto').disabled = true;
+        document.getElementById('btn-auto').style.opacity = 0.5;
+
+        for (let i = startNum; i <= endNum; i++) {
+            testNumber(i);
+            await new Promise(resolve => setTimeout(resolve, 600));
+        }
+
+        isRunning = false;
+        document.getElementById('btn-auto').disabled = false;
+        document.getElementById('btn-auto').style.opacity = 1;
+    }
+
+    // 重置
+    function reset() {
+        if (isRunning) return;
+        testedCount = 0;
+        for (let i = startNum; i <= endNum; i++) {
+            results[i] = false;
+            const card = document.getElementById(`card-${i}`);
+            card.className = 'num-card';
+        }
+        currentTestNumText.textContent = '未选择';
+        leftValText.textContent = '-';
+        rightValText.textContent = '-';
+        alertLight.setAttribute('fill', '#e2e8f0');
+        alertText.textContent = '待测';
+        alertText.setAttribute('fill', '#64748b');
+        balanceBeam.setAttribute('transform', 'rotate(0, 200, 100)');
+        statusBox.innerHTML = `<strong>💡 课堂思考：</strong><br>请点击“自动一键枚举”或依次点击数字卡片。观察当所有数字都检测完毕后，我们是否能找到符合条件的答案？这说明了什么？`;
+        conclusionText.textContent = '等待枚举算法执行完毕...';
+        conclusionText.style.color = '#64748b';
+        mathPanel.classList.remove('show');
+    }
+
+    // 绑定按钮事件
+    document.getElementById('btn-auto').addEventListener('click', autoRun);
+    document.getElementById('btn-reset').addEventListener('click', reset);
+    document.getElementById('btn-math').addEventListener('click', () => {
+        mathPanel.classList.toggle('show');
+    });
+</script>
+
+</body>
+</html>
