@@ -1,0 +1,362 @@
+{
+  "id": "f11b5766-dd75-4b71-adbc-d7b04f59b9ba",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性\r\n\r\n",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"如果你有100元，一种方式是按年利率100%复利计息，另一种是每年固定获得100元单利。你觉得三年后，哪种方式你的钱会更多？为什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.6, \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"观察刚刚复利计算中，本金100元乘上的系数是2^x。如果本金不是100，而是其他常数a，你能用一个式子，统一描述这种“底数不变，指数变化”的增长关系吗？试着画几个不同a值的图像看看。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"\", \"difficulty\": 0.65, \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"按照y=a^x这个式子，如果我们让a=1或者a=-2，它还是指数函数吗？看看你画的图像，当a在0和1之间时，它描述的还是一种‘增长’吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.75, \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"如果一种细菌每1小时数量翻倍，我们从2个细菌开始培养。现在观察到培养皿里有了1024个细菌，你能倒推出我们培养了多少小时吗？现有的数学工具好像不够用了，这该怎么办？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"\", \"difficulty\": 0.85, \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"某细菌每20分钟分裂一次，数量翻倍。若一开始有10个细菌，而另一种生物每20分钟固定增加10个。你觉得3小时后，哪种方式的数量会更多？为什么？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.58, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"有人说，每年翻倍增长（指数）和每年固定增加与本金相等的金额（线性），从第二年开始每年的‘增加额’，指数增长就会永远超过线性增长。你同意吗？试着用具体数字比较第5年看看。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.62, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"观察函数y=2^(x-1)的图像，它和你熟悉的y=2^x的图像有什么位置关系？你能猜出y=2^(x+2)的图像又会如何移动吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"小张认为y=(-2)^x也是‘底数不变，指数变化’，所以是指数函数。你同意吗？试着算几个x值（比如x=1,2,3），看看发生了什么奇怪的现象？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"\", \"difficulty\": 0.63, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"某商品价格每年‘衰减’10%，有人说3年后价格是原价乘以0.9的三次方，即(0.9)^3。这个计算过程和我们的指数函数模型一致吗？这里的‘底数’0.9反映了增长还是衰减？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.72, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"物理中放射性元素的衰变公式常写成N=N₀e^(-λt)，指数部分可以是负数。这与我们强调的指数函数y=a^x中a>0矛盾吗？e^(-λt)可以看成哪个底数的指数函数？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.78, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"声音的强度每增加10倍，分贝值增加10。如果一场音乐会的声音强度是普通谈话的1000倍，那么它的分贝值比谈话高多少？这背后隐藏着什么运算？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"\", \"difficulty\": 0.82, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"解方程2^x=8，你用了什么运算？解方程log₂x=3呢？比较这两个方程的解和求解过程，你有什么发现？能说清楚指数运算和对数运算的关系吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"\", \"difficulty\": 0.8, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"能帮小明整理下吗？在这个复利问题里，‘本金’、‘年数’和最后‘乘上的系数’，分别像我们数学里学过的哪些量？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"将M1的具体计算（100 * 2^3）中的生活变量，对应为数学中的常数（a=100）和变量关系（y = 2^x），为M2抽象出一般形式y=a^x做好认知准备。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"回想一下，我们一般讨论的指数函数y=a^x，对底数a有什么要求？(A) a>0 (B) a≠1 (C) a>0且a≠1\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"\", \"difficulty\": 0.35, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"在M2学生通过归纳和画图初步感知y=a^x后，直接点明其严谨定义的边界条件，为M3中讨论“a=1或a<0等反例为何不是指数函数”提供明确的判断依据。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"试着在同一坐标系里，轻轻画出y=(0.5)^x和y=(1.5)^x的草图。比较一下，它们的“走势”有什么不同？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"基于M2中绘制不同a值图像的经验，聚焦比较0<a<1和a>1两类图像的关键差异（单调性），形成直观印象，为M3深入辨析“增长”与“衰减”的数学本质打下基础。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"细菌从2个开始，每过1小时数量翻倍。如果我们看到现在有8个细菌，你能猜出过了多久吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"\", \"difficulty\": 0.5, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"将M3中对指数函数定义和性质的讨论，转向一个与之相关的“反问题”：已知函数值（8）和底数（2），求自变量（x）。这正是从指数函数过渡到对数运算（M4核心）的典型问题情境。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"观察函数y=2^x的表格：x=1时y=2，x=2时y=4，x=3时y=8…如果反过来，我们问“y=8时，x是几？”，这个过程给你什么感觉？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"在S3-1提出“求指数”问题的基础上，引导学生从具体的数值对应关系（y=2^x）中，自然体验到“由y确定x”的逆向思维，即反函数思想的朴素原型，从而平滑地迎接M4中“对数”这一新概念的正式登场。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-21 11:43:28",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "如果你有100元，一种方式是按年利率100%复利计息，另一种是每年固定获得100元单利。你觉得三年后，哪种方式你的钱会更多？为什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.6,
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "观察刚刚复利计算中，本金100元乘上的系数是2^x。如果本金不是100，而是其他常数a，你能用一个式子，统一描述这种“底数不变，指数变化”的增长关系吗？试着画几个不同a值的图像看看。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.65,
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "按照y=a^x这个式子，如果我们让a=1或者a=-2，它还是指数函数吗？看看你画的图像，当a在0和1之间时，它描述的还是一种‘增长’吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.75,
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "如果一种细菌每1小时数量翻倍，我们从2个细菌开始培养。现在观察到培养皿里有了1024个细菌，你能倒推出我们培养了多少小时吗？现有的数学工具好像不够用了，这该怎么办？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.85,
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "某细菌每20分钟分裂一次，数量翻倍。若一开始有10个细菌，而另一种生物每20分钟固定增加10个。你觉得3小时后，哪种方式的数量会更多？为什么？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.58,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "有人说，每年翻倍增长（指数）和每年固定增加与本金相等的金额（线性），从第二年开始每年的‘增加额’，指数增长就会永远超过线性增长。你同意吗？试着用具体数字比较第5年看看。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.62,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "观察函数y=2^(x-1)的图像，它和你熟悉的y=2^x的图像有什么位置关系？你能猜出y=2^(x+2)的图像又会如何移动吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "小张认为y=(-2)^x也是‘底数不变，指数变化’，所以是指数函数。你同意吗？试着算几个x值（比如x=1,2,3），看看发生了什么奇怪的现象？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.63,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "某商品价格每年‘衰减’10%，有人说3年后价格是原价乘以0.9的三次方，即(0.9)^3。这个计算过程和我们的指数函数模型一致吗？这里的‘底数’0.9反映了增长还是衰减？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.72,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "物理中放射性元素的衰变公式常写成N=N₀e^(-λt)，指数部分可以是负数。这与我们强调的指数函数y=a^x中a>0矛盾吗？e^(-λt)可以看成哪个底数的指数函数？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.78,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "声音的强度每增加10倍，分贝值增加10。如果一场音乐会的声音强度是普通谈话的1000倍，那么它的分贝值比谈话高多少？这背后隐藏着什么运算？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.82,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "解方程2^x=8，你用了什么运算？解方程log₂x=3呢？比较这两个方程的解和求解过程，你有什么发现？能说清楚指数运算和对数运算的关系吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.8,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "能帮小明整理下吗？在这个复利问题里，‘本金’、‘年数’和最后‘乘上的系数’，分别像我们数学里学过的哪些量？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "将M1的具体计算（100 * 2^3）中的生活变量，对应为数学中的常数（a=100）和变量关系（y = 2^x），为M2抽象出一般形式y=a^x做好认知准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "回想一下，我们一般讨论的指数函数y=a^x，对底数a有什么要求？(A) a>0 (B) a≠1 (C) a>0且a≠1",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.35,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "在M2学生通过归纳和画图初步感知y=a^x后，直接点明其严谨定义的边界条件，为M3中讨论“a=1或a<0等反例为何不是指数函数”提供明确的判断依据。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "试着在同一坐标系里，轻轻画出y=(0.5)^x和y=(1.5)^x的草图。比较一下，它们的“走势”有什么不同？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "基于M2中绘制不同a值图像的经验，聚焦比较0<a<1和a>1两类图像的关键差异（单调性），形成直观印象，为M3深入辨析“增长”与“衰减”的数学本质打下基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "细菌从2个开始，每过1小时数量翻倍。如果我们看到现在有8个细菌，你能猜出过了多久吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.5,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "将M3中对指数函数定义和性质的讨论，转向一个与之相关的“反问题”：已知函数值（8）和底数（2），求自变量（x）。这正是从指数函数过渡到对数运算（M4核心）的典型问题情境。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "观察函数y=2^x的表格：x=1时y=2，x=2时y=4，x=3时y=8…如果反过来，我们问“y=8时，x是几？”，这个过程给你什么感觉？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "在S3-1提出“求指数”问题的基础上，引导学生从具体的数值对应关系（y=2^x）中，自然体验到“由y确定x”的逆向思维，即反函数思想的朴素原型，从而平滑地迎接M4中“对数”这一新概念的正式登场。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

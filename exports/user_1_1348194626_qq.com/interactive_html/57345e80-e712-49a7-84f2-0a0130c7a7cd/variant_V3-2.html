@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法顺序的重要性：种植小盆栽</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h2 { color: #2c3e50; }
+        .controls { margin: 20px 0; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+        #canvas-container {
+            width: 100%;
+            height: 300px;
+            background: white;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        #status-text {
+            margin-top: 15px;
+            font-weight: bold;
+            height: 24px;
+            color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>种植小盆栽：算法顺序实验</h2>
+    <p>点击下方按钮，观察不同操作顺序对种子发芽的影响：</p>
+    
+    <div class="controls">
+        <button id="btn-a">方案 A：先埋种后浇水</button>
+        <button id="btn-b">方案 B：先浇水后埋种</button>
+    </div>
+
+    <div id="canvas-container">
+        <svg id="svg-stage" width="100%" height="100%" viewBox="0 0 400 300">
+            <!-- 花盆 -->
+            <path d="M100 250 L300 250 L280 150 L120 150 Z" fill="#d35400" />
+            <!-- 土壤层 -->
+            <rect id="soil" x="120" y="150" width="160" height="100" fill="#795548" />
+            <!-- 种子 -->
+            <circle id="seed" cx="200" cy="180" r="8" fill="#27ae60" opacity="0" />
+            <!-- 水滴 -->
+            <circle id="water" cx="200" cy="50" r="5" fill="#3498db" opacity="0" />
+        </svg>
+    </div>
+
+    <div id="status-text">请选择一个方案开始观察</div>
+</div>
+
+<script>
+    const btnA = document.getElementById('btn-a');
+    const btnB = document.getElementById('btn-b');
+    const statusText = document.getElementById('status-text');
+    const seed = document.getElementById('seed');
+    const water = document.getElementById('water');
+    const soil = document.getElementById('soil');
+
+    function reset() {
+        seed.setAttribute('opacity', '0');
+        water.setAttribute('opacity', '0');
+        soil.setAttribute('fill', '#795548');
+        seed.setAttribute('cy', '180');
+    }
+
+    btnA.addEventListener('click', () => {
+        reset();
+        statusText.innerText = "方案 A：松土埋种 -> 覆土 -> 浇水。种子在湿润土壤中，环境适宜，发芽成功！";
+        
+        // 动画序列
+        setTimeout(() => { seed.setAttribute('opacity', '1'); }, 500);
+        setTimeout(() => { 
+            water.setAttribute('opacity', '1');
+            water.animate([{cy: 50}, {cy: 160}], {duration: 1000, fill: 'forwards'});
+            soil.setAttribute('fill', '#5d4037'); // 变湿润
+        }, 1000);
+    });
+
+    btnB.addEventListener('click', () => {
+        reset();
+        statusText.innerText = "方案 B：先浇水成泥浆 -> 尝试埋种。泥土黏稠，种子无法入土，暴露在表面无法发芽。";
+        
+        // 动画序列
+        setTimeout(() => {
+            water.setAttribute('opacity', '1');
+            water.animate([{cy: 50}, {cy: 160}], {duration: 1000, fill: 'forwards'});
+            soil.setAttribute('fill', '#3e2723'); // 变泥浆色
+        }, 500);
+        setTimeout(() => {
+            seed.setAttribute('opacity', '1');
+            seed.setAttribute('cy', '140'); // 种子浮在表面
+            seed.setAttribute('fill', '#c0392b'); // 种子变色表示失败
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>

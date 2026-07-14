@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>纳税的“轻”与“重” - 课堂互动教学可视化</title>
+  <style>
+    /* 基础样式与重置 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #2c3e50;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    #canvas-container {
+      width: 800px;
+      height: 600px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: absolute;
+      transform-origin: top left;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    /* 顶部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 16px;
+      color: #7f8c8d;
+    }
+
+    /* 中部卡片对比区 */
+    .cards-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+    .shop-card {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+      border: 3px solid transparent;
+      transition: all 0.5s ease;
+      position: relative;
+    }
+    .shop-card.restaurant {
+      border-color: #ff7675;
+    }
+    .shop-card.supermarket {
+      border-color: #0984e3;
+    }
+    .shop-card .badge {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .restaurant .badge { background-color: #ff7675; }
+    .supermarket .badge { background-color: #0984e3; }
+
+    .shop-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2d3436;
+      margin-top: 5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #f1f2f6;
+    }
+    .data-row:last-child {
+      border-bottom: none;
+    }
+    .data-label {
+      font-size: 15px;
+      color: #636e72;
+    }
+    .data-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2d3436;
+      transition: all 0.5s ease;
+    }
+    .data-value.highlight {
+      color: #e17055;
+      font-size: 22px;
+      animation: pop 0.3s ease;
+    }
+    .data-value.secret {
+      background-color: #dfe6e9;
+      color: transparent;
+      border-radius: 4px;
+      padding: 0 10px;
+      user-select: none;
+    }
+
+    /* 天平可视化区 */
+    .visualization-area {
+      flex-grow: 1;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 240px;
+    }
+    #scale-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 底部交互控制区 */
+    .control-panel {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.02);
+    }
+    .instruction-box {
+      background-color: #f1f2f6;
+      border-left: 5px solid #0984e3;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 16px;
+      color: #2d3436;
+      margin-bottom: 12px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      line-height: 1.4;
+    }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background-color: #0984e3;
+      color: white;
+      box-shadow: 0 4px 6px rgba(9, 132, 227, 0.2);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: #0b7ad1;
+      transform: translateY(-2px);
+    }
+    .btn-success {
+      background-color: #2ed573;
+      color: white;
+      box-shadow: 0 4px 6px rgba(46, 213, 115, 0.2);
+    }
+    .btn-success:hover:not(:disabled) {
+      background-color: #26af5f;
+      transform: translateY(-2px);
+    }
+    .btn:disabled {
+      background-color: #b2bec3;
+      color: #dfe6e9;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-reset {
+      background-color: #747d8c;
+      color: white;
+    }
+    .btn-reset:hover {
+      background-color: #57606f;
+    }
+
+    /* 动画效果 */
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .pulse {
+      animation: pulse-glow 2s infinite;
+    }
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(9, 132, 227, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="canvas-container">
+    <!-- 顶部标题 -->
+    <div class="header">
+      <h1>谁的纳税负担更“重”？</h1>
+      <p>美味餐馆交税 1500 元，阳光超市交税 600 元。只看数字，能直接下结论吗？</p>
+    </div>
+
+    <!-- 中部卡片 -->
+    <div class="cards-container">
+      <!-- 美味餐馆 -->
+      <div class="shop-card restaurant" id="card-rest">
+        <span class="badge">餐饮业</span>
+        <div class="shop-title">🍔 美味餐馆</div>
+        <div class="data-row">
+          <span class="data-label">① 应纳税额：</span>
+          <span class="data-value" id="val-rest-tax">1500 元</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">② 营业额：</span>
+          <span class="data-value secret" id="val-rest-rev">????? 元</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">③ 纳税额占营业额的几分之几：</span>
+          <span class="data-value secret" id="val-rest-rate">?? %</span>
+        </div>
+      </div>
+
+      <!-- 阳光超市 -->
+      <div class="shop-card supermarket" id="card-super">
+        <span class="badge">零售业</span>
+        <div class="shop-title">🏪 阳光超市</div>
+        <div class="data-row">
+          <span class="data-label">① 应纳税额：</span>
+          <span class="data-value" id="val-super-tax">600 元</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">② 营业额：</span>
+          <span class="data-value secret" id="val-super-rev">????? 元</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">③ 纳税额占营业额的几分之几：</span>
+          <span class="data-value secret" id="val-super-rate">?? %</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 天平可视化区 -->
+    <div class="visualization-area">
+      <svg id="scale-svg" viewBox="0 0 800 240">
+        <!-- 天平底座与支架 -->
+        <path d="M 390,100 L 410,100 L 415,210 L 385,210 Z" fill="#7f8c8d" />
+        <path d="M 350,210 L 450,210 L 440,225 L 360,225 Z" fill="#95a5a6" />
+        <circle cx="400" cy="100" r="8" fill="#2c3e50" />
+
+        <!-- 可旋转的天平横梁组 -->
+        <g id="scale-beam" style="transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: 400px 100px;">
+          <!-- 横梁 -->
+          <rect x="190" y="95" width="420" height="10" fill="#bdc3c7" rx="5" />
+          <line x1="200" y1="100" x2="600" y2="100" stroke="#7f8c8d" stroke-width="2" />
+          <!-- 两个悬挂点 -->
+          <circle cx="200" cy="100" r="4" fill="#7f8c8d" />
+          <circle cx="600" cy="100" r="4" fill="#7f8c8d" />
+        </g>
+
+        <!-- 左托盘组 (美味餐馆) - 保持垂直平移 -->
+        <g id="left-pan" style="transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);">
+          <!-- 吊绳 -->
+          <line x1="200" y1="100" x2="160" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          <line x1="200" y1="100" x2="240" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          <!-- 秤盘 -->
+          <path d="M 150,180 L 250,180 A 50,12 0 0,1 150,180 Z" fill="#f1c40f" />
+          <!-- 左侧砝码/载荷 -->
+          <g id="left-weight" opacity="0" style="transition: opacity 0.5s;">
+            <rect x="180" y="140" width="40" height="40" fill="#ff7675" rx="4" />
+            <text x="200" y="165" fill="white" font-size="12" text-anchor="middle" font-weight="bold" id="left-weight-text">1500元</text>
+          </g>
+        </g>
+
+        <!-- 右托盘组 (阳光超市) - 保持垂直平移 -->
+        <g id="right-pan" style="transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);">
+          <!-- 吊绳 -->
+          <line x1="600" y1="100" x2="560" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          <line x1="600" y1="100" x2="640" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          <!-- 秤盘 -->
+          <path d="M 550,180 L 650,180 A 50,12 0 0,1 550,180 Z" fill="#f1c40f" />
+          <!-- 右侧砝码/载荷 -->
+          <g id="right-weight" opacity="0" style="transition: opacity 0.5s;">
+            <rect x="580" y="150" width="40" height="30" fill="#0984e3" rx="4" />
+            <text x="600" y="170" fill="white" font-size="12" text-anchor="middle" font-weight="bold" id="right-weight-text">600元</text>
+          </g>
+        </g>
+
+        <!-- 悬浮大问号提示 -->
+        <g id="question-mark" opacity="0" style="transition: opacity 0.5s;">
+          <circle cx="400" cy="50" r="22" fill="#e17055" />
+          <text x="400" y="58" fill="white" font-size="26" font-weight="bold" text-anchor="middle">?</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 底部控制台 -->
+    <div class="control-panel">
+      <div class="instruction-box" id="instruction">
+        美味餐馆交税1500元，阳光超市交税600元。只看这两个数字，能直接说餐馆交的税比超市“重”吗？点击下方按钮开始探索。
+      </div>
+      <div class="button-group">
+        <button class="btn btn-primary pulse" id="btn-step1">⚖️ 第一步：比一比纳税额</button>
+        <button class="btn btn-primary" id="btn-step2" disabled>👁️ 第二步：看一看营业额</button>
+        <button class="btn btn-success" id="btn-step3" disabled>📊 第三步：算一算税率(负担)</button>
+        <button class="btn btn-reset" id="btn-reset">🔄 重置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 4:3 比例自适应缩放
+    function resizeContainer() {
+      const container = document.getElementById('canvas-container');
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const targetWidth = 800;
+      const targetHeight = 600;
+      
+      const scaleX = windowWidth / targetWidth;
+      const scaleY = windowHeight / targetHeight;
+      const scale = Math.min(scaleX, scaleY, 1.5); // 限制最大缩放倍数
+      
+      container.style.transform = `scale(${scale})`;
+      
+      // 居中定位
+      const left = (windowWidth - targetWidth * scale) / 2;
+      const top = (windowHeight - targetHeight * scale) / 2;
+      container.style.left = `${left}px`;
+      container.style.top = `${top}px`;
+    }
+
+    window.addEventListener('resize', resizeContainer);
+    window.addEventListener('DOMContentLoaded', resizeContainer);
+
+    // 交互逻辑状态管理
+    let currentState = 0; // 0: 初始, 1: 比纳税额, 2: 看营业额, 3: 算税率
+
+    const btnStep1 = document.getElementById('btn-step1');
+    const btnStep2 = document.getElementById('btn-step2');
+    const btnStep3 = document.getElementById('btn-step3');
+    const btnReset = document.getElementById('btn-reset');
+
+    const instruction = document.getElementById('instruction');
+
+    // 动态控制天平旋转
+    // angle > 0 表示右边下沉，angle < 0 表示左边下沉
+    function setScaleAngle(angle) {
+      const rad = angle * Math.PI / 180;
+      const cx = 400, cy = 100, r = 200;
+      
+      // 计算旋转后左右悬挂点的实际坐标
+      const lx = cx - r * Math.cos(rad);
+      const ly = cy - r * Math.sin(rad);
+      const rx = cx + r * Math.cos(rad);
+      const ry = cy + r * Math.sin(rad);
+
+      // 旋转横梁
+      document.getElementById('scale-beam').style.transform = `rotate(${angle}deg)`;
+      
+      // 平移吊盘，使其保持垂直向下悬挂
+      document.getElementById('left-pan').style.transform = `translate(${lx - 200}px, ${ly - 100}px)`;
+      document.getElementById('right-pan').style.transform = `translate(${rx - 600}px, ${ry - 100}px)`;
+    }
+
+    // 初始化天平
+    setScaleAngle(0);
+
+    // 第一步：比一比纳税额
+    btnStep1.addEventListener('click', () => {
+      currentState = 1;
+      
+      // 1. 天平向左倾斜（1500元 > 600元）
+      setScaleAngle(-12); 
+      
+      // 2. 显示砝码
+      document.getElementById('left-weight').style.opacity = '1';
+      document.getElementById('right-weight').style.opacity = '1';
+      
+      // 3. 弹出大问号
+      document.getElementById('question-mark').style.opacity = '1';
+
+      // 4. 更新引导语
+      instruction.innerHTML = "<strong>天平严重向餐馆倾斜！</strong>因为 1500元 &gt; 600元。但这真的公平吗？大店和小店的经营规模一样吗？快点击<strong>‘第二步：看一看营业额’</strong>！";
+      instruction.style.borderLeftColor = "#e17055";
+
+      // 5. 按钮状态切换
+      btnStep1.disabled = true;
+      btnStep1.classList.remove('pulse');
+      btnStep2.disabled = false;
+      btnStep2.classList.add('pulse');
+    });
+
+    // 第二步：看一看营业额
+    btnStep2.addEventListener('click', () => {
+      currentState = 2;
+
+      // 1. 揭晓营业额数据
+      const restRev = document.getElementById('val-rest-rev');
+      const superRev = document.getElementById('val-super-rev');
+      
+      restRev.textContent = "50000 元";
+      restRev.classList.remove('secret');
+      restRev.classList.add('highlight');
+
+      superRev.textContent = "10000 元";
+      superRev.classList.remove('secret');
+      superRev.classList.add('highlight');
+
+      // 2. 更新引导语
+      instruction.innerHTML = "<strong>营业额揭晓！</strong>美味餐馆营业额有 50000 元，而阳光超市只有 10000 元。现在，请点击<strong>‘第三步：算一算税率’</strong>，看看它们各自的纳税额占营业额的几分之几！";
+      instruction.style.borderLeftColor = "#2ed573";
+
+      // 3. 按钮状态切换
+      btnStep2.disabled = true;
+      btnStep2.classList.remove('pulse');
+      btnStep3.disabled = false;
+      btnStep3.classList.add('pulse');
+    });
+
+    // 第三步：算一算税率
+    btnStep3.addEventListener('click', () => {
+      currentState = 3;
+
+      // 1. 计算并显示税率
+      const restRate = document.getElementById('val-rest-rate');
+      const superRate = document.getElementById('val-super-rate');
+
+      restRate.innerHTML = "1500 ÷ 50000 = <strong style='color:#ff7675; font-size:22px;'>3%</strong>";
+      restRate.classList.remove('secret');
+      
+      superRate.innerHTML = "600 ÷ 10000 = <strong style='color:#0984e3; font-size:22px;'>6%</strong>";
+      superRate.classList.remove('secret');
+
+      // 2. 天平反转！右边下沉（6% > 3%）
+      setScaleAngle(12);
+
+      // 3. 砝码文字改变，突出“税率/负担”
+      document.getElementById('left-weight-text').textContent = "3%";
+      document.getElementById('right-weight-text').textContent = "6%";
+      
+      // 稍微调整砝码大小比例，让6%的砝码显得更重
+      document.getElementById('left-weight').querySelector('rect').setAttribute('height', '25');
+      document.getElementById('left-weight').querySelector('rect').setAttribute('y', '155');
+      document.getElementById('left-weight-text').setAttribute('y', '172');
+
+      document.getElementById('right-weight').querySelector('rect').setAttribute('height', '45');
+      document.getElementById('right-weight').querySelector('rect').setAttribute('y', '135');
+      document.getElementById('right-weight-text').setAttribute('y', '162');
+
+      // 隐藏问号
+      document.getElementById('question-mark').style.opacity = '0';
+
+      // 4. 最终引导语
+      instruction.innerHTML = "<strong>天平反转了！</strong>虽然阳光超市交的钱少，但税率（6%）是美味餐馆（3%）的<strong>2倍</strong>！这说明<strong>阳光超市的纳税负担其实更重</strong>。只看绝对纳税额是不公平的！";
+      instruction.style.borderLeftColor = "#2ed573";
+
+      // 5. 按钮状态
+      btnStep3.disabled = true;
+      btnStep3.classList.remove('pulse');
+    });
+
+    // 重置按钮
+    btnReset.addEventListener('click', () => {
+      currentState = 0;
+
+      // 1. 重置天平
+      setScaleAngle(0);
+      document.getElementById('left-weight').style.opacity = '0';
+      document.getElementById('right-weight').style.opacity = '0';
+      document.getElementById('question-mark').style.opacity = '0';
+
+      // 重置砝码外观
+      document.getElementById('left-weight-text').textContent = "1500元";
+      document.getElementById('right-weight-text').textContent = "600元";
+      document.getElementById('left-weight').querySelector('rect').setAttribute('height', '40');
+      document.getElementById('left-weight').querySelector('rect').setAttribute('y', '140');
+      document.getElementById('left-weight-text').setAttribute('y', '165');
+      document.getElementById('right-weight').querySelector('rect').setAttribute('height', '30');
+      document.getElementById('right-weight').querySelector('rect').setAttribute('y', '150');
+      document.getElementById('right-weight-text').setAttribute('y', '170');
+
+      // 2. 重置卡片数据
+      const restRev = document.getElementById('val-rest-rev');
+      const superRev = document.getElementById('val-super-rev');
+      const restRate = document.getElementById('val-rest-rate');
+      const superRate = document.getElementById('val-super-rate');
+
+      restRev.textContent = "????? 元";
+      restRev.className = "data-value secret";
+      superRev.textContent = "????? 元";
+      superRev.className = "data-value secret";
+
+      restRate.textContent = "?? %";
+      restRate.className = "data-value secret";
+      superRate.textContent = "?? %";
+      superRate.className = "data-value secret";
+
+      // 3. 重置引导语
+      instruction.innerHTML = "美味餐馆交税1500元，阳光超市交税600元。只看这两个数字，能直接说餐馆交的税比超市“重”吗？点击下方按钮开始探索。";
+      instruction.style.borderLeftColor = "#0984e3";
+
+      // 4. 重置按钮状态
+      btnStep1.disabled = false;
+      btnStep1.classList.add('pulse');
+      btnStep2.disabled = true;
+      btnStep2.classList.remove('pulse');
+      btnStep3.disabled = true;
+      btnStep3.classList.remove('pulse');
+    });
+  </script>
+</body>
+</html>

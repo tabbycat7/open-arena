@@ -1,0 +1,140 @@
+{
+  "task_id": "b6eb83f8-f41a-4478-b63e-561afca6a746",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "工地上，一个5米长的梯子斜靠在墙上，梯脚离墙底3米。梯子顶端离地多高？先算算看。诶，如果我们把梯脚往外移到离墙2.5米——恰好是梯长的一半，你注意到的三角形还能用勾股定理吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2a",
+      "question_type": "main",
+      "content": "我们想测量操场上旗杆的高度，但没法爬上去。如果给你卷尺，我们得先在地面上‘创造’出一个直角三角形。这让你想到了什么？怎么才能保证我们创造的那个角是直角呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "回到古人的智慧：‘一根竹子，原高一丈，折断后竹梢触地，触地点离竹根三尺。’假如你就是那个古人，手头只有这段折断的竹子，你会怎样把‘一丈’、‘三尺’这些信息，变成一个可以计算的图形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "有同学想测量池塘两端A、B的距离。他走到C点，使AC等于AB，形成一个等腰三角形，然后测量BC就想算AB。这方法真的保险吗？三角形的形状确定了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "挑战升级！一个长30cm、宽20cm、高10cm的长方体盒子，蚂蚁从顶点A爬到对角的G点，沿着表面最短的路线是哪条？你能想象出把盒子‘拆开’后，这条路线在平面上构成了怎样的直角三角形吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "现在，轮到你们来设计了。不能直接爬，只用卷尺和地面标记，你们小组能根据勾股定理，想出一个测量旗杆高度的具体方案吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "台风后，园林工人们用一根8米长的绳索从树干高处拉到地面固定点，以加固树木。如果树干与地面垂直，且固定点离树根4米，那么绳索在树干上的固定点离地多高？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "想象一下：一根10米长的钓鱼竿平放在小船上时，竿梢伸出船头3米。竖直抬起竿柄时，竿梢刚好触到水面。若船头位置不变，水面与船甲板平行，此时竿柄离船头多远？怎样用一个图形表示这个过程？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "针对刚才测河宽的方法，如果测量者特意让两根等长的测杆与对岸点构成90°角（形成了一个等腰直角三角形），那么河宽（AB）和测得的BC长是什么关系？这和前面‘不确定形状’的情况对比，关键区别在哪里？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "挑战变了！一个圆柱形罐头高10cm，底面周长20cm。一只蚂蚁从侧面底部A点，想爬到正上方的B点（B在A的正上方）。最短路径怎么走？把罐头侧面‘剪开’铺平，这条路径构成了什么图形？如何计算它的长度？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "测量旗杆时，我们的身体、影子、卷尺，哪三个量能围成一个三角形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果把你找到的三角形画出来，直角会在哪里？两条直角边分别对应什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "要使用勾股定理，那个三角形必须是什么形状？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "想象一个长方体盒子，把它侧面展开铺平。原来盒子上的最短路径，在展开图上变成了一条什么线？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "在展开图上，这条线段如果是斜边，那么直角三角形的两条直角边，可能是长方体的哪两个棱长？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

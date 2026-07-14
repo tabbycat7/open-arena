@@ -1,0 +1,122 @@
+{
+  "task_id": "b0b50553-a100-40a7-8559-40c667584c5d",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "过年大家都收了压岁钱吧？有人说把1000块存银行到期取1035，利息就是1035，你觉得这说法对吗？为啥呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "哎，我发现大家存同样多的压岁钱，最后拿到的利息却不一样，你觉得利息多少和哪些因素有关呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "你看这张银行利率表里既有年利率又有月利率，两位同学算6个月存期的利息选了不同利率，你觉得谁算得对呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "要是你家有2万元闲置资金，3年之内都用不上，你能设计几种存款方案看看哪种收益最高吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "爸爸开超市进货借了别人8万元，一年后连本带利还了8.4万元，你能说清这里的本金和利息分别是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "小明把5000元压岁钱存了2年定期，到期拿到了375元利息，你能帮他算算这笔存款的年利率是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "有位同学这么算利息：本金2000元存6个月，年利率1.8%，利息=2000×1.8%×6=216元，你能找出他算错的地方并改正吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "家里有2万元3年用不上的闲钱，已知3年期国债利率3.05%，你能对比下买国债和存定期哪种收益更高吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "咱们存进银行的压岁钱叫什么？取钱时多出来的钱又叫啥呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "计算利息要用到什么公式呀？里面有哪三个关键要素呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "看这张银行利率表，存2年定期要选对应的哪个利率呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "要比较两种存款方案的收益高低，得先做啥再做啥呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "本金1万元，连存2次1年和直接存2年定期，哪个利息更高？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

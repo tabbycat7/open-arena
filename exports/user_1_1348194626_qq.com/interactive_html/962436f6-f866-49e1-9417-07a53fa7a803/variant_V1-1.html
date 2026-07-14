@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税收的“投入”与“回报”可视化教学</title>
+    <style>
+        :root {
+            --primary-blue: #1c7ed6;
+            --primary-green: #2b8a3e;
+            --tax-gold: #f59f00;
+            --tax-gold-glow: rgba(245, 159, 0, 0.4);
+            --text-dark: #212529;
+            --text-light: #868e96;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            --active-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #1a1b1f, #2d323f);
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--tax-gold);
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: #ced4da;
+        }
+
+        .badge-grade {
+            background-color: var(--tax-gold);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* 主视口区域 */
+        .main-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background-color: var(--bg-light);
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 左右对比与中央资金池布局 */
+        .visualization-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60%;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        /* 场景卡片 */
+        .scene-card {
+            width: 32%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-card.active {
+            transform: translateY(-8px);
+            box-shadow: var(--active-shadow);
+        }
+
+        .scene-card#card-left.active {
+            border-color: var(--primary-blue);
+        }
+
+        .scene-card#card-right.active {
+            border-color: var(--primary-green);
+        }
+
+        .scene-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        #card-left .scene-title { color: var(--primary-blue); }
+        #card-right .scene-title { color: var(--primary-green); }
+
+        .svg-container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .svg-container svg {
+            width: 100%;
+            height: 100%;
+            max-height: 120px;
+        }
+
+        .scene-footer {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 8px;
+            background: #f1f3f5;
+            padding: 4px 12px;
+            border-radius: 12px;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .scene-card.active .scene-footer {
+            background-color: #e8f4fd;
+            color: var(--text-dark);
+        }
+
+        /* 中央资金池 */
+        .center-pool {
+            width: 28%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 资金池底座 */
+        .pool-hub {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffd43b 0%, #f59f00 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--tax-gold-glow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 15px;
+            text-align: center;
+            line-height: 1.3;
+            border: 4px solid #fff;
+            z-index: 3;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .pool-hub:hover {
+            transform: scale(1.05);
+        }
+
+        /* 能量输送管道（背景线） */
+        .pipe-line {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .pipe-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--tax-gold), #ffec99);
+            transition: width 0.8s ease-in-out;
+        }
+
+        /* 能量球 */
+        .energy-ball {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: radial-gradient(circle, #fff 10%, #ffd43b 60%, #f59f00 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffd43b, 0 0 25px #f59f00;
+            z-index: 4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #d9480f;
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+        }
+
+        /* 交互控制面板 */
+        .control-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px 20px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-blue {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .btn-blue:hover { background-color: #1864ab; }
+
+        .btn-green {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        .btn-green:hover { background-color: #206630; }
+
+        .btn-orange {
+            background-color: var(--tax-gold);
+            color: #212529;
+        }
+        .btn-orange:hover { background-color: #e08f00; }
+
+        /* 动态信息展示板 */
+        .info-board {
+            background-color: #f1f3f5;
+            border-left: 5px solid var(--tax-gold);
+            padding: 12px 18px;
+            border-radius: 0 8px 8px 0;
+            min-height: 85px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .info-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        /* 漂浮标签/气泡 */
+        .bubble-tag {
+            position: absolute;
+            background: rgba(253, 126, 20, 0.95);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        .bubble-tag::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: rgba(253, 126, 20, 0.95) transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* 脉冲动画 */
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px #ffd43b, 0 0 25px #f59f00; }
+            50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 25px #ffd43b, 0 0 40px #f59f00; }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px #ffd43b, 0 0 25px #f59f00; }
+        }
+
+        .pulsing {
+            animation: pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-title">
+            <h1>税收的“投入”与“回报”</h1>
+            <p>观察不同尺度的公共建设，理解税收“取之于民，用之于民”的本质</p>
+        </div>
+        <span class="badge-grade">六年级 · 数学/社会</span>
+    </div>
+
+    <!-- 主视口 -->
+    <div class="main-stage">
+        <!-- 漂浮气泡提示 -->
+        <div id="bubble-left" class="bubble-tag" style="left: 16%; top: 15%;">资金来源：依法纳税 💰</div>
+        <div id="bubble-right" class="bubble-tag" style="right: 16%; top: 15%;">共享福利：全民受益 🌳</div>
+
+        <!-- 可视化对比区域 -->
+        <div class="visualization-area" id="vis-area">
+            
+            <!-- 左侧：宏大工程 -->
+            <div class="scene-card" id="card-left">
+                <div class="scene-title">宏大工程 (大尺度)</div>
+                <div class="svg-container">
+                    <!-- 桥梁与学校简笔SVG -->
+                    <svg viewBox="0 0 200 120">
+                        <!-- 天空背景 -->
+                        <rect width="200" height="120" fill="#f1f3f5" rx="8"/>
+                        <!-- 远山 -->
+                        <path d="M-20 100 L30 60 L80 100 Z" fill="#dee2e6"/>
+                        <path d="M40 100 L100 50 L160 100 Z" fill="#e9ecef"/>
+                        <!-- 桥梁 -->
+                        <path d="M 10 90 Q 100 40 190 90" stroke="#1c7ed6" stroke-width="6" fill="none"/>
+                        <path d="M 10 98 L 190 98" stroke="#343a40" stroke-width="4" fill="none"/>
+                        <!-- 桥墩 -->
+                        <line x1="50" y1="72" x2="50" y2="100" stroke="#1c7ed6" stroke-width="4"/>
+                        <line x1="100" y1="65" x2="100" y2="100" stroke="#1c7ed6" stroke-width="4"/>
+                        <line x1="150" y1="72" x2="150" y2="100" stroke="#1c7ed6" stroke-width="4"/>
+                        <!-- 太阳 -->
+                        <circle cx="170" cy="30" r="10" fill="#ffc9c9" opacity="0.8"/>
+                        <!-- 装饰文字 -->
+                        <text x="100" y="115" font-size="10" fill="#868e96" text-anchor="middle">跨海大桥 / 国道建设</text>
+                    </svg>
+                </div>
+                <div class="scene-footer" id="footer-left">国家级基础设施</div>
+            </div>
+
+            <!-- 中央：税收资金池 -->
+            <div class="center-pool">
+                <div class="pipe-line">
+                    <div class="pipe-fill" id="pipe-fill-left" style="position: absolute; right: 50%; width: 0%;"></div>
+                    <div class="pipe-fill" id="pipe-fill-right" style="position: absolute; left: 50%; width: 0%;"></div>
+                </div>
+                <div class="pool-hub" id="pool-btn">
+                    国家税收<br>资金池
+                </div>
+                <!-- 能量球 -->
+                <div class="energy-ball pulsing" id="energy-ball">税</div>
+            </div>
+
+            <!-- 右侧：社区设施 -->
+            <div class="scene-card" id="card-right">
+                <div class="scene-title">社区设施 (微观/身边)</div>
+                <div class="svg-container">
+                    <!-- 图书馆与公园简笔SVG -->
+                    <svg viewBox="0 0 200 120">
+                        <!-- 背景 -->
+                        <rect width="200" height="120" fill="#f1f3f5" rx="8"/>
+                        <!-- 树木 -->
+                        <circle cx="40" cy="75" r="18" fill="#40c057" opacity="0.9"/>
+                        <rect x="37" y="85" width="6" height="20" fill="#868e96"/>
+                        <circle cx="60" cy="80" r="12" fill="#2b8a3e" opacity="0.8"/>
+                        <rect x="58" y="88" width="4" height="15" fill="#868e96"/>
+                        <!-- 图书馆小屋 -->
+                        <rect x="100" y="60" width="70" height="45" rx="4" fill="#ffe066" stroke="#fab005" stroke-width="2"/>
+                        <polygon points="95,60 135,35 175,60" fill="#fa5252"/>
+                        <!-- 门窗 -->
+                        <rect x="125" y="80" width="15" height="25" fill="#e9ecef"/>
+                        <circle cx="155" cy="75" r="6" fill="#e9ecef"/>
+                        <!-- 装饰文字 -->
+                        <text x="100" y="115" font-size="10" fill="#868e96" text-anchor="middle">免费图书馆 / 社区公园</text>
+                    </svg>
+                </div>
+                <div class="scene-footer" id="footer-right">家门口的福利</div>
+            </div>
+
+        </div>
+
+        <!-- 交互控制与信息反馈 -->
+        <div class="control-panel">
+            <div class="button-group">
+                <button class="btn btn-blue" id="btn-to-left">
+                    <span>←</span> 投入：建设宏大工程
+                </button>
+                <button class="btn btn-orange" id="btn-reset">
+                    🔄 重置资金池
+                </button>
+                <button class="btn btn-green" id="btn-to-right">
+                    投入：建设社区设施 <span>→</span>
+                </button>
+            </div>
+
+            <!-- 信息看板 -->
+            <div class="info-board" id="info-board">
+                <div class="info-title" id="info-title">点击上方按钮，分配税收资金</div>
+                <div class="info-text" id="info-text">
+                    请观察：无论是远处的宏大工程，还是你家楼下的免费公园，它们的资金来源有什么共同点？这种“投入”和“回报”的关系是怎么体现的？
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ball = document.getElementById('energy-ball');
+    const cardLeft = document.getElementById('card-left');
+    const cardRight = document.getElementById('card-right');
+    const pipeLeft = document.getElementById('pipe-fill-left');
+    const pipeRight = document.getElementById('pipe-fill-right');
+    const bubbleLeft = document.getElementById('bubble-left');
+    const bubbleRight = document.getElementById('bubble-right');
+    
+    const infoTitle = document.getElementById('info-title');
+    const infoText = document.getElementById('info-text');
+    const infoBoard = document.getElementById('info-board');
+
+    const btnToLeft = document.getElementById('btn-to-left');
+    const btnToRight = document.getElementById('btn-to-right');
+    const btnReset = document.getElementById('btn-reset');
+    const poolBtn = document.getElementById('pool-btn');
+
+    // 状态机
+    let currentState = 'center'; // 'center', 'left', 'right'
+
+    function updateUI(state) {
+        currentState = state;
+        
+        // 重置所有状态
+        cardLeft.classList.remove('active');
+        cardRight.classList.remove('active');
+        pipeLeft.style.width = '0%';
+        pipeRight.style.width = '0%';
+        bubbleLeft.style.opacity = '0';
+        bubbleLeft.style.transform = 'translateY(10px)';
+        bubbleRight.style.opacity = '0';
+        bubbleRight.style.transform = 'translateY(10px)';
+        ball.classList.remove('pulsing');
+
+        if (state === 'center') {
+            // 回到中央
+            ball.style.left = '50%';
+            ball.style.top = '50%';
+            ball.style.transform = 'translate(-50%, -50%) scale(1)';
+            ball.classList.add('pulsing');
+
+            infoTitle.innerText = "点击上方按钮，分配税收资金";
+            infoText.innerText = "请观察：无论是远处的宏大工程，还是你家楼下的免费公园，它们的资金来源有什么共同点？这种“投入”和“回报”的关系是怎么体现的？";
+            infoBoard.style.borderLeftColor = 'var(--tax-gold)';
+        } 
+        else if (state === 'left') {
+            // 流向左侧
+            ball.style.left = '16%';
+            ball.style.top = '50%';
+            ball.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            
+            pipeLeft.style.width = '100%';
+            
+            setTimeout(() => {
+                cardLeft.classList.add('active');
+                bubbleLeft.style.opacity = '1';
+                bubbleLeft.style.transform = 'translateY(0)';
+                bubbleRight.style.opacity = '1';
+                bubbleRight.style.transform = 'translateY(0)';
+            }, 600);
+
+            infoTitle.innerText = "【宏大工程】资金流向：国家税收 ➡️ 跨海大桥/公立学校";
+            infoText.innerHTML = "<strong>投入：</strong> 汇聚全国人民的微小税收，形成庞大的国家财政资金池。<br><strong>回报：</strong> 建设单靠个人或社区无法完成的超级工程，提供全国性的免费/低成本公共服务，促进社会整体运转。";
+            infoBoard.style.borderLeftColor = 'var(--primary-blue)';
+        } 
+        else if (state === 'right') {
+            // 流向右侧
+            ball.style.left = '84%';
+            ball.style.top = '50%';
+            ball.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            
+            pipeRight.style.width = '100%';
+            
+            setTimeout(() => {
+                cardRight.classList.add('active');
+                bubbleLeft.style.opacity = '1';
+                bubbleLeft.style.transform = 'translateY(0)';
+                bubbleRight.style.opacity = '1';
+                bubbleRight.style.transform = 'translateY(0)';
+            }, 600);
+
+            infoTitle.innerText = "【社区设施】资金流向：国家税收 ➡️ 免费图书馆/公园";
+            infoText.innerHTML = "<strong>投入：</strong> 同样的税收资金池，向地方和社区微观倾斜。<br><strong>回报：</strong> 转化为你家楼下触手可及的免费公园、图书馆。虽然尺度变小了，但它直接提升了你和家人的生活品质，这就是最直接的<strong>“税收回报”</strong>。";
+            infoBoard.style.borderLeftColor = 'var(--primary-green)';
+        }
+    }
+
+    // 绑定事件
+    btnToLeft.addEventListener('click', () => updateUI('left'));
+    btnToRight.addEventListener('click', () => updateUI('right'));
+    btnReset.addEventListener('click', () => updateUI('center'));
+    poolBtn.addEventListener('click', () => updateUI('center'));
+
+    // 允许点击卡片直接触发
+    cardLeft.addEventListener('click', () => updateUI('left'));
+    cardRight.addEventListener('click', () => updateUI('right'));
+
+    // 初始化
+    updateUI('center');
+</script>
+</body>
+</html>

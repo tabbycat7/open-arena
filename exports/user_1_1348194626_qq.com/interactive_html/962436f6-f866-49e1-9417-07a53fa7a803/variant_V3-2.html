@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总收入与计税基数关系微课件</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header .tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 主体交互区域 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 24px;
+            min-height: 0; /* 允许子元素在flex中正确缩放 */
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .question-box {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .question-box h3 {
+            font-size: 16px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .question-box p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .policy-selector {
+            margin: 20px 0;
+        }
+
+        .policy-label {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            background-color: white;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .slider-container {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: opacity 0.3s ease;
+        }
+
+        .slider-container.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--warning-color);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 右侧可视化图形区 */
+        .visual-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            position: relative;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            max-height: 320px;
+        }
+
+        /* 底部提示栏 */
+        .footer-bar {
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .formula-display {
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+
+        .formula-display span {
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+
+        .span-income { background-color: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
+        .span-deduction { background-color: rgba(245, 158, 11, 0.15); color: #b45309; }
+        .span-base { background-color: rgba(16, 185, 129, 0.15); color: #047857; }
+
+        /* 动画过渡 */
+        rect {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), x 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        text {
+            transition: x 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>总收入 与 计税基数</h1>
+        <span class="tag">六年级数学 · 百分数（税率）</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：控制与引导 -->
+        <div class="control-panel">
+            <div class="question-box">
+                <h3>思考与讨论：</h3>
+                <p>1. 在什么情况下，总收入直接等于计税基数？<br>2. 在什么情况下，两者不相等？<br>3. 你是根据什么来做判断的？</p>
+            </div>
+
+            <div class="policy-selector">
+                <span class="policy-label">选择个税政策方案：</span>
+                <div class="btn-group">
+                    <button id="btn-no-deduction" class="btn active">方案 A：无减免</button>
+                    <button id="btn-has-deduction" class="btn">方案 B：有减免</button>
+                </div>
+            </div>
+
+            <div id="slider-box" class="slider-container disabled">
+                <div class="slider-header">
+                    <span>设置免税额（起征点）：</span>
+                    <span id="deduction-value" style="color: var(--warning-color);">0 元</span>
+                </div>
+                <input type="range" id="deduction-slider" class="slider" min="0" max="6000" step="500" value="0" disabled>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                    <span>0元</span>
+                    <span>3000元</span>
+                    <span>6000元</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：可视化图形 -->
+        <div class="visual-panel">
+            <div class="svg-container">
+                <svg viewBox="0 0 400 300" id="viz-svg">
+                    <!-- 背景网格线 -->
+                    <line x1="50" y1="50" x2="350" y2="50" stroke="#e2e8f0" stroke-dasharray="4"/>
+                    <line x1="50" y1="130" x2="350" y2="130" stroke="#e2e8f0" stroke-dasharray="4"/>
+                    <line x1="50" y1="210" x2="350" y2="210" stroke="#e2e8f0" stroke-dasharray="4"/>
+
+                    <!-- 1. 总收入条形图 -->
+                    <g id="group-income">
+                        <text x="50" y="40" font-size="13" font-weight="bold" fill="#475569">总收入 (固定 10000 元)</text>
+                        <rect x="50" y="50" width="300" height="40" rx="6" fill="#3b82f6" fill-opacity="0.85"/>
+                        <text x="200" y="75" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">10000 元</text>
+                    </g>
+
+                    <!-- 2. 政策拆分条形图 -->
+                    <g id="group-split">
+                        <text x="50" y="120" font-size="13" font-weight="bold" fill="#475569">收入结构拆分</text>
+                        
+                        <!-- 免税/减免部分 -->
+                        <rect id="rect-deduction" x="50" y="130" width="0" height="40" rx="6" fill="#f59e0b" fill-opacity="0.85"/>
+                        <text id="text-deduction" x="50" y="155" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0">0</text>
+
+                        <!-- 计税基数部分 -->
+                        <rect id="rect-base" x="50" y="130" width="300" height="40" rx="6" fill="#10b981" fill-opacity="0.85"/>
+                        <text id="text-base" x="200" y="155" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">10000 元</text>
+                    </g>
+
+                    <!-- 3. 关系对比指示 -->
+                    <g id="comparison-indicator">
+                        <!-- 等号或不等号 -->
+                        <text id="relation-symbol" x="200" y="225" font-size="32" font-weight="bold" fill="#1e293b" text-anchor="middle">=</text>
+                        <text x="200" y="250" font-size="12" fill="#64748b" text-anchor="middle">总收入 与 计税基数 的关系</text>
+                        
+                        <!-- 辅助虚线连接 -->
+                        <path id="link-line-left" d="M 50 90 L 50 130" stroke="#94a3b8" stroke-dasharray="3" stroke-width="1.5"/>
+                        <path id="link-line-right" d="M 350 90 L 350 130" stroke="#94a3b8" stroke-dasharray="3" stroke-width="1.5"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer-bar">
+        <span>实时公式：</span>
+        <div class="formula-display">
+            <span class="span-income">总收入 (10000)</span> 
+            - 
+            <span class="span-deduction" id="formula-deduction">免税额 (0)</span> 
+            = 
+            <span class="span-base" id="formula-base">计税基数 (10000)</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const btnNoDeduction = document.getElementById('btn-no-deduction');
+    const btnHasDeduction = document.getElementById('btn-has-deduction');
+    const sliderBox = document.getElementById('slider-box');
+    const slider = document.getElementById('deduction-slider');
+    const deductionValueText = document.getElementById('deduction-value');
+
+    const rectDeduction = document.getElementById('rect-deduction');
+    const rectBase = document.getElementById('rect-base');
+    const textDeduction = document.getElementById('text-deduction');
+    const textBase = document.getElementById('text-base');
+    const relationSymbol = document.getElementById('relation-symbol');
+    const linkLineRight = document.getElementById('link-line-right');
+
+    const formulaDeduction = document.getElementById('formula-deduction');
+    const formulaBase = document.getElementById('formula-base');
+
+    // 常量定义
+    const TOTAL_INCOME = 10000;
+    const SVG_MAX_WIDTH = 300; // 对应10000元在SVG中的像素宽度
+    const SVG_START_X = 50;
+
+    // 状态变量
+    let currentDeduction = 0;
+    let hasDeductionPolicy = false;
+
+    // 更新视图函数
+    function updateVisualization() {
+        const deduction = hasDeductionPolicy ? currentDeduction : 0;
+        const taxBase = TOTAL_INCOME - deduction;
+
+        // 计算对应的像素宽度
+        const deductionWidth = (deduction / TOTAL_INCOME) * SVG_MAX_WIDTH;
+        const baseWidth = (taxBase / TOTAL_INCOME) * SVG_MAX_WIDTH;
+
+        // 1. 更新免税额矩形和文本
+        rectDeduction.setAttribute('width', deductionWidth);
+        if (deduction > 0) {
+            rectDeduction.setAttribute('fill-opacity', '0.85');
+            textDeduction.setAttribute('opacity', '1');
+            textDeduction.setAttribute('x', SVG_START_X + deductionWidth / 2);
+            textDeduction.textContent = `${deduction}`;
+        } else {
+            textDeduction.setAttribute('opacity', '0');
+        }
+
+        // 2. 更新计税基数矩形和文本
+        rectBase.setAttribute('x', SVG_START_X + deductionWidth);
+        rectBase.setAttribute('width', baseWidth);
+        textBase.setAttribute('x', SVG_START_X + deductionWidth + baseWidth / 2);
+        textBase.textContent = `${taxBase} 元`;
+
+        // 3. 更新关系符号和辅助线
+        if (deduction === 0) {
+            relationSymbol.textContent = '=';
+            relationSymbol.setAttribute('fill', '#10b981'); // 绿色表示完全相等
+            linkLineRight.setAttribute('d', `M 350 90 L 350 130`); // 右侧对齐
+        } else {
+            relationSymbol.textContent = '≠';
+            relationSymbol.setAttribute('fill', '#ef4444'); // 红色表示不等
+            // 右侧虚线指向计税基数的起始分割点，直观展示“被截去一部分”
+            const splitX = SVG_START_X + deductionWidth;
+            linkLineRight.setAttribute('d', `M 350 90 L ${splitX} 130`);
+        }
+
+        // 4. 更新底部公式和控制面板文本
+        deductionValueText.textContent = `${deduction} 元`;
+        formulaDeduction.textContent = `免税额 (${deduction})`;
+        formulaBase.textContent = `计税基数 (${taxBase})`;
+    }
+
+    // 事件监听：无免税方案
+    btnNoDeduction.addEventListener('click', () => {
+        if (!btnNoDeduction.classList.contains('active')) {
+            btnNoDeduction.classList.add('active');
+            btnHasDeduction.classList.remove('active');
+            sliderBox.classList.add('disabled');
+            slider.disabled = true;
+            hasDeductionPolicy = false;
+            updateVisualization();
+        }
+    });
+
+    // 事件监听：有免税方案
+    btnHasDeduction.addEventListener('click', () => {
+        if (!btnHasDeduction.classList.contains('active')) {
+            btnHasDeduction.classList.add('active');
+            btnNoDeduction.classList.remove('active');
+            sliderBox.classList.remove('disabled');
+            slider.disabled = false;
+            hasDeductionPolicy = true;
+            // 默认给一个起征点值，比如 3000
+            if (slider.value == 0) {
+                slider.value = 3000;
+            }
+            currentDeduction = parseInt(slider.value);
+            updateVisualization();
+        }
+    });
+
+    // 事件监听：滑动条变化
+    slider.addEventListener('input', (e) => {
+        currentDeduction = parseInt(e.target.value);
+        updateVisualization();
+    });
+
+    // 初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

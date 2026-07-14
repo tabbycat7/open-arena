@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>税收与公共设施</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --highlight: #e67e22;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { text-align: center; color: var(--primary); font-size: 1.5rem; margin-bottom: 10px; }
+        #svg-canvas { width: 100%; height: 80%; }
+        .facility { cursor: pointer; transition: transform 0.2s; }
+        .facility:hover { transform: scale(1.05); }
+        #info-box {
+            position: absolute;
+            bottom: 20px;
+            left: 5%;
+            width: 90%;
+            height: 80px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            color: var(--primary);
+            font-size: 1.1rem;
+            border: 2px dashed var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>公共设施背后的资金支持</h2>
+    <svg id="svg-canvas" viewBox="0 0 800 400">
+        <!-- 个人收入 -->
+        <rect x="50" y="150" width="100" height="100" fill="#34495e" rx="10"/>
+        <text x="100" y="205" fill="white" text-anchor="middle" font-size="14">个人收入</text>
+        
+        <!-- 税收桥梁 -->
+        <line id="bridge" x1="150" y1="200" x2="650" y2="200" stroke="#3498db" stroke-width="4" stroke-dasharray="10,10"/>
+        
+        <!-- 公共设施 -->
+        <g id="school" class="facility" data-info="学校：由国家财政拨款建设，保障每个孩子受教育的权利。">
+            <rect x="650" y="50" width="100" height="80" fill="#27ae60" rx="5"/>
+            <text x="700" y="95" fill="white" text-anchor="middle">学校</text>
+        </g>
+        <g id="hospital" class="facility" data-info="医院：公共医疗设施的运营离不开税收的持续投入。">
+            <rect x="650" y="160" width="100" height="80" fill="#c0392b" rx="5"/>
+            <text x="700" y="205" fill="white" text-anchor="middle">医院</text>
+        </g>
+        <g id="road" class="facility" data-info="道路：马路的铺设与维护，是税收服务于出行的体现。">
+            <rect x="650" y="270" width="100" height="80" fill="#7f8c8d" rx="5"/>
+            <text x="700" y="315" fill="white" text-anchor="middle">道路</text>
+        </g>
+    </svg>
+    <div id="info-box">点击上方的设施，查看它们与税收的联系</div>
+</div>
+
+<script>
+    const bridge = document.getElementById('bridge');
+    const infoBox = document.getElementById('info-box');
+    const facilities = document.querySelectorAll('.facility');
+
+    facilities.forEach(f => {
+        f.addEventListener('click', () => {
+            // 高亮桥梁
+            bridge.style.strokeDasharray = '0';
+            bridge.style.stroke = '#e67e22';
+            bridge.style.strokeWidth = '6';
+            
+            // 更新文字
+            infoBox.textContent = f.getAttribute('data-info');
+            infoBox.style.borderColor = '#e67e22';
+            
+            // 视觉反馈
+            facilities.forEach(item => item.style.opacity = '0.5');
+            f.style.opacity = '1';
+        });
+    });
+</script>
+
+</body>
+</html>

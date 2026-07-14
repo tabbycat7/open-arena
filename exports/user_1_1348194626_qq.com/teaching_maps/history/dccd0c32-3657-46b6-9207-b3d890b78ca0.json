@@ -1,0 +1,338 @@
+{
+  "id": "dccd0c32-3657-46b6-9207-b3d890b78ca0",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"从细胞分裂实例探讨底数a能否为负，引出a>0的限制。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP1\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.6}, {\"id\": \"V1-1\", \"content\": \"从药物代谢衰减实例探讨底数a的取值范围。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.6}, {\"id\": \"M2\", \"content\": \"辨析多个式子，判断哪些是指数函数，深化定义理解。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.7}, {\"id\": \"V2-1\", \"content\": \"辨析含无理数底数、复合形式等更复杂的式子是否为指数函数。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.75}, {\"id\": \"S2-1\", \"content\": \"确认y=2^x的底数和自变量位置。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"remember\", \"difficulty\": 0.3}, {\"id\": \"S2-2\", \"content\": \"计算y=2^x在x=-1,0,1时的具体函数值。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\", \"KP4\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.4}, {\"id\": \"M3\", \"content\": \"评价描点法取点方案的合理性，规划更好策略。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\", \"KP3\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.7}, {\"id\": \"V3-1\", \"content\": \"分析错误取点、连线案例的问题所在。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\", \"KP3\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.65}, {\"id\": \"V3-2\", \"content\": \"独立用描点法画出y=3^x和y=(1/3)^x的图像。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.65}, {\"id\": \"M4\", \"content\": \"质疑由有限特例得出的单调性猜想，探究其普适性。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.75}, {\"id\": \"V4-1\", \"content\": \"通过具体数值计算，分析y=0.5^x的趋势，联系图像。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP5\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.7}, {\"id\": \"S4-1\", \"content\": \"回顾一次函数图像“增”的直观含义。\", \"question_type\": \"scaffold\", \"knowledge_points\": [], \"cognitive_level\": \"remember\", \"difficulty\": 0.3}, {\"id\": \"S4-2\", \"content\": \"描述y=2^x图像上x增大时y的变化。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\", \"KP5\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.4}, {\"id\": \"S4-3\", \"content\": \"利用S4-2的结论，比较2^3和2^4的大小。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.45}, {\"id\": \"M5\", \"content\": \"创造策略，比较同底不同指数幂的大小，并应对底数变化的挑战。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"create\", \"difficulty\": 0.8}, {\"id\": \"V5-1\", \"content\": \"比较指数为负数或整数的同底数幂的大小。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.7}, {\"id\": \"V5-2\", \"content\": \"分析一个不完整的比较过程，明确规范步骤。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.65}, {\"id\": \"V5-3\", \"content\": \"在细菌增长/衰减情境中应用单调性比较大小。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.7}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 0.8}, {\"source\": \"V1-1\", \"target\": \"M1\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 0.8}, {\"source\": \"V2-1\", \"target\": \"M2\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-2\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 0.8}, {\"source\": \"V3-1\", \"target\": \"M3\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"V3-2\", \"target\": \"M3\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 0.8}, {\"source\": \"V4-1\", \"target\": \"M4\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"M5\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-2\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"V5-1\", \"target\": \"M5\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"V5-2\", \"target\": \"M5\", \"relation\": \"variant_of\", \"weight\": 0.9}, {\"source\": \"V5-3\", \"target\": \"M5\", \"relation\": \"variant_of\", \"weight\": 0.9}]}",
+  "created_at": "2026-03-20 19:27:02",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "从细胞分裂实例探讨底数a能否为负，引出a>0的限制。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP1"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.6
+      },
+      {
+        "id": "V1-1",
+        "content": "从药物代谢衰减实例探讨底数a的取值范围。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.6
+      },
+      {
+        "id": "M2",
+        "content": "辨析多个式子，判断哪些是指数函数，深化定义理解。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.7
+      },
+      {
+        "id": "V2-1",
+        "content": "辨析含无理数底数、复合形式等更复杂的式子是否为指数函数。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.75
+      },
+      {
+        "id": "S2-1",
+        "content": "确认y=2^x的底数和自变量位置。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "remember",
+        "difficulty": 0.3
+      },
+      {
+        "id": "S2-2",
+        "content": "计算y=2^x在x=-1,0,1时的具体函数值。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1",
+          "KP4"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.4
+      },
+      {
+        "id": "M3",
+        "content": "评价描点法取点方案的合理性，规划更好策略。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4",
+          "KP3"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.7
+      },
+      {
+        "id": "V3-1",
+        "content": "分析错误取点、连线案例的问题所在。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4",
+          "KP3"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.65
+      },
+      {
+        "id": "V3-2",
+        "content": "独立用描点法画出y=3^x和y=(1/3)^x的图像。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.65
+      },
+      {
+        "id": "M4",
+        "content": "质疑由有限特例得出的单调性猜想，探究其普适性。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.75
+      },
+      {
+        "id": "V4-1",
+        "content": "通过具体数值计算，分析y=0.5^x的趋势，联系图像。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP5"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.7
+      },
+      {
+        "id": "S4-1",
+        "content": "回顾一次函数图像“增”的直观含义。",
+        "question_type": "scaffold",
+        "knowledge_points": [],
+        "cognitive_level": "remember",
+        "difficulty": 0.3
+      },
+      {
+        "id": "S4-2",
+        "content": "描述y=2^x图像上x增大时y的变化。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3",
+          "KP5"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.4
+      },
+      {
+        "id": "S4-3",
+        "content": "利用S4-2的结论，比较2^3和2^4的大小。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.45
+      },
+      {
+        "id": "M5",
+        "content": "创造策略，比较同底不同指数幂的大小，并应对底数变化的挑战。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.8
+      },
+      {
+        "id": "V5-1",
+        "content": "比较指数为负数或整数的同底数幂的大小。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.7
+      },
+      {
+        "id": "V5-2",
+        "content": "分析一个不完整的比较过程，明确规范步骤。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.65
+      },
+      {
+        "id": "V5-3",
+        "content": "在细菌增长/衰减情境中应用单调性比较大小。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.7
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 0.8
+      },
+      {
+        "source": "V1-1",
+        "target": "M1",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 0.8
+      },
+      {
+        "source": "V2-1",
+        "target": "M2",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-2",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 0.8
+      },
+      {
+        "source": "V3-1",
+        "target": "M3",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "V3-2",
+        "target": "M3",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 0.8
+      },
+      {
+        "source": "V4-1",
+        "target": "M4",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "M5",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-2",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "V5-1",
+        "target": "M5",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "V5-2",
+        "target": "M5",
+        "relation": "variant_of",
+        "weight": 0.9
+      },
+      {
+        "source": "V5-3",
+        "target": "M5",
+        "relation": "variant_of",
+        "weight": 0.9
+      }
+    ]
+  }
+}

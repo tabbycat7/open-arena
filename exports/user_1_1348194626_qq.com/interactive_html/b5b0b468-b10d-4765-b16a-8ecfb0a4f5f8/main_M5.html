@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M5 决策树分类讨论交互课件</title>
+    <style>
+        /* 基础样式与 4:3 比例自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #app-container {
+            width: 1024px;
+            height: 768px;
+            background-color: #ffffff;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        /* 头部导航 */
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        header .tag {
+            background-color: #3498db;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 110px);
+        }
+
+        /* 左侧：决策树画布区 */
+        .left-panel {
+            flex: 1.3;
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tree-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+        }
+        /* SVG 连线层 */
+        .tree-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* 树节点绝对定位 */
+        .tree-node {
+            position: absolute;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+        .root-node {
+            top: 15%;
+            left: 50%;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 15px;
+        }
+        /* 放置槽样式 */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            background-color: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .drop-zone.drag-over {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .drop-zone.correct {
+            border-style: solid;
+            border-color: #10b981;
+            background-color: #ecfdf5;
+            color: #065f46;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+        }
+        /* 条件槽位置 */
+        .cond-zone-1 { top: 45%; left: 20%; width: 110px; height: 45px; }
+        .cond-zone-2 { top: 45%; left: 50%; width: 110px; height: 45px; }
+        .cond-zone-3 { top: 45%; left: 80%; width: 110px; height: 45px; }
+        /* 结果槽位置 */
+        .res-zone-1 { top: 80%; left: 20%; width: 110px; height: 45px; }
+        .res-zone-2 { top: 80%; left: 50%; width: 110px; height: 45px; }
+        .res-zone-3 { top: 80%; left: 80%; width: 110px; height: 45px; }
+
+        /* 右侧：操作与辅助验证区 */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        /* 卡片备选区 */
+        .card-deck {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            flex: 1;
+            align-content: center;
+        }
+        /* 可拖拽卡片 */
+        .drag-card {
+            padding: 12px 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .drag-card:active {
+            cursor: grabbing;
+        }
+        .drag-card.type-cond {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+        .drag-card.type-res {
+            background-color: #fef3c7;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+        .drag-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        /* 验证微型图像区 */
+        .verify-panel {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1.8;
+            display: flex;
+            flex-direction: column;
+        }
+        .verify-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .verify-control input {
+            flex: 1;
+            cursor: pointer;
+        }
+        .verify-canvas-container {
+            flex: 1;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 底部提示栏 */
+        footer {
+            background-color: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+        }
+        .tip-box {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tip-box strong {
+            color: #e11d48;
+        }
+        .btn-reset {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+        .btn-reset:hover {
+            background-color: #475569;
+        }
+
+        /* 成功动效 */
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .pulse-success {
+            animation: pulse-green 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- 头部 -->
+    <header>
+        <h1>分类讨论思维构建：决策树表达</h1>
+        <span class="tag">高一数学 · 函数与方程</span>
+    </header>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：决策树 -->
+        <div class="left-panel">
+            <div class="panel-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8m0 4v8m-8-6h16"/></svg>
+                拖拽卡片构建决策树
+            </div>
+            <div class="tree-container" id="tree-container">
+                <!-- SVG 连线 -->
+                <svg class="tree-svg" id="tree-svg">
+                    <!-- 动态生成连线 -->
+                </svg>
+
+                <!-- 根节点 -->
+                <div class="tree-node root-node">输入参数 a</div>
+
+                <!-- 条件槽 -->
+                <div class="tree-node drop-zone cond-zone-1" data-type="cond" data-target="a < 2" id="slot-cond-1">放入条件</div>
+                <div class="tree-node drop-zone cond-zone-2" data-type="cond" data-target="a = 2" id="slot-cond-2">放入条件</div>
+                <div class="tree-node drop-zone cond-zone-3" data-type="cond" data-target="a > 2" id="slot-cond-3">放入条件</div>
+
+                <!-- 结果槽 -->
+                <div class="tree-node drop-zone res-zone-1" data-type="res" data-target="0个解" id="slot-res-1">放入结果</div>
+                <div class="tree-node drop-zone res-zone-2" data-type="res" data-target="2个解" id="slot-res-2">放入结果</div>
+                <div class="tree-node drop-zone res-zone-3" data-type="res" data-target="无数个解" id="slot-res-3">放入结果</div>
+            </div>
+        </div>
+
+        <!-- 右侧：卡片与验证 -->
+        <div class="right-panel">
+            <!-- 卡片备选区 -->
+            <div class="card-deck">
+                <div class="panel-title">候选分类卡片</div>
+                <div class="card-container" id="card-container">
+                    <div class="drag-card type-cond" draggable="true" data-val="a < 2">a &lt; 2</div>
+                    <div class="drag-card type-cond" draggable="true" data-val="a = 2">a = 2</div>
+                    <div class="drag-card type-cond" draggable="true" data-val="a > 2">a &gt; 2</div>
+                    <div class="drag-card type-res" draggable="true" data-val="0个解">0个解</div>
+                    <div class="drag-card type-res" draggable="true" data-val="2个解">2个解</div>
+                    <div class="drag-card type-res" draggable="true" data-val="无数个解">无数个解</div>
+                </div>
+            </div>
+
+            <!-- 验证微型图像区 -->
+            <div class="verify-panel">
+                <div class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+                    动态数形结合验证
+                </div>
+                <div class="verify-control">
+                    <span style="font-size: 13px; font-weight: bold; color: #475569;">参数 a:</span>
+                    <input type="range" id="param-a-slider" min="0" max="4" step="0.1" value="1">
+                    <span id="param-a-val" style="font-size: 13px; font-weight: bold; color: #2563eb; width: 30px;">1.0</span>
+                </div>
+                <div class="verify-canvas-container">
+                    <canvas id="verify-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+        <div class="tip-box" id="tip-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"/></svg>
+            <span>提示：请将右侧的条件和结果卡片拖拽到左侧对应的决策树分支中。</span>
+        </div>
+        <button class="btn-reset" id="btn-reset">重置决策树</button>
+    </footer>
+</div>
+
+<script>
+    // 1. 拖拽交互逻辑
+    const cards = document.querySelectorAll('.drag-card');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const tipBox = document.getElementById('tip-box');
+    let draggedCard = null;
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', () => {
+            draggedCard = card;
+            card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+            draggedCard = null;
+        });
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!zone.classList.contains('correct')) {
+                zone.classList.add('drag-over');
+            }
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('drag-over');
+        });
+
+        zone.addEventListener('drop', () => {
+            zone.classList.remove('drag-over');
+            if (!draggedCard) return;
+
+            const cardType = draggedCard.classList.contains('type-cond') ? 'cond' : 'res';
+            const zoneType = zone.getAttribute('data-type');
+            const targetVal = zone.getAttribute('data-target');
+            const draggedVal = draggedCard.getAttribute('data-val');
+
+            if (cardType === zoneType) {
+                if (targetVal === draggedVal) {
+                    // 放置正确
+                    zone.textContent = draggedVal;
+                    zone.classList.add('correct');
+                    draggedCard.style.visibility = 'hidden';
+                    checkCompletion();
+                } else {
+                    // 放置错误，给出引导性提示
+                    showErrorTip(draggedVal, targetVal);
+                }
+            } else {
+                tipBox.innerHTML = `<strong>提示：</strong>条件卡片只能放入“条件槽”，结果卡片只能放入“结果槽”！`;
+            }
+        });
+    });
+
+    function showErrorTip(draggedVal, targetVal) {
+        let testVal = "1";
+        if (draggedVal.includes("2") || targetVal.includes("2")) {
+            testVal = "2";
+        }
+        if (draggedVal.includes(">") || targetVal.includes(">")) {
+            testVal = "3";
+        }
+        tipBox.innerHTML = `<strong>提示：</strong>位置不对哦！试着在右下角将参数 a 调节到 <strong>a = ${testVal}</strong>，观察图像交点个数。`;
+    }
+
+    function checkCompletion() {
+        const allCorrect = Array.from(dropZones).every(zone => zone.classList.contains('correct'));
+        if (allCorrect) {
+            tipBox.innerHTML = `<span style="color: #10b981; font-weight: bold;">🎉 太棒了！你已成功构建了严谨的分类讨论决策树！</span>`;
+            document.querySelectorAll('.correct').forEach(el => el.classList.add('pulse-success'));
+            drawTreeLines(true);
+        } else {
+            drawTreeLines();
+        }
+    }
+
+    // 重置按钮
+    document.getElementById('btn-reset').addEventListener('click', () => {
+        dropZones.forEach(zone => {
+            zone.classList.remove('correct', 'pulse-success');
+            zone.textContent = zone.getAttribute('data-type') === 'cond' ? '放入条件' : '放入结果';
+        });
+        cards.forEach(card => {
+            card.style.visibility = 'visible';
+        });
+        tipBox.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"/></svg><span>提示：请将右侧的条件和结果卡片拖拽到左侧对应的决策树分支中。</span>`;
+        drawTreeLines();
+    });
+
+    // 2. 绘制决策树连线
+    const svg = document.getElementById('tree-svg');
+    function drawTreeLines(highlightAll = false) {
+        svg.innerHTML = '';
+        const containerRect = document.getElementById('tree-container').getBoundingClientRect();
+
+        const root = document.querySelector('.root-node').getBoundingClientRect();
+        const conds = [
+            document.getElementById('slot-cond-1'),
+            document.getElementById('slot-cond-2'),
+            document.getElementById('slot-cond-3')
+        ];
+        const ress = [
+            document.getElementById('slot-res-1'),
+            document.getElementById('slot-res-2'),
+            document.getElementById('slot-res-3')
+        ];
+
+        const rootX = root.left + root.width / 2 - containerRect.left;
+        const rootY = root.top + root.height - containerRect.top;
+
+        // 绘制根到条件的线
+        conds.forEach((cond, index) => {
+            const condRect = cond.getBoundingClientRect();
+            const condX = condRect.left + condRect.width / 2 - containerRect.left;
+            const condY = condRect.top - containerRect.top;
+            const isCorrect = cond.classList.contains('correct') || highlightAll;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d = `M ${rootX} ${rootY} C ${rootX} ${(rootY + condY)/2}, ${condX} ${(rootY + condY)/2}, ${condX} ${condY}`;
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', isCorrect ? '#10b981' : '#cbd5e1');
+            path.setAttribute('stroke-width', isCorrect ? '3' : '2');
+            path.setAttribute('fill', 'none');
+            svg.appendChild(path);
+
+            // 绘制条件到结果的线
+            const res = ress[index];
+            const resRect = res.getBoundingClientRect();
+            const resX = resRect.left + resRect.width / 2 - containerRect.left;
+            const resY = resRect.top - containerRect.top;
+            const isResCorrect = (cond.classList.contains('correct') && res.classList.contains('correct')) || highlightAll;
+
+            const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d2 = `M ${condX} ${condRect.top + condRect.height - containerRect.top} C ${condX} ${(condRect.top + condRect.height - containerRect.top + resY)/2}, ${resX} ${(condRect.top + condRect.height - containerRect.top + resY)/2}, ${resX} ${resY}`;
+            path2.setAttribute('d', d2);
+            path2.setAttribute('stroke', isResCorrect ? '#10b981' : '#cbd5e1');
+            path2.setAttribute('stroke-width', isResCorrect ? '3' : '2');
+            path2.setAttribute('fill', 'none');
+            svg.appendChild(path2);
+        });
+    }
+
+    // 窗口大小改变时重绘连线
+    window.addEventListener('resize', () => drawTreeLines());
+    setTimeout(drawTreeLines, 100); // 延迟确保DOM渲染完毕
+
+    // 3. 右下角微型图像验证 Canvas
+    const canvas = document.getElementById('verify-canvas');
+    const ctx = canvas.getContext('2d');
+    const slider = document.getElementById('param-a-slider');
+    const sliderVal = document.getElementById('param-a-val');
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        drawVerification();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    slider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value).toFixed(1);
+        sliderVal.textContent = val;
+        drawVerification();
+    });
+
+    // 绘制验证图像：以 y = |x^2 - 2x| 与 y = a 的交点为例
+    function drawVerification() {
+        if (canvas.width === 0) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height * 0.75; // 坐标原点偏下
+        const scale = 50; // 缩放比例
+
+        // 1. 绘制网格
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 25) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        }
+        for (let y = 0; y < height; y += 25) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+        }
+
+        // 2. 绘制坐标轴
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); // X轴
+        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height); // Y轴
+        ctx.stroke();
+
+        // 3. 绘制函数 y = |x^2 - 4| (顶点在 (0,4)，零点在 (-2,0) 和 (2,0))
+        ctx.strokeStyle = '#4f46e5';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        let first = true;
+        for (let px = 0; px < width; px++) {
+            const x = (px - centerX) / scale;
+            const y = Math.abs(x * x - 4); // 目标函数
+            const py = centerY - y * scale;
+
+            if (py >= 0 && py <= height) {
+                if (first) {
+                    ctx.moveTo(px, py);
+                    first = false;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+        }
+        ctx.stroke();
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = '11px sans-serif';
+        ctx.fillText("y = |x² - 4|", centerX + 80, centerY - 120);
+
+        // 4. 绘制动态水平线 y = a
+        const a = parseFloat(slider.value);
+        const pyA = centerY - a * scale;
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(0, pyA);
+        ctx.lineTo(width, pyA);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(`y = a (a = ${a})`, 15, pyA - 8);
+
+        // 5. 计算并标注交点
+        // 方程 |x^2 - 4| = a
+        // 当 a > 4: 2个解
+        // 当 a = 4: 3个解 (此处简化为分类讨论的临界点，本题以 a=2 为分界点设计，我们让函数对应 a=2 为临界)
+        // 为了完美契合题干的 a=2 临界点，我们调整函数为 y = |x^2 - 2| (零点在 +-sqrt(2)，顶点在 (0,2))
+        // 重新计算交点：|x^2 - 2| = a
+        // 重新绘制函数 y = |x^2 - 2|
+        ctx.clearRect(0, 0, width, height);
+        // 重绘网格和轴
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 25) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        }
+        for (let y = 0; y < height; y += 25) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+        }
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, centerY); ctx.lineTo(width, centerY);
+        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
+        ctx.stroke();
+
+        // 绘制 y = |x^2 - 2|
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        first = true;
+        for (let px = 0; px < width; px++) {
+            const x = (px - centerX) / scale;
+            const y = Math.abs(x * x - 2);
+            const py = centerY - y * scale;
+            if (py >= 0 && py <= height) {
+                if (first) {
+                    ctx.moveTo(px, py);
+                    first = false;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+        }
+        ctx.stroke();
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillText("y = |x² - 2|", centerX + 70, centerY - 80);
+
+        // 绘制 y = a
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(0, pyA);
+        ctx.lineTo(width, pyA);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText(`y = a (a = ${a})`, 15, pyA - 8);
+
+        // 计算交点并画圆点
+        // |x^2 - 2| = a  => x^2 - 2 = a 或 x^2 - 2 = -a
+        // 1) x^2 = 2 + a (a >= -2 恒有两解)
+        // 2) x^2 = 2 - a (a <= 2 有两解，a=2时为0，a>2无解)
+        const roots = [];
+        if (2 + a >= 0) {
+            roots.push(Math.sqrt(2 + a));
+            roots.push(-Math.sqrt(2 + a));
+        }
+        if (2 - a > 0) {
+            roots.push(Math.sqrt(2 - a));
+            roots.push(-Math.sqrt(2 - a));
+        } else if (2 - a === 0) {
+            roots.push(0);
+        }
+
+        ctx.fillStyle = '#e11d48';
+        roots.forEach(r => {
+            const px = centerX + r * scale;
+            const py = pyA;
+            ctx.beginPath();
+            ctx.arc(px, py, 5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 输出当前交点个数提示
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 13px sans-serif';
+        let solutionText = `交点个数：${roots.length} 个`;
+        if (a > 2) solutionText += " (对应 a > 2)";
+        else if (Math.abs(a - 2) < 0.01) solutionText += " (对应 a = 2)";
+        else solutionText += " (对应 a < 2)";
+        ctx.fillText(solutionText, 15, 25);
+    }
+</script>
+
+</body>
+</html>

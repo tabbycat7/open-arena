@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数形结合：函数图象与方程的根</title>
+    <style>
+        /* 全局样式，适合课堂投影 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部标题区 */
+        .header {
+            background-color: #2b6cb0;
+            color: #ffffff;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .header .tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 主体内容区：左右分栏 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 左侧：SVG 绘图区 */
+        .canvas-area {
+            flex: 1.3;
+            position: relative;
+            background-color: #fafafa;
+            border-right: 1px solid #e2e8f0;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 右侧：控制面板 */
+        .control-panel {
+            flex: 0.7;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #ffffff;
+        }
+
+        /* 问题引导与学案 */
+        .question-box {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+        }
+        .question-box p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        /* 交互控制区 */
+        .interactive-section {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .slider-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .slider-title span.val {
+            color: #3182ce;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 18px;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type=range] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #cbd5e0;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3182ce;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 实时状态反馈 */
+        .status-panel {
+            background-color: #fffaf0;
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .status-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #dd6b20;
+            margin-bottom: 8px;
+        }
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: white;
+        }
+        .badge-zero { background-color: #e53e3e; }
+        .badge-infinite { background-color: #319795; }
+        .badge-two { background-color: #38a169; }
+
+        /* 底部说明 */
+        .footer-desc {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.4;
+        }
+
+        /* 坐标系文本防缩放 */
+        .axis-label {
+            font-size: 12px;
+            fill: #718096;
+            user-select: none;
+        }
+        .axis-title {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #4a5568;
+            user-select: none;
+        }
+        .func-label {
+            font-size: 13px;
+            font-weight: bold;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>方程的根与函数图象的交点</h1>
+        <span class="tag">高一数学 · 数形结合</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：动态坐标系 -->
+        <div class="canvas-area">
+            <!-- viewBox 建立直角坐标系，中心在 (250, 250)，范围 x:[-5, 5], y:[-2, 6] -->
+            <!-- 映射关系：
+                 SVG 宽度 500, 高度 500
+                 X轴：-5 -> 50, 0 -> 250, 5 -> 450 (每单位 40 像素)
+                 Y轴：-2 -> 410, 0 -> 330, 6 -> 90 (每单位 40 像素)
+            -->
+            <svg id="plot" viewBox="0 0 500 500">
+                <!-- 网格线 (Grid) -->
+                <g stroke="#e2e8f0" stroke-width="1">
+                    <!-- 垂直网格 -->
+                    <line x1="50" y1="50" x2="50" y2="450" />
+                    <line x1="90" y1="50" x2="90" y2="450" />
+                    <line x1="130" y1="50" x2="130" y2="450" />
+                    <line x1="170" y1="50" x2="170" y2="450" />
+                    <line x1="210" y1="50" x2="210" y2="450" />
+                    <line x1="250" y1="50" x2="250" y2="450" />
+                    <line x1="290" y1="50" x2="290" y2="450" />
+                    <line x1="330" y1="50" x2="330" y2="450" />
+                    <line x1="370" y1="50" x2="370" y2="450" />
+                    <line x1="410" y1="50" x2="410" y2="450" />
+                    <line x1="450" y1="50" x2="450" y2="450" />
+                    <!-- 水平网格 -->
+                    <line x1="50" y1="90" x2="450" y2="90" />
+                    <line x1="50" y1="130" x2="450" y2="130" />
+                    <line x1="50" y1="170" x2="450" y2="170" />
+                    <line x1="50" y1="210" x2="450" y2="210" />
+                    <line x1="50" y1="250" x2="450" y2="250" />
+                    <line x1="50" y1="290" x2="450" y2="290" />
+                    <line x1="50" y1="330" x2="450" y2="330" />
+                    <line x1="50" y1="370" x2="450" y2="370" />
+                    <line x1="50" y1="410" x2="450" y2="410" />
+                </g>
+
+                <!-- 坐标轴 (Axes) -->
+                <g stroke="#4a5568" stroke-width="2">
+                    <!-- X 轴 -->
+                    <line x1="30" y1="330" x2="470" y2="330" />
+                    <!-- Y 轴 -->
+                    <line x1="250" y1="470" x2="250" y2="30" />
+                </g>
+                <!-- 轴箭头 -->
+                <polygon points="470,326 480,330 470,334" fill="#4a5568" />
+                <polygon points="246,30 250,20 254,30" fill="#4a5568" />
+                
+                <!-- 轴标签 -->
+                <text x="475" y="350" class="axis-title">x</text>
+                <text x="230" y="30" class="axis-title">y</text>
+                <text x="235" y="345" class="axis-label">O</text>
+
+                <!-- 刻度值 -->
+                <!-- X轴刻度 -->
+                <text x="205" y="348" class="axis-label">-1</text>
+                <text x="287" y="348" class="axis-label">1</text>
+                <text x="327" y="348" class="axis-label">2</text>
+                <text x="367" y="348" class="axis-label">3</text>
+                <!-- Y轴刻度 -->
+                <text x="232" y="254" class="axis-label">2</text>
+                <text x="232" y="174" class="axis-label">4</text>
+
+                <!-- 刻度小短线 -->
+                <g stroke="#4a5568" stroke-width="1.5">
+                    <line x1="210" y1="327" x2="210" y2="333" />
+                    <line x1="290" y1="327" x2="290" y2="333" />
+                    <line x1="330" y1="327" x2="330" y2="333" />
+                    <line x1="370" y1="327" x2="370" y2="333" />
+                    <line x1="247" y1="250" x2="253" y2="250" />
+                    <line x1="247" y1="170" x2="253" y2="170" />
+                </g>
+
+                <!-- 红色折线图: y = |x-1| + |x+1| -->
+                <!-- 
+                    拐点1: (-1, 2) -> SVG (210, 250)
+                    拐点2: (1, 2)  -> SVG (290, 250)
+                    左侧射线: x < -1, y = -2x, 例如 (-3, 6) -> SVG (130, 90)
+                    右侧射线: x > 1,  y = 2x,  例如 (3, 6)  -> SVG (370, 90)
+                -->
+                <polyline points="130,90 210,250 290,250 370,90" 
+                          fill="none" stroke="#e53e3e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                <text x="340" y="120" fill="#e53e3e" class="func-label">y = |x-1| + |x+1|</text>
+
+                <!-- 蓝色动态水平线: y = a -->
+                <line id="line-a" x1="50" y1="250" x2="450" y2="250" 
+                      stroke="#3182ce" stroke-width="3" stroke-dasharray="6,4" />
+                <text id="label-a" x="60" y="240" fill="#3182ce" class="func-label">y = a</text>
+
+                <!-- 动态交点 (最多两个) -->
+                <circle id="intersection-1" cx="0" cy="0" r="7" fill="#ecc94b" stroke="#d69e2e" stroke-width="2" style="display: none;" />
+                <circle id="intersection-2" cx="0" cy="0" r="7" fill="#ecc94b" stroke="#d69e2e" stroke-width="2" style="display: none;" />
+            </svg>
+        </div>
+
+        <!-- 右侧：控制与观察 -->
+        <div class="control-panel">
+            <div>
+                <!-- 教学引导 -->
+                <div class="question-box">
+                    <p><strong>思考：</strong></p>
+                    <p>方程 <strong>|x-1| + |x+1| = a</strong> 的实数解，在图象中对应着什么？</p>
+                    <p style="margin-top: 6px; font-size: 14px; color: #4a5568;">拖动下方滑块改变参数 <strong>a</strong> 的值，观察交点个数的变化。</p>
+                </div>
+
+                <!-- 滑动条控制 -->
+                <div class="interactive-section">
+                    <div class="slider-title">
+                        <span>参数 a 的值：</span>
+                        <span class="val" id="a-value">2.0</span>
+                    </div>
+                    <div class="slider-container">
+                        <span style="font-size:12px; color:#718096;">-1.0</span>
+                        <input type="range" id="a-slider" min="-1" max="5" step="0.1" value="2">
+                        <span style="font-size:12px; color:#718096;">5.0</span>
+                    </div>
+                </div>
+
+                <!-- 状态显示 -->
+                <div class="status-panel">
+                    <div class="status-title">图象交点观测：</div>
+                    <div class="status-value" id="status-text">
+                        加载中...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部教学提示 -->
+            <div class="footer-desc">
+                <strong>教学提示：</strong><br>
+                • 当 a &lt; 2 时，无交点，方程无解；<br>
+                • 当 a = 2 时，有无数个交点，解集为 [-1, 1]；<br>
+                • 当 a &gt; 2 时，有两个交点，方程有两个不同实根。
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('a-slider');
+    const aValueText = document.getElementById('a-value');
+    const lineA = document.getElementById('line-a');
+    const labelA = document.getElementById('label-a');
+    const intersect1 = document.getElementById('intersection-1');
+    const intersect2 = document.getElementById('intersection-2');
+    const statusText = document.getElementById('status-text');
+
+    // 坐标映射函数
+    // y 值的数学坐标转 SVG 像素坐标
+    // y_svg = 330 - y_math * 40
+    function mathToSvgY(y) {
+        return 330 - y * 40;
+    }
+
+    // x 值的数学坐标转 SVG 像素坐标
+    // x_svg = 250 + x_math * 40
+    function mathToSvgX(x) {
+        return 250 + x * 40;
+    }
+
+    // 更新可视化状态
+    function update(a) {
+        // 1. 更新数值文本
+        aValueText.textContent = a.toFixed(1);
+
+        // 2. 更新水平线 y = a 的位置
+        const svgY = mathToSvgY(a);
+        lineA.setAttribute('y1', svgY);
+        lineA.setAttribute('y2', svgY);
+        
+        // 标签位置微调，防止超出边界
+        labelA.setAttribute('y', a > 5.5 ? svgY + 18 : svgY - 8);
+        labelA.textContent = `y = ${a.toFixed(1)}`;
+
+        // 3. 计算交点并更新显示
+        if (a < 2) {
+            // 无交点
+            intersect1.style.display = 'none';
+            intersect2.style.display = 'none';
+            statusText.innerHTML = '当前交点个数：<span class="badge badge-zero">0 个</span> (方程无解)';
+        } 
+        else if (Math.abs(a - 2) < 0.001) {
+            // a = 2，无数个交点 (重合线段)
+            // 在端点处显示两个高亮圈，并提示无数个
+            intersect1.style.display = 'block';
+            intersect2.style.display = 'block';
+            intersect1.setAttribute('cx', mathToSvgX(-1));
+            intersect1.setAttribute('cy', mathToSvgY(2));
+            intersect2.setAttribute('cx', mathToSvgX(1));
+            intersect2.setAttribute('cy', mathToSvgY(2));
+            statusText.innerHTML = '当前交点个数：<span class="badge badge-infinite">无数个</span> (重合线段)';
+        } 
+        else {
+            // a > 2，两个交点
+            // 根据 y = 2x (x > 1) => x = a/2
+            // 根据 y = -2x (x < -1) => x = -a/2
+            const x1 = -a / 2;
+            const x2 = a / 2;
+            
+            intersect1.style.display = 'block';
+            intersect2.style.display = 'block';
+            
+            intersect1.setAttribute('cx', mathToSvgX(x1));
+            intersect1.setAttribute('cy', svgY);
+            intersect2.setAttribute('cx', mathToSvgX(x2));
+            intersect2.setAttribute('cy', svgY);
+            
+            statusText.innerHTML = `当前交点个数：<span class="badge badge-two">2 个</span> (x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)})`;
+        }
+    }
+
+    // 绑定滑动事件
+    slider.addEventListener('input', (e) => {
+        const a = parseFloat(e.target.value);
+        update(a);
+    });
+
+    // 初始化
+    update(2.0);
+</script>
+
+</body>
+</html>

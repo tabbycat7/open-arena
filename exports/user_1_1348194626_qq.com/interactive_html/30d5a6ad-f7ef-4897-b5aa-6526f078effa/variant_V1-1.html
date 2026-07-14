@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI伦理边界：便利还是越界？</title>
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --danger: #e74c3c;
+            --safe: #27ae60;
+            --text: #2c3e50;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .control-panel {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .switch {
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .switch.active { background: var(--safe); }
+        .switch.active::after { left: 32px; }
+        
+        svg { width: 100%; max-width: 800px; height: auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .line { stroke-width: 4; fill: none; stroke-dasharray: 10; animation: dash 1s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -20; } }
+        .label { font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h3>AI服务：是“贴心”还是“越界”？</h3>
+    <p>点击开关，观察数据流向在不同授权状态下的性质变化</p>
+</div>
+
+<div class="control-panel">
+    <span>知情授权状态：</span>
+    <div id="consentSwitch" class="switch"></div>
+    <span id="statusText">未授权 (默认)</span>
+</div>
+
+<svg viewBox="0 0 800 400">
+    <!-- 左侧：音箱 -->
+    <rect x="50" y="100" width="150" height="150" rx="10" fill="#ecf0f1" />
+    <text x="125" y="180" text-anchor="middle" class="label">智能音箱</text>
+    <text x="125" y="210" text-anchor="middle">推荐冰淇淋</text>
+    
+    <!-- 右侧：手表 -->
+    <rect x="600" y="100" width="150" height="150" rx="10" fill="#ecf0f1" />
+    <text x="675" y="180" text-anchor="middle" class="label">智能手表</text>
+    <text x="675" y="210" text-anchor="middle">推荐心血管号</text>
+
+    <!-- 数据流线 -->
+    <path id="lineLeft" class="line" d="M 200 175 Q 300 100 400 200" stroke="#e74c3c" />
+    <path id="lineRight" class="line" d="M 600 175 Q 500 100 400 200" stroke="#e74c3c" />
+    
+    <!-- 云端 -->
+    <circle cx="400" cy="200" r="40" fill="#3498db" />
+    <text x="400" y="205" text-anchor="middle" fill="white" font-size="12">云端数据</text>
+</svg>
+
+<script>
+    const consentSwitch = document.getElementById('consentSwitch');
+    const statusText = document.getElementById('statusText');
+    const lineLeft = document.getElementById('lineLeft');
+    const lineRight = document.getElementById('lineRight');
+    let isAuthorized = false;
+
+    consentSwitch.addEventListener('click', () => {
+        isAuthorized = !isAuthorized;
+        
+        if (isAuthorized) {
+            consentSwitch.classList.add('active');
+            statusText.innerText = "已获得用户主动订阅授权";
+            lineLeft.style.stroke = "#27ae60";
+            lineRight.style.stroke = "#27ae60";
+        } else {
+            consentSwitch.classList.remove('active');
+            statusText.innerText = "未授权 (默认)";
+            lineLeft.style.stroke = "#e74c3c";
+            lineRight.style.stroke = "#e74c3c";
+        }
+    });
+</script>
+
+</body>
+</html>

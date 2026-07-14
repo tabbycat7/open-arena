@@ -1,0 +1,212 @@
+{
+  "task_id": "1c35b04b-86a2-411b-adc0-7549ea2bc729",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，我们在生活中经常能看到学校、马路、公园这些公共设施，你们知道这些设施的建设经费是从哪儿来的吗？课本里提到的‘纳税’到底在帮国家做什么呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "既然纳税这么重要，那我们要交多少钱呢？课本中提到的‘税率’，究竟是怎样的一个比率？如果我们知道了收入和税率，该怎么列式算出应纳税额？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "大家看课本‘做一做’里李阿姨的例子，她的月工资是5000元，但题目却说‘应纳税的部分为2500元’，为什么我们不能直接拿5000元去乘税率呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "现在大家已经掌握了计算方法，如果要向别人解释清楚李阿姨为什么要交这笔税，以及这笔税是怎么算出来的，你会怎么写出完整的解答过程和答句呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "如果我们面临两种不同的计税方案，一种是基于‘全部收入’乘以低税率，另一种是基于‘扣除后部分’乘以高税率，你会如何分析哪种计税逻辑更公平合理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果我们把全班同学看作一个‘班级小社会’，现在要给教室添置一套图书角。如果采用‘纳税’的思路，我们每个人都拿出一小部分零花钱交给班长统一购买。想一想，这种做法和爸爸妈妈缴纳的个人所得税，在‘谁受益’和‘谁出资’这两个方面有什么共同点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果有一天，所有的公共设施（如马路、路灯、公立医院）都不再由国家通过税收来统一建设和维护，而是变成‘谁用谁交钱，不用就不交’，你觉得我们的生活会发生哪些具体的变化？这能说明为什么纳税是每个人必须履行的义务吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "大家看这张不同行业的税率汇总表（假设呈现），如果某超市本月的销售额是80万元，税率是5%。请你根据这个信息，指一指表格里的哪个数字是‘计税收入’，哪个是‘税率’，并用我们刚才建立的算账工具列出算式。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果现在我们只知道一家公司本月应纳税额是1.5万元，计税收入是50万元。你能根据我们刚才建立的‘算账工具’，倒推算出这个行业的税率是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "张叔叔卖了一辆旧车，收入10万元，但买入时花了8万元，实际利润只有2万元。如果国家规定只对‘利润部分’征税，你是直接拿10万元乘税率，还是拿2万元乘税率？为什么在计算时，识别出那个‘2万元’比计算本身更关键？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "公司规定：月奖金超过3000元的部分，要按10%缴纳个人所得税。小明这个月奖金5000元，小红奖金2800元。请判断：他们中谁需要纳税？计算时，那个‘3000元’在我们的公式里扮演了什么角色？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "这里有两位同学的计算过程：甲只写了‘5000×3%=150’，乙写了‘应纳税收入5000元×税率3%=应纳税额150元’。如果你是税务局的会计，你觉得哪种表达方式更不容易引起误会？为什么在数学解答中，把‘单位’和‘含义’写清楚这么重要？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "计算出某建筑公司的应纳税额是5万元后，请你写一个答句。要求答句中不仅包含计算结果，还要加上一句‘这笔钱可能用于哪里’的说明，让你的答句既严谨又具有社会温度。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "如果两种计税方案：方案A对‘全部收入’征税，税率1%；方案B对‘扣除基本生活费后的部分’征税，税率5%。你觉得哪种方案对低收入人群更友好？为什么说‘计税基数’的设定是体现社会公平的关键？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "如果国家将个人所得税的‘起征点’从5000元提高到7000元，这意味着什么？请结合我们建立的模型分析：这个变化会对月工资6000元的人和月工资20000元的人，分别产生什么样的影响？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "大家刚才提到了纳税是每个人的义务，那么在生活中，你觉得国家是怎么知道每个人该交多少钱的呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "课本上说税率是‘应纳税额占计税收入的比率’，如果税率是3%，这意思是不是说：每一百元收入里，要拿出3元交给国家？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "我们刚刚学会了用‘收入×税率’，现在请看李阿姨的工资，如果这5000元里有一部分是国家规定不用缴税的，你觉得我们应该用哪一个数字去乘以税率呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "请在题目里圈出那个‘应纳税的金额’，它是等于全部工资，还是等于全部工资减去不需要缴税的那部分？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "要把李阿姨缴税的过程讲清楚，除了算出最后的得数，我们是不是还要写清楚‘哪一部分钱’乘以‘哪个税率’才得到了这个结果？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果我们写答句时，在金额后面加上‘用于国家建设’，是不是能让别人一眼看出这笔钱的价值？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "如果两种方案算出来的税额一样，但一种扣除得多，一种扣除得少，你觉得哪种方式对收入较低的人更友好？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "为什么国家在制定税收政策时，要专门设置一个‘起征点’或者‘扣除部分’，而不是让所有人都按总收入交税呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

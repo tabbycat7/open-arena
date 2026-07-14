@@ -1,0 +1,598 @@
+{
+  "id": "05a6227c-bdbc-492c-8be0-1716731dcb4f",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标（1）数学眼光：通过观察生活中的纳税情境，结合教材内容，理解纳税的意义及税率的概念，初步感知数学在现实生活中的应用价值。（2）数学思维：在分析应纳税额计算问题时，能运用“求一个数的百分之几是多少”的思维方法，通过列式计算掌握税额计算的逻辑，提升解决实际问题的思维能力。（3）数学语言：能用数学术语描述税率的含义，清晰表达税额计算的过程和结果，在交流中规范使用“应纳税额”“税率”等数学语言，提升数学表达能力。",
+  "student_profile": "学情分析\r\n1. 知识与技能基础（已有起点）\r\n在进入本节课之前，学生已经掌握了百分数的意义，并能熟练解决“求一个数的百分之几是多少”的实际问题。这为本节课将“税率”转化为百分数问题、建立“应纳税额=计税收入×税率”的数学模型奠定了坚实的知识和运算基础。绝大多数学生在列式计算上不存在技术障碍。\r\n2. 生活经验与认知盲区（情境脱节）\r\n处于此学段的学生，虽然在日常生活中可能偶尔听到过“交税”“个人所得税”等词汇，但“纳税”属于典型的成人社会经济活动，距离学生的真实生活经验较远。\r\n经验缺乏： 学生对国家税收的种类（如增值税、消费税、个税等）缺乏感性认识，对“为什么要纳税”知之甚少。\r\n语言转换困难： 在面对包含“应纳税销售额”“扣除标准”等专业财经词汇的真实情境时，部分学生的“数学语言”理解能力受限，容易产生畏难情绪，难以迅速剥离出数学信息。\r\n\r\n",
+  "difficulty_analysis": "教学重点（1）理解税率的实际意义，能运用百分数乘法建立“应纳税额页=计税收入×税率”的数学模型，提升数学运算与数学建模能力。（2）在纳税问题的解决中体会数学与社会生活的联系，结合公民义务培养依法纳税的责任意识，发展数学应用与社会责任素养。\r\n教学难点（1）学生在不同纳税情境中，难以准确识别“应纳税的部分”与“全部收入”的差异，易将“全部收入”误作“应纳税基数”（如忽略“应纳税销售额”“奖金”等限定词），导致税额计算基数判断错误。（2）学生对“税率”的理解停留在公式记忆层面，难以结合真实税收政策（如增值税、个人所得税税率差异）理解税率的社会意义，无法将“税额计算”与“依法纳税是公民义务”的价值认知相联系，影响应用意识和法制意识的内化",
+  "language_style": "启发引导",
+  "model_id": "grok-4",
+  "duration_seconds": 1121.0,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，看看书上这个段落，它说国家用税收来发展哪些事业，你们能举例说说纳税是怎么支持教育或者卫生这些公共事业的吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"好的，同学们，我们从日常生活中来想一想纳税这件事。大家可能听过爸爸妈妈说交税，但为什么我们要纳税呢？来看书上的A2段落，这里解释了税收是国家财政的主要来源，用来发展科学、教育、卫生等事业。试着想想，比如学校建新楼或者医院买设备，这些钱可能就来自大家的税款。谁能举个例子来说说纳税是怎么帮助这些公共事业发展的？说说你的想法，这样我们就能更好地理解纳税的意义。等会儿我们再来看纳税的具体比率是怎么定的。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"通过情境引入回顾旧知，奠定纳税意义基础，激发兴趣\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"同学们，书上说税率是应纳税额与各种收入中应纳税部分的比率，你们能用数学的话来解释一下税率到底是什么意思吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们聊了纳税的意义，现在来看看它是怎么具体算的。翻到书上的A3关键句，这里定义了应纳税额和税率。注意税率其实就像一个百分比，它表示应纳税额占应纳税部分的多少。回想我们学过的百分数，你们可以用类似'百分之几'这样的数学语言来描述税率。比如，它是收入中要缴税那部分的百分比。谁来试着说说？这样我们就清楚税率的概念了。接下来，我们用这个概念来算一算实际的税额。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"桥接意义到定义，培养数学语言表达\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"来看书上的这个例题，企业10月份的应纳税销售额是30万元，按3%的税率缴增值税，你们能用我们学过的百分数方法来算一算它应缴多少税吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在我们知道了税率的意思，接下来试着算算实际的税额。看书上的A4例题，这里有具体的数字：应纳税销售额30万元，税率3%。回想求一个数的百分之几是怎么算的，你们可以列式像30×3%这样来计算应纳税额。想想这个算式的逻辑，为什么是销售额乘以税率？谁来分享你的计算过程？算出来后，我们就掌握了税额的计算方法。等会儿我们再看有些情况里，收入不是全都要缴税的，怎么办。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"形成核心计算模型，提升问题解决能力\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"同学们，看书上的这个情境，李阿姨某月工资中应纳税的部分是2500元，按3%的税率缴个人所得税，你们觉得她的应纳税额该怎么算，为什么不是用全部工资呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"我们已经会算基本的税额了，但有时收入不是全都缴税。来看书上的A5情境案例，这里说李阿姨工资中应纳税的部分是2500元，税率3%。注意关键词'应纳税的部分'，这和全部工资不一样，你们需要先识别出要缴税的基数是多少，然后再用公式计算。试着分解步骤：先找基数，再乘税率。谁能说说你的计算和理由？这样我们就能处理更复杂的情况了。算完后，我们来想想税率政策背后的社会意义。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"解决难点，强化思维分析能力\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"同学们，结合我们学过的税率和纳税意义，你们觉得这样的税率政策是怎么体现大家纳税义务和社会公平的呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"我们从纳税的计算到具体情境都学过了，现在来整体想想它的价值。回想书上的A2段落，那里提到纳税是公民义务，用来支持国家事业。考虑到税率像百分比，根据收入不同部分来算，你们可以讨论一下，这怎么体现了公平，比如高收入多缴税帮助社会保障。谁来分享你的看法？通过这个，我们不仅会算税，还明白了它对社会的意义和我们的责任。\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"design_intent\": \"深化价值认知，整合数学与生活应用\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"假如我们社区的公园是靠大家纳税修的，你们能举例说说纳税是怎么支持像公园这样公共设施的建设的吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过熟悉情境替换，帮助学生巩固纳税意义认知，激发兴趣并促进迁移\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"对比我们社区有税收修建的公园，和另一个因为没有税收而年久失修的公园图片，你觉得纳税起到了什么作用？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.62, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过具体对比突出纳税作用，帮助学生更直观地理解税收对公共事业的意义\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"看这个长方形表示全部收入，其中一部分涂色表示应纳税部分，如果涂色部分中的一小块代表应纳税额，你们能用数学的话解释税率是怎么表示这个关系的吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过图形表征帮助学生可视化税率概念，桥接定义到表达\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"如果把书上的销售额换成某人每月工资，你们能用数学的话解释税率在工资收入中是什么意思吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.67, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过变换收入条件强化税率概念的通用性，培养表达能力\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"一家商店10月份的应纳税销售额是20万元，按5%的税率缴增值税，你们能用百分数方法算一算它应缴多少税吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过熟悉场景替换巩固计算模型，提升问题解决能力\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"一家企业总销售额40万元，其中10万元免税，按4%的税率缴税，你们能先确定应纳税销售额，再算出应缴税额吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过引入免税条件强化基数识别和计算逻辑的变化，帮助辨析计算本质\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"如果有人用李阿姨全部工资算税，你们觉得为什么不对，该怎么正确识别应纳税部分来计算呢？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过反例澄清基数识别难点，强化分析能力\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"王叔叔某月工资8000元，应纳税部分是3000元，按5%的税率缴税。小李直接用8000×5%计算，你认为他可能犯了什么错误？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.82, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过错误辨析突破基数难点，提升思维分析\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"假如你家和邻居家收入不同，按税率缴税，你们觉得这怎么体现纳税义务和社会公平呢？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过生活迁移深化价值认知，整合数学与责任\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"看这个不同收入阶层的税率表，低收入3%、高收入10%，你们觉得这样的设计怎么体现纳税义务和社会公平呢？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.92, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过具体政策情境引导学生评价税率如何体现量能课税和公平，提升社会认知\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"同学们，回想一下，我们刚才举例说纳税支持教育或卫生事业，这些事业的资金来自哪里？看看书上A2段落，找出它提到税收是国家财政的主要来源的那句话。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"激活纳税意义的相关旧知，建立从意义到定义的起点\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"从2000元和10000元这两个数，你能想到它们之间可能存在一种什么数学关系？（提示：我们学过用百分数来表示这种关系）\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"引导发现纳税部分与整体的数学关系，准备进入税率解释\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"看看书上A3关键句，税率是应纳税额与应纳税部分的比率，你们能指出它像我们学过的哪种数学概念，比如百分数吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"强化税率作为百分比的认识，建立向计算的过渡\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"假如税率是3%，而另一个是5%，你觉得税率越高，税额会怎么样？想想我们学过的百分数，为什么会这样？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"引导观察税率与税额的关系，准备实际计算\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"在书上A4例题中，应纳税销售额是30万元，但如果不是全部，你们能找出哪些词表示只缴一部分税吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"帮助区分计算基数，建立向变式应用的起点\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"比较书上A4和A5情境，A5中李阿姨的2500元和全部工资有什么不同？这个不同会怎么影响税的计算？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导比较全额与部分，准备处理应纳税基数\", \"design_rationale\": \"\"}, {\"id\": \"S3-3\", \"content\": \"在李阿姨的情境中，为什么书上说只用2500元作为应纳税部分？看看关键词，能指出它和公平有关吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"触碰基数识别的入口，降低进入M4的门槛\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"李阿姨缴了75元个人所得税。想一想，这75元税款最终可能被用于支持书上说的哪些公共事业？（请结合A2段落说一说）\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"将计算结果与纳税意义联系，建立向公平讨论的起点\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"假如李阿姨的应纳税部分是2500元，按3%缴税，而另一个人是5000元，你们觉得谁缴的税更多？这个不同怎么体现纳税的公平？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"引导对比不同收入的税负，引发对公平的思考\", \"design_rationale\": \"\"}, {\"id\": \"S4-3\", \"content\": \"结合书上A2和A5，税率政策让高收入多缴税，你们能指出这怎么帮助社会公平，比如支持更多公共事业吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"通过观察政策影响，准备进入整体评价\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"S3-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-3\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"S4-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-06 14:37:52",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，看看书上这个段落，它说国家用税收来发展哪些事业，你们能举例说说纳税是怎么支持教育或者卫生这些公共事业的吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "好的，同学们，我们从日常生活中来想一想纳税这件事。大家可能听过爸爸妈妈说交税，但为什么我们要纳税呢？来看书上的A2段落，这里解释了税收是国家财政的主要来源，用来发展科学、教育、卫生等事业。试着想想，比如学校建新楼或者医院买设备，这些钱可能就来自大家的税款。谁能举个例子来说说纳税是怎么帮助这些公共事业发展的？说说你的想法，这样我们就能更好地理解纳税的意义。等会儿我们再来看纳税的具体比率是怎么定的。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "通过情境引入回顾旧知，奠定纳税意义基础，激发兴趣",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "同学们，书上说税率是应纳税额与各种收入中应纳税部分的比率，你们能用数学的话来解释一下税率到底是什么意思吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们聊了纳税的意义，现在来看看它是怎么具体算的。翻到书上的A3关键句，这里定义了应纳税额和税率。注意税率其实就像一个百分比，它表示应纳税额占应纳税部分的多少。回想我们学过的百分数，你们可以用类似'百分之几'这样的数学语言来描述税率。比如，它是收入中要缴税那部分的百分比。谁来试着说说？这样我们就清楚税率的概念了。接下来，我们用这个概念来算一算实际的税额。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "桥接意义到定义，培养数学语言表达",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "来看书上的这个例题，企业10月份的应纳税销售额是30万元，按3%的税率缴增值税，你们能用我们学过的百分数方法来算一算它应缴多少税吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在我们知道了税率的意思，接下来试着算算实际的税额。看书上的A4例题，这里有具体的数字：应纳税销售额30万元，税率3%。回想求一个数的百分之几是怎么算的，你们可以列式像30×3%这样来计算应纳税额。想想这个算式的逻辑，为什么是销售额乘以税率？谁来分享你的计算过程？算出来后，我们就掌握了税额的计算方法。等会儿我们再看有些情况里，收入不是全都要缴税的，怎么办。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "形成核心计算模型，提升问题解决能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "同学们，看书上的这个情境，李阿姨某月工资中应纳税的部分是2500元，按3%的税率缴个人所得税，你们觉得她的应纳税额该怎么算，为什么不是用全部工资呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "我们已经会算基本的税额了，但有时收入不是全都缴税。来看书上的A5情境案例，这里说李阿姨工资中应纳税的部分是2500元，税率3%。注意关键词'应纳税的部分'，这和全部工资不一样，你们需要先识别出要缴税的基数是多少，然后再用公式计算。试着分解步骤：先找基数，再乘税率。谁能说说你的计算和理由？这样我们就能处理更复杂的情况了。算完后，我们来想想税率政策背后的社会意义。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "解决难点，强化思维分析能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "同学们，结合我们学过的税率和纳税意义，你们觉得这样的税率政策是怎么体现大家纳税义务和社会公平的呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "我们从纳税的计算到具体情境都学过了，现在来整体想想它的价值。回想书上的A2段落，那里提到纳税是公民义务，用来支持国家事业。考虑到税率像百分比，根据收入不同部分来算，你们可以讨论一下，这怎么体现了公平，比如高收入多缴税帮助社会保障。谁来分享你的看法？通过这个，我们不仅会算税，还明白了它对社会的意义和我们的责任。",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "design_intent": "深化价值认知，整合数学与生活应用",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "假如我们社区的公园是靠大家纳税修的，你们能举例说说纳税是怎么支持像公园这样公共设施的建设的吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过熟悉情境替换，帮助学生巩固纳税意义认知，激发兴趣并促进迁移",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "对比我们社区有税收修建的公园，和另一个因为没有税收而年久失修的公园图片，你觉得纳税起到了什么作用？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.62,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过具体对比突出纳税作用，帮助学生更直观地理解税收对公共事业的意义",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "看这个长方形表示全部收入，其中一部分涂色表示应纳税部分，如果涂色部分中的一小块代表应纳税额，你们能用数学的话解释税率是怎么表示这个关系的吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过图形表征帮助学生可视化税率概念，桥接定义到表达",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "如果把书上的销售额换成某人每月工资，你们能用数学的话解释税率在工资收入中是什么意思吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.67,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过变换收入条件强化税率概念的通用性，培养表达能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "一家商店10月份的应纳税销售额是20万元，按5%的税率缴增值税，你们能用百分数方法算一算它应缴多少税吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过熟悉场景替换巩固计算模型，提升问题解决能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "一家企业总销售额40万元，其中10万元免税，按4%的税率缴税，你们能先确定应纳税销售额，再算出应缴税额吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过引入免税条件强化基数识别和计算逻辑的变化，帮助辨析计算本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "如果有人用李阿姨全部工资算税，你们觉得为什么不对，该怎么正确识别应纳税部分来计算呢？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过反例澄清基数识别难点，强化分析能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "王叔叔某月工资8000元，应纳税部分是3000元，按5%的税率缴税。小李直接用8000×5%计算，你认为他可能犯了什么错误？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.82,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过错误辨析突破基数难点，提升思维分析",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "假如你家和邻居家收入不同，按税率缴税，你们觉得这怎么体现纳税义务和社会公平呢？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过生活迁移深化价值认知，整合数学与责任",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "看这个不同收入阶层的税率表，低收入3%、高收入10%，你们觉得这样的设计怎么体现纳税义务和社会公平呢？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.92,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过具体政策情境引导学生评价税率如何体现量能课税和公平，提升社会认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "同学们，回想一下，我们刚才举例说纳税支持教育或卫生事业，这些事业的资金来自哪里？看看书上A2段落，找出它提到税收是国家财政的主要来源的那句话。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "激活纳税意义的相关旧知，建立从意义到定义的起点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "从2000元和10000元这两个数，你能想到它们之间可能存在一种什么数学关系？（提示：我们学过用百分数来表示这种关系）",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "引导发现纳税部分与整体的数学关系，准备进入税率解释",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "看看书上A3关键句，税率是应纳税额与应纳税部分的比率，你们能指出它像我们学过的哪种数学概念，比如百分数吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "强化税率作为百分比的认识，建立向计算的过渡",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "假如税率是3%，而另一个是5%，你觉得税率越高，税额会怎么样？想想我们学过的百分数，为什么会这样？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "引导观察税率与税额的关系，准备实际计算",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "在书上A4例题中，应纳税销售额是30万元，但如果不是全部，你们能找出哪些词表示只缴一部分税吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "帮助区分计算基数，建立向变式应用的起点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "比较书上A4和A5情境，A5中李阿姨的2500元和全部工资有什么不同？这个不同会怎么影响税的计算？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导比较全额与部分，准备处理应纳税基数",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-3",
+        "content": "在李阿姨的情境中，为什么书上说只用2500元作为应纳税部分？看看关键词，能指出它和公平有关吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "触碰基数识别的入口，降低进入M4的门槛",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "李阿姨缴了75元个人所得税。想一想，这75元税款最终可能被用于支持书上说的哪些公共事业？（请结合A2段落说一说）",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "将计算结果与纳税意义联系，建立向公平讨论的起点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "假如李阿姨的应纳税部分是2500元，按3%缴税，而另一个人是5000元，你们觉得谁缴的税更多？这个不同怎么体现纳税的公平？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "引导对比不同收入的税负，引发对公平的思考",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-3",
+        "content": "结合书上A2和A5，税率政策让高收入多缴税，你们能指出这怎么帮助社会公平，比如支持更多公共事业吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "通过观察政策影响，准备进入整体评价",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "S3-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-3",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "S4-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

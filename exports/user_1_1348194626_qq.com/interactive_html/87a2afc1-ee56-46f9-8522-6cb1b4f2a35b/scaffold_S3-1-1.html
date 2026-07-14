@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3-1-1 李阿姨的工资与个税可视化教学</title>
+  <style>
+    /* 全局样式重置与课堂投屏优化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* 头部标题与问题区域 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background-color: #e6f7ff;
+      color: #1890ff;
+      border: 1px solid #91d5ff;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 24px;
+      color: #1f1f1f;
+      margin-bottom: 8px;
+    }
+    .question-box {
+      background-color: #fffbe6;
+      border-left: 5px solid #ffe58f;
+      padding: 12px 16px;
+      border-radius: 4px;
+      text-align: left;
+    }
+    .question-text {
+      font-size: 18px;
+      line-height: 1.5;
+      color: #434343;
+    }
+    .highlight-money {
+      color: #d4380d;
+      font-weight: bold;
+      font-size: 20px;
+      border-bottom: 2px dashed #d4380d;
+      padding-bottom: 2px;
+    }
+
+    /* 可视化主区域 */
+    .visualization-area {
+      flex-grow: 1;
+      position: relative;
+      background-color: #fafafa;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 交互控制区域 */
+    .control-panel {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background-color: #52c41a;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #73d13d;
+      transform: translateY(-2px);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    .btn-secondary {
+      background-color: #f5f5f5;
+      color: #595959;
+      border: 1px solid #d9d9d9;
+    }
+    .btn-secondary:hover {
+      background-color: #e8e8e8;
+    }
+    .btn:disabled {
+      background-color: #f5f5f5;
+      color: #bfbfbf;
+      border: 1px solid #d9d9d9;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 引导提示框 */
+    .info-box {
+      background-color: #f0f5ff;
+      border: 1px solid #adc6ff;
+      border-radius: 8px;
+      padding: 12px 20px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .info-text {
+      font-size: 16px;
+      color: #1d39c4;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    /* SVG 动画与交互样式 */
+    .stack {
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .overlay {
+      transition: opacity 0.8s ease-in-out;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .active .overlay {
+      opacity: 1;
+    }
+    .stack-label {
+      font-family: sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      fill: #595959;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .active .stack-label {
+      opacity: 1;
+    }
+    #label-total {
+      transition: opacity 0.5s ease;
+    }
+    .active #label-total {
+      opacity: 0;
+    }
+
+    /* 闪烁动画效果 */
+    @keyframes pulse-glow {
+      0% {
+        stroke-width: 2px;
+        filter: drop-shadow(0 0 2px rgba(245, 34, 45, 0.5));
+      }
+      50% {
+        stroke-width: 4px;
+        filter: drop-shadow(0 0 10px rgba(245, 34, 45, 0.8));
+      }
+      100% {
+        stroke-width: 2px;
+        filter: drop-shadow(0 0 2px rgba(245, 34, 45, 0.5));
+      }
+    }
+    .flashing-rect {
+      animation: pulse-glow 1.5s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 头部区域 -->
+    <div class="header">
+      <span class="badge">数学 · 六年级 · 百分数（二）</span>
+      <h1 class="title">个人所得税中的“起征点”</h1>
+      <div class="question-box">
+        <p class="question-text">
+          <strong>思考题：</strong>李阿姨拿到了 <span class="highlight-money">8500元</span> 工资。根据规定，这8500元里是不是每一分钱都要交税？
+        </p>
+      </div>
+    </div>
+
+    <!-- 可视化交互区域 -->
+    <div class="visualization-area">
+      <svg viewBox="0 0 800 420" id="tax-svg">
+        <defs>
+          <!-- 钞票阴影 -->
+          <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+          </filter>
+          
+          <!-- 单张百元钞票模型 -->
+          <g id="bill" filter="url(#shadow)">
+            <rect width="160" height="74" rx="6" fill="#ffccd5" stroke="#ff4d6d" stroke-width="2"/>
+            <!-- 钞票内边框 -->
+            <rect x="8" y="8" width="144" height="58" rx="4" fill="none" stroke="#ff85a1" stroke-width="1" stroke-dasharray="4 2"/>
+            <!-- 水印圆形 -->
+            <circle cx="40" cy="37" r="20" fill="#fff" opacity="0.4"/>
+            <!-- 装饰图案 -->
+            <rect x="110" y="18" width="30" height="38" rx="3" fill="#ffb3c1" opacity="0.6"/>
+            <!-- 面额数字 -->
+            <text x="40" y="44" font-family="Impact, sans-serif" font-size="22" font-weight="bold" fill="#ff4d6d" text-anchor="middle">100</text>
+          </g>
+        </defs>
+
+        <!-- 课桌/背景台面 -->
+        <rect x="50" y="350" width="700" height="16" rx="8" fill="#e8e8e8" stroke="#d9d9d9" stroke-width="2"/>
+
+        <!-- 初始状态下的总额大标签 -->
+        <g id="label-total">
+          <rect x="300" y="60" width="200" height="40" rx="20" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.5"/>
+          <text x="400" y="86" font-size="18" font-weight="bold" fill="#262626" text-anchor="middle">总工资：8500 元</text>
+        </g>
+
+        <!-- 5000元钞票堆（下方基础部分，共10张，每张代表500元视觉体量） -->
+        <!-- 初始位置：居中 (320, 340) -->
+        <g id="stack-5000" class="stack" transform="translate(320, 340)">
+          <use href="#bill" x="0" y="-6"/>
+          <use href="#bill" x="0" y="-12"/>
+          <use href="#bill" x="0" y="-18"/>
+          <use href="#bill" x="0" y="-24"/>
+          <use href="#bill" x="0" y="-30"/>
+          <use href="#bill" x="0" y="-36"/>
+          <use href="#bill" x="0" y="-42"/>
+          <use href="#bill" x="0" y="-48"/>
+          <use href="#bill" x="0" y="-54"/>
+          <use href="#bill" x="0" y="-60"/>
+          
+          <!-- 堆叠数值标签 -->
+          <text x="80" y="-75" class="stack-label" text-anchor="middle">5000 元</text>
+
+          <!-- 绿色免税保护罩 -->
+          <g class="overlay">
+            <!-- 保护罩半透明穹顶 -->
+            <path d="M -20,15 C -20,-140 180,-140 180,15" fill="rgba(82, 196, 26, 0.08)" stroke="#52c41a" stroke-width="3" stroke-dasharray="6,4"/>
+            <!-- 盾牌徽章 -->
+            <rect x="30" y="-135" width="100" height="28" rx="14" fill="#52c41a"/>
+            <text x="80" y="-116" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">免税保护罩</text>
+            <!-- 顶部大标题 -->
+            <text x="80" y="-155" fill="#237804" font-size="18" font-weight="bold" text-anchor="middle">免税额度：5000元</text>
+          </g>
+        </g>
+
+        <!-- 3500元钞票堆（上方超出部分，共7张） -->
+        <!-- 初始位置：叠在5000元堆上方 (320, 280) -->
+        <g id="stack-3500" class="stack" transform="translate(320, 280)">
+          <use href="#bill" x="0" y="-6"/>
+          <use href="#bill" x="0" y="-12"/>
+          <use href="#bill" x="0" y="-18"/>
+          <use href="#bill" x="0" y="-24"/>
+          <use href="#bill" x="0" y="-30"/>
+          <use href="#bill" x="0" y="-36"/>
+          <use href="#bill" x="0" y="-42"/>
+
+          <!-- 堆叠数值标签 -->
+          <text x="80" y="-55" class="stack-label" text-anchor="middle">3500 元</text>
+
+          <!-- 红色警示纳税框 -->
+          <g class="overlay">
+            <!-- 闪烁的红框 -->
+            <rect x="-15" y="-55" width="190" height="75" rx="8" fill="none" stroke="#f5222d" stroke-width="3" class="flashing-rect"/>
+            <!-- 警示徽章 -->
+            <rect x="30" y="-95" width="100" height="28" rx="14" fill="#f5222d"/>
+            <text x="80" y="-76" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">超出部分</text>
+            <!-- 顶部大标题 -->
+            <text x="80" y="-115" fill="#a8071a" font-size="18" font-weight="bold" text-anchor="middle">要交税：3500元</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 交互控制台 -->
+    <div class="control-panel">
+      <button id="btn-apply" class="btn btn-primary">应用国家个税政策 (起征点 5000元)</button>
+      <button id="btn-reset" class="btn btn-secondary" disabled>重置</button>
+    </div>
+
+    <!-- 课堂引导信息 -->
+    <div class="info-box" id="info-box">
+      <p class="info-text" id="info-text">
+        💡 <strong>课堂观察：</strong>请点击上方绿色按钮，观察 8500 元工资是如何被划分的。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const svg = document.getElementById('tax-svg');
+      const btnApply = document.getElementById('btn-apply');
+      const btnReset = document.getElementById('btn-reset');
+      const infoBox = document.getElementById('info-box');
+      const infoText = document.getElementById('info-text');
+
+      const stack5000 = document.getElementById('stack-5000');
+      const stack3500 = document.getElementById('stack-3500');
+
+      // 点击“应用政策”：钞票堆向两侧分流，并显示对应的税收属性
+      btnApply.addEventListener('click', () => {
+        svg.classList.add('active');
+        
+        // 平移两叠钞票
+        // 5000元向左平移，保持在台面上
+        stack5000.setAttribute('transform', 'translate(140, 340)');
+        // 3500元向右平移，并降落到台面上
+        stack3500.setAttribute('transform', 'translate(500, 340)');
+
+        // 更新按钮状态
+        btnApply.disabled = true;
+        btnReset.disabled = false;
+
+        // 更新教学引导文字
+        infoBox.style.backgroundColor = '#f6ffed';
+        infoBox.style.borderColor = '#b7eb8f';
+        infoText.style.color = '#389e0d';
+        infoText.innerHTML = '✨ <strong>发现规律：</strong>8500元被分成了两部分！<strong>5000元</strong>在起征点内，受到免税保护；只有超出的<strong>3500元</strong>才需要计算交税。';
+      });
+
+      // 点击“重置”：恢复到初始合并状态
+      btnReset.addEventListener('click', () => {
+        svg.classList.remove('active');
+
+        // 恢复初始位置
+        stack5000.setAttribute('transform', 'translate(320, 340)');
+        stack3500.setAttribute('transform', 'translate(320, 280)');
+
+        // 更新按钮状态
+        btnApply.disabled = false;
+        btnReset.disabled = true;
+
+        // 恢复教学引导文字
+        infoBox.style.backgroundColor = '#f0f5ff';
+        infoBox.style.borderColor = '#adc6ff';
+        infoText.style.color = '#1d39c4';
+        infoText.innerHTML = '💡 <strong>课堂观察：</strong>请点击上方绿色按钮，观察 8500 元工资是如何被划分的。';
+      });
+    });
+  </script>
+</body>
+</html>

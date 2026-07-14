@@ -1,0 +1,194 @@
+{
+  "task_id": "bec8e610-15fb-4a56-838c-528a1ece32b2",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，观察这几幅图：熟透的苹果落向地面，抛出的铅球最终落地，瀑布飞流直下。为什么这些物体最终都要落向地面？这背后是不是有一个共同的‘推手’在作用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "生活中我们常说“这个东西很重”，大家觉得这里的“重”，是指它的质量大，还是它受到的重力大？质量和重力是一回事吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "既然质量大的物体看起来“更重”，那重力的大小和质量到底有什么定量关系？利用桌上的弹簧测力计和钩码，我们该怎么设计实验来探究？需要记录哪些数据？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "观察大家刚才测得的数据，随着钩码质量增加，重力怎么变化？请大家算一算重力与质量的比值，或者看看画出的G-m图像，你们发现了什么规律？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "既然重力与质量成正比，且比值 g 约为 9.8 N/kg，能不能用一个公式来表示 G、m、g 的关系？如果已知质量是 5kg，怎么计算它的重力？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "无论你向哪个方向泼水，水最终都落向地面。这说明重力的方向有什么特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "观察宇航员在空间站里可以漂浮，而在地面上我们却稳稳站立。这两种情况中，宇航员的质量变了吗？他受到的重力变了吗？这说明了重力的什么特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "设想在月球上，一个物体的质量会变吗？它受到的重力呢？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "超市电子秤显示的是物体的质量还是重力？为什么它称同一个物体，在地球和月球上显示的数字会不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "如果实验测得的三组数据点不在一条直线上，你觉得可能是什么原因？为了更准确地得出结论，我们该如何改进实验？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "根据得出的比值，若某星球上G/m=1.6N/kg，这说明什么？同一物体在该星球上的重力如何变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "月球车在地球上测试重约1800N，为了适应月球(g月≈1.6N/kg)，它的设计质量最大不能超过多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "小华说他的体重是500N，小明说他的质量是50kg。谁的说法更符合物理规范？请通过计算说明。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "买苹果时，老板说“这袋苹果重5千克”，这里的“重”是指苹果含物质的多少，还是受到的引力？提在手里感觉沉甸甸的，这又是什么力在作用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "为了分清它们，我们来比一比：质量是物体本身的属性，单位是千克；重力是地球对物体的作用，单位是牛顿。想一想，如果把物体带到太空，它的质量会变吗？重力还会存在吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "测量重力需要专门的工具。测量力的大小的工具叫什么？使用前指针要指在哪里？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "我们要探究重力大小和质量的关系，除了知道钩码的质量，还需要测量哪个物理量才能进行比较？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "请看这份记录表，第一行数据算出的比值是 0.98。你能照样子算出后面几行的比值吗？看看这些比值有什么共同特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "利用算出的数据，我们在坐标纸上描点连线。观察这条线，它是直的还是弯的？这代表重力与质量是什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "既然比值 g 是固定的，你能把 G/m=g 变换一下，写出计算重力 G 的公式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果题目给的质量是500克，在代入公式 G=mg 前，我们需要先把单位换成千克。你能完成这个换算吗？（提示：1千克 = 1000克）",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

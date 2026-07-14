@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百分数的意义：5% 代表什么？</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --gold-color: #eab308;
+            --green-color: #10b981;
+            --gray-light: #f1f5f9;
+            --text-dark: #1e293b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e2e8f0;
+            font-family: 'Helvetica Neue', Arial, 'Microsoft YaHei', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .app-container {
+            width: 1000px;
+            height: 750px;
+            max-width: 98vw;
+            max-height: 98vh;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* 头部区域 */
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: var(--text-dark);
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 15px;
+            color: #64748b;
+        }
+
+        /* 主布局 */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            gap: 24px;
+            min-height: 0; /* 允许子元素在flex中正确缩放 */
+        }
+
+        /* 左侧：百格图区域 */
+        .left-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .grid-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 5x20 百格图 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 5px;
+            width: 100%;
+            aspect-ratio: 4 / 1; /* 保持扁平比例 */
+        }
+
+        /* 学生小人格子样式 */
+        .cell {
+            position: relative;
+            background-color: #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 绘制小人头像 */
+        .cell::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            width: 32%;
+            height: 32%;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: all 0.25s ease;
+        }
+
+        /* 绘制小人身体 */
+        .cell::after {
+            content: '';
+            position: absolute;
+            bottom: 12%;
+            width: 55%;
+            height: 28%;
+            background-color: #ffffff;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.25s ease;
+        }
+
+        /* 状态1：整体（蓝色） */
+        .cell.whole {
+            background-color: var(--primary-color);
+        }
+        .cell.whole::before, .cell.whole::after {
+            background-color: #eff6ff;
+        }
+
+        /* 状态2：部分（金色闪烁） */
+        .cell.part {
+            background-color: var(--gold-color);
+            animation: pulse-gold 2s infinite;
+            z-index: 2;
+        }
+        .cell.part::before, .cell.part::after {
+            background-color: #fef9c3;
+        }
+
+        /* 状态3：未选中变暗 */
+        .cell.dimmed {
+            background-color: #f1f5f9;
+            opacity: 0.35;
+        }
+        .cell.dimmed::before, .cell.dimmed::after {
+            background-color: #cbd5e1;
+        }
+
+        /* 状态4：自由探索选中（绿色） */
+        .cell.free-active {
+            background-color: var(--green-color);
+            transform: scale(1.05);
+        }
+        .cell.free-active::before, .cell.free-active::after {
+            background-color: #ecfdf5;
+        }
+
+        /* 状态5：自由探索未选中 */
+        .cell.free-inactive {
+            background-color: #e2e8f0;
+        }
+        .cell.free-inactive::before, .cell.free-inactive::after {
+            background-color: #94a3b8;
+        }
+
+        /* 悬停效果 */
+        .cell:hover {
+            transform: scale(1.12);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 3;
+        }
+
+        /* 金色呼吸动画 */
+        @keyframes pulse-gold {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+
+        /* 图例 */
+        .grid-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #475569;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* 右侧：交互控制面板 */
+        .right-panel {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 模式切换卡片 */
+        .card-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .interactive-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .interactive-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .interactive-card.active[data-target="whole"] {
+            border-color: var(--primary-color);
+            background-color: #f0f6ff;
+        }
+
+        .interactive-card.active[data-target="part"] {
+            border-color: var(--gold-color);
+            background-color: #fefce8;
+        }
+
+        .interactive-card.active[data-target="free"] {
+            border-color: var(--green-color);
+            background-color: #f0fdf4;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #334155;
+            margin: 0 0 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin: 4px 0 0 0;
+        }
+
+        /* 自由探索计数器 */
+        .free-counter {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 思考与讨论区域 */
+        .question-box {
+            flex: 1;
+            background: #f0f9ff;
+            border-left: 6px solid #0284c7;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 8px;
+        }
+
+        .question-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1e293b;
+            flex: 1;
+        }
+
+        .answer-area {
+            margin-top: 10px;
+        }
+
+        .btn-hint {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .btn-hint:hover {
+            background-color: #0369a1;
+        }
+
+        .hint-text {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #0369a1;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hint-text strong {
+            color: #e11d48;
+            font-size: 17px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>百分数的意义：5% 代表什么？</h1>
+            <p>点击右侧卡片或左侧方格，直观感受“部分”与“整体”的关系</p>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-layout">
+            <!-- 左侧：百格图 -->
+            <div class="left-panel">
+                <div class="grid-title">
+                    <span>全班学生人数（共 100 人）</span>
+                    <span id="grid-status-tag" style="font-size: 14px; padding: 2px 8px; border-radius: 12px; background: #e2e8f0; color: #475569;">当前：整体</span>
+                </div>
+                
+                <div class="grid-wrapper">
+                    <div class="grid" id="student-grid">
+                        <!-- JS 动态生成 100 个格子 -->
+                    </div>
+                </div>
+
+                <!-- 图例 -->
+                <div class="grid-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #cbd5e1;"></span>
+                        <span>1 个格子 = 1个人 (占全班的 1%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" id="legend-active-color" style="background-color: var(--primary-color);"></span>
+                        <span id="legend-active-text">全班人数 (100%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：控制面板 -->
+            <div class="right-panel">
+                <div class="card-group">
+                    <!-- 卡片1：整体 -->
+                    <div class="interactive-card active" id="card-whole" data-target="whole">
+                        <div class="card-title">
+                            <span>整体：全班人数</span>
+                            <span style="color: var(--primary-color); font-size: 14px;">● 选中</span>
+                        </div>
+                        <p class="card-value" style="color: var(--primary-color);">100% <span style="font-size: 16px; font-weight: normal; color: #64748b;">(100人)</span></p>
+                        <p class="card-desc">表示完整的整体，作为比较的标准（分母）。</p>
+                    </div>
+
+                    <!-- 卡片2：部分 -->
+                    <div class="interactive-card" id="card-part" data-target="part">
+                        <div class="card-title">
+                            <span>部分：喜欢画画的人数</span>
+                            <span style="color: var(--gold-color); font-size: 14px;">● 选中</span>
+                        </div>
+                        <p class="card-value" style="color: var(--gold-color);">5% <span style="font-size: 16px; font-weight: normal; color: #64748b;">(5人)</span></p>
+                        <p class="card-desc">表示被比较的部分（分子）。</p>
+                    </div>
+
+                    <!-- 卡片3：自由探索 -->
+                    <div class="interactive-card" id="card-free" data-target="free">
+                        <div class="card-title">
+                            <span>自由探索模式</span>
+                            <span style="color: var(--green-color); font-size: 14px;">● 互动</span>
+                        </div>
+                        <p class="card-desc">点击左侧任意数量的方格，自定义百分比。</p>
+                        <div class="free-counter" id="free-counter-box">
+                            <span style="font-size: 14px; color: #475569;">已选人数:</span>
+                            <span style="color: var(--green-color); font-weight: bold; font-size: 18px;">
+                                <span id="free-count">0</span> / 100 人
+                            </span>
+                            <span style="font-size: 14px; color: #475569; margin-left: 10px;">百分比:</span>
+                            <span id="free-percent" style="color: var(--green-color); font-weight: 800; font-size: 20px;">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 思考与讨论 -->
+                <div class="question-box">
+                    <div class="question-title">课堂互动思考：</div>
+                    <div class="question-content" id="question-text">
+                        这里的 <strong>100%</strong> 表示什么意思？谁能试着说一说？
+                    </div>
+                    <div class="answer-area">
+                        <button class="btn-hint" id="btn-toggle-hint">显示思考提示</button>
+                        <div class="hint-text hidden" id="hint-text">
+                            <!-- 动态生成提示内容 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('student-grid');
+        const cards = document.querySelectorAll('.interactive-card');
+        const gridStatusTag = document.getElementById('grid-status-tag');
+        const legendActiveColor = document.getElementById('legend-active-color');
+        const legendActiveText = document.getElementById('legend-active-text');
+        const freeCounterBox = document.getElementById('free-counter-box');
+        const freeCountSpan = document.getElementById('free-count');
+        const freePercentSpan = document.getElementById('free-percent');
+        const questionText = document.getElementById('question-text');
+        const btnToggleHint = document.getElementById('btn-toggle-hint');
+        const hintText = document.getElementById('hint-text');
+
+        // 初始化 100 个格子
+        for (let i = 0; i < 100; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell', 'whole'); // 默认显示整体
+            cell.dataset.index = i;
+            grid.appendChild(cell);
+        }
+
+        const cells = document.querySelectorAll('.cell');
+
+        // 状态变量
+        let currentMode = 'whole'; // 'whole', 'part', 'free'
+        let freeSelected = new Set(); // 自由探索选中的索引
+        let hintVisible = false;
+
+        // 更新视图主函数
+        function updateUI() {
+            // 1. 重置提示状态
+            hintVisible = false;
+            hintText.classList.add('hidden');
+            btnToggleHint.textContent = '显示思考提示';
+
+            // 2. 更新卡片激活状态
+            cards.forEach(card => {
+                if (card.dataset.target === currentMode) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            // 3. 根据模式更新格子样式和图例
+            if (currentMode === 'whole') {
+                gridStatusTag.textContent = '当前：整体 (100%)';
+                gridStatusTag.style.backgroundColor = '#eff6ff';
+                gridStatusTag.style.color = 'var(--primary-color)';
+                legendActiveColor.style.backgroundColor = 'var(--primary-color)';
+                legendActiveText.textContent = '全班人数 (100%)';
+                freeCounterBox.style.opacity = '0.5';
+
+                cells.forEach(cell => {
+                    cell.className = 'cell whole';
+                });
+
+                questionText.innerHTML = '这里的 <strong>100%</strong> 表示什么意思？谁能用“谁占谁的百分之几”来试着说一说？';
+                hintText.innerHTML = '<strong>全班总人数</strong> 占 <strong>全班总人数</strong> 的 <strong>100%</strong>';
+
+            } else if (currentMode === 'part') {
+                gridStatusTag.textContent = '当前：部分 (5%)';
+                gridStatusTag.style.backgroundColor = '#fefce8';
+                gridStatusTag.style.color = 'var(--gold-color)';
+                legendActiveColor.style.backgroundColor = 'var(--gold-color)';
+                legendActiveText.textContent = '喜欢画画的人数 (5%)';
+                freeCounterBox.style.opacity = '0.5';
+
+                cells.forEach((cell, index) => {
+                    if (index < 5) {
+                        cell.className = 'cell part';
+                    } else {
+                        cell.className = 'cell dimmed';
+                    }
+                });
+
+                questionText.innerHTML = '这里的 <strong>5%</strong> 表示什么意思？谁能用“<strong>谁</strong>占<strong>谁</strong>的百分之几”来试着说一说？';
+                hintText.innerHTML = '<strong>喜欢画画的人数</strong> 占 <strong>全班总人数</strong> 的 <strong>5%</strong>';
+
+            } else if (currentMode === 'free') {
+                gridStatusTag.textContent = '当前：自由探索';
+                gridStatusTag.style.backgroundColor = '#f0fdf4';
+                gridStatusTag.style.color = 'var(--green-color)';
+                legendActiveColor.style.backgroundColor = 'var(--green-color)';
+                legendActiveText.textContent = '自定义人数';
+                freeCounterBox.style.opacity = '1';
+
+                // 更新计数器
+                const count = freeSelected.size;
+                freeCountSpan.textContent = count;
+                freePercentSpan.textContent = count + '%';
+
+                cells.forEach((cell, index) => {
+                    if (freeSelected.has(index)) {
+                        cell.className = 'cell free-active';
+                    } else {
+                        cell.className = 'cell free-inactive';
+                    }
+                });
+
+                questionText.innerHTML = `你当前选中了 <strong>${count}</strong> 个格子，即 <strong>${count}%</strong>。谁能用“谁占谁的百分之几”来说说它的含义？`;
+                hintText.innerHTML = `<strong>选中的 ${count} 人</strong> 占 <strong>全班总人数</strong> 的 <strong>${count}%</strong>`;
+            }
+        }
+
+        // 绑定右侧卡片点击事件
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                currentMode = card.dataset.target;
+                if (currentMode === 'free' && freeSelected.size === 0) {
+                    // 首次进入自由模式，默认选中前5个，方便过渡
+                    for (let i = 0; i < 5; i++) freeSelected.add(i);
+                }
+                updateUI();
+            });
+        });
+
+        // 绑定左侧格子点击事件（点击任意格子自动进入自由探索模式）
+        grid.addEventListener('click', (e) => {
+            const cell = e.target.closest('.cell');
+            if (!cell) return;
+
+            const index = parseInt(cell.dataset.index);
+
+            if (currentMode !== 'free') {
+                // 如果从其他模式切换过来，先同步当前状态
+                freeSelected.clear();
+                if (currentMode === 'part') {
+                    for (let i = 0; i < 5; i++) freeSelected.add(i);
+                } else if (currentMode === 'whole') {
+                    for (let i = 0; i < 100; i++) freeSelected.add(i);
+                }
+                currentMode = 'free';
+            }
+
+            // 切换选中状态
+            if (freeSelected.has(index)) {
+                freeSelected.delete(index);
+            } else {
+                freeSelected.add(index);
+            }
+
+            updateUI();
+        });
+
+        // 提示按钮点击事件
+        btnToggleHint.addEventListener('click', () => {
+            hintVisible = !hintVisible;
+            if (hintVisible) {
+                hintText.classList.remove('hidden');
+                btnToggleHint.textContent = '隐藏思考提示';
+            } else {
+                hintText.classList.add('hidden');
+                btnToggleHint.textContent = '显示思考提示';
+            }
+        });
+
+        // 初始化运行
+        updateUI();
+    </script>
+</body>
+</html>

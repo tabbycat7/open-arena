@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公共设施建设资金链对比模拟器</title>
+  <style>
+    :root {
+      --bg-color: #f0f4f8;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --dark-panel: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 头部区域 */
+    .header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* 主交互区域 */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+      background-color: #f8fafc;
+    }
+
+    /* 模拟面板 */
+    .panel {
+      background: var(--dark-panel);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .panel-header {
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .badge-voluntary {
+      background-color: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-tax {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* 模拟画布区域 */
+    .canvas-container {
+      flex: 1;
+      position: relative;
+      min-height: 220px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 居民想法气泡 */
+    .thought-bubble {
+      position: absolute;
+      background: white;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--text-main);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 140px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 20;
+    }
+
+    .thought-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: white transparent;
+      display: block;
+      width: 0;
+    }
+
+    /* 数据看板 */
+    .dashboard {
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+    }
+
+    /* 控制台与知识点 */
+    .control-panel {
+      padding: 16px 24px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #f1f5f9;
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+
+    .slider-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .timeline-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: #cbd5e1;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .timeline-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .timeline-ticks {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+      margin-top: -4px;
+    }
+
+    .tick-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tick-label.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* 知识点高亮区 */
+    .concept-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .concept-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+    }
+
+    .concept-card.highlight {
+      border-color: #93c5fd;
+      background-color: #eff6ff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    }
+
+    .concept-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .concept-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* 动画与交互效果 */
+    .light-beam {
+      transition: opacity 0.8s ease, fill 0.8s ease;
+    }
+
+    .resident-node {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .resident-node:hover {
+      transform: scale(1.1) translateY(-2px);
+    }
+
+    .road-surface {
+      transition: fill 0.8s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>公共设施建设资金链模拟器</h1>
+      <p>拖动下方时间轴，观察“自愿筹资”与“税收统一规划”在路灯建设和维护中的不同结局</p>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-content">
+      
+      <!-- 左侧：自愿筹资 -->
+      <div class="panel" id="panel-voluntary">
+        <div class="panel-header">
+          <span class="panel-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            模式 A：自愿捐款建路灯
+          </span>
+          <span class="badge badge-voluntary">自愿性</span>
+        </div>
+        
+        <div class="canvas-container">
+          <!-- 想法气泡 -->
+          <div class="thought-bubble" id="bubble-v" style="bottom: 75px; left: 50px;"></div>
+          
+          <svg viewBox="0 0 400 250">
+            <!-- 天空背景 -->
+            <rect width="400" height="250" fill="#0b1329" />
+            <!-- 星星 -->
+            <circle cx="40" cy="30" r="1" fill="#ffffff" opacity="0.8"/>
+            <circle cx="120" cy="50" r="1.5" fill="#ffffff" opacity="0.5"/>
+            <circle cx="220" cy="25" r="1" fill="#ffffff" opacity="0.9"/>
+            <circle cx="310" cy="45" r="1.2" fill="#ffffff" opacity="0.6"/>
+            <circle cx="370" cy="30" r="1" fill="#ffffff" opacity="0.7"/>
+
+            <!-- 道路 -->
+            <path id="road-v" class="road-surface" d="M 0 200 L 400 200 L 400 250 L 0 250 Z" fill="#334155" />
+            <line x1="0" y1="225" x2="400" y2="225" stroke="#ffffff" stroke-dasharray="10, 15" stroke-width="2" opacity="0.4" />
+
+            <!-- 灯光渐变定义 -->
+            <defs>
+              <radialGradient id="light-glow" cx="50%" cy="0%" r="100%">
+                <stop offset="0%" stop-color="#fef08a" stop-opacity="1"/>
+                <stop offset="50%" stop-color="#fef08a" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#fef08a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <!-- 路灯 1 -->
+            <g id="lamp-v1">
+              <line x1="80" y1="200" x2="80" y2="100" stroke="#64748b" stroke-width="4" />
+              <path d="M 70 100 L 90 100 L 95 90 L 65 90 Z" fill="#475569" />
+              <polygon class="light-beam" id="beam-v1" points="80,100 20,200 140,200" fill="url(#light-glow)" opacity="0.8" />
+              <circle cx="80" cy="95" r="4" fill="#fef08a" />
+            </g>
+
+            <!-- 路灯 2 -->
+            <g id="lamp-v2">
+              <line x1="320" y1="200" x2="320" y2="100" stroke="#64748b" stroke-width="4" />
+              <path d="M 310 100 L 330 100 L 335 90 L 305 90 Z" fill="#475569" />
+              <polygon class="light-beam" id="beam-v2" points="320,100 260,200 380,200" fill="url(#light-glow)" opacity="0.8" />
+              <circle cx="320" cy="95" r="4" fill="#fef08a" />
+            </g>
+
+            <!-- 居民节点 (自愿模式) -->
+            <!-- 居民 1 -->
+            <g class="resident-node" id="res-v1" transform="translate(40, 215)">
+              <circle cx="0" cy="0" r="12" fill="#475569" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">张</text>
+              <circle id="coin-v1" cx="8" cy="-8" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1"/>
+              <text id="coin-text-v1" x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">￥</text>
+            </g>
+            <!-- 居民 2 -->
+            <g class="resident-node" id="res-v2" transform="translate(140, 215)">
+              <circle cx="0" cy="0" r="12" fill="#475569" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">王</text>
+              <circle id="coin-v2" cx="8" cy="-8" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1"/>
+              <text id="coin-text-v2" x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">￥</text>
+            </g>
+            <!-- 居民 3 -->
+            <g class="resident-node" id="res-v3" transform="translate(200, 215)">
+              <circle cx="0" cy="0" r="12" fill="#475569" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">李</text>
+              <circle id="coin-v3" cx="8" cy="-8" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1"/>
+              <text id="coin-text-v3" x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">￥</text>
+            </g>
+            <!-- 居民 4 -->
+            <g class="resident-node" id="res-v4" transform="translate(260, 215)">
+              <circle cx="0" cy="0" r="12" fill="#475569" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">赵</text>
+              <circle id="coin-v4" cx="8" cy="-8" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1"/>
+              <text id="coin-text-v4" x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">￥</text>
+            </g>
+            <!-- 居民 5 (初始就不交的搭便车者) -->
+            <g class="resident-node" id="res-v5" transform="translate(360, 215)">
+              <circle cx="0" cy="0" r="12" fill="#475569" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">孙</text>
+              <circle id="coin-v5" cx="8" cy="-8" r="6" fill="#94a3b8" stroke="#ffffff" stroke-width="1"/>
+              <text id="coin-text-v5" x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">×</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="dashboard">
+          <div class="stat-box">
+            <span class="stat-label">出资人数 / 筹资率</span>
+            <span class="stat-value" id="rate-v">4 / 5 (80%)</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">路灯亮度 / 道路状况</span>
+            <span class="stat-value" id="status-v" style="color: var(--warning);">良好</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="progress-v" style="background-color: var(--warning);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：税收统一规划 -->
+      <div class="panel" id="panel-tax">
+        <div class="panel-header">
+          <span class="panel-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            模式 B：国家税收统一规划
+          </span>
+          <span class="badge badge-tax">强制与普惠</span>
+        </div>
+        
+        <div class="canvas-container">
+          <!-- 想法气泡 -->
+          <div class="thought-bubble" id="bubble-t" style="bottom: 75px; left: 50px;"></div>
+
+          <svg viewBox="0 0 400 250">
+            <!-- 天空背景 -->
+            <rect width="400" height="250" fill="#0b1329" />
+            <!-- 星星 -->
+            <circle cx="50" cy="40" r="1" fill="#ffffff" opacity="0.6"/>
+            <circle cx="150" cy="25" r="1.2" fill="#ffffff" opacity="0.8"/>
+            <circle cx="250" cy="50" r="1.5" fill="#ffffff" opacity="0.4"/>
+            <circle cx="340" cy="30" r="1" fill="#ffffff" opacity="0.7"/>
+
+            <!-- 道路 -->
+            <path id="road-t" class="road-surface" d="M 0 200 L 400 200 L 400 250 L 0 250 Z" fill="#334155" />
+            <line x1="0" y1="225" x2="400" y2="225" stroke="#ffffff" stroke-dasharray="10, 15" stroke-width="2" opacity="0.6" />
+
+            <!-- 路灯 1 -->
+            <g id="lamp-t1">
+              <line x1="80" y1="200" x2="80" y2="100" stroke="#64748b" stroke-width="4" />
+              <path d="M 70 100 L 90 100 L 95 90 L 65 90 Z" fill="#475569" />
+              <polygon class="light-beam" id="beam-t1" points="80,100 20,200 140,200" fill="url(#light-glow)" opacity="1" />
+              <circle cx="80" cy="95" r="4" fill="#fef08a" />
+            </g>
+
+            <!-- 路灯 2 -->
+            <g id="lamp-t2">
+              <line x1="320" y1="200" x2="320" y2="100" stroke="#64748b" stroke-width="4" />
+              <path d="M 310 100 L 330 100 L 335 90 L 305 90 Z" fill="#475569" />
+              <polygon class="light-beam" id="beam-t2" points="320,100 260,200 380,200" fill="url(#light-glow)" opacity="1" />
+              <circle cx="320" cy="95" r="4" fill="#fef08a" />
+            </g>
+
+            <!-- 居民节点 (税收模式) -->
+            <!-- 居民 1 -->
+            <g class="resident-node" id="res-t1" transform="translate(40, 215)">
+              <circle cx="0" cy="0" r="12" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">张</text>
+              <circle cx="8" cy="-8" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              <text x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">✓</text>
+            </g>
+            <!-- 居民 2 -->
+            <g class="resident-node" id="res-t2" transform="translate(140, 215)">
+              <circle cx="0" cy="0" r="12" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">王</text>
+              <circle cx="8" cy="-8" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              <text x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">✓</text>
+            </g>
+            <!-- 居民 3 -->
+            <g class="resident-node" id="res-t3" transform="translate(200, 215)">
+              <circle cx="0" cy="0" r="12" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">李</text>
+              <circle cx="8" cy="-8" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              <text x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">✓</text>
+            </g>
+            <!-- 居民 4 -->
+            <g class="resident-node" id="res-t4" transform="translate(260, 215)">
+              <circle cx="0" cy="0" r="12" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">赵</text>
+              <circle cx="8" cy="-8" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              <text x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">✓</text>
+            </g>
+            <!-- 居民 5 -->
+            <g class="resident-node" id="res-t5" transform="translate(360, 215)">
+              <circle cx="0" cy="0" r="12" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+              <text x="0" y="4" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">孙</text>
+              <circle cx="8" cy="-8" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              <text x="8" y="-5" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">✓</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="dashboard">
+          <div class="stat-box">
+            <span class="stat-label">依法纳税率</span>
+            <span class="stat-value" id="rate-t">5 / 5 (100%)</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">路灯亮度 / 道路状况</span>
+            <span class="stat-value" id="status-t" style="color: var(--success);">极佳 (常亮)</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="progress-t" style="background-color: var(--success);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 控制台与知识点 -->
+    <div class="control-panel">
+      <!-- 时间轴滑块 -->
+      <div class="slider-container">
+        <span class="slider-label">模拟时间推移：</span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+          <input type="range" id="timeline" class="timeline-slider" min="0" max="2" value="0" step="1">
+          <div class="timeline-ticks">
+            <span class="tick-label active" id="tick-0">第一年 (刚建好)</span>
+            <span class="tick-label" id="tick-1">第二年 (产生矛盾)</span>
+            <span class="tick-label" id="tick-2">第三年 (设施老化)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 知识点卡片 -->
+      <div class="concept-cards">
+        <div class="concept-card" id="card-compulsory">
+          <div class="concept-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            税收的“强制性”
+          </div>
+          <div class="concept-desc" id="desc-compulsory">
+            国家凭借政治权力强制征收。对比左侧：自愿筹资容易因“有人不出钱”导致资金链断裂。
+          </div>
+        </div>
+        <div class="concept-card" id="card-public">
+          <div class="concept-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            税收的“普惠性”
+          </div>
+          <div class="concept-desc" id="desc-public">
+            税收取之于民、用之于民。统一规划建设，确保每个人都能公平、安全地享受公共服务。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 数据定义
+    const stepsData = [
+      {
+        voluntary: {
+          contributors: 4,
+          rateText: "4 / 5 (80%)",
+          statusText: "良好",
+          statusColor: "var(--warning)",
+          progressWidth: "80%",
+          roadColor: "#334155",
+          lightOpacity: 0.8,
+          coins: [true, true, true, true, false],
+          thoughts: {
+            "res-v1": "大家都出钱，路修好了，灯也亮了，真不错！",
+            "res-v2": "虽然孙家没出钱，但邻里邻居的，先用着吧。",
+            "res-v5": "哈哈，我没出钱，路灯照样照亮我家门口！"
+          }
+        },
+        tax: {
+          contributors: 5,
+          rateText: "5 / 5 (100%)",
+          statusText: "极佳 (常亮)",
+          statusColor: "var(--success)",
+          progressWidth: "100%",
+          roadColor: "#334155",
+          lightOpacity: 1.0,
+          thoughts: {
+            "res-t1": "依法纳税是义务，国家统一规划，效率就是高！",
+            "res-t5": "大家都按统一标准交税，公平合理，心里踏实。"
+          }
+        }
+      },
+      {
+        voluntary: {
+          contributors: 2,
+          rateText: "2 / 5 (40%)",
+          statusText: "昏暗 (资金不足)",
+          statusColor: "var(--danger)",
+          progressWidth: "40%",
+          roadColor: "#4a4e59",
+          lightOpacity: 0.3,
+          coins: [true, false, false, true, false],
+          thoughts: {
+            "res-v1": "凭什么王家和李家今年也不给钱了？那我明年也不给了！",
+            "res-v2": "既然孙家不交钱也能用，我为什么还要傻傻交钱？",
+            "res-v5": "哎呀，灯怎么变暗了？不过反正我没亏钱。"
+          }
+        },
+        tax: {
+          contributors: 5,
+          rateText: "5 / 5 (100%)",
+          statusText: "极佳 (常亮)",
+          statusColor: "var(--success)",
+          progressWidth: "100%",
+          roadColor: "#334155",
+          lightOpacity: 1.0,
+          thoughts: {
+            "res-t1": "路灯坏了有市政部门及时维护，完全不用我们操心。",
+            "res-t5": "税收有法律保障，资金稳定，公共设施才能持续运转。"
+          }
+        }
+      },
+      {
+        voluntary: {
+          contributors: 0,
+          rateText: "0 / 5 (0%)",
+          statusText: "瘫痪 (陷入黑暗)",
+          statusColor: "#ef4444",
+          progressWidth: "5%",
+          roadColor: "#451a03", // 泥泞路颜色
+          lightOpacity: 0.05,
+          coins: [false, false, false, false, false],
+          thoughts: {
+            "res-v1": "路灯全瞎了，路也烂了，自愿筹资根本行不通！",
+            "res-v5": "早知道大家都不交钱会导致灯全灭，当初还不如统一交呢..."
+          }
+        },
+        tax: {
+          contributors: 5,
+          rateText: "5 / 5 (100%)",
+          statusText: "极佳 (常亮)",
+          statusColor: "var(--success)",
+          progressWidth: "100%",
+          roadColor: "#334155",
+          lightOpacity: 1.0,
+          thoughts: {
+            "res-t1": "路灯亮堂堂，晚上散步真安全，这就是税收的普惠性！",
+            "res-t5": "国家统一收税建路，比我们自己扯皮强一万倍。"
+          }
+        }
+      }
+    ];
+
+    // 获取DOM元素
+    const timeline = document.getElementById('timeline');
+    const ticks = [
+      document.getElementById('tick-0'),
+      document.getElementById('tick-1'),
+      document.getElementById('tick-2')
+    ];
+
+    // 左侧元素
+    const rateV = document.getElementById('rate-v');
+    const statusV = document.getElementById('status-v');
+    const progressV = document.getElementById('progress-v');
+    const roadV = document.getElementById('road-v');
+    const beamV1 = document.getElementById('beam-v1');
+    const beamV2 = document.getElementById('beam-v2');
+    const bubbleV = document.getElementById('bubble-v');
+
+    // 右侧元素
+    const rateT = document.getElementById('rate-t');
+    const statusT = document.getElementById('status-t');
+    const progressT = document.getElementById('progress-t');
+    const roadT = document.getElementById('road-t');
+    const beamT1 = document.getElementById('beam-t1');
+    const beamT2 = document.getElementById('beam-t2');
+    const bubbleT = document.getElementById('bubble-t');
+
+    // 知识点卡片
+    const cardCompulsory = document.getElementById('card-compulsory');
+    const cardPublic = document.getElementById('card-public');
+
+    // 更新视图函数
+    function updateSimulation(step) {
+      const data = stepsData[step];
+
+      // 1. 更新时间轴刻度高亮
+      ticks.forEach((tick, idx) => {
+        if (idx === step) {
+          tick.classList.add('active');
+        } else {
+          tick.classList.remove('active');
+        }
+      });
+
+      // 2. 更新左侧（自愿模式）
+      rateV.textContent = data.voluntary.rateText;
+      statusV.textContent = data.voluntary.statusText;
+      statusV.style.color = data.voluntary.statusColor;
+      progressV.style.width = data.voluntary.progressWidth;
+      progressV.style.backgroundColor = data.voluntary.statusColor;
+      roadV.setAttribute('fill', data.voluntary.roadColor);
+      beamV1.setAttribute('opacity', data.voluntary.lightOpacity);
+      beamV2.setAttribute('opacity', data.voluntary.lightOpacity);
+
+      // 更新左侧居民金币显示
+      for (let i = 1; i <= 5; i++) {
+        const coin = document.getElementById(`coin-v${i}`);
+        const coinText = document.getElementById(`coin-text-v${i}`);
+        const hasPaid = data.voluntary.coins[i - 1];
+        if (hasPaid) {
+          coin.setAttribute('fill', '#f59e0b');
+          coinText.textContent = '￥';
+        } else {
+          coin.setAttribute('fill', '#94a3b8');
+          coinText.textContent = '×';
+        }
+      }
+
+      // 3. 更新右侧（税收模式）
+      rateT.textContent = data.tax.rateText;
+      statusT.textContent = data.tax.statusText;
+      statusT.style.color = data.tax.statusColor;
+      progressT.style.width = data.tax.progressWidth;
+      progressT.style.backgroundColor = data.tax.statusColor;
+      roadT.setAttribute('fill', data.tax.roadColor);
+      beamT1.setAttribute('opacity', data.tax.lightOpacity);
+      beamT2.setAttribute('opacity', data.tax.lightOpacity);
+
+      // 4. 动态高亮知识点卡片
+      if (step === 0) {
+        cardCompulsory.classList.remove('highlight');
+        cardPublic.classList.remove('highlight');
+      } else if (step === 1) {
+        cardCompulsory.classList.add('highlight');
+        cardPublic.classList.remove('highlight');
+      } else if (step === 2) {
+        cardCompulsory.classList.add('highlight');
+        cardPublic.classList.add('highlight');
+      }
+
+      // 隐藏气泡
+      bubbleV.style.opacity = 0;
+      bubbleT.style.opacity = 0;
+    }
+
+    // 绑定时间轴事件
+    timeline.addEventListener('input', (e) => {
+      updateSimulation(parseInt(e.target.value));
+    });
+
+    // 绑定刻度点击事件
+    ticks.forEach((tick, idx) => {
+      tick.addEventListener('click', () => {
+        timeline.value = idx;
+        updateSimulation(idx);
+      });
+    });
+
+    // 居民点击交互（展示想法气泡）
+    function setupResidentInteractions() {
+      // 自愿模式居民
+      for (let i = 1; i <= 5; i++) {
+        const resNode = document.getElementById(`res-v${i}`);
+        resNode.addEventListener('click', (e) => {
+          const step = parseInt(timeline.value);
+          const thoughts = stepsData[step].voluntary.thoughts;
+          const key = `res-v${i}`;
+          
+          // 如果该步骤有该居民的想法，则显示
+          if (thoughts[key] || thoughts["res-v5"]) {
+            const text = thoughts[key] || "大家都不出，我也不出了。";
+            showBubble(bubbleV, text, e.clientX, e.clientY, 'panel-voluntary');
+          }
+        });
+      }
+
+      // 税收模式居民
+      for (let i = 1; i <= 5; i++) {
+        const resNode = document.getElementById(`res-t${i}`);
+        resNode.addEventListener('click', (e) => {
+          const step = parseInt(timeline.value);
+          const thoughts = stepsData[step].tax.thoughts;
+          const key = `res-t${i}`;
+          
+          if (thoughts[key] || thoughts["res-t5"]) {
+            const text = thoughts[key] || thoughts["res-t1"];
+            showBubble(bubbleT, text, e.clientX, e.clientY, 'panel-tax');
+          }
+        });
+      }
+    }
+
+    // 显示气泡辅助函数
+    function showBubble(bubbleEl, text, clientX, clientY, panelId) {
+      const panel = document.getElementById(panelId);
+      const rect = panel.getBoundingClientRect();
+      
+      // 计算在面板内的相对坐标
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      bubbleEl.textContent = text;
+      bubbleEl.style.left = `${Math.max(10, Math.min(rect.width - 150, x - 70))}px`;
+      bubbleEl.style.bottom = `${rect.height - y + 15}px`;
+      bubbleEl.style.opacity = 1;
+      bubbleEl.style.transform = 'translateY(-5px)';
+
+      // 3秒后自动消失
+      if (bubbleEl.timeoutId) clearTimeout(bubbleEl.timeoutId);
+      bubbleEl.timeoutId = setTimeout(() => {
+        bubbleEl.style.opacity = 0;
+        bubbleEl.style.transform = 'translateY(0)';
+      }, 3000);
+    }
+
+    // 初始化
+    updateSimulation(0);
+    setupResidentInteractions();
+  </script>
+</body>
+</html>

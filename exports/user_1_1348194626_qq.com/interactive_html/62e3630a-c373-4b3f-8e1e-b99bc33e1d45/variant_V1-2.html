@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>社会功能天平：税收与公共设施</title>
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --gray: #bdc3c7;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h2 { color: var(--primary); margin-bottom: 20px; }
+        .control-panel { margin: 20px 0; padding: 15px; background: #eee; border-radius: 10px; }
+        #slider { width: 60%; cursor: pointer; }
+        .status-text { font-weight: bold; color: var(--accent); margin-top: 10px; }
+        svg { width: 100%; height: auto; }
+        .facility { transition: filter 0.5s, opacity 0.5s; }
+        .grayscale { filter: grayscale(100%) brightness(0.7); opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>社会功能天平：税收与公共设施</h2>
+    
+    <svg viewBox="0 0 600 300" id="balance-svg">
+        <!-- 支架 -->
+        <line x1="300" y1="250" x2="300" y2="100" stroke="#333" stroke-width="8" />
+        <line x1="200" y1="250" x2="400" y2="250" stroke="#333" stroke-width="8" />
+        <!-- 天平横梁 -->
+        <line id="beam" x1="150" y1="100" x2="450" y2="100" stroke="#333" stroke-width="6" />
+        
+        <!-- 左侧：税收 -->
+        <rect id="tax-box" x="120" y="100" width="60" height="60" fill="#3498db" />
+        <text x="150" y="140" fill="white" text-anchor="middle" font-size="14">税收</text>
+        
+        <!-- 右侧：公共设施 -->
+        <g id="facilities" class="facility">
+            <rect x="420" y="100" width="60" height="60" fill="#27ae60" />
+            <text x="450" y="140" fill="white" text-anchor="middle" font-size="12">公共设施</text>
+        </g>
+    </svg>
+
+    <div class="control-panel">
+        <label>调整税收状态：</label>
+        <input type="range" id="slider" min="0" max="1" step="0.01" value="1">
+        <div id="status" class="status-text">当前状态：城市正常运转</div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('slider');
+    const beam = document.getElementById('beam');
+    const taxBox = document.getElementById('tax-box');
+    const facilities = document.getElementById('facilities');
+    const statusText = document.getElementById('status');
+
+    slider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        
+        // 旋转天平
+        const rotation = (1 - val) * 20; // 0时向右倾斜
+        beam.setAttribute('transform', `rotate(${rotation}, 300, 100)`);
+        taxBox.setAttribute('transform', `rotate(${rotation}, 300, 100)`);
+        facilities.setAttribute('transform', `rotate(${rotation}, 300, 100)`);
+
+        // 设施灰度变化
+        if (val < 0.5) {
+            facilities.classList.add('grayscale');
+            statusText.textContent = "当前状态：税收取消，公共设施功能停滞";
+        } else {
+            facilities.classList.remove('grayscale');
+            statusText.textContent = "当前状态：城市正常运转";
+        }
+        
+        // 调整透明度模拟消失
+        facilities.style.opacity = 0.3 + (val * 0.7);
+    });
+</script>
+
+</body>
+</html>

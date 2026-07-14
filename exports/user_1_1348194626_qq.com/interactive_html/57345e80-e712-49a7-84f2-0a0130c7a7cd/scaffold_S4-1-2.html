@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的明确性：凭感觉加糖</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #stage {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+        #canvas-area {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #45a049; }
+        #result-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px;
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+            color: #856404;
+        }
+        .person {
+            position: absolute;
+            width: 60px;
+            text-align: center;
+            transition: all 0.5s;
+        }
+        .bowl {
+            width: 50px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 0 0 25px 25px;
+            margin: 0 auto;
+            transition: background 0.5s;
+        }
+        .sugar-label {
+            position: absolute;
+            top: -30px;
+            width: 100%;
+            font-size: 12px;
+            color: #d32f2f;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="stage">
+    <div class="title">方案一：凭感觉加糖</div>
+    <div id="canvas-area"></div>
+    <div class="controls">
+        <button id="start-btn">开始制作</button>
+    </div>
+    <div id="result-box"></div>
+</div>
+
+<script>
+    const area = document.getElementById('canvas-area');
+    const btn = document.getElementById('start-btn');
+    const result = document.getElementById('result-box');
+    const sugarOptions = ["10克", "50克", "半包！", "一小勺", "随意撒", "两把", "一点点", "很多", "没数", "刚好"];
+
+    // 初始化小人
+    for (let i = 0; i < 10; i++) {
+        const div = document.createElement('div');
+        div.className = 'person';
+        div.style.left = (50 + (i % 5) * 140) + 'px';
+        div.style.top = (i < 5 ? 50 : 220) + 'px';
+        div.innerHTML = `
+            <div style="font-size:30px">👤</div>
+            <div class="bowl"></div>
+            <div class="sugar-label"></div>
+        `;
+        area.appendChild(div);
+    }
+
+    btn.addEventListener('click', () => {
+        const labels = document.querySelectorAll('.sugar-label');
+        const bowls = document.querySelectorAll('.bowl');
+        
+        labels.forEach((label, index) => {
+            const val = sugarOptions[Math.floor(Math.random() * sugarOptions.length)];
+            label.innerText = val;
+            label.style.opacity = 1;
+            
+            // 模拟甜点颜色变化
+            const colorVal = Math.floor(Math.random() * 150) + 100;
+            bowls[index].style.backgroundColor = `rgb(${colorVal}, 200, 200)`;
+        });
+
+        result.style.display = 'block';
+        result.innerHTML = "判定结果：每个人加的糖量都不一样！<br>结论：标准不一，不符合算法的“明确性”要求！";
+        btn.disabled = true;
+        btn.style.backgroundColor = "#ccc";
+    });
+</script>
+
+</body>
+</html>

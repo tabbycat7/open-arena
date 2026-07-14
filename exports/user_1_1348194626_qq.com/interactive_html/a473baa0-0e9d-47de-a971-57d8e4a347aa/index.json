@@ -1,0 +1,212 @@
+{
+  "task_id": "a473baa0-0e9d-47de-a971-57d8e4a347aa",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看教材第一段关于纳税的描述，想一想，纳税就是简单的把钱交出去吗？请结合书上的定义，说说纳税具体是指一种什么行为。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才我们知道了纳税是按一定的比率缴纳，这个比率在数学上就叫税率。请大家盯着书上这句话，找一找，税率到底是由哪两个量相比得到的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "有了公式，我们来看教材例题3。请大家算出结果，并试着用“因为……是计税收入，……是税率，所以……应纳税额是……”这样的句式，完整说出你的计算思路。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "刚才算得很顺利，现在看“做一做”。李阿姨要缴纳个人所得税，这里用来乘3%的那个“基数”，到底是哪个数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "刚才我们算出该企业需缴纳0.9万元增值税。现在假设国家为了扶持小微企业，将税率从3%下调至1%。请大家算一算，这能为该企业节省多少资金？这又意味着国家财政收入减少了多少？结合计算结果，你如何评价国家“少收钱”这一决策？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "小明认为纳税就像给灾区捐款一样，是自愿献爱心的行为。你同意吗？请结合纳税定义中的关键词，说明纳税与捐款在“是否强制”和“金额确定方式”上有什么本质不同。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "周末爸爸带小明去餐厅吃饭，结账时爸爸索要了发票。服务员说：“不要发票可以送一瓶饮料。”爸爸坚持要发票。请结合纳税的意义，说说爸爸为什么要坚持索要发票？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "小马虎写公式时把税率写成了“应纳税额 ÷ 全部收入”。如果一家公司全部收入100万，但只有80万需要纳税，按小马虎的公式算，税率会偏高还是偏低？这会对国家税收造成什么影响？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果我们用一个正方形表示“应纳税收入”，涂色部分表示“应纳税额”。如果税率是20%，涂色部分应该占正方形的几分之几？请在练习本上画一画，并说说图上哪一部分代表税率。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "某商场上个月缴纳增值税6万元，税率是3%。你能算出这家商场上个月的应纳税销售额是多少万元吗？请说一说，这道题已知什么、求什么，该用什么方法算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "李叔叔买彩票中了大奖，按规定要缴纳20%的个人所得税。如果中奖金额是10万元，李叔叔实际能拿到多少钱？请先算出要交多少税，再求实际所得。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "对比一下：如果工资总额5000元。情况一：直接按5000元计税；情况二：扣除3500元免征额后，按1500元计税。哪种情况纳税更多？这告诉我们计算税款时第一步必须做什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "税法规定“月收入超过5000元的部分”需要纳税。小明的妈妈月收入6200元，爸爸月收入4800元。他们两人谁需要缴纳个人所得税？需要纳税的那位，计算基数应该是多少元？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "如果你是那家小微企业的小老板，国家把税率从3%降到1%，你会把省下来的这笔钱用来做什么？这些做法对企业的未来发展有什么好处？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "有人说：“既然降税是扶持企业，那为什么不干脆把税全免了？”结合刚才的计算，如果税收为0，国家修路、建校的钱从哪来？这说明了制定税率时需要兼顾哪两方面的利益？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "刚才大家读到了“按照一定的比率”交税。请大家回想一下，我们在学百分数时，提到“比率”，通常是指哪两个量在比较？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "请大家盯着书上定义里这句话——“应纳税额与各种收入……的比率”。大家找一找，比率的前一项是“应纳税额”，那后一项是哪个词？是不是直接写“各种收入”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "看着我们总结出的公式“应纳税额÷收入=税率”。现在看例题3，题目里的“30万元”相当于公式里的哪个量？“3%”又相当于哪个量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "既然30万元是收入，3%是税率，要求应纳税额。这其实就是我们在百分数里学过的，“求一个数的百分之几是多少”，应该用什么方法算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "刚才例题3里，我们直接用“销售额”乘税率。现在看“做一做”，题目里有没有直接告诉我们李阿姨的工资总数？那题目里明确给我们的那个数“2500元”，指的是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "题目要求计算个人所得税。请大家指一指，题目里哪一句话告诉了我们用来乘税率的那个“基数”是多少？这个基数是工资总额，还是工资里的一部分？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "如果税率从3%降到1%，企业要交的税肯定变少了。请大家先算一算，现在要交多少税？算出省下的这笔钱，大家觉得对企业来说可能意味着什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "国家少收了这笔税，财政收入暂时减少了。但国家为什么还愿意这么做？请大家猜一猜，国家希望这笔钱能帮企业做什么？如果企业发展好了，对国家未来有什么好处？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

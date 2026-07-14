@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人送餐优化策略</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        #canvas-container { width: 800px; height: 600px; background: white; border: 2px solid #e2e8f0; border-radius: 8px; position: relative; overflow: hidden; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 5px; }
+        button:disabled { background: #94a3b8; }
+        #status { font-size: 24px; font-weight: bold; margin-top: 10px; color: #1e293b; }
+        .highlight { color: #dc2626; }
+    </style>
+</head>
+<body>
+
+<div id="canvas-container">
+    <svg width="800" height="600" viewBox="0 0 800 600">
+        <!-- 场景布局 -->
+        <rect x="50" y="50" width="150" height="100" fill="#f1f5f9" stroke="#cbd5e1"/>
+        <text x="80" y="110" font-size="20">厨房</text>
+        
+        <rect x="600" y="400" width="100" height="100" fill="#fef3c7" stroke="#fbbf24"/>
+        <text x="620" y="460" font-size="20">3号桌</text>
+
+        <!-- 机器人 -->
+        <g id="robot">
+            <rect id="robot-body" x="100" y="100" width="40" height="40" fill="#2563eb" rx="5"/>
+            <text id="robot-label" x="105" y="125" fill="white" font-size="12">餐</text>
+        </g>
+
+        <!-- 盘子 -->
+        <circle id="plate" cx="650" cy="420" r="15" fill="#e2e8f0" stroke="#94a3b8" visibility="hidden"/>
+    </svg>
+</div>
+
+<div id="status">点击“开始演示”观察优化后的路径</div>
+<div class="controls">
+    <button id="btn-start">开始演示</button>
+    <button id="btn-reset">重置</button>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const plate = document.getElementById('plate');
+    const label = document.getElementById('robot-label');
+    const status = document.getElementById('status');
+    const btnStart = document.getElementById('btn-start');
+    const btnReset = document.getElementById('btn-reset');
+
+    let step = 0;
+
+    function animate() {
+        if (step === 0) {
+            // 移动到3号桌
+            robot.style.transition = "transform 2s linear";
+            robot.style.transform = "translate(510px, 320px)";
+            status.innerText = "第一趟：送餐到3号桌...";
+            setTimeout(() => {
+                label.textContent = "空";
+                plate.setAttribute('visibility', 'visible');
+                status.innerText = "放下餐，顺手拿起空盘子！";
+                step = 1;
+            }, 2000);
+        } else if (step === 1) {
+            // 回厨房
+            robot.style.transform = "translate(0px, 0px)";
+            label.textContent = "盘";
+            plate.setAttribute('visibility', 'hidden');
+            status.innerHTML = "第二趟：带回空盘子。总计：<span class='highlight'>2趟</span>！<br><span class='highlight'>顺路合并，省时50%！</span>";
+            btnStart.disabled = true;
+        }
+    }
+
+    btnStart.addEventListener('click', animate);
+    btnReset.addEventListener('click', () => {
+        robot.style.transition = "none";
+        robot.style.transform = "translate(0px, 0px)";
+        label.textContent = "餐";
+        plate.setAttribute('visibility', 'hidden');
+        status.innerText = "点击“开始演示”观察优化后的路径";
+        btnStart.disabled = false;
+        step = 0;
+    });
+</script>
+
+</body>
+</html>

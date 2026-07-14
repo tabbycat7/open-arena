@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值零点分段法引入 - 教学可视化</title>
+    <style>
+        /* 基础样式与投屏优化 */
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #16a34a;
+            --accent-color: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 96vw;
+            height: 72vw; /* 4:3 比例 */
+            max-width: 960px;
+            max-height: 720px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部标题与引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        /* 核心可视化区域 */
+        .visualization-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        /* 绝对值卡片区域 */
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 10px;
+        }
+
+        .expr-card {
+            width: 260px;
+            height: 180px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .expr-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .expr-card.active {
+            border-color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        /* 绝对值公式动画样式 */
+        .formula-box {
+            font-size: 36px;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            position: relative;
+        }
+
+        .abs-bracket {
+            color: var(--primary-color);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: inline-block;
+            width: 12px;
+            text-align: center;
+        }
+
+        .abs-bracket.fade {
+            opacity: 0.1;
+            transform: scaleY(0.8);
+        }
+
+        .inner-expr {
+            display: inline-block;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 0 4px;
+        }
+
+        /* 方程式演变区域 */
+        .equation-box {
+            margin-top: 15px;
+            font-size: 28px;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.5s ease;
+            color: #334155;
+        }
+
+        .equation-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .solve-btn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .solve-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .solve-btn:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.05);
+        }
+
+        .result-box {
+            margin-top: 10px;
+            font-size: 28px;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            color: var(--success-color);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 35px;
+        }
+
+        .result-box.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 数轴区域 */
+        .axis-container {
+            width: 100%;
+            max-width: 800px;
+            height: 120px;
+            position: relative;
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .axis-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 提示信息 */
+        .tips-banner {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 15px;
+            color: #475569;
+            width: 100%;
+            max-width: 800px;
+            text-align: left;
+            margin: 0 auto;
+        }
+
+        /* 闪烁红点动画 */
+        @keyframes pulse {
+            0% { r: 6; opacity: 1; }
+            50% { r: 12; opacity: 0.4; }
+            100% { r: 6; opacity: 1; }
+        }
+
+        .pulse-point {
+            animation: pulse 2s infinite;
+            fill: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>寻找绝对值的“分界点”</h1>
+            <p>点击下方的绝对值式子，观察如何通过令其内部为 0 找到关键临界值</p>
+        </div>
+
+        <!-- 可视化交互主体 -->
+        <div class="visualization-area">
+            
+            <!-- 两个绝对值卡片 -->
+            <div class="cards-container">
+                <!-- 卡片 1 -->
+                <div class="expr-card" id="card1">
+                    <div class="formula-box">
+                        <span class="abs-bracket" id="left-abs1">|</span>
+                        <span class="inner-expr" id="expr1">x - 1</span>
+                        <span class="abs-bracket" id="right-abs1">|</span>
+                    </div>
+                    <div class="equation-box" id="eq1">x - 1 = 0</div>
+                    <button class="solve-btn" id="btn1">求解 x</button>
+                    <div class="result-box" id="res1">x = 1</div>
+                </div>
+
+                <!-- 卡片 2 -->
+                <div class="expr-card" id="card2">
+                    <div class="formula-box">
+                        <span class="abs-bracket" id="left-abs2">|</span>
+                        <span class="inner-expr" id="expr2">x + 1</span>
+                        <span class="abs-bracket" id="right-abs2">|</span>
+                    </div>
+                    <div class="equation-box" id="eq2">x + 1 = 0</div>
+                    <button class="solve-btn" id="btn2">求解 x</button>
+                    <div class="result-box" id="res2">x = -1</div>
+                </div>
+            </div>
+
+            <!-- 数轴可视化 -->
+            <div class="axis-container">
+                <svg class="axis-svg" viewBox="0 0 800 100" preserveAspectRatio="xMidYMid meet">
+                    <!-- 数轴主线 -->
+                    <line x1="50" y1="50" x2="750" y2="50" stroke="#475569" stroke-width="3" marker-end="url(#arrow)" />
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
+                        </marker>
+                    </defs>
+
+                    <!-- 刻度与标签 -->
+                    <!-- -3 -->
+                    <line x1="150" y1="45" x2="150" y2="55" stroke="#475569" stroke-width="2" />
+                    <text x="150" y="75" font-size="16" text-anchor="middle" fill="#64748b" font-family="Times New Roman">-3</text>
+                    
+                    <!-- -2 -->
+                    <line x1="250" y1="45" x2="250" y2="55" stroke="#475569" stroke-width="2" />
+                    <text x="250" y="75" font-size="16" text-anchor="middle" fill="#64748b" font-family="Times New Roman">-2</text>
+
+                    <!-- -1 -->
+                    <line x1="350" y1="42" x2="350" y2="58" stroke="#475569" stroke-width="2" />
+                    <text x="350" y="75" font-size="18" font-weight="bold" text-anchor="middle" fill="#334155" font-family="Times New Roman" id="label-neg1">-1</text>
+
+                    <!-- 0 -->
+                    <line x1="450" y1="45" x2="450" y2="55" stroke="#475569" stroke-width="2" />
+                    <text x="450" y="75" font-size="16" text-anchor="middle" fill="#64748b" font-family="Times New Roman">0</text>
+
+                    <!-- 1 -->
+                    <line x1="550" y1="42" x2="550" y2="58" stroke="#475569" stroke-width="2" />
+                    <text x="550" y="75" font-size="18" font-weight="bold" text-anchor="middle" fill="#334155" font-family="Times New Roman" id="label-pos1">1</text>
+
+                    <!-- 2 -->
+                    <line x1="650" y1="45" x2="650" y2="55" stroke="#475569" stroke-width="2" />
+                    <text x="650" y="75" font-size="16" text-anchor="middle" fill="#64748b" font-family="Times New Roman">2</text>
+
+                    <!-- 动态高亮红点 (初始隐藏) -->
+                    <g id="point-neg1" opacity="0" transition="opacity 0.5s">
+                        <circle cx="350" cy="50" r="10" fill="none" stroke="#dc2626" stroke-width="2" class="pulse-point" />
+                        <circle cx="350" cy="50" r="6" fill="#dc2626" />
+                        <text x="350" y="25" font-size="14" font-weight="bold" text-anchor="middle" fill="#dc2626">x = -1 (零点)</text>
+                    </g>
+
+                    <g id="point-pos1" opacity="0" transition="opacity 0.5s">
+                        <circle cx="550" cy="50" r="10" fill="none" stroke="#dc2626" stroke-width="2" class="pulse-point" />
+                        <circle cx="550" cy="50" r="6" fill="#dc2626" />
+                        <text x="550" y="25" font-size="14" font-weight="bold" text-anchor="middle" fill="#dc2626">x = 1 (零点)</text>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- 底部教学提示 -->
+            <div class="tips-banner">
+                <strong>思考：</strong> 这两个计算出来的自变量值 <span style="color:var(--accent-color); font-weight:bold;">x = 1</span> 和 <span style="color:var(--accent-color); font-weight:bold;">x = -1</span>，在数轴上把实数范围分成了几部分？它们对去掉绝对值符号有什么帮助？
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 卡片 1 交互逻辑
+            const card1 = document.getElementById('card1');
+            const leftAbs1 = document.getElementById('left-abs1');
+            const rightAbs1 = document.getElementById('right-abs1');
+            const expr1 = document.getElementById('expr1');
+            const eq1 = document.getElementById('eq1');
+            const btn1 = document.getElementById('btn1');
+            const res1 = document.getElementById('res1');
+            const pointPos1 = document.getElementById('point-pos1');
+            const labelPos1 = document.getElementById('label-pos1');
+
+            card1.addEventListener('click', (e) => {
+                // 阻止按钮点击事件冒泡
+                if (e.target === btn1) return;
+
+                card1.classList.add('active');
+                // 绝对值符号淡出
+                leftAbs1.classList.add('fade');
+                rightAbs1.classList.add('fade');
+                // 内部代数式下落动画效果（通过微调位移模拟）
+                expr1.style.transform = 'translateY(10px) scale(0.95)';
+                expr1.style.color = 'var(--text-muted)';
+                
+                // 延迟显示方程式
+                setTimeout(() => {
+                    eq1.classList.add('show');
+                    btn1.classList.add('show');
+                }, 300);
+            });
+
+            btn1.addEventListener('click', (e) => {
+                e.stopPropagation(); // 阻止触发卡片点击
+                res1.classList.add('show');
+                btn1.style.display = 'none'; // 隐藏按钮，展示结果
+                
+                // 数轴上亮起对应的点
+                pointPos1.setAttribute('opacity', '1');
+                labelPos1.setAttribute('fill', 'var(--accent-color)');
+                labelPos1.setAttribute('font-size', '22');
+            });
+
+            // 卡片 2 交互逻辑
+            const card2 = document.getElementById('card2');
+            const leftAbs2 = document.getElementById('left-abs2');
+            const rightAbs2 = document.getElementById('right-abs2');
+            const expr2 = document.getElementById('expr2');
+            const eq2 = document.getElementById('eq2');
+            const btn2 = document.getElementById('btn2');
+            const res2 = document.getElementById('res2');
+            const pointNeg1 = document.getElementById('point-neg1');
+            const labelNeg1 = document.getElementById('label-neg1');
+
+            card2.addEventListener('click', (e) => {
+                if (e.target === btn2) return;
+
+                card2.classList.add('active');
+                leftAbs2.classList.add('fade');
+                rightAbs2.classList.add('fade');
+                expr2.style.transform = 'translateY(10px) scale(0.95)';
+                expr2.style.color = 'var(--text-muted)';
+                
+                setTimeout(() => {
+                    eq2.classList.add('show');
+                    btn2.classList.add('show');
+                }, 300);
+            });
+
+            btn2.addEventListener('click', (e) => {
+                e.stopPropagation();
+                res2.classList.add('show');
+                btn2.style.display = 'none';
+                
+                pointNeg1.setAttribute('opacity', '1');
+                labelNeg1.setAttribute('fill', 'var(--accent-color)');
+                labelNeg1.setAttribute('font-size', '22');
+            });
+        });
+    </script>
+</body>
+</html>

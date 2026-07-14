@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税收方案对比与社会公平探索</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --scheme-a-color: #3b82f6;
+            --scheme-b-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* 4:3 比例自适应容器 */
+        .app-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 24px;
+            position: relative;
+        }
+
+        header {
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 主布局 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            flex: 1;
+            min-height: 0; /* 允许子元素在flex中缩放 */
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .slider-box {
+            background-color: #f1f5f9;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .income-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .income-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .income-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .income-value::after {
+            content: " 元";
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 预设按钮 */
+        .preset-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-preset {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 8px 4px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .btn-preset:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .btn-preset.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        /* 方案对比卡片 */
+        .scheme-cards {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .scheme-card {
+            border-left: 4px solid var(--border-color);
+            padding: 8px 12px;
+            background-color: #f8fafc;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .scheme-card.scheme-a {
+            border-left-color: var(--scheme-a-color);
+        }
+
+        .scheme-card.scheme-b {
+            border-left-color: var(--scheme-b-color);
+        }
+
+        .scheme-card-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .scheme-card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .tax-amount {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .tax-rate-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        /* 右侧可视化图表 */
+        .chart-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* 公平性指示器 */
+        .fairness-indicator {
+            margin-top: 12px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .indicator-light {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .indicator-light.green {
+            background-color: #10b981;
+            box-shadow: 0 0 12px #10b981;
+        }
+
+        .indicator-light.yellow {
+            background-color: #f59e0b;
+            box-shadow: 0 0 12px #f59e0b;
+        }
+
+        .indicator-light.blue {
+            background-color: #3b82f6;
+            box-shadow: 0 0 12px #3b82f6;
+        }
+
+        .indicator-text {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .indicator-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        /* 引导思考区域 */
+        .thinking-prompt {
+            margin-top: 12px;
+            background-color: #fffbeb;
+            border: 1px dashed #fef3c7;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #92400e;
+            line-height: 1.4;
+        }
+
+        /* 坐标轴与图表样式 */
+        .axis-line {
+            stroke: #94a3b8;
+            stroke-width: 1.5;
+        }
+
+        .grid-line {
+            stroke: #e2e8f0;
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+        }
+
+        .bar {
+            transition: height 0.3s ease, y 0.3s ease;
+        }
+
+        .bar-label {
+            font-size: 11px;
+            fill: var(--text-muted);
+            text-anchor: middle;
+        }
+
+        .bar-value {
+            font-size: 12px;
+            font-weight: bold;
+            text-anchor: middle;
+            transition: y 0.3s ease;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="title-container">
+            <h1>税收方案与社会公平探索</h1>
+            <span class="badge">六年级 · 数学与社会</span>
+        </div>
+        <div class="subtitle">通过调整月收入，对比“统一税率”与“分段税率”对不同收入群体的影响。</div>
+    </header>
+
+    <div class="main-layout">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <div>
+                <div class="section-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    第一步：设定月收入
+                </div>
+                
+                <div class="slider-box">
+                    <div class="income-display">
+                        <span class="income-label">当前模拟月收入</span>
+                        <span class="income-value" id="income-val">8000</span>
+                    </div>
+                    <input type="range" id="income-slider" class="slider" min="2000" max="40000" step="1000" value="8000">
+                </div>
+
+                <div class="preset-container">
+                    <button class="btn-preset" id="preset-low" data-value="3000">低收入 (3千)</button>
+                    <button class="btn-preset active" id="preset-mid" data-value="8000">中等收入 (8千)</button>
+                    <button class="btn-preset" id="preset-high" data-value="35000">高收入 (3.5万)</button>
+                </div>
+            </div>
+
+            <div class="scheme-cards">
+                <div class="section-title" style="margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                    第二步：计算应纳税额
+                </div>
+                
+                <!-- 方案一 -->
+                <div class="scheme-card scheme-a">
+                    <div class="scheme-card-header">
+                        <span style="color: var(--scheme-a-color);">方案一：统一税率 10%</span>
+                        <span class="tax-rate-badge" id="rate-badge-a">实际税负率: 10%</span>
+                    </div>
+                    <div class="scheme-card-body">
+                        <span class="tax-amount" id="tax-a-val" style="color: var(--scheme-a-color);">800 元</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">计算：收入 × 10%</span>
+                    </div>
+                </div>
+
+                <!-- 方案二 -->
+                <div class="scheme-card scheme-b">
+                    <div class="scheme-card-header">
+                        <span style="color: var(--scheme-b-color);">方案二：免税额5千 + 分段税率</span>
+                        <span class="tax-rate-badge" id="rate-badge-b" style="background-color: #fef3c7; color: #d97706;">实际税负率: 1.8%</span>
+                    </div>
+                    <div class="scheme-card-body">
+                        <span class="tax-amount" id="tax-b-val" style="color: var(--scheme-b-color);">150 元</span>
+                        <span style="font-size: 11px; color: var(--text-muted);" id="formula-b">计算：(收入-5000) × 5%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧可视化图表 -->
+        <div class="chart-panel">
+            <div class="section-title" style="margin-bottom: 8px; justify-content: space-between;">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                    应纳税额对比图 (元)
+                </span>
+                <div style="display: flex; gap: 12px;">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: var(--scheme-a-color);"></div>
+                        <span>方案一</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: var(--scheme-b-color);"></div>
+                        <span>方案二</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SVG 柱状图 -->
+            <div class="chart-container">
+                <svg id="bar-chart" width="100%" height="100%" viewBox="0 0 400 220" preserveAspectRatio="none">
+                    <!-- 网格线 -->
+                    <line x1="50" y1="30" x2="370" y2="30" class="grid-line" />
+                    <line x1="50" y1="80" x2="370" y2="80" class="grid-line" />
+                    <line x1="50" y1="130" x2="370" y2="130" class="grid-line" />
+                    <line x1="50" y1="180" x2="370" y2="180" class="grid-line" />
+
+                    <!-- Y轴刻度标签 (动态更新最大值) -->
+                    <text x="40" y="34" font-size="10" fill="#64748b" text-anchor="end" id="y-tick-max">8000</text>
+                    <text x="40" y="109" font-size="10" fill="#64748b" text-anchor="end" id="y-tick-mid">4000</text>
+                    <text x="40" y="184" font-size="10" fill="#64748b" text-anchor="end">0</text>
+
+                    <!-- 方案一 柱子 -->
+                    <rect id="bar-a" class="bar" x="110" y="140" width="50" height="40" fill="var(--scheme-a-color)" rx="4" />
+                    <!-- 方案二 柱子 -->
+                    <rect id="bar-b" class="bar" x="240" y="160" width="50" height="20" fill="var(--scheme-b-color)" rx="4" />
+
+                    <!-- 柱顶数值 -->
+                    <text id="bar-val-a" class="bar-value" x="135" y="130" fill="var(--scheme-a-color)">800</text>
+                    <text id="bar-val-b" class="bar-value" x="265" y="150" fill="var(--scheme-b-color)">150</text>
+
+                    <!-- X轴 -->
+                    <line x1="50" y1="180" x2="370" y2="180" class="axis-line" />
+                    <text x="135" y="200" class="bar-label" font-weight="600">方案一 (统一税率)</text>
+                    <text x="265" y="200" class="bar-label" font-weight="600">方案二 (分段税率)</text>
+                </svg>
+            </div>
+
+            <!-- 公平性观察指示器 -->
+            <div class="fairness-indicator">
+                <div id="indicator-light" class="indicator-light blue"></div>
+                <div class="indicator-text">
+                    <div class="indicator-title" id="indicator-title">正在观察中等收入群体...</div>
+                    <div id="indicator-desc">请尝试切换不同的收入水平，观察两种方案下税收占收入比例（实际税负率）的变化。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引导思考 -->
+    <div class="thinking-prompt">
+        <strong>💡 课堂思考：</strong>
+        对比低收入和高收入时两方案的实际税负率。哪种方案让“高收入者多纳税、低收入者少纳税”？这与社会公平有什么关系？
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('income-slider');
+    const incomeVal = document.getElementById('income-val');
+    
+    const taxAVal = document.getElementById('tax-a-val');
+    const taxBVal = document.getElementById('tax-b-val');
+    
+    const rateBadgeA = document.getElementById('rate-badge-a');
+    const rateBadgeB = document.getElementById('rate-badge-b');
+    const formulaB = document.getElementById('formula-b');
+    
+    const barA = document.getElementById('bar-a');
+    const barB = document.getElementById('bar-b');
+    const barValA = document.getElementById('bar-val-a');
+    const barValB = document.getElementById('bar-val-b');
+    
+    const yTickMax = document.getElementById('y-tick-max');
+    const yTickMid = document.getElementById('y-tick-mid');
+    
+    const indicatorLight = document.getElementById('indicator-light');
+    const indicatorTitle = document.getElementById('indicator-title');
+    const indicatorDesc = document.getElementById('indicator-desc');
+    
+    const presets = {
+        'preset-low': document.getElementById('preset-low'),
+        'preset-mid': document.getElementById('preset-mid'),
+        'preset-high': document.getElementById('preset-high')
+    };
+
+    // 方案二税率规则：
+    // 起征点（免税额）：5000元
+    // 5000 - 15000 部分：5%
+    // 15000 以上部分：20%
+    function calculateTaxB(income) {
+        if (income <= 5000) {
+            return { tax: 0, formula: "未达起征点 5000 元，免税" };
+        } else if (income <= 15000) {
+            const taxable = income - 5000;
+            const tax = taxable * 0.05;
+            return { 
+                tax: tax, 
+                formula: `(${income} - 5000) × 5% = ${tax.toFixed(0)}` 
+            };
+        } else {
+            const part1 = 10000 * 0.05; // 500
+            const part2 = (income - 15000) * 0.20;
+            const tax = part1 + part2;
+            return { 
+                tax: tax, 
+                formula: `5000-1.5万部分纳税500 + 1.5万以上部分 × 20%` 
+            };
+        }
+    }
+
+    function update(income) {
+        // 1. 更新输入显示
+        incomeVal.textContent = income.toLocaleString();
+        
+        // 2. 计算方案一 (10% 统一税率)
+        const taxA = income * 0.10;
+        const rateA = 10;
+        
+        // 3. 计算方案二
+        const resultB = calculateTaxB(income);
+        const taxB = resultB.tax;
+        const rateB = (taxB / income) * 100;
+        
+        // 4. 更新文本显示
+        taxAVal.textContent = `${taxA.toFixed(0)} 元`;
+        taxBVal.textContent = `${taxB.toFixed(0)} 元`;
+        
+        rateBadgeA.textContent = `实际税负率: ${rateA}%`;
+        rateBadgeB.textContent = `实际税负率: ${rateB.toFixed(1)}%`;
+        formulaB.textContent = `计算：${resultB.formula}`;
+        
+        // 5. 动态调整图表比例 (Y轴最大值自适应)
+        const maxTax = Math.max(taxA, taxB, 500); // 至少500高度，避免低数值时柱子顶天
+        const yMax = Math.ceil(maxTax * 1.15 / 100) * 100; // 留出15%头部空间并整百向上取整
+        
+        yTickMax.textContent = yMax;
+        yTickMid.textContent = (yMax / 2).toFixed(0);
+        
+        // 映射到 SVG 坐标系 (y从180到30，高度最大150)
+        const chartHeight = 150;
+        const zeroY = 180;
+        
+        const heightA = (taxA / yMax) * chartHeight;
+        const yA = zeroY - heightA;
+        
+        const heightB = (taxB / yMax) * chartHeight;
+        const yB = zeroY - heightB;
+        
+        // 更新柱状图属性
+        barA.setAttribute('height', heightA);
+        barA.setAttribute('y', yA);
+        barValA.setAttribute('y', yA - 8);
+        barValA.textContent = `${taxA.toFixed(0)}元`;
+        
+        barB.setAttribute('height', heightB);
+        barB.setAttribute('y', yB);
+        barValB.setAttribute('y', yB - 8);
+        barValB.textContent = `${taxB.toFixed(0)}元`;
+        
+        // 6. 更新公平性指示器
+        updateFairnessIndicator(income, rateA, rateB, taxA, taxB);
+        
+        // 7. 更新预设按钮高亮
+        updatePresetHighlight(income);
+    }
+
+    function updateFairnessIndicator(income, rateA, rateB, taxA, taxB) {
+        if (income <= 5000) {
+            indicatorLight.className = "indicator-light green";
+            indicatorTitle.textContent = "低收入阶段：方案二更具保护性";
+            indicatorDesc.textContent = `方案二免税，实际税负率为 0%。方案一仍需纳税 ${taxA.toFixed(0)} 元。方案二保障了低收入人群的基本生活。`;
+        } else if (income <= 15000) {
+            indicatorLight.className = "indicator-light blue";
+            indicatorTitle.textContent = "中等收入阶段：方案二税负较轻";
+            indicatorDesc.textContent = `方案二实际税负率 (${rateB.toFixed(1)}%) 远低于方案一 (10%)。这有利于培育和保护中产阶层。`;
+        } else {
+            // 高收入阶段
+            if (taxB > taxA) {
+                indicatorLight.className = "indicator-light yellow";
+                indicatorTitle.textContent = "高收入阶段：方案二调节力度更大";
+                indicatorDesc.textContent = `此时方案二实际税负率 (${rateB.toFixed(1)}%) 超过了方案一 (10%)。高收入者多纳税，有助于二次分配，缩小贫富差距。`;
+            } else {
+                indicatorLight.className = "indicator-light blue";
+                indicatorTitle.textContent = "高收入过渡阶段";
+                indicatorDesc.textContent = `随着收入增加，方案二的实际税负率正在快速上升（目前 ${rateB.toFixed(1)}%），体现了“能力越大，责任越大”的原则。`;
+            }
+        }
+    }
+
+    function updatePresetHighlight(income) {
+        // 清除所有高亮
+        Object.values(presets).forEach(btn => btn.classList.remove('active'));
+        
+        // 根据当前值匹配最接近的预设
+        if (income === 3000) {
+            presets['preset-low'].classList.add('active');
+        } else if (income === 8000) {
+            presets['preset-mid'].classList.add('active');
+        } else if (income === 35000) {
+            presets['preset-high'].classList.add('active');
+        }
+    }
+
+    // 事件监听
+    slider.addEventListener('input', (e) => {
+        update(parseInt(e.target.value));
+    });
+
+    Object.keys(presets).forEach(key => {
+        presets[key].addEventListener('click', () => {
+            const val = parseInt(presets[key].getAttribute('data-value'));
+            slider.value = val;
+            update(val);
+        });
+    });
+
+    // 初始化
+    update(8000);
+</script>
+
+</body>
+</html>

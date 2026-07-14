@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>税收与生活</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        h2 { color: #333; margin: 0; }
+        #canvas-area { width: 100%; height: 70%; position: relative; }
+        #btn-trigger {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #btn-trigger:hover { transform: scale(1.05); }
+        .hidden { opacity: 0; transition: opacity 0.5s; }
+        .visible { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>一个人交给国家的钱，最后变成了我们身边的什么？</h2>
+    <div id="canvas-area">
+        <svg viewBox="0 0 800 400" width="100%" height="100%">
+            <!-- 钱袋 -->
+            <g id="money-bag" style="cursor: pointer;">
+                <rect x="50" y="150" width="100" height="120" rx="10" fill="#f1c40f" stroke="#d4ac0d" stroke-width="4"/>
+                <text x="75" y="220" font-size="40">💰</text>
+            </g>
+
+            <!-- 设施轮廓 (虚线) -->
+            <g id="facilities" stroke-dasharray="5,5" fill="none" stroke="#bdc3c7" stroke-width="2">
+                <rect x="300" y="50" width="120" height="100" /> <!-- 学校 -->
+                <rect x="450" y="50" width="120" height="100" /> <!-- 医院 -->
+                <rect x="300" y="200" width="270" height="80" />  <!-- 道路 -->
+            </g>
+
+            <!-- 设施实体 (初始隐藏) -->
+            <g id="facilities-solid" opacity="0">
+                <rect x="300" y="50" width="120" height="100" fill="#3498db" />
+                <text x="330" y="110" fill="white" font-size="30">🏫</text>
+                <rect x="450" y="50" width="120" height="100" fill="#e74c3c" />
+                <text x="480" y="110" fill="white" font-size="30">🏥</text>
+                <rect x="300" y="200" width="270" height="80" fill="#95a5a6" />
+                <text x="410" y="250" fill="white" font-size="30">🛣️</text>
+            </g>
+
+            <!-- 动画金币 -->
+            <circle id="coin" cx="100" cy="210" r="15" fill="#f39c12" opacity="0" />
+        </svg>
+    </div>
+    <button id="btn-trigger">点击钱袋，看看发生了什么？</button>
+</div>
+
+<script>
+    const btn = document.getElementById('btn-trigger');
+    const moneyBag = document.getElementById('money-bag');
+    const facilitiesSolid = document.getElementById('facilities-solid');
+    const coin = document.getElementById('coin');
+
+    function animate() {
+        coin.setAttribute('opacity', '1');
+        
+        // 简单的动画逻辑
+        let pos = 0;
+        const interval = setInterval(() => {
+            pos += 5;
+            coin.setAttribute('cx', 100 + pos);
+            coin.setAttribute('cy', 210 - (pos * 0.2));
+            
+            if (pos > 300) {
+                clearInterval(interval);
+                coin.setAttribute('opacity', '0');
+                facilitiesSolid.style.transition = "opacity 1s";
+                facilitiesSolid.style.opacity = "1";
+                btn.innerText = "钱变成了公共设施！";
+                btn.style.background = "#27ae60";
+            }
+        }, 20);
+    }
+
+    moneyBag.addEventListener('click', animate);
+    btn.addEventListener('click', animate);
+</script>
+
+</body>
+</html>

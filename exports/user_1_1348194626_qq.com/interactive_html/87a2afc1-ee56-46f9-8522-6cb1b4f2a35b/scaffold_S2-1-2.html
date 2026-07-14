@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学教学可视化：纳税与百分数的转化</title>
+  <style>
+    /* 全局重置与课堂投影优化样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #f1f5f9;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #1e293b;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .workspace {
+      width: 100vw;
+      height: 75vw; /* 4:3 Aspect Ratio */
+      max-width: 960px;
+      max-height: 720px;
+      background: #ffffff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      position: relative;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 头部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 18px;
+      color: #475569;
+    }
+    .highlight-question {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    /* 主可视化区域 */
+    .visual-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    /* 左右对比卡片容器 */
+    .cards-container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* 语言卡片基础样式 */
+    .card {
+      flex: 1;
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #64748b;
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .card-content {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    /* 核心概念高亮 */
+    .concept-whole {
+      color: #0284c7; /* 蓝色：单位1/营业额 */
+      padding: 2px 6px;
+      border-radius: 6px;
+      background-color: #e0f2fe;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .concept-percent {
+      color: #ea580c; /* 橙色：百分率/税率 */
+      padding: 2px 6px;
+      border-radius: 6px;
+      background-color: #ffedd5;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .concept-action {
+      color: #0d9488; /* 绿色：纳税/求是多少 */
+      border-bottom: 3px dashed #0d9488;
+      padding-bottom: 2px;
+      display: inline-block;
+    }
+
+    /* 中间连接箭头与过渡动画 */
+    .connector {
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .connector svg {
+      width: 80px;
+      height: 40px;
+    }
+    .connector-text {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    /* 桥梁映射解析区 */
+    .mapping-area {
+      width: 100%;
+      max-width: 700px;
+      background: #f0fdf4;
+      border: 2px dashed #bbf7d0;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease;
+    }
+    .mapping-area.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .mapping-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .mapping-label {
+      font-size: 14px;
+      color: #475569;
+    }
+    .mapping-value {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* 最终算式高亮框 */
+    .formula-area {
+      width: 100%;
+      max-width: 500px;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 3px solid #3b82f6;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+    }
+    .formula-area.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .formula-title {
+      font-size: 15px;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .formula-expression {
+      font-size: 32px;
+      font-weight: 900;
+      color: #1d4ed8;
+      letter-spacing: 2px;
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      padding: 16px;
+      border-radius: 0 0 12px 12px;
+    }
+    .slider-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .slider-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: #475569;
+      min-width: 120px;
+    }
+    .slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      border-radius: 5px;
+      background: #cbd5e1;
+      outline: none;
+      cursor: pointer;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+      transition: transform 0.1s;
+    }
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* 按钮组 */
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #e2e8f0;
+      color: #475569;
+    }
+    .btn:hover {
+      background: #cbd5e1;
+      transform: translateY(-1px);
+    }
+    .btn.active {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .btn.active:hover {
+      background: #1d4ed8;
+    }
+
+    /* 辅助高亮动画 */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="workspace">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>数学思维桥梁：理解“纳税”问题</h1>
+      <p>思考：<span class="highlight-question">“按营业额30万元的5%纳税”</span>，能不能用求一个数的百分之几来理解？</p>
+    </div>
+
+    <!-- 主可视化区 -->
+    <div class="visual-area">
+      <!-- 左右对比卡片 -->
+      <div class="cards-container">
+        <!-- 左侧：生活情境 -->
+        <div class="card" id="leftCard">
+          <div class="card-title" id="leftCardTitle">生活情境语言</div>
+          <div class="card-content">
+            按营业额 <span class="concept-whole" id="leftWhole">30万元</span><br>的 <span class="concept-percent" id="leftPercent">5%</span> <span class="concept-action" id="leftAction">纳税</span>
+          </div>
+        </div>
+
+        <!-- 中间连接器 -->
+        <div class="connector">
+          <svg viewBox="0 0 80 40">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" id="arrowHead" />
+              </marker>
+            </defs>
+            <path d="M 10 20 L 70 20" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="4" id="arrowLine" marker-end="url(#arrow)" />
+          </svg>
+          <div class="connector-text" id="connectorText">对比观察</div>
+        </div>
+
+        <!-- 右侧：数学模型 -->
+        <div class="card" id="rightCard">
+          <div class="card-title" id="rightCardTitle">数学经典语言</div>
+          <div class="card-content">
+            求 <span class="concept-whole" id="rightWhole">30万元</span><br>的 <span class="concept-percent" id="rightPercent">5%</span> <span class="concept-action" id="rightAction">是多少</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 桥梁映射解析 -->
+      <div class="mapping-area" id="mappingArea">
+        <div class="mapping-item">
+          <span class="mapping-label">营业额 (30万元)</span>
+          <span style="color: #0284c7;">➔ 对应 ➔</span>
+          <span class="mapping-value concept-whole">单位“1”的量</span>
+        </div>
+        <div class="mapping-item">
+          <span class="mapping-label">税率 (5%)</span>
+          <span style="color: #ea580c;">➔ 对应 ➔</span>
+          <span class="mapping-value concept-percent">百分率</span>
+        </div>
+        <div class="mapping-item">
+          <span class="mapping-label">应纳税额</span>
+          <span style="color: #0d9488;">➔ 对应 ➔</span>
+          <span class="mapping-value concept-action">求部分的量</span>
+        </div>
+      </div>
+
+      <!-- 最终算式 -->
+      <div class="formula-area" id="formulaArea">
+        <div class="formula-title">数量关系式 (求一个数的百分之几，用乘法计算)</div>
+        <div class="formula-expression">
+          <span style="color: #0284c7;">30万</span> &times; <span style="color: #ea580c;">5%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <div class="slider-container">
+        <span class="slider-label" style="text-align: left; color: #64748b;">生活情境 (0%)</span>
+        <input type="range" id="transitionSlider" class="slider" min="0" max="100" value="0">
+        <span class="slider-label" style="text-align: right; color: #2563eb;">数学模型 (100%)</span>
+      </div>
+      <div class="button-group">
+        <button class="btn active" id="btnStep0">1. 观察情境</button>
+        <button class="btn" id="btnStep1">2. 建立联想</button>
+        <button class="btn" id="btnStep2">3. 概念映射</button>
+        <button class="btn" id="btnStep3">4. 列出算式</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const slider = document.getElementById('transitionSlider');
+    const leftCard = document.getElementById('leftCard');
+    const rightCard = document.getElementById('rightCard');
+    const leftCardTitle = document.getElementById('leftCardTitle');
+    const rightCardTitle = document.getElementById('rightCardTitle');
+    const arrowLine = document.getElementById('arrowLine');
+    const arrowHead = document.getElementById('arrowHead');
+    const connectorText = document.getElementById('connectorText');
+    const mappingArea = document.getElementById('mappingArea');
+    const formulaArea = document.getElementById('formulaArea');
+
+    // 按钮
+    const btnStep0 = document.getElementById('btnStep0');
+    const btnStep1 = document.getElementById('btnStep1');
+    const btnStep2 = document.getElementById('btnStep2');
+    const btnStep3 = document.getElementById('btnStep3');
+    const buttons = [btnStep0, btnStep1, btnStep2, btnStep3];
+
+    // 核心高亮元素
+    const leftWhole = document.getElementById('leftWhole');
+    const rightWhole = document.getElementById('rightWhole');
+    const leftPercent = document.getElementById('leftPercent');
+    const rightPercent = document.getElementById('rightPercent');
+
+    // 更新可视化状态
+    function updateVisualization(value) {
+      slider.value = value;
+
+      // 1. 左右卡片的淡入淡出与缩放
+      // 左侧卡片：从 100% 逐渐淡出到 30%
+      const leftOpacity = 1 - (value / 100) * 0.7;
+      leftCard.style.opacity = leftOpacity;
+      leftCard.style.transform = `scale(${1 - (value / 100) * 0.05})`;
+
+      // 右侧卡片：从 20% 逐渐完全显现，并放大高亮
+      const rightOpacity = 0.2 + (value / 100) * 0.8;
+      rightCard.style.opacity = rightOpacity;
+      rightCard.style.transform = `scale(${0.95 + (value / 100) * 0.1})`;
+      
+      if (value >= 80) {
+        rightCard.style.borderColor = '#2563eb';
+        rightCard.style.boxShadow = '0 10px 15px -3px rgba(37, 99, 235, 0.2)';
+        rightCardTitle.style.background = '#2563eb';
+        rightCardTitle.style.color = '#ffffff';
+      } else {
+        rightCard.style.borderColor = '#e2e8f0';
+        rightCard.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05)';
+        rightCardTitle.style.background = '#e2e8f0';
+        rightCardTitle.style.color = '#64748b';
+      }
+
+      // 2. 中间箭头的变化
+      if (value > 10) {
+        arrowLine.setAttribute('stroke', '#2563eb');
+        arrowLine.setAttribute('stroke-dasharray', 'none');
+        arrowHead.setAttribute('fill', '#2563eb');
+        connectorText.textContent = "正在转化...";
+        connectorText.style.color = "#2563eb";
+      } else {
+        arrowLine.setAttribute('stroke', '#cbd5e1');
+        arrowLine.setAttribute('stroke-dasharray', '4');
+        arrowHead.setAttribute('fill', '#64748b');
+        connectorText.textContent = "对比观察";
+        connectorText.style.color = "#64748b";
+      }
+
+      // 3. 概念映射区的显隐 (在 30% - 80% 之间渐显)
+      if (value >= 30) {
+        mappingArea.classList.add('active');
+        // 联动高亮相同概念
+        leftWhole.style.transform = 'scale(1.1)';
+        rightWhole.style.transform = 'scale(1.1)';
+      } else {
+        mappingArea.classList.remove('active');
+        leftWhole.style.transform = 'scale(1)';
+        rightWhole.style.transform = 'scale(1)';
+      }
+
+      if (value >= 60) {
+        leftPercent.style.transform = 'scale(1.1)';
+        rightPercent.style.transform = 'scale(1.1)';
+      } else {
+        leftPercent.style.transform = 'scale(1)';
+        rightPercent.style.transform = 'scale(1)';
+      }
+
+      // 4. 算式区的显隐 (在 80% 以上显现并抖动提示)
+      if (value >= 85) {
+        formulaArea.classList.add('active');
+        formulaArea.classList.add('pulse');
+        connectorText.textContent = "成功转化！";
+      } else {
+        formulaArea.classList.remove('active');
+        formulaArea.classList.remove('pulse');
+      }
+
+      // 5. 自动激活对应的导航按钮
+      buttons.forEach(btn => btn.classList.remove('active'));
+      if (value < 25) {
+        btnStep0.classList.add('active');
+      } else if (value < 60) {
+        btnStep1.classList.add('active');
+      } else if (value < 85) {
+        btnStep2.classList.add('active');
+      } else {
+        btnStep3.classList.add('active');
+      }
+    }
+
+    // 滑块拖动事件监听
+    slider.addEventListener('input', (e) => {
+      updateVisualization(parseInt(e.target.value));
+    });
+
+    // 按钮点击事件监听
+    btnStep0.addEventListener('click', () => {
+      smoothTransitionTo(0);
+    });
+
+    btnStep1.addEventListener('click', () => {
+      smoothTransitionTo(35);
+    });
+
+    btnStep2.addEventListener('click', () => {
+      smoothTransitionTo(70);
+    });
+
+    btnStep3.addEventListener('click', () => {
+      smoothTransitionTo(100);
+    });
+
+    // 平滑过渡辅助函数
+    let animationFrameId = null;
+    function smoothTransitionTo(targetValue) {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      
+      const startValue = parseInt(slider.value);
+      const duration = 400; // 毫秒
+      const startTime = performance.now();
+
+      function animate(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        
+        // 缓动函数 (EaseInOutQuad)
+        const ease = progress < 0.5 
+          ? 2 * progress * progress 
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+        const currentValue = startValue + (targetValue - startValue) * ease;
+        updateVisualization(currentValue);
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(animate);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    // 初始化状态
+    updateVisualization(0);
+  </script>
+</body>
+</html>

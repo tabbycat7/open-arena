@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值几何意义交互教学课件 - 距离之差的最值</title>
+    <style>
+        /* 课堂投屏优化：深色高对比度或极简清晰白底，此处采用极简高对比度白底 */
+        :root {
+            --primary-color: #2b5c8f;
+            --text-color: #333333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --point-a: #d9534f; /* 红色 */
+            --point-b: #5cb85c; /* 绿色 */
+            --point-x: #0275d8; /* 蓝色 */
+            --highlight: #f0ad4e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .tag {
+            background-color: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* 题干引导区 */
+        .question-box {
+            padding: 15px 20px;
+            background-color: #ebf3fc;
+            border-bottom: 1px solid #d0e2f8;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .formula-highlight {
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            font-style: italic;
+            color: #111;
+            background-color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #b9d5f7;
+        }
+
+        /* 核心可视化区域 */
+        .visualization-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 20px;
+            user-select: none;
+        }
+
+        /* 实时公式显示 */
+        .formula-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .formula-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+        }
+
+        .result-item {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            transition: all 0.2s ease;
+        }
+
+        .result-item.max-state {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(198, 40, 40, 0.15);
+        }
+
+        /* SVG 容器 */
+        .svg-container {
+            flex: 1;
+            width: 100%;
+            min-height: 200px;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-label {
+            font-weight: bold;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .custom-slider {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #dee2e6;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--point-x);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 预设位置快捷按钮 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .btn-active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* 提示信息区 */
+        .info-tip {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            min-height: 24px;
+            color: #666;
+        }
+
+        .info-tip.highlight {
+            color: #d9534f;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.02); }
+        }
+
+        /* 拖拽辅助样式 */
+        .draggable {
+            cursor: grab;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <span>绝对值几何意义交互探究</span>
+        <span class="tag">高一数学 · 函数与不等式</span>
+    </div>
+
+    <!-- 题干引导 -->
+    <div class="question-box">
+        <strong>思考：</strong>如果我们把代数式中间的加号换成减号，变成 
+        <span class="formula-highlight">|x - 2| - |x - 5|</span>，你还能用“距离”来翻译它的几何含义吗？试着拖动动点 <span style="color:var(--point-x); font-weight:bold;">x</span>，观察距离之差的变化。
+    </div>
+
+    <!-- 可视化区域 -->
+    <div class="visualization-area">
+        <!-- 实时计算显示 -->
+        <div class="formula-bar">
+            <div class="formula-item">
+                <span style="color: var(--point-a);">|x - 2|</span> = <span id="val-xa">3.0</span>
+            </div>
+            <div class="formula-item">
+                <span style="color: var(--point-b);">|x - 5|</span> = <span id="val-xb">0.0</span>
+            </div>
+            <div class="formula-item result-item" id="result-box">
+                <span>差值: </span><span id="val-diff">3.0</span>
+            </div>
+        </div>
+
+        <!-- 数轴 SVG -->
+        <div class="svg-container">
+            <svg id="axis-svg" viewBox="0 0 760 220" preserveAspectRatio="xMidYMid meet">
+                <!-- 定义箭头和标记 -->
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/>
+                    </marker>
+                </defs>
+
+                <!-- 数轴主线 -->
+                <line x1="40" y1="120" x2="720" y2="120" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+                <text x="725" y="125" font-size="14" font-weight="bold">x</text>
+
+                <!-- 刻度线与数字 (范围 0 到 7) -->
+                <!-- 比例尺：x_pixel = 80 + val * 80 -->
+                <g id="ticks" font-size="12" text-anchor="middle">
+                    <!-- 动态生成或静态保留关键刻度 -->
+                    <line x1="80" y1="115" x2="80" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="80" y="138">0</text>
+
+                    <line x1="160" y1="115" x2="160" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="160" y="138">1</text>
+
+                    <line x1="240" y1="115" x2="240" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="240" y="138" font-weight="bold" fill="var(--point-a)">2 (A)</text>
+
+                    <line x1="320" y1="115" x2="320" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="320" y="138">3</text>
+
+                    <line x1="400" y1="115" x2="400" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="400" y="138">4</text>
+
+                    <line x1="480" y1="115" x2="480" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="480" y="138" font-weight="bold" fill="var(--point-b)">5 (B)</text>
+
+                    <line x1="560" y1="115" x2="560" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="560" y="138">6</text>
+
+                    <line x1="640" y1="115" x2="640" y2="120" stroke="#333" stroke-width="1.5" />
+                    <text x="640" y="138">7</text>
+                </g>
+
+                <!-- 定点 A (2) 和 B (5) 的辅助虚线 -->
+                <line x1="240" y1="120" x2="240" y2="40" stroke="#ccc" stroke-dasharray="4,4" />
+                <line x1="480" y1="120" x2="480" y2="40" stroke="#ccc" stroke-dasharray="4,4" />
+
+                <!-- 距离线段 A 到 x (红色) -->
+                <path id="line-ax" d="M 240 75 L 480 75" stroke="var(--point-a)" stroke-width="4" stroke-linecap="round" />
+                <text id="label-ax" x="360" y="68" fill="var(--point-a)" font-size="13" font-weight="bold" text-anchor="middle">|x - 2|</text>
+
+                <!-- 距离线段 B 到 x (绿色) -->
+                <path id="line-bx" d="M 480 90 L 480 90" stroke="var(--point-b)" stroke-width="4" stroke-linecap="round" />
+                <text id="label-bx" x="480" y="105" fill="var(--point-b)" font-size="13" font-weight="bold" text-anchor="middle">|x - 5|</text>
+
+                <!-- 净差值线段 (紫色/橙色) 绘制在数轴下方 -->
+                <line x1="40" y1="170" x2="720" y2="170" stroke="#eee" stroke-width="1" />
+                <path id="line-diff" d="M 240 170 L 480 170" stroke="#e67e22" stroke-width="6" stroke-linecap="round" />
+                <text id="label-diff" x="360" y="192" fill="#e67e22" font-size="14" font-weight="bold" text-anchor="middle">净差值线段</text>
+
+                <!-- 定点 A 和 B 的圆点 -->
+                <circle cx="240" cy="120" r="6" fill="var(--point-a)" />
+                <circle cx="480" cy="120" r="6" fill="var(--point-b)" />
+
+                <!-- 动点 x (蓝色，带拖拽手势) -->
+                <g id="drag-group" class="draggable">
+                    <line id="line-x-vertical" x1="480" y1="120" x2="480" y2="50" stroke="var(--point-x)" stroke-width="1.5" stroke-dasharray="2,2" />
+                    <circle id="point-x" cx="480" cy="120" r="9" fill="var(--point-x)" stroke="#fff" stroke-width="2" />
+                    <text id="label-x" x="480" y="155" fill="var(--point-x)" font-size="15" font-weight="bold" text-anchor="middle">x</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 动态提示 -->
+        <div class="info-tip" id="dynamic-tip">
+            拖动滑块或数轴上的蓝色点 x，观察两段距离之差的变化
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span class="slider-label" style="color: var(--point-x);">动点 x 的位置:</span>
+            <input type="range" min="0" max="7" step="0.05" value="5" class="custom-slider" id="x-slider">
+            <span class="slider-label" id="slider-val-display" style="width: 40px; text-align: right;">5.0</span>
+        </div>
+        <div class="btn-group">
+            <button class="btn" data-val="1">x &lt; 2 (例如 x=1)</button>
+            <button class="btn" data-val="3.5">2 &lt; x &lt; 5 (例如 x=3.5)</button>
+            <button class="btn btn-active" data-val="5">x = 5</button>
+            <button class="btn" data-val="6.5">x &gt; 5 (例如 x=6.5)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('x-slider');
+    const sliderValDisplay = document.getElementById('slider-val-display');
+    const valXA = document.getElementById('val-xa');
+    const valXB = document.getElementById('val-xb');
+    const valDiff = document.getElementById('val-diff');
+    const resultBox = document.getElementById('result-box');
+    const dynamicTip = document.getElementById('dynamic-tip');
+
+    // SVG 元素
+    const pointX = document.getElementById('point-x');
+    const labelX = document.getElementById('label-x');
+    const lineXVertical = document.getElementById('line-x-vertical');
+    const lineAX = document.getElementById('line-ax');
+    const lineBX = document.getElementById('line-bx');
+    const labelAX = document.getElementById('label-ax');
+    const labelBX = document.getElementById('label-bx');
+    const lineDiff = document.getElementById('line-diff');
+    const labelDiff = document.getElementById('label-diff');
+
+    // 按钮
+    const buttons = document.querySelectorAll('.btn');
+
+    // 比例尺参数
+    const originX = 80; // 0点像素位置
+    const scale = 80;   // 每个单位长度的像素值
+
+    function valToPx(val) {
+        return originX + val * scale;
+    }
+
+    function update(x) {
+        // 限制范围
+        x = Math.max(0, Math.min(7, x));
+        
+        // 更新滑块和数值显示
+        slider.value = x;
+        sliderValDisplay.textContent = x.toFixed(1);
+
+        // 计算几何距离
+        const distA = Math.abs(x - 2);
+        const distB = Math.abs(x - 5);
+        const diff = distA - distB;
+
+        // 更新公式栏
+        valXA.textContent = distA.toFixed(1);
+        valXB.textContent = distB.toFixed(1);
+        valDiff.textContent = (diff > 0 ? '+' : '') + diff.toFixed(1);
+
+        // 更新数轴上 x 点的位置
+        const pxX = valToPx(x);
+        const pxA = valToPx(2);
+        const pxB = valToPx(5);
+
+        pointX.setAttribute('cx', pxX);
+        labelX.setAttribute('x', pxX);
+        labelX.textContent = `x = ${x.toFixed(1)}`;
+        lineXVertical.setAttribute('x1', pxX);
+        lineXVertical.setAttribute('x2', pxX);
+
+        // 更新距离线段 |x - 2| (红色)
+        lineAX.setAttribute('x1', Math.min(pxA, pxX));
+        lineAX.setAttribute('x2', Math.max(pxA, pxX));
+        labelAX.setAttribute('x', (pxA + pxX) / 2);
+        // 避免重叠，当距离太小时微调高度
+        labelAX.setAttribute('y', x < 2 ? 62 : 68);
+
+        // 更新距离线段 |x - 5| (绿色)
+        lineBX.setAttribute('x1', Math.min(pxB, pxX));
+        lineBX.setAttribute('x2', Math.max(pxB, pxX));
+        labelBX.setAttribute('x', (pxB + pxX) / 2);
+
+        // 动态绘制“净差值线段”
+        // 几何差值的可视化：在下方绘制长度等于 |diff| 的线段
+        if (x >= 5) {
+            // 此时 |x-2| - |x-5| = (x-2) - (x-5) = 3 (最大值，刚好等于 AB 长度)
+            lineDiff.setAttribute('x1', pxA);
+            lineDiff.setAttribute('x2', pxB);
+            lineDiff.setAttribute('stroke', '#2e7d32'); // 绿色表示达到最大稳定状态
+            labelDiff.textContent = `差值 = 3.0 (达到最大值，即 AB 长度)`;
+            labelDiff.setAttribute('fill', '#2e7d32');
+            
+            resultBox.classList.add('max-state');
+            dynamicTip.textContent = "✨ 此时 x ≥ 5，两距离之差恒等于线段 AB 的长度 3 (最大值)！";
+            dynamicTip.classList.add('highlight');
+        } else if (x <= 2) {
+            // 此时 |x-2| - |x-5| = (2-x) - (5-x) = -3 (最小值)
+            lineDiff.setAttribute('x1', pxA);
+            lineDiff.setAttribute('x2', pxB);
+            lineDiff.setAttribute('stroke', '#c62828'); // 红色表示极小值
+            labelDiff.textContent = `差值 = -3.0 (达到最小值)`;
+            labelDiff.setAttribute('fill', '#c62828');
+
+            resultBox.classList.remove('max-state');
+            dynamicTip.textContent = "此时 x ≤ 2，两距离之差恒等于 -3 (最小值)";
+            dynamicTip.classList.remove('highlight');
+        } else {
+            // 2 < x < 5 之间，差值在 -3 到 3 之间变化
+            const diffLength = Math.abs(diff);
+            const pxDiffStart = pxA;
+            const pxDiffEnd = pxA + diff * scale; // 根据正负向右或向左延伸
+            
+            lineDiff.setAttribute('x1', pxDiffStart);
+            lineDiff.setAttribute('x2', pxDiffEnd);
+            lineDiff.setAttribute('stroke', '#e67e22');
+            labelDiff.textContent = `净差值 = ${diff.toFixed(1)}`;
+            labelDiff.setAttribute('fill', '#e67e22');
+
+            resultBox.classList.remove('max-state');
+            dynamicTip.textContent = "动点 x 在 A、B 之间移动，差值随之线性变化";
+            dynamicTip.classList.remove('highlight');
+        }
+
+        // 同步更新按钮高亮
+        buttons.forEach(btn => {
+            const btnVal = parseFloat(btn.getAttribute('data-val'));
+            if (Math.abs(btnVal - x) < 0.01) {
+                btn.classList.add('btn-active');
+            } else {
+                btn.classList.remove('btn-active');
+            }
+        });
+    }
+
+    // 滑块事件监听
+    slider.addEventListener('input', (e) => {
+        update(parseFloat(e.target.value));
+    });
+
+    // 按钮事件监听
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = parseFloat(btn.getAttribute('data-val'));
+            update(val);
+        });
+    });
+
+    // 数轴拖拽交互实现
+    const svg = document.getElementById('axis-svg');
+    const dragGroup = document.getElementById('drag-group');
+    let isDragging = false;
+
+    function getXFromEvent(e) {
+        const rect = svg.getBoundingClientRect();
+        // 计算鼠标/触摸点在 SVG 内部的相对 X 坐标
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const relativeX = (clientX - rect.left) * (760 / rect.width);
+        // 将像素坐标转换为数轴数值
+        return (relativeX - originX) / scale;
+    }
+
+    function dragStart() {
+        isDragging = true;
+    }
+
+    function dragMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const val = getXFromEvent(e);
+        update(val);
+    }
+
+    function dragEnd() {
+        isDragging = false;
+    }
+
+    dragGroup.addEventListener('mousedown', dragStart);
+    window.addEventListener('mousemove', dragMove);
+    window.addEventListener('mouseup', dragEnd);
+
+    dragGroup.addEventListener('touchstart', dragStart, { passive: false });
+    window.addEventListener('touchmove', dragMove, { passive: false });
+    window.addEventListener('touchend', dragEnd);
+
+    // 初始化状态
+    update(5);
+</script>
+
+</body>
+</html>

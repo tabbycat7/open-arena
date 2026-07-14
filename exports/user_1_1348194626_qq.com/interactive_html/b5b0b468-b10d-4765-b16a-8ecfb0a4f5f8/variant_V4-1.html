@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高一数学微课：探索方程的“区间解”与认知冲突</title>
+    <style>
+        /* 基础样式与投屏自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #app-container {
+            width: 1024px;
+            height: 768px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        /* 头部导航 */
+        header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        header h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .tag {
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 60px);
+        }
+
+        /* 左侧：小华的观点区 */
+        .left-panel {
+            flex: 4;
+            background-color: #fdfefe;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .character-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .avatar {
+            width: 100%;
+            height: 100%;
+            background-color: #ffeaa7;
+            border-radius: 50%;
+            border: 4px solid #fdcb6e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            transition: transform 0.3s ease;
+        }
+        /* 气泡破裂效果 */
+        .bubble-burst {
+            animation: burst 0.5s forwards;
+        }
+        @keyframes burst {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .speech-bubble {
+            position: relative;
+            background: #ffeaa7;
+            border: 2px solid #fdcb6e;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2d3436;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #ffeaa7 transparent;
+            display: block;
+            width: 0;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 16px 16px 0;
+            border-style: solid;
+            border-color: #fdcb6e transparent;
+            display: block;
+            width: 0;
+            z-index: -1;
+        }
+
+        /* 右侧：交互探究区 */
+        .right-panel {
+            flex: 6;
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .equation-box {
+            background-color: #edf2f7;
+            border-left: 5px solid #3182ce;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .equation-title {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        .equation-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2b6cb0;
+            text-align: center;
+            font-family: "Cambria", "Georgia", serif;
+        }
+
+        /* 控制输入区 */
+        .control-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .input-label {
+            font-size: 15px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        .num-input {
+            width: 100px;
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .num-input:focus {
+            border-color: #3182ce;
+        }
+        .btn-verify {
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-verify:hover {
+            background-color: #2b6cb0;
+        }
+        .range-hint {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* 动态计算动画区 */
+        .calc-display {
+            height: 100px;
+            background-color: #1a202c;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #a0aec0;
+            font-family: monospace;
+            font-size: 18px;
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .calc-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .highlight-val {
+            color: #f6e05e;
+            font-weight: bold;
+        }
+        .match-success {
+            color: #48bb78 !important;
+            font-weight: bold;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        /* 几何图形可视化区 */
+        .visual-canvas-container {
+            flex: 1;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            position: relative;
+            min-height: 240px;
+        }
+        #geometry-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 底部提示 */
+        .footer-bar {
+            background-color: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .reset-btn {
+            background-color: #edf2f7;
+            border: 1px solid #cbd5e0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .reset-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* 遮罩层：认知冲突爆发后的结论展示 */
+        .overlay-conclusion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 62, 80, 0.95);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .overlay-conclusion.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .overlay-title {
+            font-size: 28px;
+            color: #2ecc71;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .overlay-body {
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+        .btn-close-overlay {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-close-overlay:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- 头部 -->
+    <header>
+        <h1>探究：方程的“孤立解”与“区间解”</h1>
+        <span class="tag">认知冲突探究 (V4-1)</span>
+    </header>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：小华的观点 -->
+        <div class="left-panel" id="left-panel">
+            <div class="speech-bubble" id="speech-bubble">
+                “当 <strong>a = 2</strong> 时，直线 <strong>y = 2</strong> 和折线 <strong>y = |x+1| + |x-1|</strong> 只有在 <strong>(-1, 2)</strong> 和 <strong>(1, 2)</strong> 这两个拐点处相碰，所以方程只有两个解 <strong>x = -1</strong> 和 <strong>x = 1</strong>。”
+            </div>
+            <div class="character-area">
+                <div class="avatar-container">
+                    <div class="avatar" id="xiaohua-avatar">👦</div>
+                </div>
+                <p style="margin-top: 10px; font-weight: bold; color: #4a5568;">小华的观点</p>
+            </div>
+            <div style="font-size: 13px; color: #718096; text-align: center; line-height: 1.4;">
+                💡 思考：你同意他的看法吗？<br>请在右侧输入一个值来验证。
+            </div>
+        </div>
+
+        <!-- 右侧：交互探究区 -->
+        <div class="right-panel">
+            <!-- 方程展示 -->
+            <div class="equation-box">
+                <div class="equation-title">探究方程 (当 a = 2 时)：</div>
+                <div class="equation-text">|x + 1| + |x - 1| = 2</div>
+            </div>
+
+            <!-- 控制输入 -->
+            <div class="control-section">
+                <div class="input-group">
+                    <span class="input-label">输入一个 x 的值验证：</span>
+                    <input type="number" id="x-input" class="num-input" step="0.1" min="-1" max="1" value="0">
+                    <button id="btn-verify" class="btn-verify">代入验证</button>
+                </div>
+                <div class="range-hint">
+                    * 提示：请尝试输入区间 <strong>(-1, 1)</strong> 内的任意实数（例如：-0.5, 0, 0.375 等）
+                </div>
+            </div>
+
+            <!-- 动态计算展示 -->
+            <div class="calc-display" id="calc-display">
+                <div id="calc-init">等待输入数值进行验证...</div>
+            </div>
+
+            <!-- 几何图形可视化 -->
+            <div class="visual-canvas-container">
+                <svg id="geometry-svg" viewBox="0 0 500 250">
+                    <!-- 网格线 -->
+                    <defs>
+                        <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                            <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+
+                    <!-- 坐标轴 -->
+                    <line x1="50" y1="180" x2="450" y2="180" stroke="#718096" stroke-width="2" /> <!-- X轴 -->
+                    <line x1="250" y1="20" x2="250" y2="230" stroke="#718096" stroke-width="1.5" /> <!-- Y轴 -->
+                    
+                    <!-- 刻度与标注 -->
+                    <!-- X轴刻度 -->
+                    <line x1="150" y1="175" x2="150" y2="185" stroke="#4a5568" stroke-width="1.5" />
+                    <text x="150" y="200" font-size="12" text-anchor="middle" fill="#4a5568">-1</text>
+                    
+                    <line x1="350" y1="175" x2="350" y2="185" stroke="#4a5568" stroke-width="1.5" />
+                    <text x="350" y="200" font-size="12" text-anchor="middle" fill="#4a5568">1</text>
+                    
+                    <text x="260" y="195" font-size="12" fill="#4a5568">0</text>
+                    <text x="440" y="170" font-size="12" fill="#4a5568">x</text>
+
+                    <!-- Y轴刻度 -->
+                    <line x1="245" y1="100" x2="255" y2="100" stroke="#4a5568" stroke-width="1.5" />
+                    <text x="230" y="104" font-size="12" fill="#4a5568">2</text>
+                    <text x="260" y="30" font-size="12" fill="#4a5568">y</text>
+
+                    <!-- 函数图象：y = |x+1| + |x-1| (折线) -->
+                    <!-- 拐点 (-1, 2) 对应像素 (150, 100) -->
+                    <!-- 拐点 (1, 2) 对应像素 (350, 100) -->
+                    <!-- 左侧射线 (-2, 4) 对应像素 (50, 20) -->
+                    <!-- 右侧射线 (2, 4) 对应像素 (450, 20) -->
+                    <polyline points="50,20 150,100 350,100 450,20" fill="none" stroke="#3182ce" stroke-width="3" stroke-linecap="round" />
+                    <text x="80" y="50" font-size="12" fill="#3182ce" font-weight="bold">y = |x+1| + |x-1|</text>
+
+                    <!-- 直线 y = 2 -->
+                    <line x1="50" y1="100" x2="450" y2="100" stroke="#e53e3e" stroke-width="2" stroke-dasharray="5,5" />
+                    <text x="380" y="90" font-size="12" fill="#e53e3e" font-weight="bold">y = 2</text>
+
+                    <!-- 重合区间高亮线段 (初始隐藏，验证成功后显示) -->
+                    <line id="overlap-line" x1="150" y1="100" x2="350" y2="100" stroke="#48bb78" stroke-width="5" stroke-linecap="round" opacity="0" />
+
+                    <!-- 动态点群容器 -->
+                    <g id="dynamic-points"></g>
+
+                    <!-- 交互输入指示点 -->
+                    <circle id="interactive-point" cx="250" cy="100" r="6" fill="#ecc94b" stroke="#fff" stroke-width="2" opacity="0" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer-bar">
+        <span>💡 观察：当输入 [-1, 1] 之间的任意值时，方程是否都成立？这说明了什么？</span>
+        <button class="reset-btn" id="btn-reset">重置探究</button>
+    </div>
+
+    <!-- 冲突爆发遮罩层 -->
+    <div class="overlay-conclusion" id="conclusion-overlay">
+        <div class="overlay-title">💥 认知冲突突破！</div>
+        <div class="overlay-body">
+            你成功代入了非端点值，发现方程依然成立！<br><br>
+            在区间 <strong style="color: #ecc94b;">[-1, 1]</strong> 内，折线与直线 <strong>完全重合</strong>。这意味着该方程在这个区间内有 <strong>无数个解</strong>，而不仅仅是小华所说的两个孤立端点解！<br>
+            这打破了我们“方程的解必须是孤立点”的传统思维，建立了实数连续性与重合图象关系的严谨认知。
+        </div>
+        <button class="btn-close-overlay" id="btn-close-overlay">继续观察图象</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const xInput = document.getElementById('x-input');
+        const btnVerify = document.getElementById('btn-verify');
+        const btnReset = document.getElementById('btn-reset');
+        const calcDisplay = document.getElementById('calc-display');
+        const xiaohuaAvatar = document.getElementById('xiaohua-avatar');
+        const speechBubble = document.getElementById('speech-bubble');
+        const overlapLine = document.getElementById('overlap-line');
+        const interactivePoint = document.getElementById('interactive-point');
+        const dynamicPointsGroup = document.getElementById('dynamic-points');
+        const conclusionOverlay = document.getElementById('conclusion-overlay');
+        const btnCloseOverlay = document.getElementById('btn-close-overlay');
+
+        let verifiedCount = 0;
+
+        // 验证逻辑
+        btnVerify.addEventListener('click', () => {
+            const xVal = parseFloat(xInput.value);
+            
+            if (isNaN(xVal)) {
+                alert('请输入有效的数字！');
+                return;
+            }
+
+            if (xVal < -1 || xVal > 1) {
+                alert('为了推翻小华的“只有端点相碰”论断，请尝试输入区间 [-1, 1] 内的数进行探究！');
+                return;
+            }
+
+            // 计算绝对值方程左边
+            const term1 = Math.abs(xVal + 1);
+            const term2 = Math.abs(xVal - 1);
+            const sum = term1 + term2;
+
+            // 渲染动态计算过程
+            calcDisplay.innerHTML = `
+                <div class="calc-step">
+                    <span>代入 x = <span class="highlight-val">${xVal}</span> :</span>
+                    <span>|${xVal} + 1| + |${xVal} - 1|</span>
+                    <span>=</span>
+                    <span>${term1.toFixed(3)} + ${term2.toFixed(3)}</span>
+                    <span>=</span>
+                    <span class="match-success">${sum.toFixed(1)}</span>
+                    <span class="match-success" style="margin-left:10px;">( 恒等于 2 ! )</span>
+                </div>
+            `;
+
+            // 更新几何图形中的交互点位置
+            // 映射关系：x = -1 -> cx = 150, x = 1 -> cx = 350
+            const cx = 150 + (xVal - (-1)) * 100;
+            interactivePoint.setAttribute('cx', cx);
+            interactivePoint.setAttribute('opacity', '1');
+
+            // 增加一个微小的解点记录在图表上
+            const newDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            newDot.setAttribute('cx', cx);
+            newDot.setAttribute('cy', '100');
+            newDot.setAttribute('r', '4');
+            newDot.setAttribute('fill', '#48bb78');
+            dynamicPointsGroup.appendChild(newDot);
+
+            verifiedCount++;
+
+            // 触发认知冲突效果：小华气泡破裂，展示重合区间
+            if (xVal > -1 && xVal < 1) {
+                setTimeout(() => {
+                    // 小华头像震惊
+                    xiaohuaAvatar.textContent = '😱';
+                    xiaohuaAvatar.style.transform = 'scale(1.2)';
+                    
+                    // 气泡淡出
+                    speechBubble.style.transition = 'all 0.5s';
+                    speechBubble.style.opacity = '0.3';
+                    
+                    // 亮起重合绿线
+                    overlapLine.setAttribute('opacity', '1');
+
+                    // 弹出最终冲突突破结论
+                    if (verifiedCount >= 1) {
+                        setTimeout(() => {
+                            conclusionOverlay.classList.add('show');
+                        }, 1200);
+                    }
+                }, 800);
+            }
+        });
+
+        // 关闭结论遮罩
+        btnCloseOverlay.addEventListener('click', () => {
+            conclusionOverlay.classList.remove('show');
+            // 在重合线段上生成密密麻麻的微小解点，强化“无数个解”的视觉
+            for (let i = 0; i <= 40; i++) {
+                const tempX = 150 + (i * 5);
+                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot.setAttribute('cx', tempX);
+                dot.setAttribute('cy', '100');
+                dot.setAttribute('r', '3');
+                dot.setAttribute('fill', '#2ecc71');
+                dot.setAttribute('opacity', '0.8');
+                dynamicPointsGroup.appendChild(dot);
+            }
+        });
+
+        // 重置探究
+        btnReset.addEventListener('click', () => {
+            xInput.value = '0';
+            calcDisplay.innerHTML = '<div id="calc-init">等待输入数值进行验证...</div>';
+            xiaohuaAvatar.textContent = '👦';
+            xiaohuaAvatar.style.transform = 'scale(1)';
+            speechBubble.style.opacity = '1';
+            overlapLine.setAttribute('opacity', '0');
+            interactivePoint.setAttribute('opacity', '0');
+            dynamicPointsGroup.innerHTML = '';
+            conclusionOverlay.classList.remove('show');
+            verifiedCount = 0;
+        });
+    });
+</script>
+</body>
+</html>

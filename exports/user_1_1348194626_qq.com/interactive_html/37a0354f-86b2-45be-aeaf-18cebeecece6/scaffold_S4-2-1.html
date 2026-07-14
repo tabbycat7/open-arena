@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工资条切切乐 - 个人所得税起征点教学</title>
+    <style>
+        /* 全局样式与4:3自适应布局 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #app-container {
+            width: 800px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+        }
+
+        /* 头部标题区 */
+        header {
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        /* 主操作区 */
+        .interactive-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 工资条外壳 */
+        .salary-track {
+            width: 640px;
+            height: 100px;
+            position: relative;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 未切开时的完整工资条 */
+        .salary-bar-wrapper {
+            width: 100%;
+            height: 70px;
+            position: relative;
+            display: flex;
+            transition: gap 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 0px;
+        }
+
+        /* 左右两部分工资条 */
+        .bar-part {
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: width 0.5s ease, background-color 0.5s ease, border-radius 0.5s ease, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 初始状态：统一为蓝色 */
+        #part-left {
+            width: 62.5%; /* 5000 / 8000 */
+            background-color: #3498db;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        #part-right {
+            width: 37.5%; /* 3000 / 8000 */
+            background-color: #3498db;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* 切开后的状态 */
+        .is-split #part-left {
+            background-color: #2ecc71;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+        }
+        .is-split #part-right {
+            background-color: #e67e22;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(230, 126, 34, 0.3);
+            animation: pulse 1.5s infinite alternate;
+        }
+        .is-split .salary-bar-wrapper {
+            gap: 30px; /* 切开的裂口 */
+        }
+
+        /* 标签文字 */
+        .bar-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        .bar-value {
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        /* 剪刀与切割线指示器 */
+        .cutter-container {
+            position: absolute;
+            top: -45px;
+            left: 50%; /* 动态控制 */
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+            transition: left 0.1s ease;
+        }
+        .scissors-icon {
+            width: 44px;
+            height: 44px;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+            transform: rotate(-20deg);
+            transition: transform 0.1s ease;
+        }
+        /* 剪切时的动画 */
+        .cutting .scissors-icon {
+            animation: snip 0.3s ease-in-out;
+        }
+        .cut-line {
+            width: 2px;
+            height: 140px;
+            background-color: #e74c3c;
+            border-left: 2px dashed #ffffff;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+        .is-split .cutter-container {
+            display: none; /* 切开后隐藏剪刀 */
+        }
+
+        /* 刻度尺 */
+        .ruler {
+            position: absolute;
+            bottom: -35px;
+            width: 100%;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+        .scale-mark {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #95a5a6;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+        .scale-mark::before {
+            content: '';
+            width: 2px;
+            height: 8px;
+            background-color: #bdc3c7;
+            margin-bottom: 4px;
+        }
+        /* 特殊高亮5000元起征点 */
+        .scale-mark.threshold {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 2;
+        }
+        .scale-mark.threshold::before {
+            height: 12px;
+            background-color: #e74c3c;
+            width: 3px;
+        }
+
+        /* 控制面板区 */
+        .control-panel {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* 滑动条样式 */
+        .slider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-label {
+            font-size: 16px;
+            color: #34495e;
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .range-slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            height: 10px;
+            border-radius: 5px;
+            background: #dee2e6;
+            outline: none;
+            cursor: pointer;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: background 0.1s;
+        }
+        .range-slider::-webkit-slider-thumb:hover {
+            background: #2980b9;
+        }
+
+        /* 当前对准数值显示 */
+        .current-value-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .current-value-display span {
+            color: #e74c3c;
+            font-size: 24px;
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-cut {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-cut:hover {
+            background-color: #c0392b;
+        }
+        .btn-cut:active {
+            transform: scale(0.98);
+        }
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
+        .btn-reset:active {
+            transform: scale(0.98);
+        }
+        .btn:disabled {
+            background-color: #dcdde1;
+            color: #a0a0a0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* 教学反馈提示 */
+        .feedback-box {
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .feedback-neutral { color: #7f8c8d; }
+        .feedback-success { color: #2ecc71; animation: bounce 0.5s ease; }
+        .feedback-error { color: #e74c3c; animation: shake 0.5s ease; }
+
+        /* 动画定义 */
+        @keyframes snip {
+            0% { transform: rotate(-20deg) scale(1); }
+            50% { transform: rotate(-5deg) scale(0.9); }
+            100% { transform: rotate(-20deg) scale(1); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .shake-target {
+            animation: shake 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- 头部 -->
+    <header>
+        <h1>✂️ 工资条“切切乐”</h1>
+        <p class="subtitle">月工资 8000 元，起征点 5000 元。<br>请移动剪刀，在正确的位置把工资条切成“免税”和“要交税”两部分！</p>
+    </header>
+
+    <!-- 主交互区 -->
+    <div class="interactive-area">
+        <div class="salary-track" id="salary-track">
+            <!-- 剪刀与切割线 -->
+            <div class="cutter-container" id="cutter">
+                <!-- SVG 剪刀图标 -->
+                <svg class="scissors-icon" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="6" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                    <line x1="8.12" y1="8.12" x2="20" y2="20"></line>
+                </svg>
+                <div class="cut-line"></div>
+            </div>
+
+            <!-- 工资条 -->
+            <div class="salary-bar-wrapper" id="salary-bar-wrapper">
+                <div id="part-left" class="bar-part">
+                    <span class="bar-label" id="label-left">总工资</span>
+                    <span class="bar-value" id="val-left">8000元</span>
+                </div>
+                <div id="part-right" class="bar-part">
+                    <span class="bar-label" id="label-right"></span>
+                    <span class="bar-value" id="val-right"></span>
+                </div>
+            </div>
+
+            <!-- 刻度尺 -->
+            <div class="ruler" id="ruler">
+                <!-- 刻度由JS动态生成，确保精确对齐 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 反馈提示区 -->
+    <div class="feedback-box feedback-neutral" id="feedback">
+        👈 拖动下方滑块，对准起征点位置 👈
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span class="slider-label">移动剪刀位置：</span>
+            <input type="range" id="cut-slider" class="range-slider" min="0" max="8000" step="100" value="4000">
+            <div class="current-value-display">
+                当前对准：<span id="current-val-text">4000</span> 元
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-cut" id="btn-cut">咔嚓！切开</button>
+            <button class="btn btn-reset" id="btn-reset" disabled>重新来过</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('cut-slider');
+    const cutter = document.getElementById('cutter');
+    const currentValText = document.getElementById('current-val-text');
+    const btnCut = document.getElementById('btn-cut');
+    const btnReset = document.getElementById('btn-reset');
+    const salaryBarWrapper = document.getElementById('salary-bar-wrapper');
+    const partLeft = document.getElementById('part-left');
+    const partRight = document.getElementById('part-right');
+    const labelLeft = document.getElementById('label-left');
+    const valLeft = document.getElementById('val-left');
+    const labelRight = document.getElementById('label-right');
+    const valRight = document.getElementById('val-right');
+    const feedback = document.getElementById('feedback');
+    const ruler = document.getElementById('ruler');
+
+    // 教学核心配置
+    const TOTAL_SALARY = 8000;
+    const TAX_THRESHOLD = 5000; // 起征点
+    const TRACK_WIDTH = 640; // 工资条总宽度(px)
+
+    // 初始化刻度尺
+    function initRuler() {
+        ruler.innerHTML = '';
+        const steps = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+        steps.forEach(val => {
+            const mark = document.createElement('div');
+            mark.className = 'scale-mark';
+            if (val === TAX_THRESHOLD) {
+                mark.className = 'scale-mark threshold';
+                mark.innerHTML = `起征点<br>${val}`;
+            } else {
+                mark.innerText = val;
+            }
+            // 计算百分比位置
+            const percent = (val / TOTAL_SALARY) * 100;
+            mark.style.left = `${percent}%`;
+            ruler.appendChild(mark);
+        });
+    }
+
+    // 声音合成器 (Web Audio API) - 模拟清脆的剪切声和反馈声
+    function playSound(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            if (type === 'cut') {
+                // 咔嚓声：高频白噪声+快速衰减
+                const bufferSize = ctx.sampleRate * 0.1;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000;
+
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.6, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start();
+            } else if (type === 'success') {
+                // 成功音效：欢快的两声和弦
+                const now = ctx.currentTime;
+                const playTone = (freq, start, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(0.3, start);
+                    gain.gain.exponentialRampToValueAtTime(0.01, start + duration);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(start);
+                    osc.stop(start + duration);
+                };
+                playTone(523.25, now, 0.15); // C5
+                playTone(659.25, now + 0.1, 0.3); // E5
+            } else if (type === 'error') {
+                // 失败音效：低沉的降调
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            }
+        } catch (e) {
+            console.log('AudioContext not supported or blocked');
+        }
+    }
+
+    // 更新剪刀位置
+    function updateCutterPosition() {
+        const val = parseInt(slider.value);
+        currentValText.innerText = val;
+        
+        // 计算百分比
+        const percent = (val / TOTAL_SALARY) * 100;
+        cutter.style.left = `${percent}%`;
+
+        // 动态调整未切开时左右两边的比例，给学生视觉暗示
+        if (!salaryBarWrapper.classList.contains('is-split')) {
+            partLeft.style.width = `${percent}%`;
+            partRight.style.width = `${100 - percent}%`;
+            
+            // 动态显示左侧和右侧的临时数值
+            if (val > 1000) {
+                labelLeft.innerText = "左侧部分";
+                valLeft.innerText = `${val}元`;
+            } else {
+                labelLeft.innerText = "";
+                valLeft.innerText = "";
+            }
+
+            if (TOTAL_SALARY - val > 1000) {
+                labelRight.innerText = "右侧部分";
+                valRight.innerText = `${TOTAL_SALARY - val}元`;
+            } else {
+                labelRight.innerText = "";
+                valRight.innerText = "";
+            }
+        }
+    }
+
+    // 执行切割判断
+    function executeCut() {
+        const val = parseInt(slider.value);
+
+        // 播放剪切动作动画
+        cutter.classList.add('cutting');
+        playSound('cut');
+        
+        setTimeout(() => {
+            cutter.classList.remove('cutting');
+            
+            if (val === TAX_THRESHOLD) {
+                // 切割正确！
+                playSound('success');
+                salaryBarWrapper.classList.add('is-split');
+                
+                // 锁定交互
+                slider.disabled = true;
+                btnCut.disabled = true;
+                btnReset.disabled = false;
+
+                // 确立最终视觉和标签
+                partLeft.style.width = "62.5%"; // 5000
+                partRight.style.width = "37.5%"; // 3000
+                
+                labelLeft.innerText = "免税部分";
+                valLeft.innerText = "5000元";
+                
+                labelRight.innerText = "应纳税部分";
+                valRight.innerText = "3000元";
+
+                // 反馈信息
+                feedback.className = "feedback-box feedback-success";
+                feedback.innerHTML = "🎉 太棒了！切分完全正确！<br>5000元免税，超出的3000元才需要交税。";
+            } else {
+                // 切割错误
+                playSound('error');
+                salaryBarWrapper.classList.add('shake-target');
+                feedback.className = "feedback-box feedback-error";
+                
+                if (val < TAX_THRESHOLD) {
+                    feedback.innerText = `不对哦！起征点是5000元，你只留了${val}元免税，叔叔要多交税啦！`;
+                } else {
+                    feedback.innerText = `不对哦！起征点是5000元，你留了${val}元免税，国家不同意哦！`;
+                }
+
+                setTimeout(() => {
+                    salaryBarWrapper.classList.remove('shake-target');
+                }, 500);
+            }
+        }, 300);
+    }
+
+    // 重置状态
+    function resetGame() {
+        salaryBarWrapper.classList.remove('is-split');
+        slider.disabled = false;
+        btnCut.disabled = false;
+        btnReset.disabled = true;
+        slider.value = 4000;
+        
+        feedback.className = "feedback-box feedback-neutral";
+        feedback.innerText = "👈 拖动下方滑块，对准起征点位置 👈";
+        
+        updateCutterPosition();
+    }
+
+    // 事件监听
+    slider.addEventListener('input', updateCutterPosition);
+    btnCut.addEventListener('click', executeCut);
+    btnReset.addEventListener('click', resetGame);
+
+    // 初始化
+    initRuler();
+    updateCutterPosition();
+</script>
+
+</body>
+</html>

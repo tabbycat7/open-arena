@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税收方案公平性探索 - 数学微课堂</title>
+  <style>
+    /* 全局样式与重置 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #f0f4f8;
+      color: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 1024px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 头部区域 */
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #ffffff;
+      padding: 18px 24px;
+      flex-shrink: 0;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    header h1::before {
+      content: "📊";
+    }
+    header p.question {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #bfdbfe;
+    }
+
+    /* 主交互区域 */
+    .main-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      overflow: hidden;
+    }
+
+    /* 左侧控制面板 */
+    .control-panel {
+      background-color: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 输入控件样式 */
+    .control-group {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .slider-title {
+      font-size: 13px;
+      color: #64748b;
+    }
+    .slider-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: #cbd5e1;
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* 预设按钮 */
+    .preset-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .btn-preset {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 6px 4px;
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-preset:hover {
+      background: #e2e8f0;
+    }
+    .btn-preset.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    /* 公平性天平滑动条 */
+    .fairness-slider-container {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+    }
+    .fairness-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #b45309;
+      margin-top: 6px;
+    }
+
+    /* 动态解释框 */
+    .desc-box {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 12px;
+      border-left: 4px solid #64748b;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #475569;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* 右侧可视化面板 */
+    .visual-panel {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    /* 方案对比卡片容器 */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .scheme-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .scheme-card.lighter {
+      border-color: #10b981;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+    .scheme-card.lighter::after {
+      content: "★ 此收入下税负更轻";
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .scheme-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-a { background-color: #dbeafe; color: #1e40af; }
+    .badge-b { background-color: #ffedd5; color: #9a3412; }
+    .scheme-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    /* 堆叠条形图 */
+    .bar-wrapper {
+      margin-bottom: 12px;
+    }
+    .bar-container {
+      height: 32px;
+      background-color: #f1f5f9;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid #cbd5e1;
+    }
+    .bar-segment {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: bold;
+      transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .bar-net {
+      background-color: #10b981; /* 绿色代表实收 */
+    }
+    .bar-tax {
+      background-color: #ef4444; /* 红色代表税收 */
+    }
+    .bar-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* 计算详情 */
+    .calc-details {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .formula {
+      font-family: "Courier New", Courier, monospace;
+      font-weight: bold;
+      color: #0f172a;
+      margin: 4px 0;
+    }
+    .rate-highlight {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ef4444;
+    }
+
+    /* 分段计税过程可视化 */
+    .bracket-visualizer {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .bracket-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .bracket-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .bracket-box {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .bracket-box.active {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    .bracket-box::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--fill-height, 0%);
+      background-color: rgba(59, 130, 246, 0.1);
+      transition: height 0.4s ease;
+      z-index: 0;
+    }
+    .bracket-box * {
+      position: relative;
+      z-index: 1;
+    }
+    .bracket-range {
+      font-size: 11px;
+      font-weight: bold;
+      color: #64748b;
+    }
+    .bracket-rate {
+      font-size: 12px;
+      color: #1e3a8a;
+      margin: 2px 0;
+    }
+    .bracket-calc {
+      font-size: 11px;
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    /* 底部思考引导 */
+    footer {
+      background-color: #f1f5f9;
+      border-top: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      font-size: 13px;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .footer-icon {
+      font-size: 18px;
+    }
+    .footer-text {
+      line-height: 1.4;
+    }
+
+    /* 辅助类 */
+    .text-green { color: #10b981; }
+    .text-red { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <header>
+      <h1>税收方案公平性探索</h1>
+      <p class="question">
+        现有两种税收方案。方案A（单一税率）：按总收入的10%固定征税；方案B（分段税率）：起征点5000元，5000-15000元部分税率5%，15000元以上部分税率20%。你认为哪种方案更能体现公平？请用数学计算支撑你的观点。
+      </p>
+    </header>
+
+    <!-- 主体 -->
+    <div class="main-layout">
+      <!-- 左侧控制面板 -->
+      <div class="control-panel">
+        <div>
+          <div class="section-title">👤 1. 设定居民总收入</div>
+          <div class="control-group">
+            <div class="slider-header">
+              <span class="slider-title">月收入金额</span>
+              <span class="slider-value"><span id="income-display">12,000</span> 元</span>
+            </div>
+            <input type="range" id="income-slider" min="2000" max="40000" step="1000" value="12000">
+            
+            <div class="preset-container">
+              <button class="btn-preset" id="preset-low">低收入 (4k)</button>
+              <button class="btn-preset active" id="preset-mid">中等收入 (12k)</button>
+              <button class="btn-preset" id="preset-high">高收入 (30k)</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">⚖️ 2. 公平性天平 (思考维度)</div>
+          <div class="control-group fairness-slider-container">
+            <div class="slider-header">
+              <span class="slider-title" style="color: #b45309;">拖动滑块切换思考视角</span>
+            </div>
+            <input type="range" id="fairness-slider" min="0" max="100" value="50">
+            <div class="fairness-labels">
+              <span>侧重“绝对平等”</span>
+              <span>侧重“能力原则”</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 动态引导文本 -->
+        <div class="desc-box" id="fairness-desc">
+          <!-- JS 动态注入 -->
+        </div>
+      </div>
+
+      <!-- 右侧可视化 -->
+      <div class="visual-panel">
+        <div class="cards-grid">
+          <!-- 方案 A -->
+          <div class="scheme-card" id="card-a">
+            <div class="card-header">
+              <span class="scheme-title">方案 A (单一税率)</span>
+              <span class="scheme-badge badge-a">固定 10%</span>
+            </div>
+            <div class="bar-wrapper">
+              <div class="bar-container">
+                <div class="bar-segment bar-net" id="bar-a-net">实收</div>
+                <div class="bar-segment bar-tax" id="bar-a-tax">税</div>
+              </div>
+              <div class="bar-legend">
+                <span>0 元</span>
+                <span id="bar-a-total-label">12,000 元</span>
+              </div>
+            </div>
+            <div class="calc-details">
+              <div>应纳税额计算：</div>
+              <div class="formula" id="formula-a">12,000 × 10% = 1,200 元</div>
+              <div>实际税率：<span class="rate-highlight" id="rate-a">10.0%</span></div>
+            </div>
+          </div>
+
+          <!-- 方案 B -->
+          <div class="scheme-card" id="card-b">
+            <div class="card-header">
+              <span class="scheme-title">方案 B (分段税率)</span>
+              <span class="scheme-badge badge-b">起征点 5000</span>
+            </div>
+            <div class="bar-wrapper">
+              <div class="bar-container">
+                <div class="bar-segment bar-net" id="bar-b-net">实收</div>
+                <div class="bar-segment bar-tax" id="bar-b-tax">税</div>
+              </div>
+              <div class="bar-legend">
+                <span>0 元</span>
+                <span id="bar-b-total-label">12,000 元</span>
+              </div>
+            </div>
+            <div class="calc-details">
+              <div>应纳税额计算：</div>
+              <div class="formula" id="formula-b">分段累加计算</div>
+              <div>实际税率：<span class="rate-highlight" id="rate-b">2.9%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 方案 B 分段计税细节 -->
+        <div class="bracket-visualizer">
+          <div class="bracket-title">方案 B 分段计税过程演示</div>
+          <div class="bracket-flow">
+            <!-- 第一段 -->
+            <div class="bracket-box" id="box-1">
+              <div class="bracket-range">第一段 (0 - 5000)</div>
+              <div class="bracket-rate">税率: 0%</div>
+              <div class="bracket-calc" id="box-1-calc">¥0</div>
+            </div>
+            <!-- 第二段 -->
+            <div class="bracket-box" id="box-2">
+              <div class="bracket-range">第二段 (5k - 15k)</div>
+              <div class="bracket-rate">税率: 5%</div>
+              <div class="bracket-calc" id="box-2-calc">¥0</div>
+            </div>
+            <!-- 第三段 -->
+            <div class="bracket-box" id="box-3">
+              <div class="bracket-range">第三段 (15k以上)</div>
+              <div class="bracket-rate">税率: 20%</div>
+              <div class="bracket-calc" id="box-3-calc">¥0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+      <span class="footer-icon">💡</span>
+      <div class="footer-text">
+        <strong>课堂思考：</strong>请观察在不同收入下，哪种方案的实际税率变化更大？高收入者和低收入者分别会支持哪种方案？为什么？
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const incomeSlider = document.getElementById('income-slider');
+    const incomeDisplay = document.getElementById('income-display');
+    const fairnessSlider = document.getElementById('fairness-slider');
+    const fairnessDesc = document.getElementById('fairness-desc');
+
+    const presetLow = document.getElementById('preset-low');
+    const presetMid = document.getElementById('preset-mid');
+    const presetHigh = document.getElementById('preset-high');
+
+    const cardA = document.getElementById('card-a');
+    const cardB = document.getElementById('card-b');
+
+    const barANet = document.getElementById('bar-a-net');
+    const barATax = document.getElementById('bar-a-tax');
+    const barATotalLabel = document.getElementById('bar-a-total-label');
+    const formulaA = document.getElementById('formula-a');
+    const rateA = document.getElementById('rate-a');
+
+    const barBNet = document.getElementById('bar-b-net');
+    const barBTax = document.getElementById('bar-b-tax');
+    const barBTotalLabel = document.getElementById('bar-b-total-label');
+    const formulaB = document.getElementById('formula-b');
+    const rateB = document.getElementById('rate-b');
+
+    const box1 = document.getElementById('box-1');
+    const box2 = document.getElementById('box-2');
+    const box3 = document.getElementById('box-3');
+    const box1Calc = document.getElementById('box-1-calc');
+    const box2Calc = document.getElementById('box-2-calc');
+    const box3Calc = document.getElementById('box-3-calc');
+
+    // 计算税收核心逻辑
+    function calculateTax() {
+      const income = parseInt(incomeSlider.value);
+      incomeDisplay.textContent = income.toLocaleString();
+
+      // 方案 A 计算 (固定 10%)
+      const taxA = income * 0.1;
+      const netA = income - taxA;
+      const pctATax = 10;
+      const pctANet = 90;
+
+      // 更新方案 A 视图
+      barANet.style.width = `${pctANet}%`;
+      barATax.style.width = `${pctATax}%`;
+      barANet.textContent = `实收 ¥${Math.round(netA).toLocaleString()}`;
+      barATax.textContent = `税额 ¥${Math.round(taxA).toLocaleString()}`;
+      barATotalLabel.textContent = `${income.toLocaleString()} 元`;
+      formulaA.innerHTML = `${income.toLocaleString()} &times; 10% = <strong>${Math.round(taxA).toLocaleString()} 元</strong>`;
+      rateA.textContent = '10.0%';
+
+      // 方案 B 计算 (分段)
+      // 第一段: 0 - 5000 (0%)
+      const limit1 = 5000;
+      const fill1 = Math.min(income, limit1);
+      const tax1 = 0;
+
+      // 第二段: 5000 - 15000 (5%)
+      const limit2 = 10000; // 这一段的最大跨度是 10000
+      const fill2 = Math.max(0, Math.min(income - limit1, limit2));
+      const tax2 = fill2 * 0.05;
+
+      // 第三段: 15000 以上 (20%)
+      const fill3 = Math.max(0, income - 15000);
+      const tax3 = fill3 * 0.2;
+
+      const taxB = tax1 + tax2 + tax3;
+      const netB = income - taxB;
+      const pctBTax = (taxB / income) * 100;
+      const pctBNet = 100 - pctBTax;
+
+      // 更新方案 B 视图
+      barBNet.style.width = `${pctBNet}%`;
+      barBTax.style.width = `${pctBTax}%`;
+      barBNet.textContent = `实收 ¥${Math.round(netB).toLocaleString()}`;
+      barBTax.textContent = taxB > 0 ? `税额 ¥${Math.round(taxB).toLocaleString()}` : '免税';
+      barBTotalLabel.textContent = `${income.toLocaleString()} 元`;
+
+      // 方案 B 公式展示
+      let formulaBText = '';
+      if (income <= 5000) {
+        formulaBText = `未超起征点 5,000，免税 = <strong>0 元</strong>`;
+      } else if (income <= 15000) {
+        formulaBText = `(${income.toLocaleString()} - 5,000) &times; 5% = <strong>${Math.round(taxB).toLocaleString()} 元</strong>`;
+      } else {
+        formulaBText = `(10,000 &times; 5%) + (${(income - 15000).toLocaleString()} &times; 20%) = 500 + ${Math.round(tax3).toLocaleString()} = <strong>${Math.round(taxB).toLocaleString()} 元</strong>`;
+      }
+      formulaB.innerHTML = formulaBText;
+      rateB.textContent = `${pctBTax.toFixed(1)}%`;
+
+      // 更新分段计税可视化盒子
+      updateBracketBox(box1, fill1, limit1, tax1, '0%', box1Calc);
+      updateBracketBox(box2, fill2, limit2, tax2, '5%', box2Calc);
+      updateBracketBox(box3, fill3, 25000, tax3, '20%', box3Calc); // 25000仅作为视觉上限参考
+
+      // 高亮税负更轻的方案
+      if (taxA < taxB) {
+        cardA.classList.add('lighter');
+        cardB.classList.remove('lighter');
+      } else if (taxB < taxA) {
+        cardB.classList.add('lighter');
+        cardA.classList.remove('lighter');
+      } else {
+        cardA.classList.remove('lighter');
+        cardB.classList.remove('lighter');
+      }
+    }
+
+    function updateBracketBox(boxElement, fillVal, maxVal, taxVal, rateStr, calcElement) {
+      if (fillVal > 0) {
+        boxElement.classList.add('active');
+        const fillPct = Math.min((fillVal / maxVal) * 100, 100);
+        boxElement.style.setProperty('--fill-height', `${fillPct}%`);
+        if (taxVal > 0) {
+          calcElement.innerHTML = `额度: ¥${Math.round(fillVal).toLocaleString()}<br><span class="text-red">税: ¥${Math.round(taxVal).toLocaleString()}</span>`;
+        } else {
+          calcElement.innerHTML = `额度: ¥${Math.round(fillVal).toLocaleString()}<br><span class="text-green">免税</span>`;
+        }
+      } else {
+        boxElement.classList.remove('active');
+        boxElement.style.setProperty('--fill-height', `0%`);
+        calcElement.innerHTML = '未启用';
+      }
+    }
+
+    // 更新公平性天平解释文本
+    function updateFairnessDesc() {
+      const val = parseInt(fairnessSlider.value);
+      let html = '';
+
+      if (val < 35) {
+        html = `
+          <h4 style="color: #1e40af; margin-bottom: 6px;">⚖️ 侧重“绝对平等” (单一税率)</h4>
+          <p><strong>核心观点：</strong>每个人无论收入高低，都按相同的比例（10%）纳税。规则面前人人平等，多劳多得，不惩罚高收入者的积极性。</p>
+          <p style="margin-top: 6px; color: #b91c1c; font-weight: bold;">⚠️ 思考：对于低收入家庭，10%的税收可能会影响基本生活（如买食物）；而对高收入者则毫无影响。这真的公平吗？</p>
+        `;
+      } else if (val > 65) {
+        html = `
+          <h4 style="color: #9a3412; margin-bottom: 6px;">⚖️ 侧重“能力原则” (分段税率)</h4>
+          <p><strong>核心观点：</strong>高收入者占有更多社会资源，有更强的支付能力，理应承担更高的税率（20%）；而对低收入者应免税保护，这体现了社会关怀与结果公平。</p>
+          <p style="margin-top: 6px; color: #b91c1c; font-weight: bold;">⚠️ 思考：高收入者的财富也是通过辛勤劳动获得的，征收过高的税率是否会打击人们努力工作和创业的积极性？</p>
+        `;
+      } else {
+        html = `
+          <h4 style="color: #475569; margin-bottom: 6px;">⚖️ 兼顾“公平与效率”</h4>
+          <p><strong>核心观点：</strong>现代税收通常在两者之间寻找平衡。通过设置<strong>免征额</strong>（起征点）保障低收入者的基本生存，同时实行<strong>累进税率</strong>，让高收入者多做贡献。</p>
+          <p style="margin-top: 6px; color: #2563eb; font-style: italic;">💡 提示：请拖动上方“月收入”滑块，观察在什么收入水平下，两种方案的税负会发生逆转？</p>
+        `;
+      }
+      fairnessDesc.innerHTML = html;
+    }
+
+    // 预设按钮事件
+    function setPreset(income, activeBtn) {
+      incomeSlider.value = income;
+      [presetLow, presetMid, presetHigh].forEach(btn => btn.classList.remove('active'));
+      activeBtn.classList.add('active');
+      calculateTax();
+    }
+
+    // 绑定事件监听器
+    incomeSlider.addEventListener('input', () => {
+      // 清除预设按钮的激活状态（如果滑块值不等于预设值）
+      const val = parseInt(incomeSlider.value);
+      [presetLow, presetMid, presetHigh].forEach(btn => btn.classList.remove('active'));
+      if (val === 4000) presetLow.classList.add('active');
+      if (val === 12000) presetMid.classList.add('active');
+      if (val === 30000) presetHigh.classList.add('active');
+      calculateTax();
+    });
+
+    fairnessSlider.addEventListener('input', updateFairnessDesc);
+
+    presetLow.addEventListener('click', () => setPreset(4000, presetLow));
+    presetMid.addEventListener('click', () => setPreset(12000, presetMid));
+    presetHigh.addEventListener('click', () => setPreset(30000, presetHigh));
+
+    // 初始化运行
+    calculateTax();
+    updateFairnessDesc();
+  </script>
+</body>
+</html>

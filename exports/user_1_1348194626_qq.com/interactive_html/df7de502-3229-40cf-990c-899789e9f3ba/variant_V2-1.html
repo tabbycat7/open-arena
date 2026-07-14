@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>扫地机器人清洁方案对比</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; color: var(--primary); }
+        .container { width: 80%; max-width: 800px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .row { margin: 30px 0; display: flex; align-items: center; gap: 20px; }
+        .label { width: 80px; font-weight: bold; }
+        .bar-container { flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+        .bar-box { height: 25px; background: #eee; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #ccc; }
+        .fill { height: 100%; width: 0%; transition: width 0.3s; }
+        .progress-bar { background: #3498db; }
+        .battery-bar { background: #27ae60; }
+        button { padding: 10px 20px; cursor: pointer; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 16px; }
+        .hint { margin-top: 20px; padding: 10px; background: #fff3cd; border-left: 5px solid #ffc107; display: none; }
+        .tag { cursor: pointer; color: #e67e22; text-decoration: underline; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>扫地机器人清洁方案对比</h3>
+    
+    <div class="row">
+        <div class="label">方案一 ⚡</div>
+        <div class="bar-container">
+            <div class="bar-box"><div id="p1-prog" class="fill progress-bar"></div></div>
+            <div class="bar-box"><div id="p1-batt" class="fill battery-bar" style="width: 100%;"></div></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label">方案二 🍃</div>
+        <div class="bar-container">
+            <div class="bar-box"><div id="p2-prog" class="fill progress-bar"></div></div>
+            <div class="bar-box"><div id="p2-batt" class="fill battery-bar" style="width: 100%;"></div></div>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <button id="start-btn">开始清洁</button>
+        <p>
+            <span class="tag" id="tag-eff">点击查看：效率观察点</span> | 
+            <span class="tag" id="tag-cost">点击查看：代价观察点</span>
+        </p>
+    </div>
+
+    <div id="hint-box" class="hint"></div>
+</div>
+
+<script>
+    const startBtn = document.getElementById('start-btn');
+    const hintBox = document.getElementById('hint-box');
+
+    startBtn.addEventListener('click', () => {
+        const p1p = document.getElementById('p1-prog');
+        const p1b = document.getElementById('p1-batt');
+        const p2p = document.getElementById('p2-prog');
+        const p2b = document.getElementById('p2-batt');
+
+        // Reset
+        p1p.style.width = '0%'; p1b.style.width = '100%';
+        p2p.style.width = '0%'; p2b.style.width = '100%';
+
+        // Animate P1
+        setTimeout(() => {
+            p1p.style.transition = 'width 1s linear';
+            p1p.style.width = '100%';
+            p1b.style.transition = 'width 0.5s';
+            p1b.style.width = '20%';
+        }, 100);
+
+        // Animate P2
+        setTimeout(() => {
+            p2p.style.transition = 'width 5s linear';
+            p2p.style.width = '100%';
+            p2b.style.transition = 'width 5s linear';
+            p2b.style.width = '90%';
+        }, 100);
+    });
+
+    document.getElementById('tag-eff').addEventListener('click', () => {
+        hintBox.style.display = 'block';
+        hintBox.innerHTML = '<strong>效率观察点：</strong>指完成任务的速度。进度条填满越快，说明该方案在单位时间内完成的工作量越大。';
+    });
+
+    document.getElementById('tag-cost').addEventListener('click', () => {
+        hintBox.style.display = 'block';
+        hintBox.innerHTML = '<strong>代价观察点：</strong>指完成任务所消耗的资源。电量槽下降越少，说明该方案在完成任务时付出的能量成本越低。';
+    });
+</script>
+
+</body>
+</html>

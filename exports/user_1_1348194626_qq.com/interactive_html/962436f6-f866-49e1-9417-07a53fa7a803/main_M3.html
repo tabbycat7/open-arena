@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学微课：锁定“计税基数”</title>
+  <style>
+    /* 全局重置与课堂投影优化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #f1f5f9;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例容器，自适应缩放 */
+    .canvas-container {
+      width: 800px;
+      height: 600px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      position: relative;
+    }
+
+    /* 头部标题区 */
+    .header {
+      text-align: center;
+    }
+    .title {
+      font-size: 26px;
+      color: #1e293b;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .title-icon {
+      color: #3b82f6;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.4;
+      max-width: 90%;
+      margin: 0 auto;
+    }
+
+    /* 可视化主图区 */
+    .visualization-area {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: 280px;
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background-color: #f8fafc;
+      border-radius: 12px;
+      padding: 15px 20px;
+      border: 1px solid #e2e8f0;
+    }
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .slider-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #475569;
+      min-width: 140px;
+    }
+    .range-slider {
+      flex-grow: 1;
+      height: 8px;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+      background: #cbd5e1;
+      cursor: pointer;
+    }
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #3b82f6;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+    .range-slider::-webkit-slider-thumb:active {
+      transform: scale(1.2);
+    }
+    
+    /* 预设按钮 */
+    .preset-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .preset-title {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .btn-preset {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-preset:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    .btn-preset.active {
+      background-color: #3b82f6;
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+
+    /* 动态公式展示区 */
+    .formula-box {
+      background-color: #eff6ff;
+      border: 1.5px dashed #bfdbfe;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .formula-item {
+      font-size: 18px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    .formula-item.total {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    .formula-item.minus {
+      color: #64748b;
+    }
+    .formula-item.exempt {
+      background-color: #f1f5f9;
+      color: #475569;
+      transition: background-color 0.3s;
+    }
+    .formula-item.exempt.active {
+      background-color: #e2e8f0;
+    }
+    .formula-item.equal {
+      color: #64748b;
+    }
+    .formula-item.base {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 2px solid #f59e0b;
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.03); }
+    }
+
+    /* 引导思考区 */
+    .thinking-prompt {
+      font-size: 14px;
+      color: #0f172a;
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    
+    <!-- 头部：提出核心问题 -->
+    <div class="header">
+      <div class="title">
+        <span class="title-icon">💡</span>
+        <span>如何准确锁定“计税基数”？</span>
+      </div>
+      <div class="subtitle">
+        总收入中并不是每一分钱都要纳税。请拖动下方的“免税额度”滑块，观察它是如何从总收入中“剥离”出去，并锁定真正需要纳税的“计税基数”的。
+      </div>
+    </div>
+
+    <!-- 中部：SVG 动态剥离交互图 -->
+    <div class="visualization-area">
+      <svg id="visual-svg" viewBox="0 0 700 280">
+        <!-- 定义渐变与阴影 -->
+        <defs>
+          <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#3b82f6" />
+            <stop offset="100%" stop-color="#1d4ed8" />
+          </linearGradient>
+          <linearGradient id="greyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#cbd5e1" />
+            <stop offset="100%" stop-color="#94a3b8" />
+          </linearGradient>
+          <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.1" />
+          </filter>
+        </defs>
+
+        <!-- 背景参考线 -->
+        <line x1="50" y1="110" x2="650" y2="110" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4" />
+
+        <!-- 1. 总收入长条（底层背景，代表完整收入） -->
+        <rect id="bg-total-bar" x="50" y="80" width="600" height="60" rx="8" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" />
+        
+        <!-- 2. 免税额度部分（左侧灰色） -->
+        <rect id="rect-exempt" x="50" y="80" width="375" height="60" rx="8" fill="url(#greyGrad)" filter="url(#shadow)" />
+        
+        <!-- 3. 计税基数部分（右侧蓝色高亮） -->
+        <rect id="rect-taxable" x="425" y="80" width="225" height="60" rx="8" fill="url(#blueGrad)" filter="url(#shadow)" />
+
+        <!-- 4. 动态切割线 -->
+        <line id="cutter-line" x1="425" y1="70" x2="425" y2="150" stroke="#ef4444" stroke-width="3" stroke-dasharray="5 3" />
+        <circle id="cutter-node" cx="425" cy="110" r="6" fill="#ef4444" />
+
+        <!-- 5. 标注：总收入（上方大括号与文字） -->
+        <path d="M 50,70 L 50,55 L 345,55 L 350,45 L 355,55 L 650,55 L 650,70" fill="none" stroke="#64748b" stroke-width="2" />
+        <text x="350" y="35" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">总收入：8000 元</text>
+
+        <!-- 6. 标注：免税额度（下方左侧括号与文字） -->
+        <path id="bracket-exempt" d="M 50,150 L 50,165 L 232.5,165 L 237.5,175 L 242.5,165 L 425,165 L 425,150" fill="none" stroke="#475569" stroke-width="2" />
+        <text id="text-exempt" x="237.5" y="195" font-size="14" font-weight="bold" fill="#475569" text-anchor="middle">免税额度：5000 元</text>
+
+        <!-- 7. 标注：计税基数（下方右侧括号与文字） -->
+        <path id="bracket-taxable" d="M 425,150 L 425,165 L 532.5,165 L 537.5,175 L 542.5,165 L 650,165 L 650,150" fill="none" stroke="#d97706" stroke-width="2" />
+        <text id="text-taxable" x="537.5" y="195" font-size="15" font-weight="bold" fill="#d97706" text-anchor="middle">计税基数：3000 元</text>
+      </svg>
+    </div>
+
+    <!-- 下部：交互控制与公式联动 -->
+    <div class="control-panel">
+      <!-- 滑块控制 -->
+      <div class="slider-container">
+        <span class="slider-label" id="slider-val-label">免税额度：5000 元</span>
+        <input type="range" id="exempt-slider" class="range-slider" min="0" max="8000" step="500" value="5000">
+      </div>
+      
+      <!-- 快速预设 -->
+      <div class="preset-container">
+        <span class="preset-title">常用起征点预设：</span>
+        <button class="btn-preset" data-value="0">无免税 (0元)</button>
+        <button class="btn-preset" data-value="3500">旧个税 (3500元)</button>
+        <button class="btn-preset active" data-value="5000">现行个税 (5000元)</button>
+        <button class="btn-preset" data-value="8000">全额免税 (8000元)</button>
+      </div>
+    </div>
+
+    <!-- 动态数学公式 -->
+    <div class="formula-box">
+      <div class="formula-item total">总收入 (8000元)</div>
+      <div class="formula-item minus">－</div>
+      <div class="formula-item exempt" id="formula-exempt">免税额度 (5000元)</div>
+      <div class="formula-item equal">＝</div>
+      <div class="formula-item base" id="formula-base">计税基数 (3000元)</div>
+    </div>
+
+    <!-- 引导思考 -->
+    <div class="thinking-prompt">
+      <span>💭 <strong>课堂思考：</strong></span>
+      <span id="thinking-text">当免税额度增加时，需要纳税的“计税基数”是变大了还是变小了？为什么？</span>
+    </div>
+
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const slider = document.getElementById('exempt-slider');
+    const sliderLabel = document.getElementById('slider-val-label');
+    const rectExempt = document.getElementById('rect-exempt');
+    const rectTaxable = document.getElementById('rect-taxable');
+    const cutterLine = document.getElementById('cutter-line');
+    const cutterNode = document.getElementById('cutter-node');
+    
+    const bracketExempt = document.getElementById('bracket-exempt');
+    const textExempt = document.getElementById('text-exempt');
+    const bracketTaxable = document.getElementById('bracket-taxable');
+    const textTaxable = document.getElementById('text-taxable');
+    
+    const formulaExempt = document.getElementById('formula-exempt');
+    const formulaBase = document.getElementById('formula-base');
+    const presetButtons = document.querySelectorAll('.btn-preset');
+    const thinkingText = document.getElementById('thinking-text');
+
+    const TOTAL_INCOME = 8000;
+    const BAR_LEFT = 50;
+    const BAR_WIDTH = 600;
+    const BAR_RIGHT = BAR_LEFT + BAR_WIDTH;
+
+    // 更新可视化视图
+    function updateVisualization(exemptValue) {
+      const taxableValue = TOTAL_INCOME - exemptValue;
+      
+      // 计算比例宽度
+      const exemptWidth = (exemptValue / TOTAL_INCOME) * BAR_WIDTH;
+      const taxableWidth = BAR_WIDTH - exemptWidth;
+      const cutX = BAR_LEFT + exemptWidth;
+
+      // 1. 更新矩形宽度和位置
+      rectExempt.setAttribute('width', exemptWidth);
+      rectTaxable.setAttribute('x', cutX);
+      rectTaxable.setAttribute('width', taxableWidth);
+
+      // 2. 更新切割线位置
+      cutterLine.setAttribute('x1', cutX);
+      cutterLine.setAttribute('x2', cutX);
+      cutterNode.setAttribute('cx', cutX);
+
+      // 3. 动态生成下方大括号的 Path
+      // 免税括号
+      if (exemptWidth > 30) {
+        bracketExempt.style.display = 'block';
+        textExempt.style.display = 'block';
+        const midExempt = BAR_LEFT + exemptWidth / 2;
+        bracketExempt.setAttribute('d', `M ${BAR_LEFT},150 L ${BAR_LEFT},165 L ${midExempt - 5},165 L ${midExempt},175 L ${midExempt + 5},165 L ${cutX},165 L ${cutX},150`);
+        textExempt.setAttribute('x', midExempt);
+        textExempt.textContent = `免税额度：${exemptValue} 元`;
+      } else {
+        bracketExempt.style.display = 'none';
+        textExempt.style.display = 'none';
+      }
+
+      // 计税基数括号
+      if (taxableWidth > 30) {
+        bracketTaxable.style.display = 'block';
+        textTaxable.style.display = 'block';
+        const midTaxable = cutX + taxableWidth / 2;
+        bracketTaxable.setAttribute('d', `M ${cutX},150 L ${cutX},165 L ${midTaxable - 5},165 L ${midTaxable},175 L ${midTaxable + 5},165 L ${BAR_RIGHT},165 L ${BAR_RIGHT},150`);
+        textTaxable.setAttribute('x', midTaxable);
+        textTaxable.textContent = `计税基数：${taxableValue} 元`;
+      } else {
+        bracketTaxable.style.display = 'none';
+        textTaxable.style.display = 'none';
+      }
+
+      // 4. 更新控制面板和公式文本
+      sliderLabel.textContent = `免税额度：${exemptValue} 元`;
+      formulaExempt.textContent = `免税额度 (${exemptValue} 元)`;
+      formulaBase.textContent = `计税基数 (${taxableValue} 元)`;
+
+      // 5. 启发式课堂提问引导
+      if (exemptValue === 0) {
+        thinkingText.innerHTML = "<strong>特殊情况：</strong>当免税额度为 0 时，计税基数等于什么？这意味着什么？";
+      } else if (exemptValue === TOTAL_INCOME) {
+        thinkingText.innerHTML = "<strong>特殊情况：</strong>当免税额度等于或超过总收入时，计税基数是多少？此时还需要纳税吗？";
+      } else {
+        thinkingText.innerHTML = "观察图示：<strong>计税基数</strong> 实际上就是总收入中<strong>扣除了免税额度后剩余</strong>的那部分。";
+      }
+    }
+
+    // 滑块事件监听
+    slider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      updateVisualization(val);
+      
+      // 取消所有预设按钮的激活状态
+      presetButtons.forEach(btn => btn.classList.remove('active'));
+      // 如果刚好匹配某个预设，则高亮它
+      presetButtons.forEach(btn => {
+        if (parseInt(btn.getAttribute('data-value')) === val) {
+          btn.classList.add('active');
+        }
+      });
+    });
+
+    // 预设按钮事件监听
+    presetButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        presetButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        const val = parseInt(e.target.getAttribute('data-value'));
+        slider.value = val;
+        updateVisualization(val);
+      });
+    });
+
+    // 初始化渲染
+    updateVisualization(5000);
+  </script>
+</body>
+</html>

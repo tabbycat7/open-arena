@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百分数与小数的转化教学交互</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --primary-dark: #2980b9;
+      --accent-color: #e67e22;
+      --danger-color: #e74c3c;
+      --success-color: #2ecc71;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border-color: #dcdde1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      background-color: #eaeef1;
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部区域 */
+    .header {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #bdc3c7;
+    }
+
+    /* 主交互区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      background-color: var(--bg-color);
+    }
+
+    /* 左侧：数轴与控制 */
+    .left-panel {
+      flex: 1.3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* 右侧：百格图视觉直观 */
+    .right-panel {
+      flex: 0.9;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 数轴 SVG 样式 */
+    .axis-container {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .tick-label {
+      font-size: 12px;
+      text-anchor: middle;
+      fill: var(--text-muted);
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .tick-label.active-tick {
+      fill: var(--primary-color);
+      font-size: 14px;
+    }
+
+    .decimal-label.active-tick {
+      fill: var(--accent-color);
+    }
+
+    /* 滑块样式 */
+    .slider-wrapper {
+      width: 100%;
+      padding: 10px 0;
+    }
+
+    .custom-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: #e0e0e0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      border: 3px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .custom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* 数值显示框 */
+    .display-box {
+      background: #f1f2f6;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .display-box.highlight-target {
+      border-color: var(--success-color);
+      background-color: #e8f8f0;
+      animation: pulse 1.5s infinite;
+    }
+
+    .display-item {
+      text-align: center;
+    }
+
+    .display-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .display-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .display-value.highlight {
+      color: var(--success-color);
+      font-size: 28px;
+    }
+
+    .arrow-icon {
+      font-size: 24px;
+      color: var(--text-muted);
+    }
+
+    /* 百格图样式 */
+    .grid-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--text-color);
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 2px;
+      width: 180px;
+      height: 180px;
+      background-color: #f1f2f6;
+      border: 2px solid #dcdde1;
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .grid-cell {
+      background-color: #ffffff;
+      border-radius: 1px;
+      transition: background-color 0.2s;
+    }
+
+    .grid-cell.active {
+      background-color: var(--primary-color);
+    }
+
+    .grid-cell.highlight-cell {
+      background-color: var(--success-color);
+    }
+
+    .grid-info {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* 底部控制区 */
+    .footer-bar {
+      padding: 15px 20px;
+      background-color: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-warning {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #d35400;
+    }
+
+    /* 弹窗/对比面板 */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(44, 62, 80, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: #ffffff;
+      width: 85%;
+      max-width: 600px;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #f1f2f6;
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      color: var(--danger-color);
+      font-weight: bold;
+    }
+
+    .compare-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      gap: 15px;
+    }
+
+    .compare-box {
+      flex: 1;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+    }
+
+    .compare-box.error-focus {
+      border-color: var(--danger-color);
+      background-color: #fdf2f2;
+    }
+
+    .compare-box.correct-focus {
+      border-color: var(--success-color);
+      background-color: #f2fdf5;
+    }
+
+    .compare-box h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 1px;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 10px;
+      background-color: #e0e0e0;
+      padding: 1px;
+    }
+
+    .mini-cell {
+      background-color: #fff;
+    }
+
+    .mini-cell.active-red {
+      background-color: var(--danger-color);
+    }
+
+    .mini-cell.active-green {
+      background-color: var(--success-color);
+    }
+
+    .compare-text {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .alert-banner {
+      background-color: #fdf2f2;
+      border-left: 4px solid var(--danger-color);
+      padding: 12px;
+      border-radius: 4px;
+      color: var(--danger-color);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btn-close {
+      background-color: var(--text-color);
+      color: white;
+      width: 100%;
+    }
+
+    .btn-close:hover {
+      background-color: #1a252f;
+    }
+
+    /* 动画 */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    }
+
+    /* 提示引导 */
+    .guide-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .guide-text span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--success-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>百分数化成小数</h1>
+      <p>拖动滑块，观察百分数在数轴和百格图上对应的小数变化</p>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-content">
+      <!-- 左侧控制面板 -->
+      <div class="left-panel">
+        <!-- 数轴 -->
+        <div class="axis-container">
+          <svg id="number-line" viewBox="0 0 550 120" width="100%">
+            <!-- 动态生成 -->
+          </svg>
+        </div>
+
+        <!-- 滑块 -->
+        <div class="slider-wrapper">
+          <input type="range" id="percent-slider" class="custom-slider" min="0" max="10" value="0" step="1">
+        </div>
+
+        <!-- 转换结果展示 -->
+        <div id="display-box" class="display-box">
+          <div class="display-item">
+            <div class="display-label">百分数</div>
+            <div id="percent-val" class="display-value">0%</div>
+          </div>
+          <div class="arrow-icon">➔</div>
+          <div class="display-item">
+            <div class="display-label">小数</div>
+            <div id="decimal-val" class="display-value">0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧百格图 -->
+      <div class="right-panel">
+        <div class="grid-title">百格图 (整个大正方形为 1)</div>
+        <div id="grid-100" class="grid-container">
+          <!-- 动态生成100个格子 -->
+        </div>
+        <div class="grid-info">
+          阴影部分占整个图的：<strong id="grid-count" style="color: var(--primary-color);">0</strong> / 100
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="footer-bar">
+      <div class="guide-text">
+        <span id="guide-dot"></span>
+        <span id="guide-msg">请拖动滑块寻找 5% 吧！</span>
+      </div>
+      <button id="btn-compare" class="btn btn-warning">⚠️ 5% 是 0.5 吗？</button>
+    </div>
+
+    <!-- 对比弹窗 -->
+    <div id="compare-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">⚠️ 概念辨析：0.5 还是 0.05？</div>
+        </div>
+        
+        <div class="alert-banner">
+          <strong>红色警示：</strong>0.5 是 50% 哦！5% 只有 5 个 0.01，所以是 0.05！
+        </div>
+
+        <div class="compare-container">
+          <!-- 0.5 的情况 -->
+          <div class="compare-box error-focus">
+            <h3>0.5 (即 50%)</h3>
+            <div id="grid-50" class="mini-grid"></div>
+            <div class="compare-text" style="color: var(--danger-color);">50 个格子 (半张图)</div>
+          </div>
+
+          <!-- 0.05 的情况 -->
+          <div class="compare-box correct-focus">
+            <h3>0.05 (即 5%)</h3>
+            <div id="grid-5" class="mini-grid"></div>
+            <div class="compare-text" style="color: var(--success-color);">5 个格子 (极小部分)</div>
+          </div>
+        </div>
+
+        <button id="btn-close" class="btn btn-close">我明白了，返回练习</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slider = document.getElementById('percent-slider');
+      const percentVal = document.getElementById('percent-val');
+      const decimalVal = document.getElementById('decimal-val');
+      const displayBox = document.getElementById('display-box');
+      const grid100 = document.getElementById('grid-100');
+      const gridCount = document.getElementById('grid-count');
+      const guideDot = document.getElementById('guide-dot');
+      const guideMsg = document.getElementById('guide-msg');
+      const btnCompare = document.getElementById('btn-compare');
+      const compareModal = document.getElementById('compare-modal');
+      const btnClose = document.getElementById('btn-close');
+      const svgLine = document.getElementById('number-line');
+
+      // 初始化百格图
+      function initGrid() {
+        grid100.innerHTML = '';
+        for (let i = 0; i < 100; i++) {
+          const cell = document.createElement('div');
+          cell.classList.add('grid-cell');
+          grid100.appendChild(cell);
+        }
+      }
+
+      // 初始化数轴 SVG
+      function initSvgLine() {
+        let html = `
+          <!-- 主轴线 -->
+          <line x1="30" y1="60" x2="520" y2="60" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round" />
+        `;
+
+        // 刻度 0 到 10% (对应 0 到 0.10)
+        for (let i = 0; i <= 10; i++) {
+          const x = 30 + i * 49;
+          html += `
+            <!-- 刻度线 -->
+            <line x1="${x}" y1="50" x2="${x}" y2="70" stroke="#7f8c8d" stroke-width="2" />
+            <!-- 上方百分比标签 -->
+            <text x="${x}" y="35" class="tick-label percent-label" data-idx="${i}">${i}%</text>
+            <!-- 下方小数标签 -->
+            <text x="${x}" y="95" class="tick-label decimal-label" data-idx="${i}">${(i/100).toFixed(2)}</text>
+          `;
+        }
+
+        // 游标指针
+        html += `
+          <g id="pointer" transform="translate(30, 60)">
+            <line x1="0" y1="-25" x2="0" y2="25" stroke="#3498db" stroke-width="2" stroke-dasharray="3,3" />
+            <circle cx="0" cy="0" r="8" fill="#3498db" stroke="#fff" stroke-width="2" />
+          </g>
+        `;
+
+        svgLine.innerHTML = html;
+      }
+
+      // 更新视图
+      function updateView(val) {
+        const percent = val;
+        const decimal = (val / 100).toFixed(2);
+
+        // 1. 更新文本
+        percentVal.textContent = `${percent}%`;
+        decimalVal.textContent = decimal;
+
+        // 2. 更新数轴指针位置
+        const pointer = document.getElementById('pointer');
+        const targetX = 30 + val * 49;
+        pointer.setAttribute('transform', `translate(${targetX}, 60)`);
+
+        // 3. 更新数轴标签高亮
+        document.querySelectorAll('.tick-label').forEach(el => {
+          el.classList.remove('active-tick');
+        });
+        document.querySelectorAll(`[data-idx="${val}"]`).forEach(el => {
+          el.classList.add('active-tick');
+        });
+
+        // 4. 更新百格图
+        const cells = grid100.querySelectorAll('.grid-cell');
+        cells.forEach((cell, idx) => {
+          if (idx < val) {
+            cell.className = 'grid-cell active';
+            if (val === 5) {
+              cell.classList.add('highlight-cell');
+            }
+          } else {
+            cell.className = 'grid-cell';
+          }
+        });
+        gridCount.textContent = val;
+
+        // 5. 拦截 5% 核心目标
+        if (val === 5) {
+          displayBox.classList.add('highlight-target');
+          percentVal.classList.add('highlight');
+          decimalVal.classList.add('highlight');
+          guideDot.style.backgroundColor = 'var(--success-color)';
+          guideMsg.innerHTML = '✨ 完美！<strong>5% = 0.05</strong>。它只有5个0.01。';
+          
+          // 改变游标颜色为绿色
+          pointer.querySelector('circle').setAttribute('fill', 'var(--success-color)');
+          pointer.querySelector('line').setAttribute('stroke', 'var(--success-color)');
+        } else {
+          displayBox.classList.remove('highlight-target');
+          percentVal.classList.remove('highlight');
+          decimalVal.classList.remove('highlight');
+          guideDot.style.backgroundColor = 'var(--accent-color)';
+          guideMsg.textContent = '继续拖动，观察百分数与小数的对应关系';
+          
+          // 恢复游标颜色
+          pointer.querySelector('circle').setAttribute('fill', 'var(--primary-color)');
+          pointer.querySelector('line').setAttribute('stroke', 'var(--primary-color)');
+        }
+      }
+
+      // 渲染对比弹窗中的微型百格图
+      function renderMiniGrids() {
+        const grid50 = document.getElementById('grid-50');
+        const grid5 = document.getElementById('grid-5');
+
+        grid50.innerHTML = '';
+        grid5.innerHTML = '';
+
+        for (let i = 0; i < 100; i++) {
+          const cell50 = document.createElement('div');
+          cell50.className = `mini-cell ${i < 50 ? 'active-red' : ''}`;
+          grid50.appendChild(cell50);
+
+          const cell5 = document.createElement('div');
+          cell5.className = `mini-cell ${i < 5 ? 'active-green' : ''}`;
+          grid5.appendChild(cell5);
+        }
+      }
+
+      // 事件监听
+      slider.addEventListener('input', (e) => {
+        updateView(parseInt(e.target.value));
+      });
+
+      btnCompare.addEventListener('click', () => {
+        renderMiniGrids();
+        compareModal.classList.add('active');
+      });
+
+      btnClose.addEventListener('click', () => {
+        compareModal.classList.remove('active');
+      });
+
+      // 初始化执行
+      initGrid();
+      initSvgLine();
+      updateView(0);
+    });
+  </script>
+</body>
+</html>

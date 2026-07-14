@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学探究：税率与民生关系可视化</title>
+    <style>
+        :root {
+            --primary-color: #2b579a;
+            --bg-warm: #fffde7;
+            --bg-cold: #eceff1;
+            --text-dark: #333333;
+            --accent-red: #d32f2f;
+            --accent-green: #388e3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例容器，适合课堂投屏 */
+        .screen-container {
+            width: 1024px;
+            height: 768px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header .meta-info {
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* 主体内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            background-color: #fafafa;
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            width: 320px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .question-box {
+            background-color: #eef2f7;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 15px;
+        }
+
+        .question-box h3 {
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .question-box p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .slider-section {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            margin-bottom: 15px;
+        }
+
+        .slider-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tax-value {
+            font-size: 20px;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .tax-value.high {
+            color: var(--accent-red);
+        }
+
+        .slider-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            min-height: 80px;
+        }
+
+        /* 右侧可视化画布 */
+        .visual-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 警告横幅 */
+        .warning-banner {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background-color: rgba(211, 47, 47, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .warning-banner.show {
+            transform: translateY(0);
+        }
+
+        /* 底部引导思考区 */
+        .footer-thinking {
+            background-color: #f1f8e9;
+            border-top: 1px solid #dcedc8;
+            padding: 15px 30px;
+            font-size: 14px;
+            color: #33691e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-thinking strong {
+            color: #1b5e20;
+        }
+
+        /* 提示音效按钮 */
+        .audio-hint {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="screen-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>六年级数学：税率与民生微科研</h1>
+        <div class="meta-info">知识点：税率的实际应用 (KP5)</div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <div>
+                <div class="question-box">
+                    <h3>思考题：</h3>
+                    <p>如果把粮食的税率也提高到30%，普通老百姓的生活会发生什么变化？</p>
+                </div>
+
+                <div class="slider-section">
+                    <div class="slider-title">
+                        <span>粮食税率调节：</span>
+                        <span id="tax-display" class="tax-value">9%</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="9" max="30" value="9" class="slider" id="tax-slider">
+                    </div>
+                    <div class="slider-labels">
+                        <span>现行低税率 (9%)</span>
+                        <span>高税率 (30%)</span>
+                    </div>
+                    <div class="audio-hint">💡 拖动滑块可实时合成环境音效</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="status-desc" id="status-text">
+                    加载中...
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧可视化画布 -->
+        <div class="visual-panel" id="visual-panel">
+            <!-- SVG 场景绘制 -->
+            <svg id="scene-svg" viewBox="0 0 600 480" width="100%" height="100%">
+                <!-- 背景墙面 -->
+                <rect id="bg-wall" x="0" y="0" width="600" height="480" fill="#fffde7" transition="fill 0.5s"/>
+                
+                <!-- 窗户 -->
+                <rect x="50" y="40" width="100" height="120" fill="#e0f2f1" stroke="#b2dfdb" stroke-width="4"/>
+                <line x1="100" y1="40" x2="100" y2="160" stroke="#b2dfdb" stroke-width="2"/>
+                <line x1="50" y1="100" x2="150" y2="100" stroke="#b2dfdb" stroke-width="2"/>
+                <!-- 窗外阳光/阴影 -->
+                <circle id="sun-light" cx="100" cy="100" r="30" fill="#fff59d" opacity="0.6"/>
+
+                <!-- 墙上挂画 -->
+                <rect x="450" y="50" width="100" height="70" fill="#eceff1" stroke="#b0bec5" stroke-width="3"/>
+                <text x="500" y="90" font-size="14" fill="#78909c" text-anchor="middle" font-weight="bold">家和万事兴</text>
+
+                <!-- 地板 -->
+                <rect x="0" y="360" width="600" height="120" fill="#d7ccc8"/>
+                <line x1="0" y1="360" x2="600" y2="360" stroke="#8d6e63" stroke-width="4"/>
+
+                <!-- 饭桌 -->
+                <ellipse cx="300" cy="380" rx="220" ry="60" fill="#a1887f" stroke="#5d4037" stroke-width="5"/>
+
+                <!-- 角色：爸爸 (左) -->
+                <g id="char-father" transform="translate(160, 260)">
+                    <!-- 身体 -->
+                    <path d="M -30 100 L 30 100 L 20 40 L -20 40 Z" fill="#1e88e5"/>
+                    <!-- 头部 -->
+                    <circle cx="0" cy="10" r="30" fill="#ffdbac"/>
+                    <!-- 头发 -->
+                    <path d="M -32 5 Q 0 -25 32 5 Q 0 -10 -32 5" fill="#3e2723"/>
+                    <!-- 眼睛 -->
+                    <circle cx="-10" cy="5" r="3" fill="#3e2723"/>
+                    <circle cx="10" cy="5" r="3" fill="#3e2723"/>
+                    <!-- 眉毛 -->
+                    <path id="fa-brow-l" d="M -16 -3 Q -10 -8 -4 -3" fill="none" stroke="#3e2723" stroke-width="2" stroke-linecap="round"/>
+                    <path id="fa-brow-r" d="M 4 -3 Q 10 -8 16 -3" fill="none" stroke="#3e2723" stroke-width="2" stroke-linecap="round"/>
+                    <!-- 嘴巴 -->
+                    <path id="fa-mouth" d="M -12 20 Q 0 30 12 20" fill="none" stroke="#3e2723" stroke-width="3" stroke-linecap="round"/>
+                    <!-- 汗滴/眼泪 (默认隐藏) -->
+                    <path id="fa-tear" d="M -10 12 C -10 15 -12 18 -12 20 C -12 18 -14 15 -10 12" fill="#90caf9" opacity="0"/>
+                </g>
+
+                <!-- 角色：妈妈 (右) -->
+                <g id="char-mother" transform="translate(440, 260)">
+                    <!-- 身体 -->
+                    <path d="M -25 100 L 25 100 L 18 40 L -18 40 Z" fill="#ec407a"/>
+                    <!-- 头部 -->
+                    <circle cx="0" cy="10" r="28" fill="#ffdbac"/>
+                    <!-- 头发 -->
+                    <path d="M -30 10 Q -30 -30 30 10" fill="#212121" stroke="#212121" stroke-width="4"/>
+                    <circle cx="-28" cy="12" r="8" fill="#212121"/>
+                    <circle cx="28" cy="12" r="8" fill="#212121"/>
+                    <!-- 眼睛 -->
+                    <circle cx="-9" cy="5" r="3" fill="#212121"/>
+                    <circle cx="9" cy="5" r="3" fill="#212121"/>
+                    <!-- 眉毛 -->
+                    <path id="mo-brow-l" d="M -14 -2 Q -9 -6 -4 -2" fill="none" stroke="#212121" stroke-width="1.5" stroke-linecap="round"/>
+                    <path id="mo-brow-r" d="M 4 -2 Q 9 -6 14 -2" fill="none" stroke="#212121" stroke-width="1.5" stroke-linecap="round"/>
+                    <!-- 嘴巴 -->
+                    <path id="mo-mouth" d="M -10 20 Q 0 28 10 20" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
+                    <!-- 汗滴/眼泪 -->
+                    <path id="mo-tear" d="M 9 12 C 9 15 7 18 7 20 C 7 18 5 15 9 12" fill="#90caf9" opacity="0"/>
+                </g>
+
+                <!-- 角色：孩子 (中) -->
+                <g id="char-child" transform="translate(300, 290)">
+                    <!-- 身体 -->
+                    <path d="M -20 80 L 20 80 L 15 30 L -15 30 Z" fill="#26a69a"/>
+                    <!-- 头部 -->
+                    <circle cx="0" cy="5" r="24" fill="#ffdbac"/>
+                    <!-- 头发 -->
+                    <path d="M -25 0 Q 0 -20 25 0" fill="#5d4037" stroke="#5d4037" stroke-width="3"/>
+                    <!-- 眼睛 -->
+                    <circle cx="-8" cy="2" r="2.5" fill="#5d4037"/>
+                    <circle cx="8" cy="2" r="2.5" fill="#5d4037"/>
+                    <!-- 嘴巴 -->
+                    <path id="ch-mouth" d="M -8 14 Q 0 22 8 14" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- 丰盛的食物组 (高税率下会逐渐消失) -->
+                <g id="food-rich">
+                    <!-- 烤鸡盘 -->
+                    <ellipse cx="230" cy="365" rx="35" ry="12" fill="#eceff1" stroke="#b0bec5" stroke-width="1.5"/>
+                    <path d="M 210 360 Q 230 340 250 360 Q 230 370 210 360" fill="#b71c1c"/> <!-- 烤鸡 -->
+                    <path d="M 245 360 Q 255 355 260 362" stroke="#b71c1c" stroke-width="4" fill="none"/> <!-- 鸡腿 -->
+                    
+                    <!-- 蔬菜盘 -->
+                    <ellipse cx="370" cy="365" rx="35" ry="12" fill="#eceff1" stroke="#b0bec5" stroke-width="1.5"/>
+                    <circle cx="355" cy="363" r="8" fill="#4caf50"/>
+                    <circle cx="370" cy="361" r="9" fill="#81c784"/>
+                    <circle cx="385" cy="364" r="7" fill="#2e7d32"/>
+
+                    <!-- 鲜鱼盘 -->
+                    <ellipse cx="300" cy="385" rx="45" ry="14" fill="#e0f7fa" stroke="#00acc1" stroke-width="1.5"/>
+                    <path d="M 270 385 Q 300 375 325 385 Q 300 395 270 385" fill="#4dd0e1"/> <!-- 鱼身 -->
+                    <path d="M 325 385 L 335 380 L 332 385 L 335 390 Z" fill="#00acc1"/> <!-- 鱼尾 -->
+                </g>
+
+                <!-- 基础粮食组 (高税率下变少) -->
+                <g id="food-basic">
+                    <!-- 饭碗 (左) -->
+                    <path d="M 170 380 Q 180 395 190 380 Z" fill="#ffffff" stroke="#9e9e9e"/>
+                    <ellipse id="rice-l" cx="180" cy="380" rx="10" ry="4" fill="#ffffff"/>
+
+                    <!-- 饭碗 (右) -->
+                    <path d="M 410 380 Q 420 395 430 380 Z" fill="#ffffff" stroke="#9e9e9e"/>
+                    <ellipse id="rice-r" cx="420" cy="380" rx="10" ry="4" fill="#ffffff"/>
+
+                    <!-- 中央大米饭盆 -->
+                    <path d="M 275 355 Q 300 340 325 355 L 320 370 Q 300 380 280 370 Z" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+                    <!-- 米饭堆 -->
+                    <path id="main-rice" d="M 275 355 Q 300 330 325 355 Z" fill="#eeeeee"/>
+                </g>
+
+                <!-- 价格标签 -->
+                <g id="price-tag" transform="translate(300, 425)">
+                    <rect x="-70" y="-15" width="140" height="30" rx="6" fill="#fff" stroke="#ff9800" stroke-width="2"/>
+                    <text id="price-text" x="0" y="5" font-size="14" font-weight="bold" fill="#e65100" text-anchor="middle">一餐伙食费: 15元</text>
+                </g>
+            </svg>
+
+            <!-- 警告横幅 -->
+            <div class="warning-banner" id="warning-banner">
+                <span>⚠️ 粮食是大家的生命线，高税率会让老百姓饿肚子！</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部引导思考 -->
+    <div class="footer-thinking">
+        <span>💡 <strong>课堂引导：</strong></span>
+        <span>观察随着税率上升，老百姓的伙食开支和生活状态发生了什么变化？想一想，为什么国家要对粮食等基本生活必需品制定极低的税率（9%），而对烟酒等非必需品制定高税率？</span>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('tax-slider');
+    const taxDisplay = document.getElementById('tax-display');
+    const statusText = document.getElementById('status-text');
+    const warningBanner = document.getElementById('warning-banner');
+
+    // SVG 元素
+    const bgWall = document.getElementById('bg-wall');
+    const sunLight = document.getElementById('sun-light');
+    const foodRich = document.getElementById('food-rich');
+    const mainRice = document.getElementById('main-rice');
+    const riceL = document.getElementById('rice-l');
+    const riceR = document.getElementById('rice-r');
+    const priceText = document.getElementById('price-text');
+
+    // 人物表情元素
+    const faMouth = document.getElementById('fa-mouth');
+    const moMouth = document.getElementById('mo-mouth');
+    const chMouth = document.getElementById('ch-mouth');
+    const faBrowL = document.getElementById('fa-brow-l');
+    const faBrowR = document.getElementById('fa-brow-r');
+    const moBrowL = document.getElementById('mo-brow-l');
+    const moBrowR = document.getElementById('mo-brow-r');
+    const faTear = document.getElementById('fa-tear');
+    const moTear = document.getElementById('mo-tear');
+
+    // Web Audio API 变量
+    let audioCtx = null;
+    let osc1 = null, osc2 = null, osc3 = null;
+    let gainNode = null;
+    let filterNode = null;
+
+    // 初始化 Web Audio
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // 低通滤波器，用于控制音色明暗
+        filterNode = audioCtx.createBiquadFilter();
+        filterNode.type = 'lowpass';
+        filterNode.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+        // 主音量控制
+        gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime); // 保持温和的音量
+
+        // 创建三个振荡器合成和弦
+        osc1 = audioCtx.createOscillator();
+        osc2 = audioCtx.createOscillator();
+        osc3 = audioCtx.createOscillator();
+
+        osc1.type = 'triangle';
+        osc2.type = 'triangle';
+        osc3.type = 'triangle';
+
+        // 初始和弦：C大和弦 (C4, E4, G4) -> 温暖明亮
+        osc1.frequency.setValueAtTime(261.63, audioCtx.currentTime);
+        osc2.frequency.setValueAtTime(329.63, audioCtx.currentTime);
+        osc3.frequency.setValueAtTime(392.00, audioCtx.currentTime);
+
+        // 连接节点
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        osc3.connect(gainNode);
+        gainNode.connect(filterNode);
+        filterNode.connect(audioCtx.destination);
+
+        osc1.start();
+        osc2.start();
+        osc3.start();
+    }
+
+    // 更新音效
+    function updateAudio(taxRate) {
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        // 归一化比例 (0 到 1)
+        const t = (taxRate - 9) / 21;
+
+        // 频率插值：从 C大和弦(温暖) 渐变到 C小和弦且降低八度(低沉、忧郁)
+        // 9% 对应 C4(261.6), E4(329.6), G4(392.0)
+        // 30% 对应 C3(130.8), Eb3(155.6), G3(196.0)
+        const f1 = 261.63 * (1 - t) + 130.81 * t;
+        const f2 = 329.63 * (1 - t) + 155.56 * t;
+        const f3 = 392.00 * (1 - t) + 196.00 * t;
+
+        osc1.frequency.setTargetAtTime(f1, audioCtx.currentTime, 0.1);
+        osc2.frequency.setTargetAtTime(f2, audioCtx.currentTime, 0.1);
+        osc3.frequency.setTargetAtTime(f3, audioCtx.currentTime, 0.1);
+
+        // 滤波器截止频率：从明亮(1200Hz)到沉闷(200Hz)
+        const cutoff = 1000 * (1 - t) + 200 * t;
+        filterNode.frequency.setTargetAtTime(cutoff, audioCtx.currentTime, 0.1);
+    }
+
+    // 更新视觉和文本状态
+    function updateVisualization(taxRate) {
+        taxDisplay.textContent = taxRate + '%';
+        
+        if (taxRate >= 25) {
+            taxDisplay.className = 'tax-value high';
+        } else {
+            taxDisplay.className = 'tax-value';
+        }
+
+        // 1. 计算插值比例
+        const t = (taxRate - 9) / 21;
+
+        // 2. 伙食费计算 (基础15元，随税率上升，粮食价格飞涨)
+        const cost = (15 * (1 + t * 1.5)).toFixed(1);
+        priceText.textContent = `一餐伙食费: ${cost}元`;
+
+        // 3. 墙面颜色渐变 (温暖黄色 -> 阴冷灰色)
+        const r = Math.round(255 * (1 - t) + 207 * t);
+        const g = Math.round(253 * (1 - t) + 216 * t);
+        const b = Math.round(231 * (1 - t) + 220 * t);
+        bgWall.setAttribute('fill', `rgb(${r}, ${g}, ${b})`);
+        sunLight.setAttribute('opacity', (0.6 * (1 - t)).toString());
+
+        // 4. 食物消失度
+        foodRich.setAttribute('opacity', (1 - t * 1.2).toString()); // 丰盛食物完全消失
+        
+        // 粮食变少
+        const riceScale = 1 - t * 0.6;
+        mainRice.setAttribute('transform', `translate(300, 355) scale(${riceScale}) translate(-300, -355)`);
+        riceL.setAttribute('opacity', (1 - t * 0.7).toString());
+        riceR.setAttribute('opacity', (1 - t * 0.7).toString());
+
+        // 5. 人物表情与眼泪
+        if (taxRate <= 12) {
+            // 幸福微笑
+            faMouth.setAttribute('d', 'M -12 20 Q 0 30 12 20');
+            moMouth.setAttribute('d', 'M -10 20 Q 0 28 10 20');
+            chMouth.setAttribute('d', 'M -8 14 Q 0 22 8 14');
+            
+            faBrowL.setAttribute('d', 'M -16 -3 Q -10 -8 -4 -3');
+            faBrowR.setAttribute('d', 'M 4 -3 Q 10 -8 16 -3');
+            moBrowL.setAttribute('d', 'M -14 -2 Q -9 -6 -4 -2');
+            moBrowR.setAttribute('d', 'M 4 -2 Q 9 -6 14 -2');
+
+            faTear.setAttribute('opacity', '0');
+            moTear.setAttribute('opacity', '0');
+
+            statusText.innerHTML = `<strong>当前状态：丰衣足食</strong><br>粮食税率为 9%（国家保护性低税率）。百姓生活富足，餐桌上鸡鸭鱼肉样样俱全，家庭充满欢声笑语。`;
+            warningBanner.classList.remove('show');
+
+        } else if (taxRate > 12 && taxRate < 25) {
+            // 逐渐忧虑
+            faMouth.setAttribute('d', 'M -12 22 Q 0 22 12 22');
+            moMouth.setAttribute('d', 'M -10 22 Q 0 22 10 22');
+            chMouth.setAttribute('d', 'M -8 16 Q 0 16 8 16');
+
+            // 眉头微锁
+            faBrowL.setAttribute('d', 'M -16 -5 Q -10 -5 -4 -8');
+            faBrowR.setAttribute('d', 'M 4 -8 Q 10 -5 16 -5');
+            moBrowL.setAttribute('d', 'M -14 -4 Q -9 -4 -4 -7');
+            moBrowR.setAttribute('d', 'M 4 -7 Q 9 -4 14 -4');
+
+            faTear.setAttribute('opacity', '0');
+            moTear.setAttribute('opacity', '0');
+
+            statusText.innerHTML = `<strong>当前状态：精打细算</strong><br>税率提高到 ${taxRate}%。伙食开支明显增加，餐桌上的肉类和蔬菜变少了，大家开始感到生活压力。`;
+            warningBanner.classList.remove('show');
+
+        } else {
+            // 极度难过/哭泣
+            faMouth.setAttribute('d', 'M -12 25 Q 0 15 12 25');
+            moMouth.setAttribute('d', 'M -10 24 Q 0 16 10 24');
+            chMouth.setAttribute('d', 'M -8 18 Q 0 12 8 18');
+
+            // 愁眉苦脸
+            faBrowL.setAttribute('d', 'M -16 -8 Q -10 -3 -4 -2');
+            faBrowR.setAttribute('d', 'M 4 -2 Q 10 -3 16 -8');
+            moBrowL.setAttribute('d', 'M -14 -7 Q -9 -2 -4 -1');
+            moBrowR.setAttribute('d', 'M 4 -1 Q 9 -2 14 -7');
+
+            // 出现泪水
+            faTear.setAttribute('opacity', '0.8');
+            moTear.setAttribute('opacity', '0.8');
+
+            statusText.innerHTML = `<strong>当前状态：饥寒交迫</strong><br>税率高达 ${taxRate}%！粮食价格飞涨，普通家庭难以负担，餐桌上只剩下稀粥，老百姓面临挨饿的困境。`;
+            warningBanner.classList.add('show');
+        }
+    }
+
+    // 监听滑块事件
+    slider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        
+        // 首次互动时初始化音频
+        if (!audioCtx) {
+            initAudio();
+        }
+        
+        updateVisualization(val);
+        updateAudio(val);
+    });
+
+    // 初始化页面
+    updateVisualization(9);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI 喂养实验</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            cursor: default;
+        }
+        .instruction {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+        #robot-status {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instruction">拖动“食物”喂养你的 AI 机器人</div>
+    <div id="canvas-container">
+        <div id="robot-status">当前状态：等待投喂...</div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusText = document.getElementById('robot-status');
+
+    let width, height;
+    let robot = { x: 0, y: 0, state: 'normal' }; // normal, happy, angry
+    let items = [
+        { id: 'good', x: 100, y: 300, label: '礼貌用语', color: '#4CAF50', dragging: false },
+        { id: 'bad', x: 100, y: 400, label: '粗俗脏话', color: '#F44336', dragging: false }
+    ];
+
+    function resize() {
+        width = canvas.parentElement.clientWidth;
+        height = canvas.parentElement.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+        robot.x = width / 2;
+        robot.y = height / 2 + 50;
+        draw();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // 绘制机器人
+        ctx.fillStyle = robot.state === 'angry' ? '#ffcccc' : '#e0e0e0';
+        ctx.beginPath();
+        ctx.arc(robot.x, robot.y, 60, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 眼睛
+        ctx.fillStyle = robot.state === 'angry' ? 'red' : '#333';
+        ctx.fillRect(robot.x - 25, robot.y - 20, 15, 15);
+        ctx.fillRect(robot.x + 10, robot.y - 20, 15, 15);
+
+        // 嘴巴
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        if (robot.state === 'happy') ctx.arc(robot.x, robot.y + 10, 20, 0.2, Math.PI - 0.2);
+        else if (robot.state === 'angry') ctx.moveTo(robot.x - 20, robot.y + 20), ctx.lineTo(robot.x + 20, robot.y + 20);
+        else ctx.moveTo(robot.x - 20, robot.y + 15), ctx.lineTo(robot.x + 20, robot.y + 15);
+        ctx.stroke();
+
+        // 绘制食物
+        items.forEach(item => {
+            ctx.fillStyle = item.color;
+            ctx.fillRect(item.x - 40, item.y - 20, 80, 40);
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(item.label, item.x, item.y + 5);
+        });
+    }
+
+    canvas.addEventListener('mousedown', e => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        items.forEach(item => {
+            if (Math.abs(mx - item.x) < 40 && Math.abs(my - item.y) < 20) item.dragging = true;
+        });
+    });
+
+    canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        items.forEach(item => {
+            if (item.dragging) {
+                item.x = e.clientX - rect.left;
+                item.y = e.clientY - rect.top;
+            }
+        });
+        draw();
+    });
+
+    canvas.addEventListener('mouseup', e => {
+        items.forEach(item => {
+            if (item.dragging) {
+                const dist = Math.hypot(item.x - robot.x, item.y - robot.y);
+                if (dist < 100) {
+                    if (item.id === 'good') {
+                        robot.state = 'happy';
+                        statusText.innerText = "文明度 +10%！AI 学会了友善。";
+                    } else {
+                        robot.state = 'angry';
+                        statusText.innerText = "输入垃圾，输出垃圾！AI 吐出了：***你***！";
+                    }
+                    setTimeout(() => { robot.state = 'normal'; statusText.innerText = "等待投喂..."; draw(); }, 2000);
+                }
+                item.x = item.id === 'good' ? 100 : 100;
+                item.y = item.id === 'good' ? 300 : 400;
+                item.dragging = false;
+            }
+        });
+        draw();
+    });
+
+    window.addEventListener('resize', resize);
+    resize();
+</script>
+</body>
+</html>

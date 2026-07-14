@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人路线方案对比决策</title>
+    <style>
+        :root { --primary: #2563eb; --accent: #f59e0b; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; height: 100vh; box-sizing: border-box; }
+        .container { width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .controls { display: flex; gap: 20px; margin-bottom: 20px; padding: 15px; background: #f1f5f9; border-radius: 8px; }
+        .control-group { flex: 1; }
+        .chart-area { display: flex; justify-content: space-around; align-items: flex-end; height: 200px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        .bar-container { width: 120px; text-align: center; }
+        .bar { width: 100%; background: var(--primary); transition: height 0.3s, background 0.3s; border-radius: 4px 4px 0 0; }
+        #barA { height: 50%; background: #ef4444; }
+        #barB { height: 50%; background: #22c55e; }
+        .sim-area { height: 150px; background: #1e293b; margin-top: 20px; position: relative; overflow: hidden; border-radius: 8px; }
+        .robot { position: absolute; width: 30px; height: 30px; border-radius: 50%; top: 40px; }
+        #robotA { background: #ef4444; left: 10px; }
+        #robotB { background: #22c55e; left: 10px; top: 90px; }
+        button { padding: 10px 20px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 5px; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>餐厅经理决策：方案A vs 方案B</h3>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>时间紧迫度: <span id="valTime">5</span></label>
+            <input type="range" id="sliderTime" min="0" max="10" value="5" style="width:100%">
+        </div>
+        <div class="control-group">
+            <label>电费单价: <span id="valCost">5</span></label>
+            <input type="range" id="sliderCost" min="0" max="10" value="5" style="width:100%">
+        </div>
+    </div>
+
+    <div class="chart-area">
+        <div class="bar-container">
+            <div id="barA" class="bar"></div>
+            <p>方案A: 极速型</p>
+        </div>
+        <div class="bar-container">
+            <div id="barB" class="bar"></div>
+            <p>方案B: 节能型</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <button id="btnRun">对比运行模拟</button>
+    </div>
+
+    <div class="sim-area" id="simArea">
+        <div id="robotA" class="robot"></div>
+        <div id="robotB" class="robot"></div>
+    </div>
+</div>
+
+<script>
+    const sliderTime = document.getElementById('sliderTime');
+    const sliderCost = document.getElementById('sliderCost');
+    const barA = document.getElementById('barA');
+    const barB = document.getElementById('barB');
+    const robotA = document.getElementById('robotA');
+    const robotB = document.getElementById('robotB');
+
+    function updateScores() {
+        const time = parseInt(sliderTime.value);
+        const cost = parseInt(sliderCost.value);
+        document.getElementById('valTime').innerText = time;
+        document.getElementById('valCost').innerText = cost;
+
+        // 逻辑：时间越紧，A分越高；电费越贵，B分越高
+        const scoreA = (time * 8 + (10 - cost) * 2);
+        const scoreB = ((10 - time) * 2 + cost * 8);
+        
+        barA.style.height = (scoreA + 20) + 'px';
+        barB.style.height = (scoreB + 20) + 'px';
+    }
+
+    document.getElementById('btnRun').addEventListener('click', () => {
+        robotA.style.transition = 'left 1s linear';
+        robotB.style.transition = 'left 3s linear';
+        robotA.style.left = '90%';
+        robotB.style.left = '90%';
+        
+        setTimeout(() => {
+            robotA.style.transition = 'none';
+            robotB.style.transition = 'none';
+            robotA.style.left = '10px';
+            robotB.style.left = '10px';
+        }, 3500);
+    });
+
+    sliderTime.addEventListener('input', updateScores);
+    sliderCost.addEventListener('input', updateScores);
+    updateScores();
+</script>
+
+</body>
+</html>

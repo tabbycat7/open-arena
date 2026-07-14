@@ -1,0 +1,347 @@
+{
+  "task_id": "30d5a6ad-f7ef-4897-b5aa-6526f078effa",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看屏幕上这幅漫画：小明刚和妈妈在家聊到周末想吃冰淇淋，旁边的智能音箱突然插嘴推荐了附近超市的冰淇淋优惠券。你觉得，这台‘贴心’的音箱到底是在提供便利的服务，还是已经悄悄越过了某种我们看不见的边界呢？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "main_M1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "请大家仔细读一读屏幕上这款超火的‘AI换脸App’用户协议里的这一行小字：‘用户同意授予本平台对上传照片的、全球范围内的、无限期的免费使用权。’读完这行字，如果现在让你用自己的照片去体验这个换脸游戏，你会犹豫吗？为什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "大家看这张论坛截图，有网友因为觉得好玩，故意用各种不好听的话去‘套路’和‘调戏’AI，最终成功让AI机器人也说出了脏话。面对这个没有人类情感的AI，我们真的可以毫无顾忌地对它说脏话，甚至故意教它说坏话吗？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M3.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "大家看大屏幕上的这两张图，左边是AI生成的‘外星人袭击某地’的新闻图片，看起来极其逼真；右边则是官方的辟谣和细节放大图。如果你在网上刷到左边这张图，你会怎么去拆穿这个AI制造的‘逼真谎言’，找出它的破绽呢？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "main_M4.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "在学校的手抄报比赛中，小明用AI直接生成了一幅精美的插图，签上自己的名字就交了上去；而小红则是先让AI给她提供手抄报的排版灵感，然后自己一笔一画手绘完成。如果你们是评委，你会怎么评判这两位同学的行为？你觉得使用AI的合理边界到底在哪里？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M5.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "快看屏幕上这个让我们纠结的瞬间：已经是晚上十点了，你的作业还没写完，这时候手机里的‘拍照搜题AI’不仅给出了答案，连详细的解题步骤都写好了，只要抄上去就能马上睡觉。面对这样的诱惑，你会怎么选择？为了让我们班以后能更好地使用AI，我们能不能一起制定一份《班级AI自律公约》？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M6.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果你的智能运动手表在监测到你运动后心率有些异常时，立刻在屏幕上为你弹出了附近一家私立心血管医院的‘特需号源’广告。你觉得，这和智能音箱在聊天时推荐冰淇淋相比，是更贴心的服务，还是更严重的越界？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "variant_V1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "智能音箱在夜间听到了爸爸的呼噜声，第二天早上主动提醒爸爸可能存在呼吸暂停的健康风险，并建议就医。这和音箱在聊天时推荐冰淇淋广告相比，为什么前者被多数人接受，而后者让人感到不舒服？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "一款‘AI个人专属字体生成App’非常流行，只要你上传手写的20个汉字，它就能生成你的专属字模。但它的用户协议写着：‘平台可无偿将此字形用于所有AI自动生成的公文和合同排版中。’你觉得这里面隐藏着什么安全风险？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "学校食堂引入了‘刷脸支付’系统，并明确提示‘所有人脸数据仅保存在学校内网服务器，不与任何第三方共享，且毕业后一键销毁’。这和‘AI换脸App’的无限期免费使用权相比，为什么能让我们更放心？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "有同学在玩一款单机AI角色扮演游戏时，经常对AI角色进行极其恶毒的咒骂。他辩解说：‘这只是个单机游戏，数据根本不联网，我绝对不会污染任何人的语料库，这完全是我的个人自由。’你赞同他的观点吗？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V3-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果AI客服在面对人类用户的无礼谩骂时，系统设定其‘自动用更刻薄的话回怼’，或者‘默默承受并记录’。作为程序设计师，你会选择哪种设定？为什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V3-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "网上流传一篇《为什么感冒时吃红薯能100%治愈：基于量子生物学的最新发现》的科普文，逻辑严密，术语高深，甚至还列出了复杂的分子公式。你会怎么去拆穿这个AI制造的‘科学谎言’？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V4-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "微信群里疯传一段视频，视频中班主任正在用非常严厉、不合常理的语气批评某位同学。视频里老师的口型和声音完全对得上。在转发或相信这段视频之前，你该如何当好一个‘信息侦探’？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V4-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "小明写好作文草稿后，让AI帮他修改错别字和润色词句，然后提交；小红则直接给AI输入作文题目，让AI生成了一篇满分作文提交。如果这两篇作文都得了高分，你觉得谁的做法是合理的？为什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V5-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "某AI绘画软件的开发者宣称：‘我们用了一百万张网络艺术家的公开插画来训练这个AI，现在任何人都可以免费生成类似风格的作品。’如果小明用这个AI生成了一幅插画并用于商业售卖，你觉得这公平吗？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V5-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "愚人节到了，小明想用AI工具把同桌的脸合成到一个搞笑的猴子视频里，发到班级群里逗大家开心。他觉得‘这只是开个玩笑，大家乐一乐就过去了，没必要上纲上线’。如果你是同桌，你会怎么用我们今天学的自律公约来说服他？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V6-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "周末写数学作业遇到难题，小明直接用拍照搜题软件看答案抄下来；小红则是用AI老师逐步引导，只让AI给出‘解题思路和第一步线索’，自己解出答案。你觉得谁才是AI时代的自律学习者？为什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V6-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-1",
+      "question_type": "scaffold",
+      "content": "当你在手机上用普通相机拍照，和用“AI换脸软件”拍照时，这两个软件分别拿走了你的什么信息呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-2",
+      "question_type": "scaffold",
+      "content": "如果家里的钥匙丢了，我们可以换一把锁；但如果你的“人脸数据”被别人拿走了，你能给自己的脸“换一把锁”吗？这会带来什么麻烦？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2-1",
+      "question_type": "scaffold",
+      "content": "平时下载新游戏点击“我同意”时，你有没有注意到旁边那些密密麻麻的小字？我们通常可以在这些小字的什么位置找到关于“相机、麦克风权限”的说明？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S1-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2-2",
+      "question_type": "scaffold",
+      "content": "如果一个玩具店老板让你签个字，规定“你可以免费玩这个玩具，但你自己的玩具必须永远、无条件送给老板卖给别人”，你愿意签吗？这和AI换脸App的协议有什么相似的地方？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S1-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-1",
+      "question_type": "scaffold",
+      "content": "家里养的小鹦鹉是怎么学会说“你好”的？如果我们每天都对它说脏话，它最后会学会说什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-2",
+      "question_type": "scaffold",
+      "content": "如果我们要养一只健康的电子宠物，能每天给它喂垃圾食品吗？如果我们每天用脏话和恶意的问题去“喂”AI聊天机器人，它吐出来的回答会变成什么样？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2-1",
+      "question_type": "scaffold",
+      "content": "如果你每天在家里写作业时都习惯自言自语说粗口，到了学校和同学说话时，这些粗口会不会一不小心“溜”出来？为什么？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S2-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2-2",
+      "question_type": "scaffold",
+      "content": "当你用温柔、礼貌的话向AI寻求帮助，和用愤怒、辱骂的话去命令AI时，你自己的心情哪一个会变得更好、更平静？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1-1",
+      "question_type": "scaffold",
+      "content": "在日常生活中，你有没有遇到过有的同学虽然说话声音很大、听起来特别自信，但他说的某件事其实是错的？这说明说话的“语气”和事情的“真相”是一回事吗？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S3-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1-2",
+      "question_type": "scaffold",
+      "content": "如果你问AI：“李白在2024年用手机写了哪首唐诗？”，你觉得AI应该怎么回答？如果它顺着你的话编出了一首诗，这说明了什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2-1",
+      "question_type": "scaffold",
+      "content": "如果有人在班里传言说“明天学校要放假一天”，为了确认这个消息是不是真的，你最应该去问谁，或者去哪里看通知？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2-2",
+      "question_type": "scaffold",
+      "content": "当AI告诉你“某地发生了一件奇怪的新闻”时，如果我们去人民网、新华社等官方媒体上搜索，发现完全没有这条报道，这说明了什么？我们应该相信谁？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1-1",
+      "question_type": "scaffold",
+      "content": "如果你的好朋友一笔一画画了一幅画，你拿去复印机上复印了一张，然后在右下角签上你自己的名字去参赛。你觉得这算你自己的“原创作品”吗？为什么？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S4-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1-2",
+      "question_type": "scaffold",
+      "content": "在电脑前输入一句话，让AI“一键生成”一幅画，然后签上自己的名字去参加学校的手抄报比赛。这和上面“用复印机复印同学的画”有什么相似的地方？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2-1",
+      "question_type": "scaffold",
+      "content": "如果学校举行数学竞赛，规定“不能使用计算器”，但你偷偷用了并拿了第一名，这公平吗？如果我们获准在某些创作中使用工具，我们应该怎么做来证明自己的诚实？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S4-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2-2",
+      "question_type": "scaffold",
+      "content": "小红写作文时，先让AI列出3个不同的写作思路，然后自己挑选一个并写完了整篇文章；这属于“AI当助手提供灵感”，还是“AI直接替代创作”？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1-1",
+      "question_type": "scaffold",
+      "content": "如果学校要举行跑步测试，你花钱雇了一个跑步高手代替你跑完了测试，并拿到了满分。请问：你的身体在这个过程中变强壮了吗？为什么？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S5-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1-2",
+      "question_type": "scaffold",
+      "content": "当遇到不会做的数学题时，做法A是“直接抄下AI给出的最终答案和步骤”；做法B是“只看AI的第一步提示，然后自己尝试写出后面的步骤”。你觉得哪一种做法能帮你通过明天的考试？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S5-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2-1",
+      "question_type": "scaffold",
+      "content": "我们班的《班级日常行为规范》里，针对“课间安全”，是写着空洞的“课间要安全”，还是写着具体的“课间不在走廊奔跑追逐”？你觉得哪种写法语气更清楚、更容易遵守？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S5-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2-2",
+      "question_type": "scaffold",
+      "content": "如果我们想针对“保护同学的隐私（人脸和声音）”写一条班级AI自律规则，下面哪句最合适、最具体？\n选项1：我们要保护大家的隐私。\n选项2：不经同学同意，我不随意用AI处理、传播同学的照片和声音。",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S5-2-2.html",
+      "image_files": []
+    }
+  ]
+}

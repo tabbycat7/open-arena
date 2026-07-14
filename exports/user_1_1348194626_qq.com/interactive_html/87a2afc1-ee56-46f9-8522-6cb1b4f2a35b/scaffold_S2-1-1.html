@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学微课：理解税率的意义</title>
+  <style>
+    :root {
+      --primary-color: #1890ff;
+      --success-color: #52c41a;
+      --warning-color: #fa8c16;
+      --text-color: #262626;
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --border-radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* 4:3 比例自适应容器，适合课堂投屏 */
+    .app-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* 头部标题区 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 15px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #0d1a26;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag {
+      background-color: #e6f7ff;
+      color: var(--primary-color);
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    .node-id {
+      font-family: monospace;
+      color: #8c8c8c;
+      font-size: 14px;
+    }
+
+    /* 题干展示区 */
+    .question-box {
+      background-color: #fafafa;
+      border-left: 4px solid var(--primary-color);
+      padding: 15px 20px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* 核心交互区 */
+    .interactive-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    /* 句子拆解样式 */
+    .sentence {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+      user-select: none;
+    }
+
+    .interactive-word {
+      padding: 4px 16px;
+      margin: 0 6px;
+      border-radius: 8px;
+      border: 2px dashed #d9d9d9;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: inline-block;
+    }
+
+    .interactive-word:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* 激活状态颜色 */
+    .interactive-word.active-turnover {
+      background-color: #e6f7ff;
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      border-style: solid;
+    }
+
+    .interactive-word.active-percent {
+      background-color: #fff7e6;
+      border-color: var(--warning-color);
+      color: var(--warning-color);
+      border-style: solid;
+    }
+
+    .interactive-word.active-tax {
+      background-color: #f6ffed;
+      border-color: var(--success-color);
+      color: var(--success-color);
+      border-style: solid;
+    }
+
+    /* SVG 关系图 */
+    .diagram-svg {
+      width: 100%;
+      max-height: 220px;
+    }
+
+    .svg-element {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 动态说明面板 */
+    .explanation-card {
+      background-color: #f9f9f9;
+      border-left: 5px solid #d9d9d9;
+      padding: 15px 20px;
+      border-radius: 4px;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .exp-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .exp-text {
+      font-size: 16px;
+      margin: 0;
+      line-height: 1.5;
+      color: #595959;
+    }
+
+    /* 控制按钮区 */
+    .control-panel {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #f0f0f0;
+      color: #595959;
+    }
+
+    .btn:hover {
+      background-color: #e0e0e0;
+    }
+
+    .btn-step.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-summary.active {
+      background-color: #722ed1;
+      color: white;
+    }
+
+    .btn-reset {
+      background-color: #ff4d4f;
+      color: white;
+    }
+
+    .btn-reset:hover {
+      background-color: #ff7875;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>
+        <span class="tag">数学 · 六年级</span>
+        <span>百分数应用：理解税率的意义</span>
+      </h1>
+      <span class="node-id">S2-1-1</span>
+    </div>
+
+    <!-- 题干 -->
+    <div class="question-box">
+      <strong>思考：</strong>“按营业额的5%缴纳营业税”，这句话里的<strong>“5%”</strong>表示谁占谁的5%？
+    </div>
+
+    <!-- 交互可视化区 -->
+    <div class="interactive-area">
+      <!-- 交互句子 -->
+      <div class="sentence">
+        按 <span class="interactive-word" id="w-turnover">营业额</span> 的 
+        <span class="interactive-word" id="w-percent">5%</span> 缴纳 
+        <span class="interactive-word" id="w-tax">营业税</span>
+      </div>
+
+      <!-- 动态直观图 -->
+      <svg class="diagram-svg" viewBox="0 0 800 220">
+        <defs>
+          <!-- 20等分网格定义（每格代表5%） -->
+          <pattern id="grid" width="35" height="40" patternUnits="userSpaceOnUse">
+            <rect width="35" height="40" fill="none" stroke="#e8e8e8" stroke-width="1"/>
+          </pattern>
+          <!-- 箭头定义 -->
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#1890ff" />
+          </marker>
+          <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#52c41a" />
+          </marker>
+          <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#fa8c16" />
+          </marker>
+        </defs>
+
+        <!-- 基础条形（代表营业额整体） -->
+        <g id="base-bar">
+          <!-- 20格 * 35px = 700px (代表100%) -->
+          <rect x="50" y="80" width="700" height="40" fill="#fafafa" stroke="#d9d9d9" stroke-width="2" rx="6" />
+          <rect x="50" y="80" width="700" height="40" fill="url(#grid)" rx="6" />
+        </g>
+
+        <!-- 营业额高亮 (单位1) -->
+        <g id="svg-turnover" class="svg-element" style="opacity: 0.15;">
+          <rect x="50" y="80" width="700" height="40" fill="none" stroke="#1890ff" stroke-width="3" rx="6" />
+          <!-- 下方大括号示意线 -->
+          <path d="M 50 130 L 50 140 L 400 140 L 400 150 L 400 140 L 750 140 L 750 130" fill="none" stroke="#1890ff" stroke-width="2" />
+          <text x="400" y="175" text-anchor="middle" fill="#1890ff" font-size="18" font-weight="bold">营业额：整体（单位“1”），看作 100%</text>
+        </g>
+
+        <!-- 营业税高亮 (部分) -->
+        <g id="svg-tax" class="svg-element" style="opacity: 0.15;">
+          <!-- 1格 = 5% -->
+          <rect x="50" y="80" width="35" height="40" fill="#52c41a" opacity="0.8" rx="4" />
+          <rect x="50" y="80" width="35" height="40" fill="none" stroke="#52c41a" stroke-width="3" rx="4" />
+          <!-- 上方指示线 -->
+          <path d="M 67.5 75 L 67.5 35 L 150 35" fill="none" stroke="#52c41a" stroke-width="2" marker-end="url(#arrow-green)" />
+          <text x="160" y="40" fill="#52c41a" font-size="16" font-weight="bold">营业税：部分（应纳税额）</text>
+        </g>
+
+        <!-- 5% 关系指示 -->
+        <g id="svg-percent" class="svg-element" style="opacity: 0.15;">
+          <!-- 关联箭头：从5%的格子指向整体关系 -->
+          <path d="M 67.5 130 L 67.5 200 L 250 200" fill="none" stroke="#fa8c16" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-orange)" />
+          <text x="265" y="205" fill="#fa8c16" font-size="16" font-weight="bold">占营业额的 5%（1份 / 20份）</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 动态解析面板 -->
+    <div class="explanation-card" id="explanation">
+      <!-- 动态内容由 JS 注入 -->
+    </div>
+
+    <!-- 教学控制台 -->
+    <div class="control-panel">
+      <button class="btn btn-step" id="btn-step-1">1. 找单位“1”</button>
+      <button class="btn btn-step" id="btn-step-2">2. 找应纳税额</button>
+      <button class="btn btn-step" id="btn-step-3">3. 理解5%</button>
+      <button class="btn btn-summary" id="btn-summary">总结关系</button>
+      <button class="btn btn-reset" id="btn-reset">重置</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 获取DOM元素
+      const wTurnover = document.getElementById('w-turnover');
+      const wPercent = document.getElementById('w-percent');
+      const wTax = document.getElementById('w-tax');
+
+      const svgTurnover = document.getElementById('svg-turnover');
+      const svgTax = document.getElementById('svg-tax');
+      const svgPercent = document.getElementById('svg-percent');
+
+      const btnStep1 = document.getElementById('btn-step-1');
+      const btnStep2 = document.getElementById('btn-step-2');
+      const btnStep3 = document.getElementById('btn-step-3');
+      const btnSummary = document.getElementById('btn-summary');
+      const btnReset = document.getElementById('btn-reset');
+
+      const explanation = document.getElementById('explanation');
+
+      // 教学步骤数据
+      const states = {
+        turnover: {
+          title: '第一步：寻找单位“1”（整体）',
+          text: '在含有百分数的句子中，“的”字前面的量通常是单位“1”。这里将<strong>营业额</strong>看作整体，也就是比较的标准，占 100%。',
+          color: 'var(--primary-color)',
+          borderColor: '#1890ff'
+        },
+        tax: {
+          title: '第二步：寻找比较量（部分）',
+          text: '<strong>营业税</strong>是根据营业额按一定比例计算并缴纳的税款，它是整体中的一部分，属于<strong>部分量</strong>。',
+          color: 'var(--success-color)',
+          borderColor: '#52c41a'
+        },
+        percent: {
+          title: '第三步：理解税率（5%的意义）',
+          text: '<strong>5%</strong> 是税率。它表示<strong>营业税</strong>占<strong>营业额</strong>的 5%。如果把营业额平均分成 100 份，营业税就相当于其中的 5 份（即图中 20 份中的 1 份）。',
+          color: 'var(--warning-color)',
+          borderColor: '#fa8c16'
+        },
+        summary: {
+          title: '总结：理清数量关系',
+          text: '“按营业额的 5% 缴纳营业税” 表示：<br><strong style="color:var(--success-color)">营业税（部分量）</strong> 占 <strong style="color:var(--primary-color)">营业额（单位“1”）</strong> 的 <strong style="color:var(--warning-color)">5%</strong>。',
+          color: '#722ed1',
+          borderColor: '#722ed1'
+        }
+      };
+
+      // 重置状态
+      function resetAll() {
+        // 恢复文字样式
+        wTurnover.className = 'interactive-word';
+        wTax.className = 'interactive-word';
+        wPercent.className = 'interactive-word';
+
+        // 恢复SVG透明度
+        svgTurnover.style.opacity = '0.15';
+        svgTax.style.opacity = '0.15';
+        svgPercent.style.opacity = '0.15';
+
+        // 恢复说明面板
+        explanation.innerHTML = `
+          <div class="exp-title" style="color: #8c8c8c;">💡 课堂教学交互指引</div>
+          <p class="exp-text">请点击上方句子中的<strong>虚线框词语</strong>，或使用下方的<strong>步骤按钮</strong>，引导学生一步步拆解句意，找准单位“1”。</p>
+        `;
+        explanation.style.borderLeftColor = '#d9d9d9';
+
+        // 恢复按钮样式
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+      }
+
+      // 切换到指定状态
+      function showState(stateKey) {
+        resetAll();
+        const state = states[stateKey];
+
+        // 更新说明文字
+        explanation.innerHTML = `
+          <div class="exp-title" style="color: ${state.color}">${state.title}</div>
+          <p class="exp-text">${state.text}</p>
+        `;
+        explanation.style.borderLeftColor = state.borderColor;
+
+        // 激活对应的视觉元素
+        if (stateKey === 'turnover') {
+          wTurnover.classList.add('active-turnover');
+          svgTurnover.style.opacity = '1';
+          btnStep1.classList.add('active');
+        } else if (stateKey === 'tax') {
+          wTax.classList.add('active-tax');
+          svgTax.style.opacity = '1';
+          btnStep2.classList.add('active');
+        } else if (stateKey === 'percent') {
+          wPercent.classList.add('active-percent');
+          svgPercent.style.opacity = '1';
+          btnStep3.classList.add('active');
+        } else if (stateKey === 'summary') {
+          wTurnover.classList.add('active-turnover');
+          wTax.classList.add('active-tax');
+          wPercent.classList.add('active-percent');
+          svgTurnover.style.opacity = '1';
+          svgTax.style.opacity = '1';
+          svgPercent.style.opacity = '1';
+          btnSummary.classList.add('active');
+        }
+      }
+
+      // 绑定词语点击事件
+      wTurnover.addEventListener('click', () => showState('turnover'));
+      wTax.addEventListener('click', () => showState('tax'));
+      wPercent.addEventListener('click', () => showState('percent'));
+
+      // 绑定控制按钮事件
+      btnStep1.addEventListener('click', () => showState('turnover'));
+      btnStep2.addEventListener('click', () => showState('tax'));
+      btnStep3.addEventListener('click', () => showState('percent'));
+      btnSummary.addEventListener('click', () => showState('summary'));
+      btnReset.addEventListener('click', resetAll);
+
+      // 初始化界面
+      resetAll();
+    });
+  </script>
+</body>
+</html>

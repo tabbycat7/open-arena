@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>纳税公平性可视化</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f7f6;
+            font-family: "Microsoft YaHei", sans-serif;
+            color: #333;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .controls { margin: 20px 0; text-align: center; }
+        #svg-canvas { width: 100%; height: auto; }
+        .label-text { font-size: 14px; font-weight: bold; fill: #555; }
+        #status-msg { 
+            text-align: center; 
+            font-size: 1.2em; 
+            font-weight: bold; 
+            color: #27ae60; 
+            height: 30px;
+            margin-top: 10px;
+        }
+        .slider-group { display: flex; align-items: center; justify-content: center; gap: 15px; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>纳税公平性探索</h2>
+    <div class="controls">
+        <div class="slider-group">
+            <span>调整税率：</span>
+            <input type="range" id="tax-slider" min="0" max="50" value="10" style="width: 200px;">
+            <span id="rate-val">10%</span>
+        </div>
+    </div>
+    
+    <svg id="svg-canvas" viewBox="0 0 600 300">
+        <!-- 圆环1：低收入 -->
+        <circle cx="150" cy="150" r="80" fill="none" stroke="#bdc3c7" stroke-width="20" />
+        <circle id="fill-1" cx="150" cy="150" r="80" fill="none" stroke="#3498db" stroke-width="20" stroke-dasharray="0 502" transform="rotate(-90 150 150)" />
+        <text x="150" y="150" text-anchor="middle" class="label-text">低收入者</text>
+        
+        <!-- 圆环2：高收入 -->
+        <circle cx="450" cy="150" r="120" fill="none" stroke="#bdc3c7" stroke-width="20" />
+        <circle id="fill-2" cx="450" cy="150" r="120" fill="none" stroke="#e67e22" stroke-width="20" stroke-dasharray="0 754" transform="rotate(-90 450 150)" />
+        <text x="450" y="150" text-anchor="middle" class="label-text">高收入者</text>
+    </svg>
+
+    <div id="status-msg"></div>
+</div>
+
+<script>
+    const slider = document.getElementById('tax-slider');
+    const rateVal = document.getElementById('rate-val');
+    const fill1 = document.getElementById('fill-1');
+    const fill2 = document.getElementById('fill-2');
+    const statusMsg = document.getElementById('status-msg');
+
+    function updateVisualization() {
+        const rate = parseInt(slider.value);
+        rateVal.textContent = rate + "%";
+
+        // 计算圆环周长：C = 2 * PI * r
+        // 低收入 r=80, C≈502.6
+        // 高收入 r=120, C≈753.9
+        const c1 = 2 * Math.PI * 80;
+        const c2 = 2 * Math.PI * 120;
+
+        fill1.setAttribute('stroke-dasharray', (rate / 100 * c1) + " " + c1);
+        fill2.setAttribute('stroke-dasharray', (rate / 100 * c2) + " " + c2);
+
+        if (rate > 0) {
+            statusMsg.textContent = "通过比例，每个人承担了与收入匹配的责任。";
+        } else {
+            statusMsg.textContent = "";
+        }
+    }
+
+    slider.addEventListener('input', updateVisualization);
+
+    // 初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

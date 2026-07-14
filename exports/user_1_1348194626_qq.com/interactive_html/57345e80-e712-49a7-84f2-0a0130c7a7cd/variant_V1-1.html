@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>乐高城堡拼搭指南设计</title>
+    <style>
+        :root { --primary: #4a90e2; --error: #e74c3c; --success: #27ae60; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; margin: 0; padding: 20px; height: 100vh; box-sizing: border-box; }
+        .container { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; padding: 20px; }
+        .main-view { display: flex; flex: 1; gap: 20px; }
+        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 2px dashed #ccc; }
+        .right-panel { flex: 2; display: flex; flex-direction: column; gap: 20px; padding: 10px; }
+        .slots { display: flex; gap: 15px; justify-content: center; }
+        .slot { width: 120px; height: 160px; border: 3px dashed #aaa; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; background: #fafafa; }
+        .parts-bin { display: flex; gap: 20px; justify-content: center; padding: 20px; background: #eee; border-radius: 8px; }
+        .part { width: 100px; height: 80px; cursor: grab; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; border-radius: 5px; user-select: none; }
+        #part-base { background: #5d4037; }
+        #part-wall { background: #7f8c8d; }
+        #part-roof { background: #c0392b; }
+        .hint { color: var(--error); font-weight: bold; height: 20px; text-align: center; }
+        svg { width: 200px; height: 200px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>任务：为小弟弟设计一份拼搭指南</h3>
+    <div class="main-view">
+        <div class="left-panel">
+            <p>成品参考图</p>
+            <svg id="castle-view" viewBox="0 0 100 100">
+                <rect id="v-base" x="20" y="70" width="60" height="20" fill="#ccc" />
+                <rect id="v-wall" x="30" y="40" width="40" height="30" fill="#ccc" />
+                <polygon id="v-roof" points="25,40 75,40 50,10" fill="#ccc" />
+            </svg>
+        </div>
+        <div class="right-panel">
+            <div class="slots">
+                <div class="slot" id="s1" data-order="0">步骤 1</div>
+                <div class="slot" id="s2" data-order="1">步骤 2</div>
+                <div class="slot" id="s3" data-order="2">步骤 3</div>
+            </div>
+            <div class="hint" id="msg"></div>
+            <div class="parts-bin">
+                <div class="part" id="part-base" draggable="true">底座</div>
+                <div class="part" id="part-wall" draggable="true">城墙</div>
+                <div class="part" id="part-roof" draggable="true">屋顶</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slots = document.querySelectorAll('.slot');
+    const parts = document.querySelectorAll('.part');
+    const msg = document.getElementById('msg');
+    const state = [null, null, null];
+
+    parts.forEach(p => {
+        p.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.id));
+    });
+
+    slots.forEach(s => {
+        s.addEventListener('dragover', e => e.preventDefault());
+        s.addEventListener('drop', e => {
+            e.preventDefault();
+            const partId = e.dataTransfer.getData('text');
+            const slotIdx = parseInt(s.id.replace('s', '')) - 1;
+            
+            state[slotIdx] = partId;
+            s.innerHTML = document.getElementById(partId).innerText;
+            checkOrder();
+        });
+    });
+
+    function checkOrder() {
+        const order = ['part-base', 'part-wall', 'part-roof'];
+        let error = false;
+        
+        // 检查逻辑
+        if (state[0] && state[0] !== 'part-base') {
+            showError(state[0], "没有底座，无法固定！");
+            return;
+        }
+        if (state[1] && state[1] !== 'part-wall' && state[0] === 'part-base') {
+            showError(state[1], "底座之上应先建城墙！");
+            return;
+        }
+
+        // 成功动画
+        if (state.every((val, i) => val === order[i])) {
+            msg.innerText = "太棒了！拼搭顺序正确！";
+            msg.style.color = "var(--success)";
+            document.getElementById('v-base').style.fill = "#5d4037";
+            document.getElementById('v-wall').style.fill = "#7f8c8d";
+            document.getElementById('v-roof').style.fill = "#c0392b";
+        }
+    }
+
+    function showError(id, text) {
+        msg.innerText = text;
+        const el = document.querySelector(`[data-order="${state.indexOf(id)}"]`);
+        el.style.borderColor = "var(--error)";
+        setTimeout(() => { el.style.borderColor = "#aaa"; }, 1000);
+    }
+</script>
+</body>
+</html>

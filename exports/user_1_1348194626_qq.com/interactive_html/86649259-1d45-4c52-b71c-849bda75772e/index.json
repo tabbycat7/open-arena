@@ -1,0 +1,194 @@
+{
+  "task_id": "86649259-1d45-4c52-b71c-849bda75772e",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家手里都有4支铅笔和3个笔筒，请动手摆一摆。观察所有摆法，你发现哪个笔筒里的铅笔数量有什么共同特点？试着用“总有”、“至少”来描述。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M1-1",
+      "question_type": "main",
+      "content": "观察这些摆法，要让每个笔筒里的铅笔尽可能少，怎么摆最好？如果铅笔变成100支，还能一一列举吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果把4支铅笔放进3个笔筒，不摆，你能用“平均分”的想法证明刚才的结论吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "7÷3=2……1，用这个算式，“至少数”是2还是3？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3-1",
+      "question_type": "main",
+      "content": "把15个苹果放进4个盘子，总有一个盘子至少有几个苹果？这里谁是“物体”，谁是“抽屉”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "5位同学各抽一张扑克牌，至少有几张同花色？这里谁相当于“笔筒”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果把5支铅笔放进4个笔筒，结果会怎样？动手摆一摆，看结论是否依然成立？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果把3支铅笔放进4个笔筒，还能说“总有一个笔筒至少有2支”吗？这说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果不摆，你能用“平均分”的想法推想“14支铅笔放进4个笔筒”的结论吗？请说出你的推理过程。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "对比“5支放3个”和“6支放3个”。为什么余数不同，结果却都是“至少2支”？这说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "看算式“17÷3=5……2”，你能编一个符合鸽巢原理的生活故事吗？试着说一说。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "已知“抽屉数是5，至少数是3”，物体数至少是多少？请结合公式“物体数÷抽屉数=商……余数”推算一下。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "一副牌去掉大小王剩52张。至少抽几张，才能保证有2张花色相同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "六年级30名学生同月出生，至少有几人同一天出生？这里谁是“抽屉”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-3",
+      "question_type": "variant",
+      "content": "任意13人中，至少有几人属相相同？这道题里“看不见”的抽屉是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "刚才我们摆了4支铅笔，发现总有一个笔筒至少有2支。如果铅笔变得非常多，摆不完了怎么办？试着想一想，为了让每个笔筒都少一点，是不是先“平均分”一下最公平？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "假设每个笔筒里先放1支铅笔，3个笔筒一共用了几支？手里还剩几支？把这剩下的1支随便放进哪个笔筒，那个笔筒是不是就变成了2支？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "刚才我们在脑子里把5支铅笔平均分给3个笔筒，每个笔筒分到1支。这个过程如果用数学算式来记录，应该怎么写？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "看着5÷3=1……2这个算式，商1代表刚才平均分的那一步吗？那余下的2支如果继续分，结果会怎样？这和我们要找的‘至少数’有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "在铅笔问题里，笔筒就是‘抽屉’。那在扑克牌问题里，花色一共有几种？能不能把这几张花色也看作是装牌的‘笔筒’呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果我们要找“同一个月出生的人”，这里的人数相当于铅笔支数，那谁是‘笔筒’呢？一年有多少个月，是不是就有多少个‘抽屉’？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

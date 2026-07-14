@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI时代学习效果模拟器</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        .controls { margin: 20px 0; text-align: center; }
+        input[type=range] { width: 80%; cursor: pointer; }
+        .stage-label { font-weight: bold; color: #555; margin-bottom: 10px; }
+        svg { width: 100%; height: auto; border: 1px solid #eee; border-radius: 8px; }
+        .legend { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>学习效果模拟器：谁是自律学习者？</h2>
+    
+    <div class="controls">
+        <div class="stage-label" id="weekLabel">当前进度：第 1 周</div>
+        <input type="range" id="timeSlider" min="1" max="4" step="1" value="1">
+    </div>
+
+    <svg viewBox="0 0 600 300" id="simSvg">
+        <!-- 小明区域 -->
+        <g id="mingGroup">
+            <text x="150" y="30" text-anchor="middle" font-weight="bold">小明（直接抄袭）</text>
+            <rect x="50" y="50" width="200" height="180" fill="#f9f9f9" stroke="#ccc" rx="10"/>
+            <circle id="mingBrain" cx="150" cy="140" r="50" fill="#ddd" stroke="#999" stroke-width="2"/>
+            <text id="mingStatus" x="150" y="260" text-anchor="middle" fill="#666">知识库：空洞</text>
+        </g>
+
+        <!-- 小红区域 -->
+        <g id="hongGroup">
+            <text x="450" y="30" text-anchor="middle" font-weight="bold">小红（思路引导）</text>
+            <rect x="350" y="50" width="200" height="180" fill="#f9f9f9" stroke="#ccc" rx="10"/>
+            <circle id="hongBrain" cx="450" cy="140" r="50" fill="#ddd" stroke="#999" stroke-width="2"/>
+            <text id="hongStatus" x="450" y="260" text-anchor="middle" fill="#666">知识库：萌芽</text>
+        </g>
+    </svg>
+
+    <div class="legend">
+        <span><span style="color:#ddd">■</span> 未掌握</span>
+        <span><span style="color:#FFD700">■</span> 已内化</span>
+        <span><span style="color:#ff4d4f">■</span> 考试预警</span>
+        <span><span style="color:#52c41a">■</span> 考试通过</span>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('timeSlider');
+    const weekLabel = document.getElementById('weekLabel');
+    const mingBrain = document.getElementById('mingBrain');
+    const hongBrain = document.getElementById('hongBrain');
+    const mingStatus = document.getElementById('mingStatus');
+    const hongStatus = document.getElementById('hongStatus');
+
+    function updateSimulation() {
+        const week = parseInt(slider.value);
+        weekLabel.textContent = `当前进度：第 ${week} 周`;
+
+        // 小明逻辑：始终灰色，第4周变红（考试失败）
+        if (week < 4) {
+            mingBrain.setAttribute('fill', '#ddd');
+            mingStatus.textContent = "知识库：空洞";
+        } else {
+            mingBrain.setAttribute('fill', '#ff4d4f');
+            mingStatus.textContent = "考试结果：不及格 (警告)";
+        }
+
+        // 小红逻辑：逐渐变金，第4周变绿（考试成功）
+        if (week === 1) {
+            hongBrain.setAttribute('fill', '#ddd');
+            hongStatus.textContent = "知识库：萌芽";
+        } else if (week === 2) {
+            hongBrain.setAttribute('fill', '#ffe58f');
+            hongStatus.textContent = "知识库：积累中";
+        } else if (week === 3) {
+            hongBrain.setAttribute('fill', '#FFD700');
+            hongStatus.textContent = "知识库：扎实";
+        } else {
+            hongBrain.setAttribute('fill', '#52c41a');
+            hongStatus.textContent = "考试结果：优秀 (通过)";
+        }
+    }
+
+    slider.addEventListener('input', updateSimulation);
+</script>
+
+</body>
+</html>

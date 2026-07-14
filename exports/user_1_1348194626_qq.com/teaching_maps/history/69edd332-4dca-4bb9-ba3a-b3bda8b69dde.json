@@ -1,0 +1,248 @@
+{
+  "id": "69edd332-4dca-4bb9-ba3a-b3bda8b69dde",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，如果把100元钱存入银行，年利率5%，复利计算，x年后本息和y是多少？如果服用一片药，体内药量每小时衰减一半，x小时后剩余药量y又该怎么表示？你觉得这两个变化过程和一次函数、二次函数一样吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"从储蓄复利（增长）和药物衰减（衰减）两个熟悉情境对比切入，让学生直观感知指数变化与线性变化的差异，激发对指数变化规律的好奇。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"我们把刚才的两个式子写成更一般的形式 y = k * b^x。抛开前面的系数k，只关心 b^x 这一部分。如果b取1，或者取-2，它还能反映‘稳定增长’或‘持续衰减’的变化规律吗？试着取x=1/2, -1这些值具体算一算，你发现了什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"引导学生将 M1 中的具体实例抽象为函数表达式 y = a * b^x，并自主探究底数 b 的限制条件，理解底数a>0且a≠1的必要性。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们聚焦研究最纯粹的形式 y=2^x 和 y=(1/2)^x。请大家拿出坐标纸，用描点法亲手画一画它们的图像，看谁画得又准又快。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"引导学生动手实践描点法画图的基本步骤，为后续观察、归纳图像特征提供具体的、亲手绘制的直观材料。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"大家把自己画的 y=2^x 和 y=(1/2)^x 的图像对比着看看。它们俩有没有什么‘血缘关系’，比如都经过某个固定的点？再比比看，它们走势上最大的不同在哪？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"引导学生在亲手作图的基础上，通过对比观察，自主发现指数函数图像的共同特征（过定点(0,1)）和核心差异（上升与下降趋势）。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"根据图像，当底数a大于1时，y值随x增大怎么变？当底数a在0到1之间呢？你能试着不依赖图像，用一句像数学定理一样严谨的话，把这两种情况下的变化规律都说清楚吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"推动学生思维从图像直观（“看起来在上升”）向抽象的数学语言描述（“对于任意的x1<x2，都有f(x1)<f(x2)”）跃迁，牢固掌握单调性定理的表述。\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"掌握了单调性规律，咱们来用用它。不画图，怎么判断 2^1.5 和 2^1.7 谁大谁小？那如果换成底数是1/2，已知 (1/2)^x > (1/2)^2，你觉得 x 和 2 又该是什么关系呢？这里要小心什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"design_intent\": \"设计正反两类问题，让学生在应用单调性时暴露和纠正“忽略底数范围对不等式方向影响”的典型错误，巩固对性质的理解和应用能力。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"100元存1年、2年、3年后，本息一共是多少？能试着用一个含x的式子表示吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生在M1复利情境的具体计算中，发现年份x与总金额y的对应规律，并尝试写出函数式y=100*(1.05)^x，为M2抽象出一般形式y = k * b^x提供具体的表达式范例。\", \"design_intent\": \"提供 M1 中复利问题的逐年本金表格，引导学生找出本金与年份之间的对应关系，并用表达式 y=100*(1+0.05)^x 表示，为抽象出 y=a*b^x 做铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"2的多少次方等于8？这个‘多少次方’就是我们要求的什么？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"在M3描点作图（涉及计算函数值）之后，唤起解如2^x=8这类简单指数方程的回忆，让学生明确这类运算的目标是‘求指数’，为后续理解对数概念及其符号表示做直接的认知准备。\", \"design_intent\": \"回顾如 2^x=8 这类简单指数方程的解法，强调‘求指数’这一运算，为引入对数符号表示这个‘指数’做认知准备。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"在y=2x+1里，x和y的角色能交换吗？交换后，x怎么用y表示？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"通过将一次函数解析式中的x和y互换并反解，让学生亲身体验‘求反运算’的过程，建立对反函数思想的直观感受，为后续接受‘对数是指数函数的反函数’这一抽象概念降低认知负荷。\", \"design_intent\": \"通过具体函数如 y=2x+1 与 x=(y-1)/2 的互化练习，帮助学生建立‘反运算’的直观感受，降低接受对数作为指数函数反函数的认知负荷。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"log_2(x)要有意义，x必须满足什么条件？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.35, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"在M4观察指数函数图像（值域为正数）的基础上，直接点明其反函数——对数函数的定义域限制，通过简短的提问强化‘真数大于0’这一关键记忆点，为M5及后续应用对数性质解决问题时必须优先考虑定义域做铺垫。\", \"design_intent\": \"通过填空练习：log_2 (x) 有意义，要求 x _ 0。直接强化‘真数大于0’的记忆，为后续处理定义域问题打下基础。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果log_2 5 = a，那么2^a等于多少？2^(a+1)呢？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"通过具体的互化计算，让学生巩固对数式log_2 5 = a所蕴含的指数关系2^a=5，深刻理解对数结果a本身就是一个‘指数’，为在M5及后续学习中，灵活运用这一互逆关系进行式子变形、比较大小或解不等式提供关键的转化工具。\", \"design_intent\": \"给定 log_2 5 = a，要求用 a 表示 2^{a+1}。巩固互逆关系，并理解对数结果是一个‘指数’这一本质，为后续利用该关系比较大小做铺垫。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-21 13:52:43",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，如果把100元钱存入银行，年利率5%，复利计算，x年后本息和y是多少？如果服用一片药，体内药量每小时衰减一半，x小时后剩余药量y又该怎么表示？你觉得这两个变化过程和一次函数、二次函数一样吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "从储蓄复利（增长）和药物衰减（衰减）两个熟悉情境对比切入，让学生直观感知指数变化与线性变化的差异，激发对指数变化规律的好奇。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "我们把刚才的两个式子写成更一般的形式 y = k * b^x。抛开前面的系数k，只关心 b^x 这一部分。如果b取1，或者取-2，它还能反映‘稳定增长’或‘持续衰减’的变化规律吗？试着取x=1/2, -1这些值具体算一算，你发现了什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "引导学生将 M1 中的具体实例抽象为函数表达式 y = a * b^x，并自主探究底数 b 的限制条件，理解底数a>0且a≠1的必要性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们聚焦研究最纯粹的形式 y=2^x 和 y=(1/2)^x。请大家拿出坐标纸，用描点法亲手画一画它们的图像，看谁画得又准又快。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "引导学生动手实践描点法画图的基本步骤，为后续观察、归纳图像特征提供具体的、亲手绘制的直观材料。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "大家把自己画的 y=2^x 和 y=(1/2)^x 的图像对比着看看。它们俩有没有什么‘血缘关系’，比如都经过某个固定的点？再比比看，它们走势上最大的不同在哪？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "引导学生在亲手作图的基础上，通过对比观察，自主发现指数函数图像的共同特征（过定点(0,1)）和核心差异（上升与下降趋势）。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "根据图像，当底数a大于1时，y值随x增大怎么变？当底数a在0到1之间呢？你能试着不依赖图像，用一句像数学定理一样严谨的话，把这两种情况下的变化规律都说清楚吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "推动学生思维从图像直观（“看起来在上升”）向抽象的数学语言描述（“对于任意的x1<x2，都有f(x1)<f(x2)”）跃迁，牢固掌握单调性定理的表述。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "掌握了单调性规律，咱们来用用它。不画图，怎么判断 2^1.5 和 2^1.7 谁大谁小？那如果换成底数是1/2，已知 (1/2)^x > (1/2)^2，你觉得 x 和 2 又该是什么关系呢？这里要小心什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "design_intent": "设计正反两类问题，让学生在应用单调性时暴露和纠正“忽略底数范围对不等式方向影响”的典型错误，巩固对性质的理解和应用能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "100元存1年、2年、3年后，本息一共是多少？能试着用一个含x的式子表示吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生在M1复利情境的具体计算中，发现年份x与总金额y的对应规律，并尝试写出函数式y=100*(1.05)^x，为M2抽象出一般形式y = k * b^x提供具体的表达式范例。",
+        "design_intent": "提供 M1 中复利问题的逐年本金表格，引导学生找出本金与年份之间的对应关系，并用表达式 y=100*(1+0.05)^x 表示，为抽象出 y=a*b^x 做铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "2的多少次方等于8？这个‘多少次方’就是我们要求的什么？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "在M3描点作图（涉及计算函数值）之后，唤起解如2^x=8这类简单指数方程的回忆，让学生明确这类运算的目标是‘求指数’，为后续理解对数概念及其符号表示做直接的认知准备。",
+        "design_intent": "回顾如 2^x=8 这类简单指数方程的解法，强调‘求指数’这一运算，为引入对数符号表示这个‘指数’做认知准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "在y=2x+1里，x和y的角色能交换吗？交换后，x怎么用y表示？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "通过将一次函数解析式中的x和y互换并反解，让学生亲身体验‘求反运算’的过程，建立对反函数思想的直观感受，为后续接受‘对数是指数函数的反函数’这一抽象概念降低认知负荷。",
+        "design_intent": "通过具体函数如 y=2x+1 与 x=(y-1)/2 的互化练习，帮助学生建立‘反运算’的直观感受，降低接受对数作为指数函数反函数的认知负荷。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "log_2(x)要有意义，x必须满足什么条件？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.35,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "在M4观察指数函数图像（值域为正数）的基础上，直接点明其反函数——对数函数的定义域限制，通过简短的提问强化‘真数大于0’这一关键记忆点，为M5及后续应用对数性质解决问题时必须优先考虑定义域做铺垫。",
+        "design_intent": "通过填空练习：log_2 (x) 有意义，要求 x _ 0。直接强化‘真数大于0’的记忆，为后续处理定义域问题打下基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果log_2 5 = a，那么2^a等于多少？2^(a+1)呢？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "通过具体的互化计算，让学生巩固对数式log_2 5 = a所蕴含的指数关系2^a=5，深刻理解对数结果a本身就是一个‘指数’，为在M5及后续学习中，灵活运用这一互逆关系进行式子变形、比较大小或解不等式提供关键的转化工具。",
+        "design_intent": "给定 log_2 5 = a，要求用 a 表示 2^{a+1}。巩固互逆关系，并理解对数结果是一个‘指数’这一本质，为后续利用该关系比较大小做铺垫。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

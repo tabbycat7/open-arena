@@ -1,0 +1,248 @@
+{
+  "task_id": "244a2e3d-f74b-46cc-af63-9e5361306751",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请看教材第38页的三面国旗——天安门广场的国旗、操场上的国旗和教室里的国旗。它们的长和宽分别是多少呢？这些数据之间有没有藏着什么秘密？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才大家发现操场国旗和教室国旗的长宽比值都是3:2，像这样表示两个比相等的式子，叫作什么？它和我们学过的“比”有什么区别呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "现在老师来考考大家，请看教材第38页“做一做”第1题的几组比，怎样才能快速判断它们能不能组成比例呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "大家表现真棒！接下来看看教材第38页机器人思考气泡的问题：在这三面国旗的尺寸中，除了我们已经发现的，还有哪些比可以组成比例呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "同学们，其实在生活中比例无处不在！请看教材第39页“做一做”第2题的两个相似直角三角形，它们的边长数据之间有什么关系呢？谁能举出生活中其他用到比例的例子？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "小明用橙汁和水按2:1的比例调果汁，小红用300毫升橙汁和150毫升水调果汁，谁调的果汁味道更浓？他们的橙汁与水的比值相等吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "老师带来两张照片，第一张是5厘米×3厘米的风景照，第二张是10厘米×6厘米的同一个人像照片。先量一量这两张照片的长和宽，再算算长与长的比、宽与宽的比，你发现了什么秘密？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "判断下面哪个是比例？A. 3:4  B. 6:8=3:4  C. 5:2。能说说为什么选B而不选A吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "3:5和6:10这两个比能组成比例吗？那3:5本身是一个比例吗？请说明理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "小明说“0.5:1”和“1:2”比值相等，所以能组成比例。小红说“0.5:1”化简后就是“1:2”，它们是同一个比，不能组成比例。你同意谁的说法？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "判断下面两组数能否组成比例：第一组：3/4 和 0.75；第二组：2/5 和 3/8。请写出你的判断过程。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "有三本不同的书，第一本长20厘米宽14厘米，第二本长15厘米宽10厘米，第三本长12厘米宽8厘米。除了同一本书的长宽比，还能找出哪些比能组成比例？试试看！",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "教室里有一张长方形课桌（长100厘米、宽60厘米）、一块正方形橡皮（边长4厘米）和一本数学书（长26厘米、宽18厘米）。请找出这些物品尺寸中能组成比例的所有比，看谁找得又准又全！",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一幅地图上从北京到上海的距离是5厘米，实际距离是1000公里。如果另一幅地图上这两地距离是10厘米，那么这幅地图的比例尺是多少？这两个地图的比例尺能组成比例吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "两个正方形，第一个边长6厘米，第二个边长3厘米；两个长方形，第一个长8厘米宽4厘米，第二个长6厘米宽3厘米。这些图形中哪些对应边的比能组成比例？请说明理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "同学们，还记得我们前面学过的‘比’是什么意思吗？比值又是怎么算的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "大家看，操场国旗的2.4:1.6和教室国旗的60:40，这两个比的比值都是3/2。像这样把两个比值相等的比写在一起的式子，在数学上有一个名字，谁知道叫什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "刚才大家说了‘2.4:1.6’是一个比，那‘2.4:1.6=60:40’这个式子和单纯的‘2.4:1.6’有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "要判断两个比能不能写成比例，关键要看什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "我们来看第一组比：3:5和6:10。先算出3:5的比值是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "3:5的比值是3/5，那6:10的比值是多少？两个比值相等吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "大家之前都是在同一面国旗上找长和宽的比。除了同一面国旗，我们还可以把不同的国旗放在一起比。看看大国旗的5米长和小国旗的60厘米宽，能不能组成一个比？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果我们把天安门国旗的长（5米）和操场国旗的长（2.4米）放在一起，能不能写成一个比？那把这个比和另外两个国旗的某个比比较，会怎样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "大家可以试试：两面国旗的長比、两面国旗的宽比、还有长和另一面宽的比。看哪些也能写成比例？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "大家看，天安门国旗的長和宽是5:10/3，也就是15:10，简化后是3:2。操场国旗的長和宽是2.4:1.6，也是3:2。它们的什么是一样的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果有两个三角形，它们的对应边也像国旗那样保持着相同的比，这两个三角形会是什么样的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "教材上画了两个直角三角形，大三角形的高是3厘米、底是4厘米，小三角形的高是1.5厘米、底是2厘米。大家算算，它们对应边的比相等吗？这说明什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法适配度诊断仪</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gold: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #111827;
+            border: 4px solid #334155;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* 头部标题 */
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: var(--text-main);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header h1 span {
+            color: var(--primary);
+        }
+
+        header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* 主工作区：左右分栏 */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+
+        /* 任务卡片 */
+        .task-card {
+            background-color: var(--card-bg);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .task-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #334155;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        /* 任务可视化区域 */
+        .task-visual {
+            height: 120px;
+            background-color: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #475569;
+        }
+
+        /* 指标灯区域 */
+        .indicators {
+            background-color: #0f172a;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .indicator-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .indicator-label {
+            color: var(--text-muted);
+        }
+
+        .indicator-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+        }
+
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #475569;
+            transition: all 0.3s ease;
+        }
+
+        .led.active-green {
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .led.active-red {
+            background-color: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
+
+        .status-text {
+            font-size: 12px;
+        }
+
+        .status-text.yes { color: var(--success); }
+        .status-text.no { color: var(--danger); }
+
+        /* 控制按钮 */
+        .btn-run {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-run:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-run:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        /* 底部核心结论区 */
+        .conclusion-panel {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            border: 2px dashed #475569;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .conclusion-panel.locked {
+            filter: blur(1px);
+            opacity: 0.6;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 16px;
+            color: var(--gold);
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
+
+        .lock-icon {
+            font-size: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .conclusion-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .gold-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 16px;
+            box-shadow: 0 0 15px rgba(245, 158, 11 0.4);
+            white-space: nowrap;
+        }
+
+        .conclusion-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .highlight-gold {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* 弹窗警告 */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #1e293b;
+            border: 2px solid var(--danger);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            color: var(--danger);
+            margin-bottom: 12px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn-close {
+            padding: 8px 20px;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-close:hover {
+            background-color: #dc2626;
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* SVG 内部动画样式 */
+        .scan-line {
+            stroke: var(--primary);
+            stroke-width: 2;
+            opacity: 0;
+        }
+
+        .scan-active {
+            animation: scan 1.5s linear infinite;
+            opacity: 1 !important;
+        }
+
+        @keyframes scan {
+            0% { y1: 10; y2: 10; }
+            50% { y1: 110; y2: 110; }
+            100% { y1: 10; y2: 10; }
+        }
+
+        .matrix-text {
+            font-family: monospace;
+            font-size: 10px;
+            fill: #475569;
+        }
+
+        .matrix-text.highlight {
+            fill: var(--success);
+            font-weight: bold;
+            animation: flash 0.5s ease infinite alternate;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <header>
+            <h1>🔍 算法适配度诊断仪</h1>
+            <p>通过对比实验，观察“枚举算法”在不同任务中的表现，探索人机协同的边界</p>
+        </header>
+
+        <!-- 主工作区 -->
+        <div class="workspace">
+            <!-- 左栏：数学任务 -->
+            <div class="task-card" id="card-math">
+                <div>
+                    <div class="task-header">
+                        <div class="task-icon">🔢</div>
+                        <div class="task-title">任务 A：找完美数</div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                        在 100 万个自然数中，找出所有等于其因子之和的“完美数”（如6=1+2+3）。
+                    </p>
+
+                    <!-- 可视化区域 -->
+                    <div class="task-visual">
+                        <svg width="100%" height="100%" viewBox="0 0 200 120" id="svg-math">
+                            <!-- 背景网格数字 -->
+                            <text x="15" y="25" class="matrix-text">1024</text>
+                            <text x="65" y="25" class="matrix-text">8128</text>
+                            <text x="115" y="25" class="matrix-text">9999</text>
+                            <text x="165" y="25" class="matrix-text">0006</text>
+                            
+                            <text x="15" y="55" class="matrix-text">0028</text>
+                            <text x="65" y="55" class="matrix-text">5555</text>
+                            <text x="115" y="55" class="matrix-text">0496</text>
+                            <text x="165" y="55" class="matrix-text">1234</text>
+
+                            <text x="15" y="85" class="matrix-text">9876</text>
+                            <text x="65" y="85" class="matrix-text">0008</text>
+                            <text x="115" y="85" class="matrix-text">8888</text>
+                            <text x="165" y="85" class="matrix-text">0002</text>
+
+                            <!-- 扫描线 -->
+                            <line x1="10" y1="10" x2="190" y2="10" class="scan-line" id="scan-math" />
+                            
+                            <!-- 进度/结果文本 -->
+                            <text x="100" y="110" fill="#94a3b8" font-size="11" text-anchor="middle" id="math-status">等待诊断...</text>
+                        </svg>
+                    </div>
+
+                    <!-- 指标灯 -->
+                    <div class="indicators">
+                        <div class="indicator-row">
+                            <span class="indicator-label">规则是否明确？</span>
+                            <div class="indicator-status">
+                                <div class="led active-green"></div>
+                                <span class="status-text yes">是 (有数学公式)</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <span class="indicator-label">是否需要机械重复？</span>
+                            <div class="indicator-status">
+                                <div class="led active-green"></div>
+                                <span class="status-text yes">是 (100万次计算)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-run" id="btn-run-math">
+                    ⚡ 运行枚举测试
+                </button>
+            </div>
+
+            <!-- 右栏：艺术任务 -->
+            <div class="task-card" id="card-art">
+                <div>
+                    <div class="task-header">
+                        <div class="task-icon">🎨</div>
+                        <div class="task-title">任务 B：判断画作美感</div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                        分析一幅现代抽象画，判断这幅画是否具有“艺术美感”。
+                    </p>
+
+                    <!-- 可视化区域 -->
+                    <div class="task-visual">
+                        <svg width="100%" height="100%" viewBox="0 0 200 120" id="svg-art">
+                            <!-- 抽象画作示意 -->
+                            <rect x="40" y="15" width="120" height="80" rx="4" fill="#334155" stroke="#475569" stroke-width="2"/>
+                            <circle cx="80" cy="50" r="25" fill="#ec4899" opacity="0.7"/>
+                            <polygon points="100,30 140,80 80,80" fill="#eab308" opacity="0.6"/>
+                            <path d="M 50,75 Q 90,35 150,65" stroke="#06b6d4" stroke-width="4" fill="none"/>
+                            
+                            <!-- 扫描线 -->
+                            <line x1="40" y1="15" x2="160" y2="15" class="scan-line" id="scan-art" />
+
+                            <!-- 进度/结果文本 -->
+                            <text x="100" y="112" fill="#94a3b8" font-size="11" text-anchor="middle" id="art-status">等待诊断...</text>
+                        </svg>
+                    </div>
+
+                    <!-- 指标灯 -->
+                    <div class="indicators">
+                        <div class="indicator-row">
+                            <span class="indicator-label">规则是否明确？</span>
+                            <div class="indicator-status">
+                                <div class="led active-red"></div>
+                                <span class="status-text no">否 (审美因人而异)</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <span class="indicator-label">是否需要机械重复？</span>
+                            <div class="indicator-status">
+                                <div class="led active-red"></div>
+                                <span class="status-text no">否 (需直觉与情感)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-run" id="btn-run-art">
+                    ⚡ 运行枚举测试
+                </button>
+            </div>
+        </div>
+
+        <!-- 底部结论区 -->
+        <div class="conclusion-panel locked" id="conclusion-panel">
+            <!-- 未解锁遮罩 -->
+            <div class="lock-overlay" id="lock-overlay">
+                <span class="lock-icon">🔒</span>
+                <span>请完成左右两栏的“枚举测试”以解锁核心结论</span>
+            </div>
+            
+            <div class="conclusion-content">
+                <div class="gold-badge">🔑 核心发现</div>
+                <div class="conclusion-text">
+                    枚举算法（逐个试错）的威力建立在 <span class="highlight-gold">明确的规则</span> 和 <span class="highlight-gold">可机械重复</span> 的基础之上。对于没有明确数学逻辑、依赖主观直觉与情感的任务（如艺术审美、复杂人脸识别），简单的枚举算法会因“逻辑未定义”而失效，这正是人脑直觉的独特优势！
+                </div>
+            </div>
+        </div>
+
+        <!-- 警告弹窗 -->
+        <div class="modal-overlay" id="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-icon">⚠️</div>
+                <h3 class="modal-title">诊断警报：逻辑未定义</h3>
+                <p class="modal-desc" id="modal-desc">
+                    计算机无法执行枚举！因为我们无法用数学公式或代码来定义“什么是美”。没有明确的规则，循环结构就无法建立。
+                </p>
+                <button class="btn-close" id="btn-close-modal">确认并思考</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const btnRunMath = document.getElementById('btn-run-math');
+        const btnRunArt = document.getElementById('btn-run-art');
+        const scanMath = document.getElementById('scan-math');
+        const scanArt = document.getElementById('scan-art');
+        const mathStatus = document.getElementById('math-status');
+        const artStatus = document.getElementById('art-status');
+        const cardMath = document.getElementById('card-math');
+        const cardArt = document.getElementById('card-art');
+        const conclusionPanel = document.getElementById('conclusion-panel');
+        const lockOverlay = document.getElementById('lock-overlay');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const svgMath = document.getElementById('svg-math');
+
+        // 状态记录
+        let mathTested = false;
+        let artTested = false;
+
+        // 任务A：数学枚举测试
+        btnRunMath.addEventListener('click', () => {
+            if (mathTested) return;
+            
+            // 界面状态更新
+            btnRunMath.disabled = true;
+            cardMath.classList.add('active');
+            scanMath.classList.add('scan-active');
+            mathStatus.textContent = "正在高速枚举计算...";
+            mathStatus.setAttribute('fill', 'var(--primary)');
+
+            // 模拟数字矩阵闪烁
+            const numbers = svgMath.querySelectorAll('.matrix-text');
+            let count = 0;
+            const interval = setInterval(() => {
+                numbers.forEach(num => {
+                    // 随机改变数字模拟计算过程
+                    if (Math.random() > 0.5) {
+                        num.textContent = String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
+                        num.style.fill = '#64748b';
+                    }
+                });
+                count++;
+                if (count > 10) {
+                    clearInterval(interval);
+                    // 结束计算，高亮完美数
+                    numbers.forEach(num => {
+                        const val = parseInt(num.textContent);
+                        if (num.textContent === '0006' || num.textContent === '0028' || num.textContent === '0496' || num.textContent === '8128') {
+                            num.classList.add('highlight');
+                        }
+                    });
+                    
+                    // 强制将特定位置设为完美数以确保教学效果
+                    numbers[1].textContent = "8128"; numbers[1].classList.add('highlight');
+                    numbers[3].textContent = "0006"; numbers[3].classList.add('highlight');
+                    numbers[4].textContent = "0028"; numbers[4].classList.add('highlight');
+                    numbers[6].textContent = "0496"; numbers[6].classList.add('highlight');
+
+                    scanMath.classList.remove('scan-active');
+                    mathStatus.textContent = "✅ 枚举成功！找到4个完美数";
+                    mathStatus.setAttribute('fill', 'var(--success)');
+                    
+                    mathTested = true;
+                    checkUnlock();
+                }
+            }, 150);
+        });
+
+        // 任务B：艺术枚举测试
+        btnRunArt.addEventListener('click', () => {
+            // 界面状态更新
+            btnRunArt.disabled = true;
+            cardArt.classList.add('active');
+            scanArt.classList.add('scan-active');
+            artStatus.textContent = "尝试建立美感评估函数...";
+            artStatus.setAttribute('fill', 'var(--warning)');
+
+            // 1秒后发生逻辑崩溃
+            setTimeout(() => {
+                scanArt.classList.remove('scan-active');
+                cardArt.classList.add('shake');
+                artStatus.textContent = "❌ 运行崩溃：逻辑未定义";
+                artStatus.setAttribute('fill', 'var(--danger)');
+
+                // 弹出警告框
+                setTimeout(() => {
+                    modalOverlay.classList.add('show');
+                }, 300);
+
+                // 移除抖动类以便下次可以再次触发
+                setTimeout(() => {
+                    cardArt.classList.remove('shake');
+                }, 500);
+
+                artTested = true;
+                btnRunArt.disabled = false; // 允许重复测试
+                checkUnlock();
+            }, 1200);
+        });
+
+        // 关闭弹窗
+        btnCloseModal.addEventListener('click', () => {
+            modalOverlay.classList.remove('show');
+        });
+
+        // 检查是否解锁核心结论
+        function checkUnlock() {
+            if (mathTested && artTested) {
+                conclusionPanel.classList.remove('locked');
+                lockOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    lockOverlay.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // 点击未解锁区域提示
+        lockOverlay.addEventListener('click', () => {
+            if (!mathTested || !artTested) {
+                lockOverlay.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    lockOverlay.style.animation = '';
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

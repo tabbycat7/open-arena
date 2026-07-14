@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图形化编程逻辑等价仪</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --scratch-orange: #ffab19;
+            --scratch-green: #59c059;
+            --scratch-blue: #4c97ff;
+            --scratch-dark-orange: #cf8b10;
+            --glow-color: #00f3ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* 4:3 比例容器 */
+        .aspect-ratio-container {
+            width: 1024px;
+            height: 768px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            padding: 20px 30px;
+            background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* 主体内容区 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+            padding: 24px;
+            height: calc(100% - 80px);
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            border-left: 4px solid var(--scratch-blue);
+            padding-left: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 开关组件 */
+        .switch-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .switch-label {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--scratch-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .status-badge {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+        .status-true { background: #dcfce7; color: #15803d; }
+        .status-false { background: #fee2e2; color: #b91c1c; }
+
+        /* 按钮组 */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--scratch-blue);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-primary:hover {
+            background-color: #357abd;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 真值表 */
+        .truth-table-container {
+            margin-top: auto;
+        }
+
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .truth-table th, .truth-table td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .truth-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .truth-table tr.active-row {
+            background-color: #eff6ff;
+            outline: 2px solid var(--scratch-blue);
+            outline-offset: -2px;
+        }
+
+        /* 右侧可视化画布区 */
+        .visualization-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .canvas-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        /* SVG 样式 */
+        svg {
+            width: 100%;
+            height: 100%;
+            min-height: 220px;
+        }
+
+        /* 积木块样式 */
+        .block-control { fill: var(--scratch-orange); stroke: var(--scratch-dark-orange); stroke-width: 1.5; }
+        .block-operator { fill: var(--scratch-green); stroke: #418f41; stroke-width: 1.5; }
+        .block-motion { fill: var(--scratch-blue); stroke: #357abd; stroke-width: 1.5; }
+        .block-text { fill: #ffffff; font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: bold; user-select: none; }
+        .block-text-dark { fill: #1e293b; font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: bold; user-select: none; }
+        
+        /* 条件槽内部背景 */
+        .slot-bg { fill: rgba(0,0,0,0.15); }
+        
+        /* 动态高亮与流光 */
+        .flow-path {
+            fill: none;
+            stroke: #cbd5e1;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .flow-path-active {
+            fill: none;
+            stroke: var(--glow-color);
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 8, 8;
+            animation: flow-dash 1s linear infinite;
+            filter: drop-shadow(0px 0px 4px var(--glow-color));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes flow-dash {
+            to {
+                stroke-dashoffset: -16;
+            }
+        }
+
+        /* 脉冲小球 */
+        .pulse-dot {
+            fill: #ffffff;
+            stroke: var(--glow-color);
+            stroke-width: 3;
+            r: 6;
+            filter: drop-shadow(0px 0px 6px var(--glow-color));
+            opacity: 0;
+        }
+
+        /* 状态指示灯 */
+        .indicator {
+            transition: all 0.3s;
+        }
+        .indicator-off { fill: #94a3b8; }
+        .indicator-on { fill: var(--scratch-green); filter: drop-shadow(0px 0px 8px var(--scratch-green)); }
+        .indicator-fail { fill: #ef4444; filter: drop-shadow(0px 0px 8px #ef4444); }
+
+        /* 提示说明区 */
+        .prompt-box {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            right: 24px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1e40af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div>
+            <h1>代码逻辑等价仪</h1>
+            <div class="subtitle">探索“嵌套条件”与“组合条件”的执行奥秘</div>
+        </div>
+        <div style="text-align: right;">
+            <span style="font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;">五年级 · 信息技术</span>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <div class="panel-title">输入信号控制</div>
+            <div class="switch-group">
+                <div class="switch-container">
+                    <div>
+                        <span class="switch-label">条件 A</span>
+                        <span id="badge-a" class="status-badge status-false">假 (False)</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-a">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="switch-container">
+                    <div>
+                        <span class="switch-label">条件 B</span>
+                        <span id="badge-b" class="status-badge status-false">假 (False)</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-b">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="btn-run" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="min-height:auto; width:16px; height:16px; display:inline;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    单步追踪执行
+                </button>
+                <button id="btn-auto" class="btn btn-secondary">自动演示全部</button>
+                <button id="btn-reset" class="btn btn-secondary">重置</button>
+            </div>
+
+            <!-- 真值表 -->
+            <div class="truth-table-container">
+                <div class="panel-title" style="margin-bottom: 8px;">逻辑真值表对照</div>
+                <table class="truth-table">
+                    <thead>
+                        <tr>
+                            <th>条件 A</th>
+                            <th>条件 B</th>
+                            <th>嵌套输出</th>
+                            <th>“且”输出</th>
+                        </tr>
+                    </thead>
+                    <tbody id="truth-table-body">
+                        <tr id="row-ff" data-a="false" data-b="false">
+                            <td>假 (F)</td>
+                            <td>假 (F)</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                        </tr>
+                        <tr id="row-ft" data-a="false" data-b="true">
+                            <td>假 (F)</td>
+                            <td>真 (T)</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                        </tr>
+                        <tr id="row-tf" data-a="true" data-b="false">
+                            <td>真 (T)</td>
+                            <td>假 (F)</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                            <td style="color: #ef4444; font-weight: bold;">不执行</td>
+                        </tr>
+                        <tr id="row-tt" data-a="true" data-b="true">
+                            <td>真 (T)</td>
+                            <td>真 (T)</td>
+                            <td style="color: #22c55e; font-weight: bold;">★ 执行</td>
+                            <td style="color: #22c55e; font-weight: bold;">★ 执行</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 右侧可视化区 -->
+        <div class="visualization-panel">
+            <!-- 结构一：嵌套结构 -->
+            <div class="canvas-card">
+                <div class="card-header">
+                    <span>结构一：如果...那么 嵌套结构</span>
+                    <span class="badge">顺序判断</span>
+                </div>
+                <svg id="svg-nested" viewBox="0 0 500 220">
+                    <defs>
+                        <!-- 阴影滤镜 -->
+                        <filter id="drop-shadow" x="-5%" y="-5%" width="110%" height="110%">
+                            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+                        </filter>
+                    </defs>
+
+                    <!-- 基础流道背景线 -->
+                    <path d="M 25,5 V 30 H 120 H 55 V 80 H 150 H 85 V 130 H 170" class="flow-path" />
+                    <!-- 旁路流道背景线 -->
+                    <path d="M 120,30 H 25 V 205 H 170" class="flow-path" />
+                    <path d="M 150,80 H 55 V 167 H 25 V 205" class="flow-path" />
+
+                    <!-- 动态激活流道 -->
+                    <path id="flow-nested-active" d="" class="flow-path-active" />
+
+                    <!-- 外层如果积木 -->
+                    <g filter="url(#drop-shadow)">
+                        <path d="M 10,10 h 320 v 40 h -280 v 135 h 280 v 20 h -320 z" class="block-control" />
+                        <text x="25" y="35" class="block-text">如果</text>
+                        <!-- 条件A插槽 -->
+                        <rect id="slot-a1" x="65" y="15" width="110" height="30" rx="15" class="slot-bg" />
+                        <text x="120" y="35" text-anchor="middle" class="block-text" id="txt-cond-a1">条件 A</text>
+                        <text x="185" y="35" class="block-text">那么</text>
+                    </g>
+
+                    <!-- 内层如果积木 -->
+                    <g filter="url(#drop-shadow)">
+                        <path d="M 40,60 h 260 v 40 h -220 v 67 h 220 v 20 h -260 z" class="block-control" />
+                        <text x="55" y="85" class="block-text">如果</text>
+                        <!-- 条件B插槽 -->
+                        <rect id="slot-b1" x="95" y="65" width="110" height="30" rx="15" class="slot-bg" />
+                        <text x="150" y="85" text-anchor="middle" class="block-text" id="txt-cond-b1">条件 B</text>
+                        <text x="215" y="85" class="block-text">那么</text>
+                    </g>
+
+                    <!-- 执行操作积木 -->
+                    <g filter="url(#drop-shadow)">
+                        <rect id="block-action1" x="70" y="110" width="200" height="40" rx="4" class="block-motion" />
+                        <text x="170" y="135" text-anchor="middle" class="block-text">执行操作</text>
+                    </g>
+
+                    <!-- 终点指示灯 -->
+                    <circle id="ind-nested-ok" cx="350" cy="130" r="10" class="indicator indicator-off" />
+                    <text x="370" y="134" font-size="12" font-weight="bold" fill="#64748b">执行成功</text>
+
+                    <circle id="ind-nested-skip" cx="350" cy="205" r="10" class="indicator indicator-off" />
+                    <text x="370" y="209" font-size="12" font-weight="bold" fill="#64748b">跳过未执行</text>
+
+                    <!-- 脉冲小球 -->
+                    <circle id="dot-nested" class="pulse-dot" />
+                </svg>
+            </div>
+
+            <!-- 结构二：且字结构 -->
+            <div class="canvas-card">
+                <div class="card-header">
+                    <span>结构二：使用“...且...”积木连接</span>
+                    <span class="badge">复合判断</span>
+                </div>
+                <svg id="svg-and" viewBox="0 0 500 180">
+                    <!-- 基础流道背景线 -->
+                    <path d="M 25,5 V 35 H 190 H 55 V 90 H 200" class="flow-path" />
+                    <path d="M 190,35 H 25 V 155 H 170" class="flow-path" />
+
+                    <!-- 动态激活流道 -->
+                    <path id="flow-and-active" d="" class="flow-path-active" />
+
+                    <!-- 如果积木 -->
+                    <g filter="url(#drop-shadow)">
+                        <path d="M 10,10 h 380 v 50 h -340 v 70 h 340 v 20 h -380 z" class="block-control" />
+                        <text x="25" y="40" class="block-text">如果</text>
+                        
+                        <!-- 且字大插槽 -->
+                        <rect x="65" y="15" width="255" height="40" rx="20" class="block-operator" />
+                        
+                        <!-- 条件A子插槽 -->
+                        <rect id="slot-a2" x="75" y="20" width="80" height="30" rx="15" class="slot-bg" />
+                        <text x="115" y="40" text-anchor="middle" class="block-text" id="txt-cond-a2">条件 A</text>
+                        
+                        <text x="175" y="40" class="block-text" style="font-size:14px;">且</text>
+                        
+                        <!-- 条件B子插槽 -->
+                        <rect id="slot-b2" x="210" y="20" width="80" height="30" rx="15" class="slot-bg" />
+                        <text x="250" y="40" text-anchor="middle" class="block-text" id="txt-cond-b2">条件 B</text>
+
+                        <text x="335" y="40" class="block-text">那么</text>
+                    </g>
+
+                    <!-- 执行操作积木 -->
+                    <g filter="url(#drop-shadow)">
+                        <rect id="block-action2" x="40" y="70" width="320" height="40" rx="4" class="block-motion" />
+                        <text x="200" y="95" text-anchor="middle" class="block-text">执行操作</text>
+                    </g>
+
+                    <!-- 终点指示灯 -->
+                    <circle id="ind-and-ok" cx="410" cy="90" r="10" class="indicator indicator-off" />
+                    <text x="430" y="94" font-size="12" font-weight="bold" fill="#64748b">执行成功</text>
+
+                    <circle id="ind-and-skip" cx="410" cy="155" r="10" class="indicator indicator-off" />
+                    <text x="430" y="159" font-size="12" font-weight="bold" fill="#64748b">跳过未执行</text>
+
+                    <!-- 脉冲小球 -->
+                    <circle id="dot-and" class="pulse-dot" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部提示说明 -->
+    <div class="prompt-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="min-height:auto; width:16px; height:16px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span id="prompt-text">提示：点击左侧开关改变条件，然后点击“单步追踪执行”观察两条路径的流动方式。</span>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const toggleA = document.getElementById('toggle-a');
+    const toggleB = document.getElementById('toggle-b');
+    const badgeA = document.getElementById('badge-a');
+    const badgeB = document.getElementById('badge-b');
+    const btnRun = document.getElementById('btn-run');
+    const btnAuto = document.getElementById('btn-auto');
+    const btnReset = document.getElementById('btn-reset');
+    const promptText = document.getElementById('prompt-text');
+
+    // SVG 内部元素
+    const slotA1 = document.getElementById('slot-a1');
+    const slotB1 = document.getElementById('slot-b1');
+    const slotA2 = document.getElementById('slot-a2');
+    const slotB2 = document.getElementById('slot-b2');
+    const action1 = document.getElementById('block-action1');
+    const action2 = document.getElementById('block-action2');
+
+    const indNestedOk = document.getElementById('ind-nested-ok');
+    const indNestedSkip = document.getElementById('ind-nested-skip');
+    const indAndOk = document.getElementById('ind-and-ok');
+    const indAndSkip = document.getElementById('ind-and-skip');
+
+    const flowNestedActive = document.getElementById('flow-nested-active');
+    const flowAndActive = document.getElementById('flow-and-active');
+    const dotNested = document.getElementById('dot-nested');
+    const dotAnd = document.getElementById('dot-and');
+
+    // 状态变量
+    let isAnimating = false;
+
+    // 路径定义
+    const PATHS = {
+        nested: {
+            // A=True, B=True
+            tt: "M 25,5 V 30 H 120 H 55 V 80 H 150 H 85 V 130 H 340",
+            // A=True, B=False
+            tf: "M 25,5 V 30 H 120 H 55 V 80 H 150 H 55 V 167 H 25 V 205 H 340",
+            // A=False, B=True / False (由于A为假，直接在外层被截断)
+            f: "M 25,5 V 30 H 120 H 25 V 205 H 340"
+        },
+        and: {
+            // A=True, B=True
+            tt: "M 25,5 V 35 H 190 H 55 V 90 H 400",
+            // 任何一个为假
+            f: "M 25,5 V 35 H 190 H 25 V 155 H 400"
+        }
+    };
+
+    // 初始化状态
+    function updateState() {
+        const a = toggleA.checked;
+        const b = toggleB.checked;
+
+        // 更新控制面板徽章
+        badgeA.textContent = a ? "真 (True)" : "假 (False)";
+        badgeA.className = `status-badge ${a ? 'status-true' : 'status-false'}`;
+        badgeB.textContent = b ? "真 (True)" : "假 (False)";
+        badgeB.className = `status-badge ${b ? 'status-true' : 'status-false'}`;
+
+        // 更新插槽颜色
+        const trueColor = "#22c55e";
+        const falseColor = "#ef4444";
+        const defaultSlotColor = "rgba(0,0,0,0.15)";
+
+        slotA1.style.fill = a ? trueColor : falseColor;
+        slotB1.style.fill = b ? trueColor : falseColor;
+        slotA2.style.fill = a ? trueColor : falseColor;
+        slotB2.style.fill = b ? trueColor : falseColor;
+
+        // 更新真值表高亮
+        document.querySelectorAll('#truth-table-body tr').forEach(row => {
+            row.classList.remove('active-row');
+        });
+        const rowId = `row-${a ? 't' : 'f'}${b ? 't' : 'f'}`;
+        document.getElementById(rowId).classList.add('active-row');
+
+        // 重置指示灯和流道
+        resetVisuals();
+    }
+
+    function resetVisuals() {
+        indNestedOk.className = "indicator indicator-off";
+        indNestedSkip.className = "indicator indicator-off";
+        indAndOk.className = "indicator indicator-off";
+        indAndSkip.className = "indicator indicator-off";
+        flowNestedActive.style.opacity = 0;
+        flowAndActive.style.opacity = 0;
+        dotNested.style.opacity = 0;
+        dotAnd.style.opacity = 0;
+        action1.style.filter = "none";
+        action2.style.filter = "none";
+    }
+
+    // 沿路径动画移动小球
+    function animateAlongPath(pathElement, dotElement, duration, callback) {
+        const length = pathElement.getTotalLength();
+        dotElement.style.opacity = 1;
+        
+        let start = null;
+        function step(timestamp) {
+            if (!start) start = timestamp;
+            const progress = (timestamp - start) / duration;
+            
+            if (progress < 1) {
+                const currentLength = progress * length;
+                const point = pathElement.getPointAtLength(currentLength);
+                dotElement.setAttribute('cx', point.x);
+                dotElement.setAttribute('cy', point.y);
+                requestAnimationFrame(step);
+            } else {
+                const point = pathElement.getPointAtLength(length);
+                dotElement.setAttribute('cx', point.x);
+                dotElement.setAttribute('cy', point.y);
+                if (callback) callback();
+            }
+        }
+        requestAnimationFrame(step);
+    }
+
+    // 执行追踪动画
+    function runTrace(onComplete) {
+        if (isAnimating) return;
+        isAnimating = true;
+        btnRun.disabled = true;
+        btnAuto.disabled = true;
+        resetVisuals();
+
+        const a = toggleA.checked;
+        const b = toggleB.checked;
+
+        // 确定嵌套结构的路径
+        let nestedPathD = "";
+        let nestedSuccess = false;
+        if (!a) {
+            nestedPathD = PATHS.nested.f;
+            promptText.textContent = "分析：条件A为‘假’，嵌套结构在第一层直接判定不成立，直接跳过内层，不判断条件B。";
+        } else if (a && !b) {
+            nestedPathD = PATHS.nested.tf;
+            promptText.textContent = "分析：条件A为‘真’，进入内层；但条件B为‘假’，最终跳过执行。";
+        } else {
+            nestedPathD = PATHS.nested.tt;
+            nestedSuccess = true;
+            promptText.textContent = "分析：条件A、B均为‘真’，顺利通过两层判断，成功执行操作！";
+        }
+
+        // 确定且字结构的路径
+        let andPathD = "";
+        let andSuccess = false;
+        if (a && b) {
+            andPathD = PATHS.and.tt;
+            andSuccess = true;
+        } else {
+            andPathD = PATHS.and.f;
+        }
+
+        // 设置路径并显示
+        flowNestedActive.setAttribute('d', nestedPathD);
+        flowAndActive.setAttribute('d', andPathD);
+        flowNestedActive.style.opacity = 1;
+        flowAndActive.style.opacity = 1;
+
+        // 启动动画
+        let completed = 0;
+        const checkComplete = () => {
+            completed++;
+            if (completed === 2) {
+                isAnimating = false;
+                btnRun.disabled = false;
+                btnAuto.disabled = false;
+                if (onComplete) onComplete();
+            }
+        };
+
+        // 嵌套结构动画结束回调
+        animateAlongPath(flowNestedActive, dotNested, 2000, () => {
+            if (nestedSuccess) {
+                indNestedOk.className = "indicator indicator-on";
+                action1.style.filter = "drop-shadow(0px 0px 8px var(--scratch-blue))";
+            } else {
+                indNestedSkip.className = "indicator indicator-fail";
+            }
+            dotNested.style.opacity = 0;
+            checkComplete();
+        });
+
+        // 且字结构动画结束回调
+        animateAlongPath(flowAndActive, dotAnd, 2000, () => {
+            if (andSuccess) {
+                indAndOk.className = "indicator indicator-on";
+                action2.style.filter = "drop-shadow(0px 0px 8px var(--scratch-blue))";
+            } else {
+                indAndSkip.className = "indicator indicator-fail";
+            }
+            dotAnd.style.opacity = 0;
+            checkComplete();
+        });
+    }
+
+    // 自动演示所有情况
+    async function runAutoDemo() {
+        const scenarios = [
+            { a: false, b: false },
+            { a: false, b: true },
+            { a: true, b: false },
+            { a: true, b: true }
+        ];
+
+        btnAuto.disabled = true;
+        btnRun.disabled = true;
+
+        for (let i = 0; i < scenarios.length; i++) {
+            toggleA.checked = scenarios[i].a;
+            toggleB.checked = scenarios[i].b;
+            updateState();
+            
+            // 等待动画完成
+            await new Promise(resolve => {
+                runTrace(resolve);
+            });
+            
+            // 停留展示结果
+            await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+
+        promptText.textContent = "演示完毕！观察真值表可以发现：无论输入什么条件，两者的最终执行结果完全相同。";
+        btnAuto.disabled = false;
+        btnRun.disabled = false;
+    }
+
+    // 事件监听
+    toggleA.addEventListener('change', updateState);
+    toggleB.addEventListener('change', updateState);
+    btnRun.addEventListener('click', () => runTrace());
+    btnAuto.addEventListener('click', runAutoDemo);
+    btnReset.addEventListener('click', () => {
+        toggleA.checked = false;
+        toggleB.checked = false;
+        updateState();
+        promptText.textContent = "提示：点击左侧开关改变条件，然后点击“单步追踪执行”观察两条路径的流动方式。";
+    });
+
+    // 初始化
+    updateState();
+</script>
+
+</body>
+</html>

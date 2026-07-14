@@ -1,0 +1,212 @@
+{
+  "task_id": "6fd79299-fc10-4fdb-a98b-88bc61b7ac40",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，看大屏幕上这幅毕达哥拉斯当年看到的地砖图案（图17.1-1），如果单独把其中一个等腰直角三角形拿出来，像图17.1-2那样，分别以三边为边长向外画正方形，大家观察一下，这三个正方形的面积之间有什么关系？由此你能猜猜这三条边长之间藏着什么秘密吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才我们发现了等腰直角三角形的奥秘，那如果换作一般的直角三角形，比如图17.1-3里的情况，这个规律还管用吗？请大家拿出练习本，在网格图中算一算正方形A、B、C的面积，尤其是正方形C，它的面积该怎么算更简便？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "虽然我们通过计算验证了猜想，但在数学上，只有经过严格证明的命题才能被称为定理。我国古代数学家赵爽利用一个弦图巧妙地证明了这个结论。请看大屏幕上的“赵爽弦图”（图17.1-5）和拼图过程（图17.1-6），大家思考一下：他是如何通过图形的拼接变化，推导出 a² + b² = c² 的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "既然我们已经证明了勾股定理，接下来就要用它来算一算。请大家看屏幕上的练习题，已知直角三角形的两边长，如何求第三边？特别是当已知斜边和一条直角边时，公式应该怎么变形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "学会了计算，我们还要解决生活中的难题。请看例1，木板想通过门框，横着竖着都不行，只能斜着试。大家想一想，要把这个实际问题转化成数学问题，关键是要在图上找到哪条线段？它对应我们刚学的哪个概念？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果不数格子，直接把图17.1-2中两个较小的正方形剪下来，拼成一个大正方形，你会发现什么？这能不能再次证明我们刚才猜想的边长关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果地砖上的等腰直角三角形直角边长变成2，按照刚才的方法画三个正方形，面积关系变了吗？边长关系还成立吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果网格中的三角形不是直角三角形，而是一个钝角三角形，那么 $S_A+S_B$ 还会等于 $S_C$ 吗？请大家动手算一算，看看是大了还是小了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "换个数据试试，如果直角边长分别是3和4，斜边上的正方形面积是多少？还能用“外围大正方形减去四个角”的方法算出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "除了赵爽弦图，还有一种“总统证法”（展示梯形拼图），大家对比一下，这两种方法虽然图形不同，但证明思路有什么共同的关键点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "在赵爽弦图中，中间那个小正方形的边长是怎么来的？如果直角三角形变成等腰直角三角形，这个中间的小正方形会变成什么样子？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "已知一个三角形的三边长分别是 6、8、10，你能算算看，它满足勾股定理吗？它是一个直角三角形吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "小明在计算时列式为 $x^2 + 5^2 = 13^2$，已知 5 和 13 分别是直角边和斜边，他列的式子对吗？如果不对，应该怎么改？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一架长 5 米的梯子斜靠在墙上，梯子底端离墙角 3 米，如果梯子顶端下滑了 1 米，底端会滑动多少米？这个问题里藏着几个直角三角形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "如果要从长方形操场的左上角走到右下角，是沿着边走更近，还是沿着对角线斜着穿过去更近？能算出近了多少米吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "刚才我们看的是等腰直角三角形，现在看图17.1-3，这个三角形的形状变了，但哪个角还是直角？哪两个正方形还是规规矩矩摆着的，能直接数出格子数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "那个斜放的正方形C没法直接数格子，大家看看它周围是不是围着四个直角三角形？能不能用外围那个大正方形的面积，减去这四个角的三角形面积来算一算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "刚才我们通过算几个特殊的例子验证了猜想，但是直角三角形有无数个，我们算得完吗？只靠举例能不能保证这个规律对所有的直角三角形都成立？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "看大屏幕上的赵爽弦图，四个红色的直角三角形拼成了一个大正方形。大家注意看，中间空出来的小正方形，它的边长和直角三角形的边有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "我们得出了勾股定理 $a^2+b^2=c^2$，在这个公式里，字母 $c$ 代表的是哪一条边？它和 $a$、$b$ 有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "题目里已知斜边是10，一条直角边是6。把这两个数代到公式里，$c$ 应该等于多少？现在求另一条直角边，公式里的加法要变成什么运算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "木板横着竖着都过不去，我们要想个办法。大家看门框这个长方形，要想让木板通过，门框里‘最宽’的距离在哪里？是哪一条线段？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "找到了这条对角线，它和门框的高、宽正好组成了一个什么三角形？在这条直角三角形里，这条对角线相当于我们刚才学的哪条边？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

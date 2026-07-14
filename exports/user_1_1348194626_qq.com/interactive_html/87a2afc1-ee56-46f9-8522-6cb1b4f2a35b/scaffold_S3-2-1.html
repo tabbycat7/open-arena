@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3-2-1 个人所得税计算第一步：求超出部分</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --tax-free-color: #64748b;
+            --taxable-color: #f97316;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e2e8f0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .canvas-container {
+            width: 95vw;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 头部标题与问题 */
+        .header {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 16px;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 8px 0;
+        }
+
+        .question-box {
+            background-color: var(--bg-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: var(--text-main);
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* 可视化主区域 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .slider-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            min-width: 200px;
+        }
+
+        .slider-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #cbd5e1;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--taxable-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #ea580c;
+        }
+
+        .btn-secondary {
+            background-color: #94a3b8;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #64748b;
+        }
+
+        /* 动画效果 */
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% {
+                r: 16;
+                opacity: 0.6;
+            }
+            50% {
+                r: 24;
+                opacity: 0;
+            }
+            100% {
+                r: 16;
+                opacity: 0;
+            }
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        .clickable:hover {
+            filter: brightness(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="title">六年级数学 · 百分数（二）</div>
+            <div class="question-box">
+                <p class="question-text">既然只有超过5000元的部分才交税，我们怎么算出李阿姨超过了多少钱？</p>
+            </div>
+        </div>
+
+        <!-- 可视化交互区 -->
+        <div class="visualization-area">
+            <svg viewBox="0 0 800 320" id="viz-svg">
+                <!-- 顶部公式展示区 -->
+                <g id="formula-container">
+                    <rect x="100" y="10" width="600" height="60" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+                    <text id="formula-text" x="400" y="48" font-size="24" font-weight="bold" text-anchor="middle">
+                        <!-- 动态生成 -->
+                    </text>
+                </g>
+
+                <!-- 线段图主体 -->
+                <!-- 免税部分 (0 - 5000) -->
+                <rect x="100" y="150" width="250" height="40" rx="6" fill="#94a3b8" />
+                <text x="225" y="175" font-size="16" fill="white" font-weight="bold" text-anchor="middle">免税部分 5000元</text>
+
+                <!-- 纳税部分 (5000 - 收入) -->
+                <rect id="taxable-bar" class="clickable" x="350" y="150" width="175" height="40" rx="6" fill="#fb923c" />
+                <text id="taxable-bar-text" class="clickable" x="437.5" y="175" font-size="16" fill="white" font-weight="bold" text-anchor="middle">?</text>
+
+                <!-- 免税部分上括号 -->
+                <path d="M 100,135 L 100,125 L 350,125 L 350,135" fill="none" stroke="#64748b" stroke-width="2" />
+                <text x="225" y="115" font-size="15" fill="#64748b" font-weight="bold" text-anchor="middle">免税额度: 5000元</text>
+
+                <!-- 纳税部分上括号 -->
+                <path id="taxable-bracket" d="M 350,135 L 350,125 L 525,125 L 525,135" fill="none" stroke="#f97316" stroke-width="2" />
+                <text id="taxable-bracket-text" x="437.5" y="115" font-size="15" fill="#f97316" font-weight="bold" text-anchor="middle">超出部分: ? 元</text>
+
+                <!-- 总收入下括号 -->
+                <path id="total-bracket" d="M 100,205 L 100,215 L 525,215 L 525,205" fill="none" stroke="#3b82f6" stroke-width="2" />
+                <text id="total-bracket-text" x="312.5" y="240" font-size="18" fill="#3b82f6" font-weight="bold" text-anchor="middle">总收入: 8500元</text>
+
+                <!-- 引导点击的动态光圈 -->
+                <g id="click-hint" class="clickable">
+                    <circle id="pulse-circle" cx="437.5" cy="170" r="18" fill="#f97316" class="pulse" />
+                    <circle cx="437.5" cy="170" r="14" fill="#ea580c" />
+                    <text x="437.5" y="176" font-size="16" fill="white" font-weight="bold" text-anchor="middle">?</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="slider-group">
+                <div class="slider-label">
+                    李阿姨的月收入：<span id="income-display" style="color: var(--primary-color); font-size: 20px;">8500</span> 元
+                </div>
+                <div class="slider-wrapper">
+                    <input type="range" id="income-slider" min="5500" max="12000" step="100" value="8500">
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="btn-reset" class="btn btn-secondary">重置演示</button>
+                <button id="btn-reveal" class="btn btn-primary">直接计算</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const slider = document.getElementById('income-slider');
+        const incomeDisplay = document.getElementById('income-display');
+        const btnReveal = document.getElementById('btn-reveal');
+        const btnReset = document.getElementById('btn-reset');
+
+        const taxableBar = document.getElementById('taxable-bar');
+        const taxableBarText = document.getElementById('taxable-bar-text');
+        const taxableBracket = document.getElementById('taxable-bracket');
+        const taxableBracketText = document.getElementById('taxable-bracket-text');
+        const totalBracket = document.getElementById('total-bracket');
+        const totalBracketText = document.getElementById('total-bracket-text');
+        const clickHint = document.getElementById('click-hint');
+        const pulseCircle = document.getElementById('pulse-circle');
+        const formulaText = document.getElementById('formula-text');
+
+        // 状态变量
+        let income = 8500;
+        let isRevealed = false;
+
+        // 比例尺计算：0元对应x=100，12000元对应x=700 (总长600像素)
+        // 5000元对应x=350 (免税部分宽250像素)
+        function getX(val) {
+            const minVal = 0;
+            const maxVal = 12000;
+            const minX = 100;
+            const maxX = 700;
+            return minX + ((val - minVal) / (maxVal - minVal)) * (maxX - minX);
+        }
+
+        // 更新视图
+        function updateVisualization() {
+            incomeDisplay.textContent = income;
+            const xIncome = getX(income);
+            const taxableWidth = xIncome - 350;
+            const taxableMidX = 350 + taxableWidth / 2;
+
+            // 1. 更新纳税部分矩形
+            taxableBar.setAttribute('width', taxableWidth);
+
+            // 2. 更新纳税部分上括号
+            taxableBracket.setAttribute('d', `M 350,135 L 350,125 L ${xIncome},125 L ${xIncome},135`);
+
+            // 3. 更新总收入下括号
+            totalBracket.setAttribute('d', `M 100,205 L 100,215 L ${xIncome},215 L ${xIncome},205`);
+            totalBracketText.setAttribute('x', 100 + (xIncome - 100) / 2);
+            totalBracketText.textContent = `总收入: ${income} 元`;
+
+            // 4. 根据是否揭晓状态更新文字和公式
+            if (isRevealed) {
+                // 隐藏问号引导
+                clickHint.style.display = 'none';
+                
+                // 显示具体数值
+                taxableBarText.style.display = 'block';
+                taxableBarText.setAttribute('x', taxableMidX);
+                taxableBarText.textContent = `${income - 5000}元`;
+
+                taxableBracketText.setAttribute('x', taxableMidX);
+                taxableBracketText.textContent = `超出部分: ${income - 5000} 元`;
+
+                // 更新公式
+                formulaText.innerHTML = `
+                    <tspan fill="#3b82f6">${income}</tspan>
+                    <tspan fill="#64748b"> - </tspan>
+                    <tspan fill="#64748b">5000</tspan>
+                    <tspan fill="#64748b"> = </tspan>
+                    <tspan fill="#f97316" font-size="28">${income - 5000}</tspan>
+                    <tspan fill="#1e293b" font-size="18"> (元)</tspan>
+                `;
+            } else {
+                // 显示问号引导并定位
+                clickHint.style.display = 'block';
+                clickHint.setAttribute('transform', `translate(${taxableMidX - 437.5}, 0)`);
+                
+                taxableBarText.style.display = 'none'; // 问号由引导层代劳
+
+                taxableBracketText.setAttribute('x', taxableMidX);
+                taxableBracketText.textContent = `超出部分: ? 元`;
+
+                // 提示公式
+                formulaText.innerHTML = `
+                    <tspan fill="#3b82f6">${income}</tspan>
+                    <tspan fill="#64748b"> - </tspan>
+                    <tspan fill="#64748b">5000</tspan>
+                    <tspan fill="#64748b"> = </tspan>
+                    <tspan fill="#ef4444">?</tspan>
+                    <tspan fill="#1e293b" font-size="18"> (元)</tspan>
+                `;
+            }
+        }
+
+        // 揭晓答案
+        function reveal() {
+            isRevealed = true;
+            updateVisualization();
+        }
+
+        // 重置状态
+        function reset() {
+            isRevealed = false;
+            income = 8500;
+            slider.value = 8500;
+            updateVisualization();
+        }
+
+        // 事件监听
+        slider.addEventListener('input', (e) => {
+            income = parseInt(e.target.value);
+            // 拖动滑块时自动揭晓，方便动态观察
+            isRevealed = true;
+            updateVisualization();
+        });
+
+        // 点击问号或橙色区域揭晓
+        clickHint.addEventListener('click', reveal);
+        taxableBar.addEventListener('click', reveal);
+        taxableBarText.addEventListener('click', reveal);
+
+        // 按钮事件
+        btnReveal.addEventListener('click', reveal);
+        btnReset.addEventListener('click', reset);
+
+        // 初始化
+        updateVisualization();
+    </script>
+</body>
+</html>

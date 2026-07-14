@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>变量与流程图的对应关系 - 教学可视化</title>
+    <style>
+        :root {
+            --primary-color: #FF8C1A; /* Scratch 变量分类橙色 */
+            --primary-hover: #E67E15;
+            --bg-color: #f5f7fa;
+            --text-color: #2c3e50;
+            --flowchart-bg: #e6f2ff;
+            --flowchart-border: #0056b3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #dbe2ef;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: #ffffff;
+            padding: 15px 24px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        /* 主工作区 */
+        .workspace {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            background-color: #f8fafc;
+        }
+
+        /* 连线 SVG 覆盖层 */
+        .connector-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .connection-path {
+            fill: none;
+            stroke: #cbd5e1;
+            stroke-width: 3;
+            stroke-dasharray: 8, 8;
+            transition: stroke 0.3s, stroke-width 0.3s, stroke-dashoffset 0.3s;
+        }
+
+        .connection-path.active {
+            stroke: var(--primary-color);
+            stroke-width: 5;
+            animation: stroke-flow 1s linear infinite;
+            filter: drop-shadow(0 0 6px rgba(255, 140, 26, 0.6));
+        }
+
+        @keyframes stroke-flow {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        /* 左侧：流程图区 */
+        .panel-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-right: 2px dashed #e2e8f0;
+            z-index: 10;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4a5568;
+            background: #edf2f7;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .flow-node {
+            width: 180px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            user-select: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .flow-node.start {
+            background-color: #def7ec;
+            border: 2px solid #31c48d;
+            color: #03543f;
+            border-radius: 24px;
+        }
+
+        .flow-node.process {
+            background-color: var(--flowchart-bg);
+            border: 2px solid var(--flowchart-border);
+            color: #004085;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .flow-node.process:hover, .flow-node.process.active {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 86, 179, 0.2);
+            border-color: #003366;
+            background-color: #d0e7ff;
+        }
+
+        .flow-node.process.active {
+            outline: 3px solid #ffb84d;
+        }
+
+        .flow-arrow {
+            width: 2px;
+            height: 20px;
+            background-color: #a0aec0;
+            position: relative;
+        }
+
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -4px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #a0aec0;
+        }
+
+        /* 右侧：Scratch 积木区 */
+        .panel-right {
+            flex: 1.2;
+            display: flex;
+            background-color: #ffffff;
+            z-index: 10;
+        }
+
+        /* 积木分类侧边栏 */
+        .scratch-sidebar {
+            width: 70px;
+            background-color: #f1f5f9;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 15px;
+            gap: 12px;
+        }
+
+        .category-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 9px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .category-dot.active {
+            ring: 3px solid #333;
+            outline: 3px solid #4a5568;
+        }
+
+        /* 积木展示区 */
+        .scratch-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 30px;
+            background-color: #f8fafc;
+        }
+
+        /* Scratch 积木样式 */
+        .scratch-block {
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-hover);
+            color: white;
+            padding: 10px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        /* 模拟 Scratch 积木的凹凸口 */
+        .scratch-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            width: 16px;
+            height: 4px;
+            background-color: var(--primary-hover);
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .scratch-block:hover, .scratch-block.active {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 12px rgba(255, 140, 26, 0.3);
+            background-color: var(--primary-hover);
+        }
+
+        .scratch-block.active {
+            outline: 3px solid #4a5568;
+        }
+
+        .block-dropdown {
+            background-color: #d26900;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .block-dropdown::after {
+            content: '▾';
+            font-size: 10px;
+        }
+
+        .block-input {
+            background-color: white;
+            color: black;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: normal;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* 底部交互与提问区 */
+        .footer-quiz {
+            background-color: #ffffff;
+            padding: 15px 24px;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .quiz-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quiz-btn:hover {
+            background-color: #edf2f7;
+            border-color: #cbd5e1;
+        }
+
+        .quiz-btn.correct {
+            background-color: #def7ec;
+            border-color: #31c48d;
+            color: #03543f;
+        }
+
+        .quiz-btn.wrong {
+            background-color: #fde8e8;
+            border-color: #f98080;
+            color: #9b1c1c;
+        }
+
+        .color-preview {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* 提示信息 */
+        .tips {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.75);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .tips.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div>
+                <h1>🔄 变量的赋值与自增</h1>
+                <p>点击流程图或积木块，观察它们之间的神奇对应关系！</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-weight: bold; color: #4a5568;">五年级 · 信息技术</span>
+            </div>
+        </div>
+
+        <!-- 主工作区 -->
+        <div class="workspace" id="workspace">
+            <!-- 动态连线 SVG -->
+            <svg class="connector-svg" id="connector-svg">
+                <path id="path-set" class="connection-path" d="" />
+                <path id="path-change" class="connection-path" d="" />
+            </svg>
+
+            <!-- 左侧：流程图 -->
+            <div class="panel-left">
+                <div class="panel-title">📋 算法流程图 (局部)</div>
+                <div class="flowchart">
+                    <div class="flow-node start">开始</div>
+                    <div class="flow-arrow"></div>
+                    
+                    <!-- 赋值节点 -->
+                    <div class="flow-node process" id="flow-node-set" data-target="block-set">
+                        i = 1000
+                        <div style="font-size: 11px; font-weight: normal; margin-top: 4px; color: #555;">(给变量设初始值)</div>
+                    </div>
+                    
+                    <div class="flow-arrow"></div>
+                    
+                    <!-- 自增节点 -->
+                    <div class="flow-node process" id="flow-node-change" data-target="block-change">
+                        i = i + 1
+                        <div style="font-size: 11px; font-weight: normal; margin-top: 4px; color: #555;">(让变量自己增加 1)</div>
+                    </div>
+                    
+                    <div class="flow-arrow"></div>
+                    <div class="flow-node start">...</div>
+                </div>
+            </div>
+
+            <!-- 右侧：Scratch 积木区 -->
+            <div class="panel-right">
+                <!-- 模拟 Scratch 侧边栏分类 -->
+                <div class="scratch-sidebar">
+                    <div class="category-dot" style="background-color: #4C97FF;">运动</div>
+                    <div class="category-dot" style="background-color: #9966FF;">外观</div>
+                    <div class="category-dot" style="background-color: #FFBF00;">控制</div>
+                    <div class="category-dot" id="var-category" style="background-color: #FF8C1A; transform: scale(1.1); ring: 2px solid #333;" title="点击高亮变量积木">
+                        <span>变量</span>
+                    </div>
+                    <div class="category-dot" style="background-color: #40BF56;">运算</div>
+                </div>
+
+                <!-- 积木展示 -->
+                <div class="scratch-content">
+                    <div class="panel-title" style="align-self: center; margin-bottom: 0;">🧩 积木选择区</div>
+                    
+                    <!-- 设为积木 -->
+                    <div class="scratch-block" id="block-set" data-target="flow-node-set">
+                        <span>将</span>
+                        <span class="block-dropdown">i</span>
+                        <span>设为</span>
+                        <span class="block-input">1000</span>
+                    </div>
+
+                    <!-- 增加积木 -->
+                    <div class="scratch-block" id="block-change" data-target="flow-node-change">
+                        <span>将</span>
+                        <span class="block-dropdown">i</span>
+                        <span>增加</span>
+                        <span class="block-input">1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 悬浮提示 -->
+            <div class="tips" id="interactive-tips">提示信息</div>
+        </div>
+
+        <!-- 底部提问区 -->
+        <div class="footer-quiz">
+            <div class="quiz-title">🤔 思考：在图形化编程中，我们会用到哪种颜色的“变量”积木来实现它们？</div>
+            <div class="quiz-options">
+                <button class="quiz-btn" data-color="blue">
+                    <span class="color-preview" style="background-color: #4C97FF;"></span>
+                    蓝色 (运动)
+                </button>
+                <button class="quiz-btn" data-color="purple">
+                    <span class="color-preview" style="background-color: #9966FF;"></span>
+                    紫色 (外观)
+                </button>
+                <button class="quiz-btn" data-color="orange" id="correct-option">
+                    <span class="color-preview" style="background-color: #FF8C1A;"></span>
+                    橙色 (变量)
+                </button>
+                <button class="quiz-btn" data-color="green">
+                    <span class="color-preview" style="background-color: #40BF56;"></span>
+                    绿色 (运算)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const workspace = document.getElementById('workspace');
+            const svg = document.getElementById('connector-svg');
+            const pathSet = document.getElementById('path-set');
+            const pathChange = document.getElementById('path-change');
+
+            const flowNodeSet = document.getElementById('flow-node-set');
+            const flowNodeChange = document.getElementById('flow-node-change');
+            const blockSet = document.getElementById('block-set');
+            const blockChange = document.getElementById('block-change');
+            
+            const tips = document.getElementById('interactive-tips');
+            const varCategory = document.getElementById('var-category');
+
+            // 动态更新连线路径
+            function updatePaths() {
+                const rect = svg.getBoundingClientRect();
+
+                updateSinglePath(flowNodeSet, blockSet, pathSet, rect);
+                updateSinglePath(flowNodeChange, blockChange, pathChange, rect);
+            }
+
+            function updateSinglePath(flowNode, blockNode, pathElement, svgRect) {
+                const r1 = flowNode.getBoundingClientRect();
+                const r2 = blockNode.getBoundingClientRect();
+
+                // 起点：流程图节点的右侧中心
+                const x1 = r1.right - svgRect.left;
+                const y1 = r1.top + r1.height / 2 - svgRect.top;
+
+                // 终点：积木块的左侧中心
+                const x2 = r2.left - svgRect.left;
+                const y2 = r2.top + r2.height / 2 - svgRect.top;
+
+                // 绘制贝塞尔曲线
+                const controlOffset = Math.abs(x2 - x1) * 0.5;
+                pathElement.setAttribute('d', `M ${x1} ${y1} C ${x1 + controlOffset} ${y1}, ${x2 - controlOffset} ${y2}, ${x2} ${y2}`);
+            }
+
+            // 激活/取消激活连接线和高亮
+            function activateConnection(type) {
+                // 重置所有
+                deactivateAll();
+
+                if (type === 'set') {
+                    flowNodeSet.classList.add('active');
+                    blockSet.classList.add('active');
+                    pathSet.classList.add('active');
+                    showTips("“i = 1000” 对应 变量初始化积木 设为 1000");
+                } else if (type === 'change') {
+                    flowNodeChange.classList.add('active');
+                    blockChange.classList.add('active');
+                    pathChange.classList.add('active');
+                    showTips("“i = i + 1” 对应 变量自增积木 增加 1");
+                }
+            }
+
+            function deactivateAll() {
+                flowNodeSet.classList.remove('active');
+                blockSet.classList.remove('active');
+                pathSet.classList.remove('active');
+
+                flowNodeChange.classList.remove('active');
+                blockChange.classList.remove('active');
+                pathChange.classList.remove('active');
+                
+                tips.classList.remove('show');
+            }
+
+            function showTips(text) {
+                tips.textContent = text;
+                tips.classList.add('show');
+            }
+
+            // 绑定交互事件
+            flowNodeSet.addEventListener('mouseenter', () => activateConnection('set'));
+            blockSet.addEventListener('mouseenter', () => activateConnection('set'));
+            flowNodeChange.addEventListener('mouseenter', () => activateConnection('change'));
+            blockChange.addEventListener('mouseenter', () => activateConnection('change'));
+
+            flowNodeSet.addEventListener('click', () => activateConnection('set'));
+            blockSet.addEventListener('click', () => activateConnection('set'));
+            flowNodeChange.addEventListener('click', () => activateConnection('change'));
+            blockChange.addEventListener('click', () => activateConnection('change'));
+
+            workspace.addEventListener('mouseleave', deactivateAll);
+
+            // 点击右侧“变量”分类，触发积木闪烁提示
+            varCategory.addEventListener('click', () => {
+                blockSet.style.transform = 'scale(1.1)';
+                blockChange.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    blockSet.style.transform = '';
+                    blockChange.style.transform = '';
+                }, 300);
+                showTips("没错！变量积木都在【橙色】分类中哦！");
+            });
+
+            // 答题互动
+            const quizButtons = document.querySelectorAll('.quiz-btn');
+            quizButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // 重置按钮状态
+                    quizButtons.forEach(b => b.className = 'quiz-btn');
+                    
+                    const selectedColor = btn.getAttribute('data-color');
+                    if (selectedColor === 'orange') {
+                        btn.classList.add('correct');
+                        showTips("🎉 太棒了！回答正确！变量积木是橙色的。");
+                    } else {
+                        btn.classList.add('wrong');
+                        showTips("❌ 不对哦，再观察一下右侧积木的颜色吧！");
+                    }
+                });
+            });
+
+            // 监听窗口大小改变，重新计算连线位置
+            window.addEventListener('resize', updatePaths);
+            
+            // 延迟初始化，确保 DOM 渲染完毕获取到准确坐标
+            setTimeout(updatePaths, 300);
+        });
+    </script>
+</body>
+</html>

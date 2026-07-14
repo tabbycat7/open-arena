@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>班级AI自律公约生成器</title>
+    <style>
+        :root { --primary: #2c3e50; --gold: #d4af37; --bg: #f4f7f6; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        #app { display: grid; grid-template-columns: 300px 1fr 300px; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; gap: 20px; }
+        .panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        h2 { color: var(--primary); font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .item { padding: 15px; margin: 10px 0; background: #f9f9f9; border-left: 4px solid #ccc; cursor: pointer; transition: 0.3s; }
+        .item:hover { border-left-color: var(--gold); background: #fff; }
+        #canvas-area { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #parchment { width: 400px; height: 500px; background: #fdf5e6; border: 2px solid #d2b48c; position: relative; padding: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.05); }
+        .puzzle-piece { width: 60px; height: 60px; background: var(--gold); color: white; display: flex; align-items: center; justify-content: center; margin: 5px; cursor: grab; border-radius: 5px; font-size: 12px; text-align: center; }
+        #badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; transition: 0.5s; font-size: 50px; color: var(--gold); }
+        textarea { width: 100%; height: 80px; margin-top: 10px; resize: none; }
+        button { margin-top: 10px; padding: 10px; background: var(--primary); color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="panel">
+        <h2>诱惑情境</h2>
+        <div class="item" data-id="1">作业写不完，AI直接给答案</div>
+        <div class="item" data-id="2">AI生成整蛊视频，想发群里</div>
+        <div class="item" data-id="3">AI免责协议，是否直接点同意</div>
+        <div id="choice-box" style="margin-top:20px; display:none;">
+            <p>你会怎么做？</p>
+            <button id="btn-copy">直接抄袭/转发</button>
+            <button id="btn-think">参考思路/理性分析</button>
+        </div>
+    </div>
+
+    <div id="canvas-area">
+        <div id="parchment">
+            <h3 style="text-align:center; color:var(--gold);">班级AI自律公约</h3>
+            <div id="rules-list"></div>
+            <textarea id="custom-rule" placeholder="输入小组拟定的个性化规则..."></textarea>
+            <button id="btn-sign" style="width:100%;">全班签署</button>
+        </div>
+        <div id="badge">知行合一</div>
+    </div>
+
+    <div class="panel">
+        <h2>公约碎片库</h2>
+        <div id="pieces">
+            <div class="puzzle-piece" draggable="true">隐私保护</div>
+            <div class="puzzle-piece" draggable="true">文明交流</div>
+            <div class="puzzle-piece" draggable="true">真实原创</div>
+            <div class="puzzle-piece" draggable="true">公平竞争</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const items = document.querySelectorAll('.item');
+    const choiceBox = document.getElementById('choice-box');
+    const rulesList = document.getElementById('rules-list');
+    const badge = document.getElementById('badge');
+
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            choiceBox.style.display = 'block';
+        });
+    });
+
+    document.getElementById('btn-think').addEventListener('click', () => {
+        alert('太棒了！你选择了理性使用AI。碎片库已解锁，请拖拽碎片到公约上。');
+    });
+
+    document.getElementById('btn-sign').addEventListener('click', () => {
+        const text = document.getElementById('custom-rule').value;
+        if(text) {
+            const p = document.createElement('p');
+            p.innerText = "· " + text;
+            rulesList.appendChild(p);
+        }
+        badge.style.transform = "translate(-50%, -50%) scale(1)";
+        badge.style.opacity = "1";
+        setTimeout(() => { badge.style.opacity = "0"; }, 2000);
+    });
+
+    // 简单的拖拽逻辑
+    const pieces = document.querySelectorAll('.puzzle-piece');
+    pieces.forEach(p => {
+        p.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text', e.target.innerText);
+        });
+    });
+
+    const parchment = document.getElementById('parchment');
+    parchment.addEventListener('dragover', (e) => e.preventDefault());
+    parchment.addEventListener('drop', (e) => {
+        const text = e.dataTransfer.getData('text');
+        const p = document.createElement('p');
+        p.innerText = "✔ " + text;
+        p.style.color = "#d4af37";
+        rulesList.appendChild(p);
+    });
+</script>
+</body>
+</html>

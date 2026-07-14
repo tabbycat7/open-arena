@@ -1,0 +1,158 @@
+{
+  "task_id": "d28fc381-9f9a-4382-8f04-dda46d226a97",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们过年都收了不少压岁钱吧？要是你把1000块压岁钱存进银行，到期取出来多了32块，有人说1000是赚的，有人说32是赚的，你觉得谁对？这两笔钱分别叫啥，作用有啥不一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "奇了怪了，有人存1000一年得32块利息，有人存2000一年得64块，还有人存1000两年得75块，有人说拿64块利息的最赚，有人说存两年的最赚，你觉得用啥标准比才公平呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "咱们试试哦，要是利率固定，本金翻倍利息咋变？本金固定存期翻倍利息又咋变？你能试着总结出算利息的公式不？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "小明把1000块存3年定期，算利息的时候用了1年期的利率，算出来的利息比银行实际给的少好多哦，你知道他错在哪了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "小红存了1000块6个月的定期，年利率是2.1%，她直接乘6算出来利息居然有126块，这比存一年还多，这明显不对呀，问题出在哪啦？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "要是你家有5万闲钱，1年后可能要拿2万出来用，你打算怎么存钱，能拿到最多的利息呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "爸爸妈妈买了2万元国债，到期后除了拿回2万还多拿了1800元，这两笔钱分别叫什么呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "阿姨A存1000元1年得20元利息，阿姨B存2000元1年得38元利息，你觉得谁的存款收益更高？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "有人说利息计算公式是「利息=本金+利率×存期」，你觉得这个说法对吗？为什么呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "老师给了你国有银行和地方商业银行两张利率表，你能找出两家3年期定期利率比比谁更高吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "小丽存了1000元，存期是2年零3个月，年利率是2.6%，你能帮她算算到期能拿多少利息吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "你现在有3.8万压岁钱，3年后要交4万学费，你能设计存款方案算算到期能不能凑够学费吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "我们存到银行的原始资金叫什么？到期后银行多给的钱叫什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "存100元1年得利息2元，存1元1年得多少利息？这个数就是年利率对吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "咱们一起读3遍利息计算公式：利息=本金×利率×存期",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "看标了颜色的利率表，存2年定期要找哪一行的年利率呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "年利率按1年计算哦，存6个月是多少年？计算时要乘0.5对吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

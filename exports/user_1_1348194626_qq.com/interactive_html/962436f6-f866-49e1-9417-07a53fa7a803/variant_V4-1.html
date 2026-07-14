@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税收计算模型探究</title>
+  <style>
+    /* 全局样式与投影优化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #2c3e50;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 95vw;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 头部区域 */
+    .header {
+      background: linear-gradient(135deg, #2b6cb0, #1a365d);
+      color: #ffffff;
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #ebf8ff;
+      margin-top: 6px;
+      opacity: 0.9;
+    }
+
+    /* 选项卡切换 */
+    .tabs {
+      display: flex;
+      background: #edf2f7;
+      padding: 6px 6px 0 6px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      background: transparent;
+      color: #4a5568;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #2b6cb0;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: #e2e8f0;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #ffffff;
+    }
+
+    /* 核心数学模型展示区 */
+    .model-card {
+      background: #f7fafc;
+      border: 2px solid #cbd5e0;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .model-title {
+      font-size: 13px;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .formula-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #1a202c;
+    }
+
+    .formula-part {
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .part-tax { background: #feebc8; color: #c05621; border: 1px dashed #fbd38d; }
+    .part-base { background: #ebf8ff; color: #2b6cb0; border: 1px dashed #90cdf4; }
+    .part-rate { background: #e6fffa; color: #319795; border: 1px dashed #81e6d9; }
+
+    /* 交互控制区 */
+    .control-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 16px 0;
+    }
+
+    .control-group {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4a5568;
+    }
+
+    .control-value {
+      font-family: monospace;
+      font-size: 16px;
+      color: #2b6cb0;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #2b6cb0;
+      cursor: pointer;
+      transition: transform 0.1s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* 动态可视化图表 (SVG) */
+    .visualization {
+      height: 100px;
+      background: #f7fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    /* 底部对比总结 */
+    .footer-note {
+      background: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      color: #2b6cb0;
+      line-height: 1.5;
+    }
+
+    .footer-note strong {
+      color: #2c5282;
+    }
+
+    /* 动画过渡 */
+    .fade-enter {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>税收计算模型探究</h1>
+      <p>通过对比不同的税种，观察它们的计算模型有什么共同点？</p>
+    </div>
+
+    <!-- 选项卡 -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-business">
+        💼 营业税
+      </button>
+      <button class="tab-btn" id="tab-personal">
+        👤 个人所得税
+      </button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+      
+      <!-- 核心数学模型 -->
+      <div class="model-card">
+        <div class="model-title">统一数学模型</div>
+        <div class="formula-display">
+          <span class="formula-part part-tax" id="formula-tax-label">应纳税额</span>
+          <span>=</span>
+          <span class="formula-part part-base" id="formula-base-label">基数</span>
+          <span>×</span>
+          <span class="formula-part part-rate" id="formula-rate-label">税率</span>
+        </div>
+      </div>
+
+      <!-- 动态可视化 (SVG) -->
+      <div class="visualization">
+        <svg id="visual-svg" width="100%" height="80" viewBox="0 0 700 80" preserveAspectRatio="xMidYMid meet">
+          <!-- 总基数条 -->
+          <rect x="10" y="25" width="680" height="30" rx="6" fill="#edf2f7" stroke="#cbd5e0" stroke-width="2" />
+          <!-- 税额占比条 -->
+          <rect id="svg-tax-bar" x="10" y="25" width="100" height="30" rx="6" fill="url(#tax-grad)" />
+          
+          <!-- 文本标注 -->
+          <text id="svg-base-text" x="350" y="20" text-anchor="middle" font-size="12" fill="#4a5568" font-weight="bold">基数 (100%)</text>
+          <text id="svg-tax-text" x="20" y="44" font-size="12" fill="#fff" font-weight="bold">税额</text>
+          <text id="svg-rate-text" x="120" y="44" font-size="12" fill="#319795" font-weight="bold">税率</text>
+
+          <!-- 渐变定义 -->
+          <defs>
+            <linearGradient id="tax-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#dd6b20" />
+              <stop offset="100%" stop-color="#ecc94b" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- 交互控制 -->
+      <div class="control-panel">
+        <!-- 基数控制 -->
+        <div class="control-group">
+          <div class="control-label">
+            <span id="slider-base-title">营业额 (基数)</span>
+            <span class="control-value" id="val-base">50,000 元</span>
+          </div>
+          <input type="range" class="slider" id="slider-base" min="10000" max="100000" step="5000" value="50000">
+        </div>
+
+        <!-- 税率控制 -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>税率</span>
+            <span class="control-value" id="val-rate">5%</span>
+          </div>
+          <input type="range" class="slider" id="slider-rate" min="1" max="15" step="0.5" value="5">
+        </div>
+      </div>
+
+      <!-- 实时算式与对比 -->
+      <div class="footer-note">
+        <div id="calc-sentence" style="font-size: 16px; font-weight: bold; margin-bottom: 4px;">
+          计算过程：50,000 × 5% = 2,500 元
+        </div>
+        <div id="model-comparison">
+          💡 <strong>模型思考：</strong> 无论是营业税还是个人所得税，其本质都是求一个数的百分之几是多少，计算模型完全一致。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 数据状态
+    const state = {
+      currentTab: 'business', // 'business' | 'personal'
+      business: {
+        base: 50000,
+        rate: 5,
+        baseMin: 10000,
+        baseMax: 100000,
+        baseStep: 5000,
+        rateMin: 1,
+        rateMax: 15,
+        rateStep: 0.5,
+        baseLabel: '营业额',
+        taxLabel: '营业税额'
+      },
+      personal: {
+        base: 3000,
+        rate: 3,
+        baseMin: 1000,
+        baseMax: 10000,
+        baseStep: 100,
+        rateMin: 3,
+        rateMax: 45,
+        rateStep: 1,
+        baseLabel: '应纳税所得额',
+        taxLabel: '个人所得税额'
+      }
+    };
+
+    // DOM 元素
+    const tabBusiness = document.getElementById('tab-business');
+    const tabPersonal = document.getElementById('tab-personal');
+    const formulaTaxLabel = document.getElementById('formula-tax-label');
+    const formulaBaseLabel = document.getElementById('formula-base-label');
+    const sliderBaseTitle = document.getElementById('slider-base-title');
+    const sliderBase = document.getElementById('slider-base');
+    const sliderRate = document.getElementById('slider-rate');
+    const valBase = document.getElementById('val-base');
+    const valRate = document.getElementById('val-rate');
+    const calcSentence = document.getElementById('calc-sentence');
+    const svgTaxBar = document.getElementById('svg-tax-bar');
+    const svgBaseText = document.getElementById('svg-base-text');
+    const svgTaxText = document.getElementById('svg-tax-text');
+    const svgRateText = document.getElementById('svg-rate-text');
+
+    // 初始化
+    function init() {
+      setupEventListeners();
+      updateUI();
+    }
+
+    // 事件监听
+    function setupEventListeners() {
+      tabBusiness.addEventListener('click', () => switchTab('business'));
+      tabPersonal.addEventListener('click', () => switchTab('personal'));
+      
+      sliderBase.addEventListener('input', (e) => {
+        state[state.currentTab].base = parseFloat(e.target.value);
+        updateUI();
+      });
+
+      sliderRate.addEventListener('input', (e) => {
+        state[state.currentTab].rate = parseFloat(e.target.value);
+        updateUI();
+      });
+    }
+
+    // 切换选项卡
+    function switchTab(tab) {
+      if (state.currentTab === tab) return;
+      state.currentTab = tab;
+
+      if (tab === 'business') {
+        tabBusiness.classList.add('active');
+        tabPersonal.classList.remove('active');
+      } else {
+        tabPersonal.classList.add('active');
+        tabBusiness.classList.remove('active');
+      }
+
+      // 重置滑块属性
+      const config = state[tab];
+      sliderBase.min = config.baseMin;
+      sliderBase.max = config.baseMax;
+      sliderBase.step = config.baseStep;
+      sliderBase.value = config.base;
+
+      sliderRate.min = config.rateMin;
+      sliderRate.max = config.rateMax;
+      sliderRate.step = config.rateStep;
+      sliderRate.value = config.rate;
+
+      updateUI();
+      
+      // 添加切换动画效果
+      const formulaCard = document.querySelector('.model-card');
+      formulaCard.classList.remove('fade-enter');
+      void formulaCard.offsetWidth; // 触发重绘
+      formulaCard.classList.add('fade-enter');
+    }
+
+    // 更新界面渲染
+    function updateUI() {
+      const current = state[state.currentTab];
+      const baseVal = current.base;
+      const rateVal = current.rate;
+      const taxVal = Math.round(baseVal * (rateVal / 100) * 100) / 100;
+
+      // 1. 更新公式标签
+      formulaBaseLabel.textContent = current.baseLabel;
+      formulaTaxLabel.textContent = current.taxLabel;
+
+      // 2. 更新控制面板文字
+      sliderBaseTitle.textContent = `${current.baseLabel} (基数)`;
+      valBase.textContent = `${baseVal.toLocaleString()} 元`;
+      valRate.textContent = `${rateVal}%`;
+
+      // 3. 更新计算公式
+      calcSentence.innerHTML = `计算过程：<span style="color:#2b6cb0">${baseVal.toLocaleString()}</span> × <span style="color:#319795">${rateVal}%</span> = <span style="color:#dd6b20; font-size: 18px;">${taxVal.toLocaleString()} 元</span>`;
+
+      // 4. 更新 SVG 可视化条
+      const maxSvgWidth = 680;
+      const taxBarWidth = maxSvgWidth * (rateVal / 100);
+      svgTaxBar.setAttribute('width', taxBarWidth);
+
+      // 动态调整文字位置
+      svgBaseText.textContent = `${current.baseLabel}: ${baseVal.toLocaleString()} 元 (100%)`;
+      
+      if (rateVal > 8) {
+        svgTaxText.textContent = `${taxVal.toLocaleString()}元`;
+        svgTaxText.setAttribute('x', taxBarWidth / 2 + 10);
+        svgTaxText.setAttribute('display', 'block');
+      } else {
+        svgTaxText.setAttribute('display', 'none'); // 比例太小时隐藏内部文字防止重叠
+      }
+
+      svgRateText.textContent = `税额: ${rateVal}%`;
+      svgRateText.setAttribute('x', Math.max(taxBarWidth + 20, 60));
+    }
+
+    // 执行初始化
+    init();
+  </script>
+</body>
+</html>

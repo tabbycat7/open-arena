@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>计税基数选择器</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .data-box {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .item {
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 80px;
+            transition: all 0.3s;
+        }
+        .item.highlight { border-color: #e67e22; background: #fff3e0; transform: scale(1.05); }
+        .controls { text-align: center; margin: 20px 0; }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            font-size: 16px;
+        }
+        button.active { background: #2980b9; outline: 3px solid #aed6f1; }
+        .formula-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        #result { font-weight: bold; color: #e67e22; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>计税基数选择器</h2>
+    <div class="data-box">
+        <div id="box-revenue" class="item">收入<br><strong>10万</strong></div>
+        <div id="box-cost" class="item">成本<br><strong>6万</strong></div>
+        <div id="box-profit" class="item">利润<br><strong>4万</strong></div>
+    </div>
+
+    <div class="controls">
+        <button id="btn-total">按总营业额纳税</button>
+        <button id="btn-profit">按利润纳税</button>
+    </div>
+
+    <div class="formula-area">
+        <div>计税基数 = <span id="base-val">?</span></div>
+        <div>应纳税额 = <span id="base-val-calc">?</span> × 税率(10%) = <span id="result">?</span></div>
+    </div>
+</div>
+
+<script>
+    const btnTotal = document.getElementById('btn-total');
+    const btnProfit = document.getElementById('btn-profit');
+    const boxRevenue = document.getElementById('box-revenue');
+    const boxProfit = document.getElementById('box-profit');
+    const baseVal = document.getElementById('base-val');
+    const baseValCalc = document.getElementById('base-val-calc');
+    const result = document.getElementById('result');
+
+    function updateView(mode) {
+        // 重置样式
+        boxRevenue.classList.remove('highlight');
+        boxProfit.classList.remove('highlight');
+        btnTotal.classList.remove('active');
+        btnProfit.classList.remove('active');
+
+        if (mode === 'total') {
+            btnTotal.classList.add('active');
+            boxRevenue.classList.add('highlight');
+            baseVal.textContent = "10万元";
+            baseValCalc.textContent = "10万";
+            result.textContent = "1万元";
+        } else {
+            btnProfit.classList.add('active');
+            boxProfit.classList.add('highlight');
+            baseVal.textContent = "4万元";
+            baseValCalc.textContent = "4万";
+            result.textContent = "0.4万元";
+        }
+    }
+
+    btnTotal.addEventListener('click', () => updateView('total'));
+    btnProfit.addEventListener('click', () => updateView('profit'));
+</script>
+
+</body>
+</html>

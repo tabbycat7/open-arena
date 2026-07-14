@@ -1,0 +1,131 @@
+{
+  "task_id": "9d0def41-3937-45a0-8e44-72c5f2536cbf",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "疫情初期，某地病毒数量每天翻倍，我们用y=2^x来模拟。你看这个模型，它符合我们刚学的指数函数定义吗？为什么偏偏底数是2而不是-2呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果让你们分组去探究指数函数图像的全貌，你会怎么选底数a？比如选a=3和a=1/3，你猜它们的图像会有什么不同？把你们的探究计划说说看。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们得到了两类图像，一个上升，一个下降。有人说‘看图像趋势就知道单调性’，也有人说‘必须用定义证明才严谨’。这两种说法，你更信服哪一种？它们之间最大的不同在哪？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "现在要比较3^{0.8}和3^{0.7}的大小，这很简单。但如果让你比较3^{0.8}和4^{0.5}呢？它们底数不同了，你打算怎么想办法？敢不敢设计一个解决这类问题的通用思路？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "这里有几个函数：y=(-2)^x， y=x^2， y=1^x， y=2*3^x。根据定义，你觉得哪些才是真正的指数函数？为什么其他的不算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "一个银行账户年利率5%，按复利计算，本息模型为y=(1.05)^x (x为年数)。请你动手，为这个“钱生钱”的模型画出它的图像。你觉得这条线代表了财富怎样的变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "这里有函数y=0.5^x和y=3^x的几个点对，但被打乱了。你能通过分析数值的增长或衰减速度，把它们“认领”回各自的函数名下吗？说说你的判断依据。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "为什么定义要求底数a>0且a≠1？如果a=1，函数会怎样？a≤0呢？这些情况会如何破坏我们对单调性的讨论？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "已知a>1，如何比较a^(2x+1)与a^(x^2)的大小？或者，你能利用单调性直接‘看’出方程2^(x^2)=16的解吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "除了2，还有哪些正数适合做底数？-2为什么不行？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "(1/3)的-1次方，结果是3还是-3？你是怎么算的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "所有指数函数图像都经过哪个共同的点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "图像上升时，对应的数学语言‘单调递增’是什么意思？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "底数大于1时，函数值随指数如何变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

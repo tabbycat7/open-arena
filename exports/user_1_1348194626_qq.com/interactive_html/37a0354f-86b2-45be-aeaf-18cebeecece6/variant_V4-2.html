@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>车辆购置税发言人 - 互动课堂</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --success-hover: #059669;
+      --error: #ef4444;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #cbd5e1;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      max-height: calc(100vh - 40px);
+      background: var(--bg-main);
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 顶部导航栏 */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .header .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    /* 左侧面板：新车展示与公式 */
+    .left-panel {
+      flex: 45;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .car-display {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .car-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .svg-container {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      position: relative;
+    }
+
+    .formula-guide {
+      background: #eff6ff;
+      border: 1px dashed #bfdbfe;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .formula-title {
+      font-size: 12px;
+      color: #1e40af;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .formula-body {
+      font-size: 16px;
+      color: #1e3a8a;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    /* 右侧面板：发言人与填空 */
+    .right-panel {
+      flex: 55;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+    .spokesperson-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .avatar-box {
+      flex-shrink: 0;
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 16px;
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      font-size: 16px;
+      line-height: 2;
+      color: var(--text-main);
+    }
+
+    /* 气泡小三角 */
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 25px;
+      border-width: 10px 10px 10px 0;
+      border-style: solid;
+      border-color: transparent #cbd5e1 transparent transparent;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 25px;
+      border-width: 10px 10px 10px 0;
+      border-style: solid;
+      border-color: transparent #f1f5f9 transparent transparent;
+    }
+
+    /* 填空目标区 */
+    .dropzone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 32px;
+      margin: 0 4px;
+      padding: 0 8px;
+      border-bottom: 2px dashed #3b82f6;
+      background: rgba(59, 130, 246, 0.05);
+      border-radius: 4px;
+      vertical-align: middle;
+      font-weight: bold;
+      color: #2563eb;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .dropzone.dragover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #2563eb;
+      transform: scale(1.05);
+    }
+
+    .dropzone.filled {
+      border-bottom: 2px solid #2563eb;
+      background: #eff6ff;
+    }
+
+    .dropzone.correct {
+      border-bottom: 2px solid #10b981;
+      background: #ecfdf5;
+      color: #047857;
+    }
+
+    .dropzone.incorrect {
+      border-bottom: 2px solid #ef4444;
+      background: #fef2f2;
+      color: #b91c1c;
+      animation: shake 0.5s;
+    }
+
+    /* 朗读高亮效果 */
+    .read-span {
+      transition: background-color 0.3s, color 0.3s;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+
+    .read-span.highlight {
+      background-color: #fef08a;
+      color: #0f172a;
+    }
+
+    /* 卡片备选区 */
+    .card-deck-container {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .card-deck-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .card-deck {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .term-card {
+      background: white;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .term-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .term-card.dragging {
+      opacity: 0.5;
+    }
+
+    .term-card.used {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+    }
+
+    /* 控制与反馈区 */
+    .control-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .feedback-message {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feedback-message.success {
+      color: var(--success);
+    }
+
+    .feedback-message.error {
+      color: var(--error);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: var(--success-hover);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    /* 动画定义 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    @keyframes stamp-anim {
+      0% { transform: translate(170px, 35px) scale(3) rotate(-45deg); opacity: 0; }
+      50% { transform: translate(170px, 35px) scale(0.8) rotate(-10deg); opacity: 0.8; }
+      100% { transform: translate(170px, 35px) scale(1) rotate(-15deg); opacity: 1; }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 2px rgba(34, 197, 94, 0.2)); }
+      50% { filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.6)); }
+    }
+
+    .glow-active {
+      animation: pulse-glow 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航栏 -->
+  <div class="header">
+    <h1>车辆购置税发言人</h1>
+    <span class="badge">六年级 · 百分数应用</span>
+  </div>
+
+  <!-- 主内容区 -->
+  <div class="main-content">
+    
+    <!-- 左侧：新车展示与公式 -->
+    <div class="left-panel">
+      <div class="car-display" id="car-display-box">
+        <div class="car-title">爸爸的新车（价值15万元）</div>
+        <div class="svg-container">
+          <svg viewBox="0 0 300 150" width="100%" height="100%">
+            <!-- 道路 -->
+            <line x1="10" y1="130" x2="290" y2="130" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+            <!-- 车身阴影 -->
+            <ellipse cx="150" cy="125" rx="100" ry="8" fill="rgba(0,0,0,0.1)"/>
+            
+            <!-- 汽车主体 -->
+            <g id="car-graphic">
+              <!-- 车身底盘 -->
+              <path d="M 40 110 L 40 95 Q 45 80 60 75 L 90 75 Q 110 45 140 45 L 200 45 Q 230 45 250 75 L 265 85 Q 275 90 275 100 L 270 115 Q 265 120 255 120 L 55 120 Q 45 120 40 110 Z" fill="#3b82f6" />
+              <!-- 车窗 -->
+              <path d="M 100 72 L 135 72 L 135 52 Q 115 52 100 72 Z" fill="#e0f2fe" stroke="#1e3a8a" stroke-width="1.5"/>
+              <path d="M 145 72 L 195 72 Q 215 72 225 75 L 195 52 L 145 52 Z" fill="#e0f2fe" stroke="#1e3a8a" stroke-width="1.5"/>
+              <!-- 车轮 -->
+              <circle cx="85" cy="115" r="20" fill="#1e293b"/>
+              <circle cx="85" cy="115" r="10" fill="#cbd5e1"/>
+              <circle cx="85" cy="115" r="5" fill="#475569"/>
+
+              <circle cx="215" cy="115" r="20" fill="#1e293b"/>
+              <circle cx="215" cy="115" r="10" fill="#cbd5e1"/>
+              <circle cx="215" cy="115" r="5" fill="#475569"/>
+              <!-- 车灯 -->
+              <path d="M 268 90 Q 275 95 270 100 Z" fill="#fef08a" />
+              <path d="M 40 95 Q 35 100 40 105 Z" fill="#ef4444" />
+              <!-- 车身装饰线 -->
+              <rect x="138" y="52" width="3" height="20" fill="#1e3a8a"/>
+              <!-- 价格标签 -->
+              <g transform="translate(110, 82)">
+                <rect x="0" y="0" width="80" height="22" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="40" y="15" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">发票价: 15万元</text>
+              </g>
+            </g>
+
+            <!-- 闪烁星星效果 -->
+            <g id="sparkles" opacity="0" style="transition: opacity 0.5s;">
+              <path d="M 60 35 Q 65 35 65 30 Q 65 35 70 35 Q 65 35 65 40 Q 65 35 60 35 Z" fill="#eab308"/>
+              <path d="M 240 25 Q 245 25 245 20 Q 245 25 250 25 Q 245 25 245 30 Q 245 25 240 25 Z" fill="#eab308"/>
+            </g>
+
+            <!-- 已完税印章 -->
+            <g id="tax-stamp" opacity="0" transform="translate(170, 35) scale(3) rotate(-45)" style="transform-origin: 35px 35px;">
+              <circle cx="35" cy="35" r="29" fill="white" opacity="0.9"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4 2"/>
+              <circle cx="35" cy="35" r="24" fill="none" stroke="#10b981" stroke-width="1"/>
+              <text x="35" y="25" font-size="7" font-weight="bold" fill="#10b981" text-anchor="middle">已完税</text>
+              <text x="35" y="35" font-size="6" font-weight="bold" fill="#10b981" text-anchor="middle">准予上牌</text>
+              <line x1="15" y1="40" x2="55" y2="40" stroke="#10b981" stroke-width="1"/>
+              <text x="35" y="47" font-size="4.5" fill="#10b981" text-anchor="middle">国家税务局</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- 计算公式引导 -->
+      <div class="formula-guide">
+        <div class="formula-title">💡 车辆购置税计算公式</div>
+        <div class="formula-body">应纳税额 = 计税价格 × 税率</div>
+      </div>
+    </div>
+
+    <!-- 右侧：发言人与填空 -->
+    <div class="right-panel">
+      <!-- 发言人对话框 -->
+      <div class="spokesperson-container">
+        <div class="avatar-box">
+          <svg viewBox="0 0 100 100" width="70" height="70">
+            <circle cx="50" cy="50" r="48" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
+            <!-- 头发 -->
+            <path d="M 25 40 Q 50 15 75 40 Q 80 30 70 20 Q 50 10 30 20 Q 20 30 25 40 Z" fill="#1e293b"/>
+            <!-- 脸部 -->
+            <circle cx="50" cy="48" r="22" fill="#fed7aa"/>
+            <!-- 刘海 -->
+            <path d="M 30 38 Q 50 28 70 38 Q 60 25 40 25 Z" fill="#1e293b"/>
+            <!-- 眼镜 -->
+            <circle cx="42" cy="46" r="6" fill="none" stroke="#475569" stroke-width="2"/>
+            <circle cx="58" cy="46" r="6" fill="none" stroke="#475569" stroke-width="2"/>
+            <line x1="48" y1="46" x2="52" y2="46" stroke="#475569" stroke-width="2"/>
+            <!-- 微笑 -->
+            <path d="M 45 56 Q 50 60 55 56" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <!-- 西装领子 -->
+            <path d="M 28 80 L 72 80 L 65 65 L 35 65 Z" fill="#0f172a"/>
+            <path d="M 45 65 L 50 72 L 55 65 Z" fill="#f8fafc"/>
+            <path d="M 48 72 L 50 80 L 52 72 Z" fill="#dc2626"/>
+          </svg>
+        </div>
+        
+        <div class="speech-bubble">
+          <div class="speech-bubble-text" id="speech-text">
+            <span class="read-span" id="s1">因为这辆车的</span>
+            <span class="dropzone read-span" id="s2" data-expected="计税价格" data-index="1">（请填空）</span>
+            <span class="read-span" id="s3">是 15万元，</span>
+            <span class="read-span" id="s4">适用的</span>
+            <span class="dropzone read-span" id="s5" data-expected="车辆购置税税率" data-index="2">（请填空）</span>
+            <span class="read-span" id="s6">是 10%，</span>
+            <span class="read-span" id="s7">根据 车辆购置税计算公式，</span>
+            <span class="read-span" id="s8">所以应缴纳的</span>
+            <span class="dropzone read-span" id="s9" data-expected="应纳税额" data-index="3">（请填空）</span>
+            <span class="read-span" id="s10">是 1.5万元。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 备选词语卡片区 -->
+      <div class="card-deck-container">
+        <div class="card-deck-title">
+          <span>🏷️ 拖拽或点击专业术语卡片填空：</span>
+          <span style="color: #3b82f6; font-weight: normal;">支持点击自动填入</span>
+        </div>
+        <div class="card-deck" id="card-deck">
+          <div class="term-card" draggable="true" data-term="计税价格">计税价格</div>
+          <div class="term-card" draggable="true" data-term="车辆购置税税率">车辆购置税税率</div>
+          <div class="term-card" draggable="true" data-term="应纳税额">应纳税额</div>
+          <div class="term-card" draggable="true" data-term="增值税税率">增值税税率</div>
+          <div class="term-card" draggable="true" data-term="销售利润">销售利润</div>
+        </div>
+      </div>
+
+      <!-- 底部控制与反馈 -->
+      <div class="control-panel">
+        <div class="feedback-message" id="feedback">
+          <span>💡 请将卡片拖入上方对话框的虚线框中。</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="reset-btn">重置</button>
+          <button class="btn btn-success" id="read-btn" style="display: none;">🔊 专业朗读</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.term-card');
+  const dropzones = document.querySelectorAll('.dropzone');
+  const feedback = document.getElementById('feedback');
+  const stamp = document.getElementById('tax-stamp');
+  const sparkles = document.getElementById('sparkles');
+  const carDisplayBox = document.getElementById('car-display-box');
+  const readBtn = document.getElementById('read-btn');
+  const resetBtn = document.getElementById('reset-btn');
+
+  // 朗读文本分段配置
+  const spans = [
+    { id: 's1', text: '因为这辆车的', duration: 900 },
+    { id: 's2', text: '计税价格', duration: 800 },
+    { id: 's3', text: '是15万元，', duration: 900 },
+    { id: 's4', text: '适用的', duration: 500 },
+    { id: 's5', text: '车辆购置税税率', duration: 1200 },
+    { id: 's6', text: '是10%，', duration: 900 },
+    { id: 's7', text: '根据车辆购置税计算公式，', duration: 1800 },
+    { id: 's8', text: '所以应缴纳的', duration: 900 },
+    { id: 's9', text: '应纳税额', duration: 800 },
+    { id: 's10', text: '是1.5万元。', duration: 1100 }
+  ];
+
+  let isReading = false;
+
+  // 初始化拖拽与点击交互
+  cards.forEach(card => {
+    // 拖拽开始
+    card.addEventListener('dragstart', (e) => {
+      if (card.classList.contains('used')) {
+        e.preventDefault();
+        return;
+      }
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', card.dataset.term);
+    });
+
+    // 拖拽结束
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+    });
+
+    // 点击卡片自动填入第一个空缺
+    card.addEventListener('click', () => {
+      if (card.classList.contains('used')) return;
+      const firstEmptyZone = Array.from(dropzones).find(zone => !zone.classList.contains('filled'));
+      if (firstEmptyZone) {
+        fillZone(firstEmptyZone, card);
+      }
+    });
+  });
+
+  // 目标区事件
+  dropzones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!zone.classList.contains('filled')) {
+        zone.classList.add('dragover');
+      }
+    });
+
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('dragover');
+    });
+
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (zone.classList.contains('filled')) return;
+
+      const term = e.dataTransfer.getData('text/plain');
+      const card = Array.from(cards).find(c => c.dataset.term === term);
+      if (card) {
+        fillZone(zone, card);
+      }
+    });
+
+    // 点击已填入的空缺进行清除
+    zone.addEventListener('click', () => {
+      if (zone.classList.contains('filled')) {
+        clearZone(zone);
+      }
+    });
+  });
+
+  // 填入逻辑
+  function fillZone(zone, card) {
+    zone.textContent = card.dataset.term;
+    zone.classList.add('filled');
+    zone.dataset.currentValue = card.dataset.term;
+    card.classList.add('used');
+    checkAnswers();
+  }
+
+  // 清除逻辑
+  function clearZone(zone) {
+    const val = zone.dataset.currentValue;
+    const card = Array.from(cards).find(c => c.dataset.term === val);
+    if (card) {
+      card.classList.remove('used');
+    }
+    zone.textContent = '（请填空）';
+    zone.classList.remove('filled', 'correct', 'incorrect');
+    delete zone.dataset.currentValue;
+    resetSuccessState();
+    checkAnswers();
+  }
+
+  // 检查答案
+  function checkAnswers() {
+    const filledZones = Array.from(dropzones).filter(zone => zone.classList.contains('filled'));
+    
+    // 如果还没填满，清除状态提示
+    if (filledZones.length < dropzones.length) {
+      dropzones.forEach(zone => zone.classList.remove('correct', 'incorrect'));
+      feedback.innerHTML = '<span>💡 请继续将卡片填入上方对话框。</span>';
+      feedback.className = "feedback-message";
+      return;
+    }
+
+    let allCorrect = true;
+    dropzones.forEach(zone => {
+      const expected = zone.dataset.expected;
+      const actual = zone.dataset.currentValue;
+      if (actual === expected) {
+        zone.classList.remove('incorrect');
+        zone.classList.add('correct');
+      } else {
+        zone.classList.remove('correct');
+        zone.classList.add('incorrect');
+        allCorrect = false;
+      }
+    });
+
+    if (allCorrect) {
+      feedback.innerHTML = '<span>🎉 表达非常专业！新车已成功完税！</span>';
+      feedback.className = "feedback-message success";
+      triggerSuccess();
+    } else {
+      feedback.innerHTML = '<span>❌ 词语搭配不妥当，请点击红框词语重新调整。</span>';
+      feedback.className = "feedback-message error";
+    }
+  }
+
+  // 成功通关效果
+  function triggerSuccess() {
+    // 播放印章动画
+    stamp.style.animation = "stamp-anim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards";
+    sparkles.style.opacity = "1";
+    carDisplayBox.classList.add('glow-active');
+    
+    // 显示朗读按钮并自动触发一次
+    readBtn.style.display = 'inline-flex';
+    setTimeout(() => {
+      playVisualReading();
+    }, 800);
+  }
+
+  // 重置成功状态
+  function resetSuccessState() {
+    stamp.style.animation = "none";
+    stamp.style.opacity = "0";
+    sparkles.style.opacity = "0";
+    carDisplayBox.classList.remove('glow-active');
+    readBtn.style.display = 'none';
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    isReading = false;
+  }
+
+  // 视觉高亮与语音朗读同步
+  function playVisualReading() {
+    if (isReading) return;
+    isReading = true;
+    readBtn.disabled = true;
+
+    // 尝试调用系统语音
+    let synth = window.speechSynthesis;
+    if (synth) {
+      synth.cancel();
+      const fullText = "因为这辆车的计税价格是15万元，适用的车辆购置税税率是10%，根据车辆购置税计算公式，所以应缴纳的应纳税额是1.5万元。";
+      const utterance = new SpeechSynthesisUtterance(fullText);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 0.85; // 稍微慢一点，适合教学
+      synth.speak(utterance);
+    }
+
+    // 视觉卡拉OK高亮动画
+    let delay = 0;
+    spans.forEach((span, index) => {
+      setTimeout(() => {
+        // 移除上一个高亮
+        if (index > 0) {
+          document.getElementById(spans[index - 1].id).classList.remove('highlight');
+        }
+        // 添加当前高亮
+        document.getElementById(span.id).classList.add('highlight');
+
+        // 最后一个结束后清除
+        if (index === spans.length - 1) {
+          setTimeout(() => {
+            document.getElementById(span.id).classList.remove('highlight');
+            isReading = false;
+            readBtn.disabled = false;
+          }, span.duration);
+        }
+      }, delay);
+      delay += span.duration;
+    });
+  }
+
+  // 朗读按钮事件
+  readBtn.addEventListener('click', playVisualReading);
+
+  // 重置按钮事件
+  resetBtn.addEventListener('click', () => {
+    dropzones.forEach(zone => {
+      zone.textContent = '（请填空）';
+      zone.classList.remove('filled', 'correct', 'incorrect');
+      delete zone.dataset.currentValue;
+    });
+    cards.forEach(card => {
+      card.classList.remove('used');
+    });
+    feedback.innerHTML = '<span>💡 请拖拽或点击下方词语卡片填空。</span>';
+    feedback.className = "feedback-message";
+    resetSuccessState();
+  });
+</script>
+
+</body>
+</html>

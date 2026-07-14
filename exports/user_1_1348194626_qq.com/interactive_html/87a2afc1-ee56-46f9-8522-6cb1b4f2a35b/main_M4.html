@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李阿姨的个人所得税计算 - 数学交互课件</title>
+    <style>
+        /* 全局样式与课堂投屏优化 */
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2e7d32;
+            --warning-color: #e74c3c;
+            --taxable-color: #ef6c00;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d0d7de;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* 4:3 比例标准视窗 */
+        .canvas-container {
+            width: 800px;
+            height: 600px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 头部标题与问题引入 */
+        .header {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 24px;
+            margin: 0 0 12px 0;
+            color: var(--text-main);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .title::before {
+            content: "📊";
+            font-size: 26px;
+        }
+
+        .question-box {
+            background-color: var(--bg-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .highlight-text {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        /* 可视化区域 */
+        .visual-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: 240px;
+            user-select: none;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .slider-wrapper {
+            width: 85%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .slider-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            min-width: 160px;
+        }
+
+        .slider-label span {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        input[type=range] {
+            flex-grow: 1;
+            height: 10px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background-color: #2980b9;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 24px;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-action {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-action:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        /* 动态反馈与警示面板 */
+        .feedback-panel {
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .feedback-text {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            transition: color 0.3s;
+        }
+
+        .formula-box {
+            font-size: 22px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: var(--success-color);
+            font-weight: bold;
+            background: #e8f5e9;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 2px dashed var(--success-color);
+            display: none;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .alert-banner {
+            background-color: #fde8e8;
+            border: 2px solid #f8b4b4;
+            color: #c81e1e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        /* 动画效果 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse-orange {
+            0% { fill: #ef6c00; filter: drop-shadow(0 0 2px rgba(239,108,0,0.5)); }
+            50% { fill: #ff9800; filter: drop-shadow(0 0 12px rgba(255,152,0,0.8)); }
+            100% { fill: #ef6c00; filter: drop-shadow(0 0 2px rgba(239,108,0,0.5)); }
+        }
+
+        .pulse {
+            animation: pulse-orange 1.6s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="canvas-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="title">李阿姨的个人所得税计算</div>
+        <div class="question-box">
+            李阿姨每月的工资是<strong>8500元</strong>。根据国家规定，个人所得税的<strong>起征点是5000元</strong>（即超过5000元的那部分才需要按3%的税率交税）。那李阿姨每个月到底应该交多少税呢？<span class="highlight-text">是直接用 8500 × 3% 吗？</span>
+        </div>
+    </div>
+
+    <!-- 可视化交互区 -->
+    <div class="visual-area">
+        <svg viewBox="0 0 700 240" id="tax-svg">
+            <!-- 定义圆角裁剪路径，防止左右色块拼接时溢出圆角 -->
+            <defs>
+                <clipPath id="bar-clip">
+                    <rect x="50" y="60" width="600" height="40" rx="8" />
+                </clipPath>
+            </defs>
+
+            <!-- 总工资背景条 (8500元) -->
+            <g clip-path="url(#bar-clip)">
+                <rect id="left-bar" x="50" y="60" width="0" height="40" fill="#b0bec5" />
+                <rect id="right-bar" x="50" y="60" width="600" height="40" fill="#cfd8dc" />
+            </g>
+
+            <!-- 动态分割虚线 -->
+            <line id="divider" x1="50" y1="50" x2="50" y2="110" stroke="#37474f" stroke-width="3" stroke-dasharray="5 5" />
+
+            <!-- 顶部总工资标注 -->
+            <path d="M 50,45 L 50,35 L 350,35 L 350,28 L 350,35 L 650,35 L 650,45" stroke="#7f8c8d" stroke-width="2" fill="none" />
+            <text x="350" y="20" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">总工资：8500 元</text>
+
+            <!-- 底部动态区间标注 -->
+            <!-- 左侧区间 -->
+            <path id="left-dim" d="" stroke="#78909c" stroke-width="2" fill="none" />
+            <text id="left-label" x="50" y="145" text-anchor="middle" font-size="15" font-weight="bold" fill="#37474f"></text>
+
+            <!-- 右侧区间 -->
+            <path id="right-dim" d="" stroke="#78909c" stroke-width="2" fill="none" />
+            <text id="right-label" x="650" y="145" text-anchor="middle" font-size="15" font-weight="bold" fill="#37474f"></text>
+
+            <!-- 5000元起征点静态参考线 -->
+            <g id="threshold-marker">
+                <line x1="402.9" y1="110" x2="402.9" y2="175" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3 3" />
+                <path d="M 402.9,175 L 397.9,183 L 407.9,183 Z" fill="#e74c3c" />
+                <text x="402.9" y="198" text-anchor="middle" font-size="13" font-weight="bold" fill="#e74c3c">法定起征点 5000元</text>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 动态反馈区 -->
+    <div class="feedback-panel">
+        <div id="feedback-text" class="feedback-text">请拖动下方滑块，帮李阿姨划分出“起征点”吧！</div>
+        <div id="formula-box" class="formula-box"></div>
+        <div id="alert-banner" class="alert-banner"></div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="slider-wrapper">
+            <div class="slider-label">设定分割点：<span id="slider-val">0</span> 元</div>
+            <input type="range" min="0" max="8500" step="100" value="0" id="tax-slider">
+        </div>
+        <div class="btn-group">
+            <button id="btn-direct" class="btn-action">直接按 8500 × 3% 计算？</button>
+            <button id="btn-reset" class="btn-reset">重置</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('tax-slider');
+    const sliderVal = document.getElementById('slider-val');
+    const leftBar = document.getElementById('left-bar');
+    const rightBar = document.getElementById('right-bar');
+    const divider = document.getElementById('divider');
+    const leftDim = document.getElementById('left-dim');
+    const rightDim = document.getElementById('right-dim');
+    const leftLabel = document.getElementById('left-label');
+    const rightLabel = document.getElementById('right-label');
+    
+    const feedbackText = document.getElementById('feedback-text');
+    const formulaBox = document.getElementById('formula-box');
+    const alertBanner = document.getElementById('alert-banner');
+    
+    const btnDirect = document.getElementById('btn-direct');
+    const btnReset = document.getElementById('btn-reset');
+
+    const TOTAL_SALARY = 8500;
+    const SVG_WIDTH = 600;
+    const START_X = 50;
+    const END_X = 650;
+
+    function update(val) {
+        // 磁吸效应：当滑块接近5000元时，自动吸附到5000元，便于教学操作
+        if (val >= 4700 && val <= 5300) {
+            val = 5000;
+            slider.value = 5000;
+        }
+
+        sliderVal.textContent = val;
+
+        // 计算分割点在SVG中的X坐标
+        const splitX = START_X + (val / TOTAL_SALARY) * SVG_WIDTH;
+
+        // 更新进度条宽度和位置
+        leftBar.setAttribute('width', splitX - START_X);
+        rightBar.setAttribute('x', splitX);
+        rightBar.setAttribute('width', END_X - splitX);
+
+        // 更新分割线位置
+        divider.setAttribute('x1', splitX);
+        divider.setAttribute('x2', splitX);
+
+        // 更新区间标注线 (Dimension Lines)
+        leftDim.setAttribute('d', `M 50,120 L 50,130 M 50,125 L ${splitX},125 M ${splitX},120 L ${splitX},130`);
+        rightDim.setAttribute('d', `M ${splitX},120 L ${splitX},130 M ${splitX},125 L 650,125 M 650,120 L 650,130`);
+
+        // 更新区间文本位置与内容
+        leftLabel.setAttribute('x', (START_X + splitX) / 2);
+        rightLabel.setAttribute('x', (splitX + END_X) / 2);
+
+        // 边界处理：防止文本重叠
+        if (val < 800) {
+            leftLabel.setAttribute('display', 'none');
+            leftDim.setAttribute('display', 'none');
+        } else {
+            leftLabel.setAttribute('display', 'inline');
+            leftDim.setAttribute('display', 'inline');
+        }
+
+        if (TOTAL_SALARY - val < 800) {
+            rightLabel.setAttribute('display', 'none');
+            rightDim.setAttribute('display', 'none');
+        } else {
+            rightLabel.setAttribute('display', 'inline');
+            rightDim.setAttribute('display', 'inline');
+        }
+
+        // 隐藏警示横幅
+        alertBanner.style.display = 'none';
+
+        // 核心教学逻辑判断
+        if (val === 5000) {
+            // 正确划分起征点
+            leftBar.setAttribute('fill', '#2e7d32'); // 绿色：免税
+            rightBar.setAttribute('fill', '#ef6c00'); // 橙色：纳税
+            rightBar.classList.add('pulse');
+
+            leftLabel.textContent = "免税部分：5000 元";
+            rightLabel.textContent = "超出部分(应纳税)：3500 元";
+            leftLabel.setAttribute('fill', '#2e7d32');
+            rightLabel.setAttribute('fill', '#e65100');
+
+            feedbackText.innerHTML = '🎉 <span style="color: var(--success-color);">非常正确！</span> 5000元以内的部分免税，超出5000元的部分才按3%交税。';
+            formulaBox.style.display = 'block';
+            formulaBox.innerHTML = '(8500 - 5000) × 3% = 105 (元)';
+        } else {
+            // 普通拖动状态
+            leftBar.setAttribute('fill', '#90caf9'); // 蓝色
+            rightBar.setAttribute('fill', '#b0bec5'); // 灰色
+            rightBar.classList.remove('pulse');
+
+            leftLabel.textContent = `${val} 元`;
+            rightLabel.textContent = `${TOTAL_SALARY - val} 元`;
+            leftLabel.setAttribute('fill', '#1565c0');
+            rightLabel.setAttribute('fill', '#37474f');
+
+            feedbackText.innerHTML = '请继续拖动滑块，寻找国家规定的 <span style="color: var(--warning-color);">5000元</span> 起征点。';
+            formulaBox.style.display = 'none';
+        }
+    }
+
+    // 监听滑块输入
+    slider.addEventListener('input', (e) => {
+        update(parseInt(e.target.value));
+    });
+
+    // 错误概念警示按钮
+    btnDirect.addEventListener('click', () => {
+        formulaBox.style.display = 'none';
+        alertBanner.style.display = 'block';
+        alertBanner.innerHTML = '⚠️ 注意：不能直接用 8500 × 3% 哦！<br>因为 5000 元以内的工资是免税的。如果直接乘，李阿姨就多交了 5000 × 3% = 150 元的冤枉税！';
+        
+        // 触发抖动动画
+        alertBanner.style.animation = 'none';
+        alertBanner.offsetHeight; /* 触发重绘 */
+        alertBanner.style.animation = 'shake 0.5s ease-in-out';
+    });
+
+    // 重置按钮
+    btnReset.addEventListener('click', () => {
+        slider.value = 0;
+        update(0);
+    });
+
+    // 初始化页面
+    update(0);
+</script>
+
+</body>
+</html>

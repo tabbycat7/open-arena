@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>午餐高峰期模拟</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d32f2f; margin: 10px 0; font-size: 24px; }
+        #scene { width: 100%; height: 300px; border: 1px dashed #ccc; margin: 20px 0; position: relative; background: #fff9c4; }
+        .customer { position: absolute; width: 60px; height: 80px; transition: all 0.3s; }
+        .bar-bg { width: 50px; height: 10px; background: #eee; border: 1px solid #999; margin-top: 5px; }
+        .bar-fill { height: 100%; width: 100%; background: #f44336; transition: width 0.1s linear; }
+        button { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #2196f3; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #1976d2; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h1>午餐高峰期：时间就是生命！</h1>
+    <div id="scene">
+        <!-- 顾客占位 -->
+        <div class="customer" style="left: 50px; top: 50px;">👤<div class="bar-bg"><div class="bar-fill" id="bar1"></div></div></div>
+        <div class="customer" style="left: 200px; top: 50px;">👤<div class="bar-bg"><div class="bar-fill" id="bar2"></div></div></div>
+        <div class="customer" style="left: 350px; top: 50px;">👤<div class="bar-bg"><div class="bar-fill" id="bar3"></div></div></div>
+        <div class="customer" style="left: 500px; top: 50px;">👤<div class="bar-bg"><div class="bar-fill" id="bar4"></div></div></div>
+    </div>
+    <button id="actionBtn">点击：机器人加速送餐</button>
+</div>
+
+<script>
+    const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+    const btn = document.getElementById('actionBtn');
+    let widths = [100, 100, 100, 100];
+    let isAccelerating = false;
+
+    function update() {
+        if (!isAccelerating) {
+            for (let i = 0; i < widths.length; i++) {
+                widths[i] -= 0.5;
+                if (widths[i] < 0) widths[i] = 0;
+                bars[i].style.width = widths[i] + '%';
+                bars[i].style.backgroundColor = widths[i] < 30 ? '#f44336' : '#ff9800';
+            }
+        } else {
+            for (let i = 0; i < widths.length; i++) {
+                widths[i] += 2;
+                if (widths[i] > 100) {
+                    widths[i] = 100;
+                    bars[i].style.backgroundColor = '#4caf50';
+                }
+            }
+        }
+        requestAnimationFrame(update);
+    }
+
+    btn.addEventListener('mousedown', () => { isAccelerating = true; btn.innerText = "正在加速送餐..."; });
+    btn.addEventListener('mouseup', () => { isAccelerating = false; btn.innerText = "点击：机器人加速送餐"; });
+    btn.addEventListener('mouseleave', () => { isAccelerating = false; btn.innerText = "点击：机器人加速送餐"; });
+
+    update();
+</script>
+
+</body>
+</html>

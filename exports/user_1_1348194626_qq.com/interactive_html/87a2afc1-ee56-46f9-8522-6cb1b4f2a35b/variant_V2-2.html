@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学微课：纳税与税率</title>
+  <style>
+    /* 全局重置与课堂投影优化样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #2d3748;
+    }
+
+    /* 4:3 比例标准教学课件容器 */
+    .container {
+      width: 800px;
+      height: 600px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+      border: 4px solid #4a5568;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 顶部标题与问题引入区 */
+    .header {
+      background: #2b6cb0;
+      color: #ffffff;
+      padding: 15px 24px;
+      border-bottom: 3px solid #1a365d;
+    }
+    .header h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header h1::before {
+      content: "💡";
+    }
+    .header p {
+      font-size: 15px;
+      line-height: 1.4;
+      color: #ebf8ff;
+    }
+
+    /* 主可视化区域 */
+    .visualization {
+      flex: 1;
+      position: relative;
+      background: #f7fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 动态过渡动画 */
+    #beam, #left-pan-assembly, #right-pan-assembly {
+      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 教学引导面板 */
+    .guide-panel {
+      background: #ebf8ff;
+      border-top: 2px solid #bee3f8;
+      padding: 12px 24px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .guide-text {
+      font-size: 16px;
+      font-weight: bold;
+      color: #2b6cb0;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* 底部控制按钮区 */
+    .controls {
+      background: #edf2f7;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+    }
+    .btn {
+      background: #ffffff;
+      color: #4a5568;
+      border: 2px solid #cbd5e0;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .btn:hover {
+      border-color: #4299e1;
+      color: #3182ce;
+      transform: translateY(-1px);
+    }
+    .btn.active {
+      background: #3182ce;
+      color: #ffffff;
+      border-color: #2b6cb0;
+      box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3);
+    }
+
+    /* 状态控制：税率气泡与对比标签的显隐 */
+    .rate-element {
+      opacity: 0;
+      transform: scale(0.8);
+      transform-origin: center;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .state-rate .rate-element {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="app-container">
+    <!-- 顶部题干 -->
+    <div class="header">
+      <h1>探究：为什么营业额相同，纳税却不同？</h1>
+      <p>画廊和小超市上个月的营业额都是 50000 元。但画廊交税 1500 元，小超市只交税 500 元。这说明它们的什么不一样？</p>
+    </div>
+
+    <!-- 可视化天平 -->
+    <div class="visualization">
+      <svg viewBox="0 0 800 360">
+        <!-- 阴影滤镜 -->
+        <defs>
+          <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.1"/>
+          </filter>
+        </defs>
+
+        <!-- 背景装饰：地平线 -->
+        <line x1="50" y1="320" x2="750" y2="320" stroke="#e2e8f0" stroke-width="4" stroke-dasharray="5 5" />
+
+        <!-- 天平底座与立柱 -->
+        <g filter="url(#shadow)">
+          <path d="M 320 320 L 480 320 L 460 290 L 340 290 Z" fill="#718096" />
+          <rect x="385" y="100" width="30" height="190" fill="#4a5568" rx="4" />
+          <!-- 支点 -->
+          <circle cx="400" cy="100" r="12" fill="#dd6b20" />
+          <circle cx="400" cy="100" r="6" fill="#ffffff" />
+        </g>
+
+        <!-- 天平横梁 (旋转中心 400, 100) -->
+        <g id="beam">
+          <line x1="180" y1="100" x2="620" y2="100" stroke="#4a5568" stroke-width="10" stroke-linecap="round" />
+          <circle cx="180" cy="100" r="6" fill="#2d3748" />
+          <circle cx="620" cy="100" r="6" fill="#2d3748" />
+        </g>
+
+        <!-- 左盘：画廊 (默认挂载点 180, 100) -->
+        <g id="left-pan-assembly">
+          <!-- 吊绳 -->
+          <path d="M 180 100 L 110 220 M 180 100 L 250 220" stroke="#a0aec0" stroke-width="2.5" />
+          <!-- 秤盘 -->
+          <path d="M 90 220 L 270 220 C 270 235, 90 235, 90 220 Z" fill="#a0aec0" filter="url(#shadow)" />
+          
+          <!-- 画廊小屋 -->
+          <g transform="translate(145, 150)">
+            <rect x="10" y="25" width="50" height="45" fill="#805ad5" rx="2" />
+            <polygon points="5,25 35,2 65,25" fill="#553c9a" />
+            <rect x="25" y="45" width="20" height="25" fill="#fff" />
+            <text x="35" y="20" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">GALLERY</text>
+          </g>
+          
+          <!-- 标签文本 -->
+          <rect x="100" y="235" width="160" height="50" rx="6" fill="#ffffff" stroke="#805ad5" stroke-width="2" filter="url(#shadow)" />
+          <text x="180" y="255" font-size="15" font-weight="bold" fill="#2d3748" text-anchor="middle">画廊</text>
+          <text id="left-value" x="180" y="276" font-size="14" font-weight="bold" fill="#4a5568" text-anchor="middle">营业额: 50000元</text>
+        </g>
+
+        <!-- 右盘：小超市 (默认挂载点 620, 100) -->
+        <g id="right-pan-assembly">
+          <!-- 吊绳 -->
+          <path d="M 620 100 L 550 220 M 620 100 L 690 220" stroke="#a0aec0" stroke-width="2.5" />
+          <!-- 秤盘 -->
+          <path d="M 530 220 L 710 220 C 710 235, 530 235, 530 220 Z" fill="#a0aec0" filter="url(#shadow)" />
+          
+          <!-- 超市小屋 -->
+          <g transform="translate(585, 150)">
+            <rect x="10" y="25" width="50" height="45" fill="#319795" rx="2" />
+            <path d="M 5 25 L 65 25 L 55 12 L 15 12 Z" fill="#e53e3e" />
+            <rect x="25" y="45" width="20" height="25" fill="#feebc8" />
+            <text x="35" y="22" font-size="10" fill="#ffffff" font-weight="bold" text-anchor="middle">MART</text>
+          </g>
+          
+          <!-- 标签文本 -->
+          <rect x="540" y="235" width="160" height="50" rx="6" fill="#ffffff" stroke="#319795" stroke-width="2" filter="url(#shadow)" />
+          <text x="620" y="255" font-size="15" font-weight="bold" fill="#2d3748" text-anchor="middle">小超市</text>
+          <text id="right-value" x="620" y="276" font-size="14" font-weight="bold" fill="#4a5568" text-anchor="middle">营业额: 50000元</text>
+        </g>
+
+        <!-- 揭示层：画廊税率计算气泡 -->
+        <g id="left-rate-bubble" class="rate-element">
+          <rect x="70" y="15" width="220" height="75" rx="10" fill="#fff5f5" stroke="#e53e3e" stroke-width="3" filter="url(#shadow)" />
+          <path d="M 180 90 L 180 110" stroke="#e53e3e" stroke-width="3" stroke-dasharray="3 3" />
+          <text x="180" y="42" font-size="15" font-weight="bold" fill="#c53030" text-anchor="middle">画廊税率：</text>
+          <text x="180" y="68" font-size="18" font-weight="black" fill="#e53e3e" text-anchor="middle">1500 ÷ 50000 = 3%</text>
+        </g>
+
+        <!-- 揭示层：超市税率计算气泡 -->
+        <g id="right-rate-bubble" class="rate-element">
+          <rect x="510" y="15" width="220" height="75" rx="10" fill="#f0fff4" stroke="#38a169" stroke-width="3" filter="url(#shadow)" />
+          <path d="M 620 90 L 620 110" stroke="#38a169" stroke-width="3" stroke-dasharray="3 3" />
+          <text x="620" y="42" font-size="15" font-weight="bold" fill="#22543d" text-anchor="middle">超市税率：</text>
+          <text x="620" y="68" font-size="18" font-weight="black" fill="#38a169" text-anchor="middle">500 ÷ 50000 = 1%</text>
+        </g>
+
+        <!-- 核心结论对比框 -->
+        <g id="rate-comparison-text" class="rate-element" transform="translate(310, 25)">
+          <rect x="0" y="0" width="180" height="50" rx="25" fill="#fffaf0" stroke="#dd6b20" stroke-width="3" filter="url(#shadow)" />
+          <text x="90" y="31" font-size="18" font-weight="bold" fill="#dd6b20" text-anchor="middle">税率不同 (3% > 1%)</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 动态教学引导 -->
+    <div class="guide-panel">
+      <div class="guide-text" id="guide-text">
+        点击下方步骤，开始探究两家店铺的纳税秘密。
+      </div>
+    </div>
+
+    <!-- 交互控制台 -->
+    <div class="controls">
+      <button class="btn" id="btn-revenue">步骤一：比一比营业额</button>
+      <button class="btn" id="btn-tax">步骤二：比一比纳税额</button>
+      <button class="btn" id="btn-rate">步骤三：探究税率关系</button>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('app-container');
+    const beam = document.getElementById('beam');
+    const leftPan = document.getElementById('left-pan-assembly');
+    const rightPan = document.getElementById('right-pan-assembly');
+    const leftValue = document.getElementById('left-value');
+    const rightValue = document.getElementById('right-value');
+    const guideText = document.getElementById('guide-text');
+
+    const btnRevenue = document.getElementById('btn-revenue');
+    const btnTax = document.getElementById('btn-tax');
+    const btnRate = document.getElementById('btn-rate');
+
+    // 状态切换函数
+    function switchState(state) {
+      // 清除所有激活状态
+      container.classList.remove('state-revenue', 'state-tax', 'state-rate');
+      btnRevenue.classList.remove('active');
+      btnTax.classList.remove('active');
+      btnRate.classList.remove('active');
+
+      if (state === 'revenue') {
+        container.classList.add('state-revenue');
+        btnRevenue.classList.add('active');
+
+        // 天平平衡
+        beam.setAttribute('transform', 'rotate(0 400 100)');
+        leftPan.setAttribute('transform', 'translate(0, 0)');
+        rightPan.setAttribute('transform', 'translate(0, 0)');
+
+        // 数据更新
+        leftValue.textContent = '营业额: 50000元';
+        rightValue.textContent = '营业额: 50000元';
+        leftValue.setAttribute('fill', '#4a5568');
+        rightValue.setAttribute('fill', '#4a5568');
+
+        // 引导语
+        guideText.innerHTML = '【观察】两家店铺上个月的<strong>营业额都是 50000 元</strong>（相同）。此时天平两端完全平衡。';
+
+      } else if (state === 'tax') {
+        container.classList.add('state-tax');
+        btnTax.classList.add('active');
+
+        // 天平向左倾斜（画廊纳税多，负担重）
+        // 旋转 7 度。
+        // 左挂载点 (180, 100) 旋转 7 度后的新坐标计算：
+        // dx = 220 * (1 - cos(7°)) ≈ 220 * 0.0074 = 1.6
+        // dy = 220 * sin(7°) ≈ 220 * 0.1218 = 26.8
+        // 右挂载点 (620, 100) 旋转 7 度后的新坐标计算：
+        // dx = -1.6, dy = -26.8
+        beam.setAttribute('transform', 'rotate(7 400 100)');
+        leftPan.setAttribute('transform', 'translate(1.6, 26.8)');
+        rightPan.setAttribute('transform', 'translate(-1.6, -26.8)');
+
+        // 数据更新
+        leftValue.textContent = '纳税额: 1500元';
+        rightValue.textContent = '纳税额: 500元';
+        leftValue.setAttribute('fill', '#e53e3e');
+        rightValue.setAttribute('fill', '#38a169');
+
+        // 引导语
+        guideText.innerHTML = '【对比】画廊纳税 <strong>1500元</strong>，超市纳税 <strong>500元</strong>。天平向纳税多的一方倾斜！为什么会这样？';
+
+      } else if (state === 'rate') {
+        container.classList.add('state-rate');
+        btnRate.classList.add('active');
+
+        // 保持倾斜
+        beam.setAttribute('transform', 'rotate(7 400 100)');
+        leftPan.setAttribute('transform', 'translate(1.6, 26.8)');
+        rightPan.setAttribute('transform', 'translate(-1.6, -26.8)');
+
+        // 数据更新
+        leftValue.textContent = '纳税额: 1500元';
+        rightValue.textContent = '纳税额: 500元';
+        leftValue.setAttribute('fill', '#e53e3e');
+        rightValue.setAttribute('fill', '#38a169');
+
+        // 引导语
+        guideText.innerHTML = '【思考】营业额相同，纳税额却不同。通过计算发现，它们的<strong>纳税额占营业额的百分比（税率）</strong>不同！';
+      }
+    }
+
+    // 绑定按钮事件
+    btnRevenue.addEventListener('click', () => switchState('revenue'));
+    btnTax.addEventListener('click', () => switchState('tax'));
+    btnRate.addEventListener('click', () => switchState('rate'));
+
+    // 初始化默认状态
+    switchState('revenue');
+  </script>
+</body>
+</html>

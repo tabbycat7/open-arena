@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>送餐机器人路径规划</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; margin: 0; padding: 10px; }
+        #container { width: 800px; height: 600px; background: white; border: 2px solid #333; display: flex; padding: 10px; box-sizing: border-box; }
+        #grid-area { width: 400px; height: 400px; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); gap: 2px; border: 2px solid #666; }
+        .cell { background: #eee; border: 1px solid #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .cell.obstacle { background: #999; }
+        .cell.start { background: #4caf50; color: white; font-weight: bold; }
+        .cell.end { background: #f44336; color: white; font-weight: bold; }
+        .cell.path1 { background: #2196f3; color: white; }
+        .cell.path2 { background: #ff9800; color: white; }
+        #control-panel { flex: 1; padding-left: 20px; }
+        .btn { padding: 10px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; background: #333; color: white; }
+        #log { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h3>送餐机器人路径规划：从厨房到3号桌</h3>
+    <div id="container">
+        <div id="grid-area"></div>
+        <div id="control-panel">
+            <button id="btn1" class="btn">保存路线 1 (蓝色)</button>
+            <button id="btn2" class="btn">保存路线 2 (橙色)</button>
+            <button id="reset" class="btn" style="background:#d32f2f">重置地图</button>
+            <p>当前指令序列：</p>
+            <div id="log"></div>
+        </div>
+    </div>
+
+<script>
+    const grid = document.getElementById('grid-area');
+    const log = document.getElementById('log');
+    const size = 8;
+    let currentPath = [];
+    let path1 = [];
+    let path2 = [];
+    const obstacles = [[2,2], [2,3], [5,4], [5,5], [5,6]];
+
+    function createGrid() {
+        grid.innerHTML = '';
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                if (r === 0 && c === 0) { cell.textContent = '厨房'; cell.classList.add('start'); }
+                if (r === 7 && c === 7) { cell.textContent = '3号桌'; cell.classList.add('end'); }
+                if (obstacles.some(o => o[0] === r && o[1] === c)) cell.classList.add('obstacle');
+                
+                cell.dataset.r = r;
+                cell.dataset.c = c;
+                cell.addEventListener('click', () => handleCellClick(r, c, cell));
+                grid.appendChild(cell);
+            }
+        }
+    }
+
+    function handleCellClick(r, c, el) {
+        if (el.classList.contains('obstacle')) return;
+        if (currentPath.length > 0) {
+            const last = currentPath[currentPath.length - 1];
+            if (Math.abs(last.r - r) + Math.abs(last.c - c) !== 1) return;
+        } else if (r !== 0 || c !== 0) return;
+
+        currentPath.push({r, c});
+        el.style.border = '2px solid yellow';
+        updateLog();
+    }
+
+    function updateLog() {
+        log.innerHTML = currentPath.map((p, i) => {
+            if (i === 0) return "从厨房出发";
+            const prev = currentPath[i-1];
+            let dir = "";
+            if (p.r > prev.r) dir = "向下移动";
+            else if (p.r < prev.r) dir = "向上移动";
+            else if (p.c > prev.c) dir = "向右移动";
+            else if (p.c < prev.c) dir = "向左移动";
+            return `第${i}步: ${dir}`;
+        }).join('<br>');
+    }
+
+    document.getElementById('btn1').addEventListener('click', () => {
+        path1 = [...currentPath];
+        document.querySelectorAll('.cell').forEach(el => {
+            if (path1.some(p => p.r == el.dataset.r && p.c == el.dataset.c)) el.classList.add('path1');
+        });
+        currentPath = [];
+    });
+
+    document.getElementById('btn2').addEventListener('click', () => {
+        path2 = [...currentPath];
+        document.querySelectorAll('.cell').forEach(el => {
+            if (path2.some(p => p.r == el.dataset.r && p.c == el.dataset.c)) el.classList.add('path2');
+        });
+        currentPath = [];
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+        currentPath = [];
+        path1 = [];
+        path2 = [];
+        log.innerHTML = '';
+        createGrid();
+    });
+
+    createGrid();
+</script>
+</body>
+</html>

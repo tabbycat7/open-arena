@@ -1,0 +1,293 @@
+{
+  "id": "da6ea3c9-1ba8-4e2b-b4bd-1b12871ea842",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "严谨学术",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"我们观察两个实例：①细胞分裂...②一笔本金...都能表示为y=2^x。请思考并评价：它们是否属于我们之前学过的某类函数？你能从数学结构上抽象出它们的共同特征，并提出一个能概括这类关系的新的函数定义吗？...\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.65}, {\"id\": \"M2\", \"content\": \"根据我们抽象出的指数函数定义，请选择底数a=2和a=1/2...1. 分别列出对应值...2. 在坐标系中描点；3. 用光滑曲线画出图像...请评价你的作图，并指出图像的关键共同特征与差异。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP4\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.75}, {\"id\": \"M3\", \"content\": \"基于我们画出的y=2^x和y=(1/2)^x的图像...你能创造性地用精炼的数学语言，概括出指数函数y=a^x的单调性与底数a之间的普遍关系吗？请提出猜想并分情况描述。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"create\", \"difficulty\": 0.85}, {\"id\": \"M4\", \"content\": \"我们已经归纳了指数函数的单调性规律。现在，请运用这一性质解决以下问题...1. 判断单调性；2. 比较大小...3. 比较大小...4.（挑战）比较大小...请阐述你解决第4个问题的策略，并评价不同策略的适用性。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"create\", \"difficulty\": 0.95}, {\"id\": \"V1-1\", \"content\": \"我们观察以下两个实例：①放射性物质衰变...②信息网络转发...请分析：这两个实例中蕴含的数学关系模型是否相同？你能抽象出这个共同函数模型的一般形式吗？...\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.65}, {\"id\": \"V1-2\", \"content\": \"判断下列函数中哪些是指数函数？哪些不是？...① y=2^x；② y=x^2；③ y=(-3)^x；④ y=1^x；⑤ y=π^x；⑥ y=e^x...\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.6}, {\"id\": \"V2-1\", \"content\": \"请选择底数a=4和a=1/4，分别研究函数y=4^x和y=(1/4)^x。完成取值、描点、作图...对比这两幅图像与之前的图像，它们在形状和变化趋势上有何共性与差异？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP4\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.75}, {\"id\": \"V3-1\", \"content\": \"以下是函数y=2^x和y=(1/2)^x的部分数值对应表...请仔细观察表中函数值y随自变量x增大的变化规律...归纳出单调性与底数a之间的关系...\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.7}, {\"id\": \"V4-1\", \"content\": \"请运用指数函数的性质，将下列三个数按从小到大的顺序排列...0.8^(-0.2)， 0.8^0.3， 1.2^0.1...阐述你的比较策略和步骤。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.9}, {\"id\": \"V4-2\", \"content\": \"假设...A类细菌的数量...为N_A(t)=2^t，B类...为N_B(t)=3^t...哪一类细菌的数量会始终多于另一类？请根据数学原理解释你的判断...\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.7}, {\"id\": \"S1-1\", \"content\": \"我们刚刚完成了指数函数 y=a^x (a>0且a≠1) 的定义。请以 y=2^x 为例...用描点法作图的第一个标准步骤是什么？...请你尝试列出 x 取 -2， -1， 0， 1， 2 时对应的函数值表...\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.35}, {\"id\": \"S2-1\", \"content\": \"观察你已经画出的函数 y=2^x 的图像。请根据图像，完成以下表格：当 x 的值从 -1 增大到 0，再从 0 增大到 1 时...用‘增大’、‘减小’或‘不变’来描述 y 值的变化情况...\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.3}, {\"id\": \"S2-2\", \"content\": \"现在，请将 y=2^x 的图像与 y=(1/2)^x 的图像进行对比。1. 这两个图像的‘趋势’有何根本不同？2. 它们的底数 a 分别是多少？与1相比...3. 图像的趋势与底数 a 的大小之间存在什么关联？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.4}, {\"id\": \"S3-1\", \"content\": \"假设我们已经知道指数函数 y=1.5^x 在其定义域上是单调递增的。请直接利用这一性质，比较 1.5^2 与 1.5^3 的大小。陈述推理过程：第一步，判断底数 1.5 与 1 的关系...第二步，比较两个指数 2 和 3 的大小。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.35}, {\"id\": \"S3-2\", \"content\": \"在解决更复杂的比较问题时，我们常常需要先将它们化为同底数...请回忆并计算下列各式的值：1. 2^(-1) = ; 2. (1/3)^(-2) = ; 3. 4^(1/2) = ; 4. 8^(-1/3) = 。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"remember\", \"difficulty\": 0.3}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"V1-1\", \"target\": \"M1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"V1-2\", \"target\": \"M1\", \"relation\": \"variant_of\", \"weight\": 0.85}, {\"source\": \"V2-1\", \"target\": \"M2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"V3-1\", \"target\": \"M3\", \"relation\": \"variant_of\", \"weight\": 0.75}, {\"source\": \"V4-1\", \"target\": \"M4\", \"relation\": \"variant_of\", \"weight\": 0.85}, {\"source\": \"V4-2\", \"target\": \"M4\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"M2\", \"relation\": \"scaffold_between\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_between\", \"weight\": 0.6}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-2\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_between\", \"weight\": 0.75}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_between\", \"weight\": 0.6}, {\"source\": \"S3-1\", \"target\": \"M4\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-2\", \"relation\": \"scaffold_between\", \"weight\": 0.5}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_between\", \"weight\": 0.65}]}",
+  "created_at": "2026-03-20 16:08:11",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "我们观察两个实例：①细胞分裂...②一笔本金...都能表示为y=2^x。请思考并评价：它们是否属于我们之前学过的某类函数？你能从数学结构上抽象出它们的共同特征，并提出一个能概括这类关系的新的函数定义吗？...",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.65
+      },
+      {
+        "id": "M2",
+        "content": "根据我们抽象出的指数函数定义，请选择底数a=2和a=1/2...1. 分别列出对应值...2. 在坐标系中描点；3. 用光滑曲线画出图像...请评价你的作图，并指出图像的关键共同特征与差异。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP4"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.75
+      },
+      {
+        "id": "M3",
+        "content": "基于我们画出的y=2^x和y=(1/2)^x的图像...你能创造性地用精炼的数学语言，概括出指数函数y=a^x的单调性与底数a之间的普遍关系吗？请提出猜想并分情况描述。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.85
+      },
+      {
+        "id": "M4",
+        "content": "我们已经归纳了指数函数的单调性规律。现在，请运用这一性质解决以下问题...1. 判断单调性；2. 比较大小...3. 比较大小...4.（挑战）比较大小...请阐述你解决第4个问题的策略，并评价不同策略的适用性。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.95
+      },
+      {
+        "id": "V1-1",
+        "content": "我们观察以下两个实例：①放射性物质衰变...②信息网络转发...请分析：这两个实例中蕴含的数学关系模型是否相同？你能抽象出这个共同函数模型的一般形式吗？...",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.65
+      },
+      {
+        "id": "V1-2",
+        "content": "判断下列函数中哪些是指数函数？哪些不是？...① y=2^x；② y=x^2；③ y=(-3)^x；④ y=1^x；⑤ y=π^x；⑥ y=e^x...",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.6
+      },
+      {
+        "id": "V2-1",
+        "content": "请选择底数a=4和a=1/4，分别研究函数y=4^x和y=(1/4)^x。完成取值、描点、作图...对比这两幅图像与之前的图像，它们在形状和变化趋势上有何共性与差异？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP4"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.75
+      },
+      {
+        "id": "V3-1",
+        "content": "以下是函数y=2^x和y=(1/2)^x的部分数值对应表...请仔细观察表中函数值y随自变量x增大的变化规律...归纳出单调性与底数a之间的关系...",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.7
+      },
+      {
+        "id": "V4-1",
+        "content": "请运用指数函数的性质，将下列三个数按从小到大的顺序排列...0.8^(-0.2)， 0.8^0.3， 1.2^0.1...阐述你的比较策略和步骤。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.9
+      },
+      {
+        "id": "V4-2",
+        "content": "假设...A类细菌的数量...为N_A(t)=2^t，B类...为N_B(t)=3^t...哪一类细菌的数量会始终多于另一类？请根据数学原理解释你的判断...",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.7
+      },
+      {
+        "id": "S1-1",
+        "content": "我们刚刚完成了指数函数 y=a^x (a>0且a≠1) 的定义。请以 y=2^x 为例...用描点法作图的第一个标准步骤是什么？...请你尝试列出 x 取 -2， -1， 0， 1， 2 时对应的函数值表...",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.35
+      },
+      {
+        "id": "S2-1",
+        "content": "观察你已经画出的函数 y=2^x 的图像。请根据图像，完成以下表格：当 x 的值从 -1 增大到 0，再从 0 增大到 1 时...用‘增大’、‘减小’或‘不变’来描述 y 值的变化情况...",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.3
+      },
+      {
+        "id": "S2-2",
+        "content": "现在，请将 y=2^x 的图像与 y=(1/2)^x 的图像进行对比。1. 这两个图像的‘趋势’有何根本不同？2. 它们的底数 a 分别是多少？与1相比...3. 图像的趋势与底数 a 的大小之间存在什么关联？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.4
+      },
+      {
+        "id": "S3-1",
+        "content": "假设我们已经知道指数函数 y=1.5^x 在其定义域上是单调递增的。请直接利用这一性质，比较 1.5^2 与 1.5^3 的大小。陈述推理过程：第一步，判断底数 1.5 与 1 的关系...第二步，比较两个指数 2 和 3 的大小。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.35
+      },
+      {
+        "id": "S3-2",
+        "content": "在解决更复杂的比较问题时，我们常常需要先将它们化为同底数...请回忆并计算下列各式的值：1. 2^(-1) = ; 2. (1/3)^(-2) = ; 3. 4^(1/2) = ; 4. 8^(-1/3) = 。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "remember",
+        "difficulty": 0.3
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "V1-1",
+        "target": "M1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "V1-2",
+        "target": "M1",
+        "relation": "variant_of",
+        "weight": 0.85
+      },
+      {
+        "source": "V2-1",
+        "target": "M2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "V3-1",
+        "target": "M3",
+        "relation": "variant_of",
+        "weight": 0.75
+      },
+      {
+        "source": "V4-1",
+        "target": "M4",
+        "relation": "variant_of",
+        "weight": 0.85
+      },
+      {
+        "source": "V4-2",
+        "target": "M4",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "M2",
+        "relation": "scaffold_between",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_between",
+        "weight": 0.6
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-2",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_between",
+        "weight": 0.75
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_between",
+        "weight": 0.6
+      },
+      {
+        "source": "S3-1",
+        "target": "M4",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-2",
+        "relation": "scaffold_between",
+        "weight": 0.5
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_between",
+        "weight": 0.65
+      }
+    ]
+  }
+}

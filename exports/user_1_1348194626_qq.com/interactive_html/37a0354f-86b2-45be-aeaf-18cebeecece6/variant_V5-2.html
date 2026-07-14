@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+<meta charset="UTF-8">
+<title>个税增长规律探究 - 教学可视化</title>
+<style>
+  /* 全局样式重置 */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* 4:3 比例教学投屏容器 */
+  .app-container {
+    width: 800px;
+    height: 600px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid #dcdfe6;
+    overflow: hidden;
+  }
+  
+  /* 顶部标题栏 */
+  .header {
+    height: 60px;
+    background: #2c3e50;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .header .kp-tag {
+    background: #e67e22;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  /* 选项卡切换 */
+  .tabs {
+    display: flex;
+    background: #eaedf1;
+    height: 44px;
+    border-bottom: 1px solid #dcdfe6;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 15px;
+    font-weight: bold;
+    color: #606266;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn.active {
+    background: #ffffff;
+    color: #2c3e50;
+    border-bottom-color: #3498db;
+  }
+  
+  /* 主内容区域 */
+  .content-wrapper {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
+  .tab-content.active {
+    display: flex;
+  }
+  
+  /* 选项卡 1：启发步步练 */
+  .guided-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+  }
+  .visual-panel {
+    flex: 1.2;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #ebeef5;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+  .info-panel {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #ebeef5;
+    padding: 20px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+  }
+  
+  /* 问题背景框 */
+  .question-box {
+    background: #eef5fe;
+    border-left: 4px solid #3498db;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #34495e;
+    margin-bottom: 15px;
+  }
+  
+  /* 步骤描述 */
+  .step-desc {
+    flex: 1;
+    font-size: 14px;
+    color: #2c3e50;
+    line-height: 1.6;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-title .step-num {
+    background: #3498db;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+  
+  /* 底部控制条 */
+  .control-bar {
+    height: 70px;
+    border-top: 1px solid #ebeef5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: #fcfdfe;
+  }
+  .step-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dcdfe6;
+    transition: all 0.3s ease;
+  }
+  .dot.active {
+    background: #3498db;
+    transform: scale(1.2);
+  }
+  .btn-group {
+    display: flex;
+    gap: 12px;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .btn-secondary {
+    background: #f0f2f5;
+    color: #606266;
+  }
+  .btn-secondary:hover {
+    background: #e4e7ed;
+  }
+  .btn-primary {
+    background: #3498db;
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #2980b9;
+  }
+  .btn:disabled {
+    background: #f5f7fa;
+    color: #c0c4cc;
+    cursor: not-allowed;
+  }
+  
+  /* 选项卡 2：自由探究 */
+  .sandbox-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+  }
+  .sandbox-controls {
+    flex: 0.9;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #ebeef5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sandbox-visual {
+    flex: 1.1;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #ebeef5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+  }
+  .slider-group {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #f0f2f5;
+  }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  .slider-header .val {
+    color: #3498db;
+    font-size: 15px;
+  }
+  .slider-input {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    background: #e4e7ed;
+  }
+  .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #3498db;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .slider-input::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  
+  /* 探究数据对比卡片 */
+  .comparison-card {
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: auto;
+  }
+  .comp-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #f0f2f5;
+  }
+  .comp-row:last-child {
+    border-bottom: none;
+  }
+  .comp-label {
+    color: #606266;
+  }
+  .comp-val {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  .comp-val.highlight {
+    color: #e67e22;
+  }
+  
+  /* SVG 动画与样式 */
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  .bar {
+    transition: y 0.6s cubic-bezier(0.25, 1, 0.5, 1), height 0.6s cubic-bezier(0.25, 1, 0.5, 1), fill 0.5s ease, opacity 0.5s ease;
+  }
+  .text-label {
+    font-size: 11px;
+    fill: #2c3e50;
+    font-weight: bold;
+    transition: all 0.5s ease;
+  }
+  .text-sub {
+    font-size: 10px;
+    fill: #7f8c8d;
+    transition: all 0.5s ease;
+  }
+  .line-marker {
+    stroke: #e74c3c;
+    stroke-dasharray: 4,4;
+    transition: all 0.5s ease;
+  }
+  .bracket-path {
+    fill: none;
+    stroke: #7f8c8d;
+    stroke-width: 1.5;
+    transition: all 0.5s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- 顶部标题栏 -->
+  <div class="header">
+    <h1>个税增长规律探究</h1>
+    <span class="kp-tag">六年级 · 百分数应用</span>
+  </div>
+  
+  <!-- 选项卡切换 -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="guided-tab">💡 启发步步练</button>
+    <button class="tab-btn" data-tab="sandbox-tab">🔍 规律大发现</button>
+  </div>
+  
+  <!-- 主内容区域 -->
+  <div class="content-wrapper">
+    
+    <!-- 选项卡 1：启发步步练 -->
+    <div id="guided-tab" class="tab-content active">
+      <div class="guided-layout">
+        <!-- 左侧可视化面板 -->
+        <div class="visual-panel">
+          <svg viewBox="0 0 440 340" id="guided-svg">
+            <!-- 图例 -->
+            <g transform="translate(20, 15)">
+              <rect x="0" y="0" width="12" height="12" fill="#2ecc71" rx="2" />
+              <text x="18" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">免税额 (5000元)</text>
+              
+              <rect x="130" y="0" width="12" height="12" fill="#e67e22" rx="2" />
+              <text x="148" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">计税部分</text>
+              
+              <rect x="230" y="0" width="12" height="12" fill="#e74c3c" rx="2" />
+              <text x="248" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">个税额 (3%)</text>
+            </g>
+
+            <!-- 基准线 -->
+            <line x1="20" y1="280" x2="420" y2="280" stroke="#bdc3c7" stroke-width="2" />
+            
+            <!-- 左侧：工资结构对比 -->
+            <!-- 李阿姨工资条 -->
+            <rect id="li-sal-base" class="bar" x="40" y="180" width="60" height="100" fill="#3498db" rx="4" />
+            <rect id="li-sal-excess" class="bar" x="40" y="140" width="60" height="40" fill="#3498db" rx="4" />
+            
+            <!-- 张叔叔工资条 -->
+            <rect id="zhang-sal-base" class="bar" x="130" y="180" width="60" height="100" fill="#3498db" rx="4" />
+            <rect id="zhang-sal-excess" class="bar" x="130" y="100" width="60" height="80" fill="#3498db" rx="4" />
+            
+            <!-- 起征点虚线 -->
+            <line id="threshold-line" class="line-marker" x1="20" y1="180" x2="210" y2="180" stroke="#e74c3c" stroke-width="1.5" opacity="0" />
+            <text id="threshold-text" class="text-sub" x="25" y="175" fill="#e74c3c" opacity="0" font-weight="bold">起征点 5000元</text>
+
+            <!-- 工资文字标签 -->
+            <text x="70" y="300" text-anchor="middle" class="text-label">李阿姨</text>
+            <text x="160" y="300" text-anchor="middle" class="text-label">张叔叔</text>
+            <text x="115" y="325" text-anchor="middle" class="text-label" font-size="13" fill="#7f8c8d">月工资结构</text>
+
+            <!-- 柱条上的数值 -->
+            <text id="li-sal-val" x="70" y="130" text-anchor="middle" class="text-label">7000元</text>
+            <text id="zhang-sal-val" x="160" y="90" text-anchor="middle" class="text-label">9000元</text>
+            
+            <!-- 拆分后的内部数值 -->
+            <text id="li-excess-val" x="70" y="160" text-anchor="middle" class="text-label" fill="#fff" opacity="0">2000</text>
+            <text id="zhang-excess-val" x="160" y="140" text-anchor="middle" class="text-label" fill="#fff" opacity="0">4000</text>
+            <text id="li-base-val" x="70" y="235" text-anchor="middle" class="text-label" fill="#fff" opacity="0">5000</text>
+            <text id="zhang-base-val" x="160" y="235" text-anchor="middle" class="text-label" fill="#fff" opacity="0">5000</text>
+
+            <!-- 右侧：个税额对比 -->
+            <rect id="li-tax-bar" class="bar" x="260" y="280" width="50" height="0" fill="#e74c3c" rx="4" opacity="0" />
+            <rect id="zhang-tax-bar" class="bar" x="340" y="280" width="50" height="0" fill="#e74c3c" rx="4" opacity="0" />
+            
+            <text x="285" y="300" text-anchor="middle" class="text-label">李阿姨</text>
+            <text x="365" y="300" text-anchor="middle" class="text-label">张叔叔</text>
+            <text x="325" y="325" text-anchor="middle" class="text-label" font-size="13" fill="#7f8c8d">每月个税额</text>
+
+            <text id="li-tax-val" x="285" y="275" text-anchor="middle" class="text-label" opacity="0">60元</text>
+            <text id="zhang-tax-val" x="365" y="275" text-anchor="middle" class="text-label" opacity="0">120元</text>
+            
+            <!-- 关系对比辅助线 -->
+            <path id="sal-bracket" class="bracket-path" d="M 70,110 L 70,75 L 160,75 L 160,110" opacity="0" />
+            <text id="sal-ratio-text" x="115" y="68" text-anchor="middle" class="text-label" fill="#7f8c8d" opacity="0">多 28.6%</text>
+
+            <path id="tax-bracket" class="bracket-path" d="M 285,200 L 285,135 L 365,135 L 365,200" stroke="#e67e22" opacity="0" />
+            <text id="tax-ratio-text" x="325" y="125" text-anchor="middle" class="text-label" fill="#e67e22" font-size="13" opacity="0">正好 2 倍！</text>
+          </svg>
+        </div>
+        
+        <!-- 右侧信息引导面板 -->
+        <div class="info-panel">
+          <div class="question-box">
+            <strong>情境思考：</strong>张叔叔说：“我每个月工资只比你多不到30%，但我每个月交的个税却是你的2倍！”他说的对吗？
+          </div>
+          <div class="step-desc">
+            <div class="step-title">
+              <span class="step-num" id="step-title-num">1</span>
+              <span id="step-title-text">观察总工资</span>
+            </div>
+            <p id="step-body-text">加载中...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 选项卡 2：自由探究 -->
+    <div id="sandbox-tab" class="tab-content">
+      <div class="sandbox-layout">
+        <!-- 左侧控制与计算面板 -->
+        <div class="sandbox-controls">
+          <div style="font-size: 14px; font-weight: bold; color: #2c3e50; margin-bottom: 5px;">⚙️ 拖动滑块改变工资</div>
+          
+          <!-- 李阿姨工资调节 -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>李阿姨月工资</span>
+              <span id="li-sal-val-text" class="val">7000 元</span>
+            </div>
+            <input type="range" id="li-sal-slider" class="slider-input" min="5000" max="15000" step="100" value="7000">
+          </div>
+          
+          <!-- 张叔叔工资调节 -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>张叔叔月工资</span>
+              <span id="zhang-sal-val-text" class="val">9000 元</span>
+            </div>
+            <input type="range" id="zhang-sal-slider" class="slider-input" min="5000" max="15000" step="100" value="9000">
+          </div>
+          
+          <!-- 动态对比卡片 -->
+          <div class="comparison-card">
+            <h3 style="font-size: 13px; margin-bottom: 8px; color: #2c3e50; border-bottom: 2px solid #f0f2f5; padding-bottom: 5px;">📊 实时数据对比分析</h3>
+            <div class="comp-row">
+              <span class="comp-label">总工资对比 (张 vs 李):</span>
+              <span id="comp-sal-ratio" class="comp-val">9000 vs 7000 (多 28.6%)</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-label">李阿姨计税部分 (超出5000):</span>
+              <span id="comp-taxable-li" class="comp-val highlight">2000 元</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-label">张叔叔计税部分 (超出5000):</span>
+              <span id="comp-taxable-zhang" class="comp-val highlight">4000 元</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-label">个税额对比 (张 vs 李):</span>
+              <span id="comp-tax-ratio" class="comp-val" style="color: #e74c3c;">120元 vs 60元 (2.00 倍)</span>
+            </div>
+          </div>
+          
+          <button id="sb-reset-btn" class="btn btn-secondary" style="width: 100%; font-size: 13px; padding: 8px;">重置为默认数据 (7000 vs 9000)</button>
+        </div>
+        
+        <!-- 右侧动态可视化面板 -->
+        <div class="sandbox-visual">
+          <svg viewBox="0 0 440 340" id="sandbox-svg">
+            <!-- 图例 -->
+            <g transform="translate(20, 15)">
+              <rect x="0" y="0" width="12" height="12" fill="#2ecc71" rx="2" />
+              <text x="18" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">免税额 (5000元)</text>
+              
+              <rect x="130" y="0" width="12" height="12" fill="#e67e22" rx="2" />
+              <text x="148" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">计税部分</text>
+              
+              <rect x="230" y="0" width="12" height="12" fill="#e74c3c" rx="2" />
+              <text x="248" y="10" font-size="10" fill="#7f8c8d" font-weight="bold">个税额 (3%)</text>
+            </g>
+
+            <!-- 基准线 -->
+            <line x1="20" y1="280" x2="420" y2="280" stroke="#bdc3c7" stroke-width="2" />
+            
+            <!-- 左侧：工资结构 -->
+            <rect id="sb-li-sal-base" class="bar" x="40" y="213.33" width="60" height="66.67" fill="#2ecc71" rx="4" />
+            <rect id="sb-li-sal-excess" class="bar" x="40" y="186.67" width="60" height="26.67" fill="#e67e22" rx="4" />
+            
+            <rect id="sb-zhang-sal-base" class="bar" x="130" y="213.33" width="60" height="66.67" fill="#2ecc71" rx="4" />
+            <rect id="sb-zhang-sal-excess" class="bar" x="130" y="160" width="60" height="53.33" fill="#e67e22" rx="4" />
+            
+            <!-- 起征点虚线 -->
+            <line x1="20" y1="213.33" x2="210" y2="213.33" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" />
+            <text x="25" y="205" fill="#e74c3c" font-size="10" font-weight="bold">起征点 5000元</text>
+
+            <text x="70" y="300" text-anchor="middle" class="text-label">李阿姨</text>
+            <text x="160" y="300" text-anchor="middle" class="text-label">张叔叔</text>
+            <text x="115" y="325" text-anchor="middle" class="text-label" font-size="13" fill="#7f8c8d">月工资结构</text>
+
+            <text id="sb-li-sal-label" x="70" y="175" text-anchor="middle" class="text-label">7000元</text>
+            <text id="sb-zhang-sal-label" x="160" y="150" text-anchor="middle" class="text-label">9000元</text>
+
+            <!-- 右侧：个税额 -->
+            <rect id="sb-li-tax-bar" class="bar" x="260" y="250" width="50" height="30" fill="#e74c3c" rx="4" />
+            <rect id="sb-zhang-tax-bar" class="bar" x="340" y="220" width="50" height="60" fill="#e74c3c" rx="4" />
+            
+            <text x="285" y="300" text-anchor="middle" class="text-label">李阿姨</text>
+            <text x="365" y="300" text-anchor="middle" class="text-label">张叔叔</text>
+            <text x="325" y="325" text-anchor="middle" class="text-label" font-size="13" fill="#7f8c8d">每月个税额</text>
+
+            <text id="sb-li-tax-label" x="285" y="240" text-anchor="middle" class="text-label">60元</text>
+            <text id="sb-zhang-tax-label" x="365" y="210" text-anchor="middle" class="text-label">120元</text>
+          </svg>
+          
+          <!-- 浮动数学规律提示 -->
+          <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; font-size: 11px; color: #7f8c8d; line-height: 1.4; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 1px solid #e4e7ed;">
+            💡 <strong>数学规律：</strong>由于减去了相同的常数（5000元起征点），<strong>计税部分的倍数关系</strong>永远比<strong>总工资的倍数关系</strong>更极端。这就是“平移效应”！
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- 底部控制条（仅在启发步步练显示） -->
+  <div class="control-bar" id="guided-controls">
+    <div class="step-dots">
+      <div class="dot active" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+      <div class="dot" id="dot-3"></div>
+      <div class="dot" id="dot-4"></div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="prev-btn" disabled>上一步</button>
+      <button class="btn btn-primary" id="next-btn">下一步</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 选项卡切换逻辑
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const guidedControls = document.getElementById('guided-controls');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      
+      btn.classList.add('active');
+      document.getElementById(targetTab).classList.add('active');
+      
+      // 控制底部导航条的显示与隐藏
+      if (targetTab === 'guided-tab') {
+        guidedControls.style.display = 'flex';
+      } else {
+        guidedControls.style.display = 'none';
+        updateSandbox(); // 切换到探究页时刷新数据
+      }
+    });
+  });
+
+  // 启发步步练逻辑
+  let currentStep = 1;
+
+  function updateStep() {
+    // 更新进度点
+    for (let i = 1; i <= 4; i++) {
+      const dot = document.getElementById(`dot-${i}`);
+      if (dot) {
+        if (i === currentStep) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      }
+    }
+    
+    // 更新按钮状态
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    prevBtn.disabled = (currentStep === 1);
+    if (currentStep === 4) {
+      nextBtn.textContent = '重新开始';
+    } else {
+      nextBtn.textContent = '下一步';
+    }
+    
+    // 更新步骤标题和描述
+    const stepTitleNum = document.getElementById('step-title-num');
+    const stepTitleText = document.getElementById('step-title-text');
+    const stepBodyText = document.getElementById('step-body-text');
+    
+    stepTitleNum.textContent = currentStep;
+    
+    // 获取SVG元素
+    const liSalBase = document.getElementById('li-sal-base');
+    const liSalExcess = document.getElementById('li-sal-excess');
+    const zhangSalBase = document.getElementById('zhang-sal-base');
+    const zhangSalExcess = document.getElementById('zhang-sal-excess');
+    
+    const thresholdLine = document.getElementById('threshold-line');
+    const thresholdText = document.getElementById('threshold-text');
+    
+    const liBaseVal = document.getElementById('li-base-val');
+    const liExcessVal = document.getElementById('li-excess-val');
+    const zhangBaseVal = document.getElementById('zhang-base-val');
+    const zhangExcessVal = document.getElementById('zhang-excess-val');
+    
+    const liSalVal = document.getElementById('li-sal-val');
+    const zhangSalVal = document.getElementById('zhang-sal-val');
+    
+    const liTaxBar = document.getElementById('li-tax-bar');
+    const zhangTaxBar = document.getElementById('zhang-tax-bar');
+    const liTaxVal = document.getElementById('li-tax-val');
+    const zhangTaxVal = document.getElementById('zhang-tax-val');
+    
+    const salBracket = document.getElementById('sal-bracket');
+    const salRatioText = document.getElementById('sal-ratio-text');
+    const taxBracket = document.getElementById('tax-bracket');
+    const taxRatioText = document.getElementById('tax-ratio-text');
+    
+    // 状态机分支
+    if (currentStep === 1) {
+      stepTitleText.textContent = '观察总工资';
+      stepBodyText.innerHTML = `张叔叔的工资是9000元，李阿姨的工资是7000元。<br><br>计算两人的工资差距：<br><strong style="color:#3498db; font-size:16px;">(9000 - 7000) ÷ 7000 ≈ 28.6%</strong><br><br>张叔叔的工资确实只比李阿姨多不到30%。`;
+      
+      // 恢复初始蓝色柱状图
+      liSalBase.setAttribute('fill', '#3498db');
+      liSalExcess.setAttribute('fill', '#3498db');
+      zhangSalBase.setAttribute('fill', '#3498db');
+      zhangSalExcess.setAttribute('fill', '#3498db');
+      
+      thresholdLine.setAttribute('opacity', '0');
+      thresholdText.setAttribute('opacity', '0');
+      
+      liBaseVal.setAttribute('opacity', '0');
+      liExcessVal.setAttribute('opacity', '0');
+      zhangBaseVal.setAttribute('opacity', '0');
+      zhangExcessVal.setAttribute('opacity', '0');
+      
+      liSalVal.setAttribute('opacity', '1');
+      zhangSalVal.setAttribute('opacity', '1');
+      
+      liTaxBar.setAttribute('height', '0');
+      liTaxBar.setAttribute('y', '280');
+      liTaxBar.setAttribute('opacity', '0');
+      zhangTaxBar.setAttribute('height', '0');
+      zhangTaxBar.setAttribute('y', '280');
+      zhangTaxBar.setAttribute('opacity', '0');
+      
+      liTaxVal.setAttribute('opacity', '0');
+      zhangTaxVal.setAttribute('opacity', '0');
+      
+      salBracket.setAttribute('opacity', '0');
+      salRatioText.setAttribute('opacity', '0');
+      taxBracket.setAttribute('opacity', '0');
+      taxRatioText.setAttribute('opacity', '0');
+      
+    } else if (currentStep === 2) {
+      stepTitleText.textContent = '扣除免税额';
+      stepBodyText.innerHTML = `个税起征点是5000元。这意味着，5000元以内的部分是不需要纳税的（<span style="color:#2ecc71;font-weight:bold;">绿色部分</span>）。<br><br>只有超出5000元的部分才需要纳税（<span style="color:#e67e22;font-weight:bold;">橙色部分</span>）：<br>• 李阿姨应纳税部分：<br>&nbsp;&nbsp;<strong>7000 - 5000 = 2000元</strong><br>• 张叔叔应纳税部分：<br>&nbsp;&nbsp;<strong>9000 - 5000 = 4000元</strong><br><br>瞧！<strong>4000元正好是2000元的 <span style="color:#e67e22;font-size:16px;">2 倍</span>！</strong>`;
+      
+      // 拆分工资结构颜色
+      liSalBase.setAttribute('fill', '#2ecc71');
+      liSalExcess.setAttribute('fill', '#e67e22');
+      zhangSalBase.setAttribute('fill', '#2ecc71');
+      zhangSalExcess.setAttribute('fill', '#e67e22');
+      
+      thresholdLine.setAttribute('opacity', '1');
+      thresholdText.setAttribute('opacity', '1');
+      
+      liBaseVal.setAttribute('opacity', '1');
+      liExcessVal.setAttribute('opacity', '1');
+      zhangBaseVal.setAttribute('opacity', '1');
+      zhangExcessVal.setAttribute('opacity', '1');
+      
+      liSalVal.setAttribute('opacity', '0.3');
+      zhangSalVal.setAttribute('opacity', '0.3');
+      
+      liTaxBar.setAttribute('height', '0');
+      liTaxBar.setAttribute('y', '280');
+      liTaxBar.setAttribute('opacity', '0');
+      zhangTaxBar.setAttribute('height', '0');
+      zhangTaxBar.setAttribute('y', '280');
+      zhangTaxBar.setAttribute('opacity', '0');
+      
+      liTaxVal.setAttribute('opacity', '0');
+      zhangTaxVal.setAttribute('opacity', '0');
+      
+      salBracket.setAttribute('opacity', '0');
+      salRatioText.setAttribute('opacity', '0');
+      taxBracket.setAttribute('opacity', '0');
+      taxRatioText.setAttribute('opacity', '0');
+      
+    } else if (currentStep === 3) {
+      stepTitleText.textContent = '计算个税额';
+      stepBodyText.innerHTML = `超出部分适用3%的税率：<br>• 李阿姨个税：<br>&nbsp;&nbsp;<strong>2000 × 3% = 60元</strong><br>• 张叔叔个税：<br>&nbsp;&nbsp;<strong>4000 × 3% = 120元</strong><br><br>右侧红色的纳税额柱状图升起。我们可以看到，张叔叔交的个税（120元）确实是李阿姨（60元）的<strong>整整 <span style="color:#e74c3c;font-size:16px;">2 倍</span></strong>！`;
+      
+      liSalBase.setAttribute('fill', '#2ecc71');
+      liSalExcess.setAttribute('fill', '#e67e22');
+      zhangSalBase.setAttribute('fill', '#2ecc71');
+      zhangSalExcess.setAttribute('fill', '#e67e22');
+      
+      thresholdLine.setAttribute('opacity', '1');
+      thresholdText.setAttribute('opacity', '1');
+      
+      liBaseVal.setAttribute('opacity', '1');
+      liExcessVal.setAttribute('opacity', '1');
+      zhangBaseVal.setAttribute('opacity', '1');
+      zhangExcessVal.setAttribute('opacity', '1');
+      
+      liSalVal.setAttribute('opacity', '0.3');
+      zhangSalVal.setAttribute('opacity', '0.3');
+      
+      // 升起个税柱状图
+      liTaxBar.setAttribute('height', '60');
+      liTaxBar.setAttribute('y', '220');
+      liTaxBar.setAttribute('opacity', '1');
+      zhangTaxBar.setAttribute('height', '120');
+      zhangTaxBar.setAttribute('y', '160');
+      zhangTaxBar.setAttribute('opacity', '1');
+      
+      liTaxVal.setAttribute('opacity', '1');
+      zhangTaxVal.setAttribute('opacity', '1');
+      
+      salBracket.setAttribute('opacity', '0');
+      salRatioText.setAttribute('opacity', '0');
+      taxBracket.setAttribute('opacity', '0');
+      taxRatioText.setAttribute('opacity', '0');
+      
+    } else if (currentStep === 4) {
+      stepTitleText.textContent = '辨析与总结';
+      stepBodyText.innerHTML = `张叔叔说得<strong>完全正确</strong>！<br><br><strong>为什么会这样？</strong><br>因为起征点（5000元）的“平移效应”，使得应纳税所得额的差距（2倍）远大于总工资的差距（1.28倍）。<br><br>点击上方<strong>“规律大发现”</strong>标签，可以自由调节工资，观察这个神奇的数学规律！`;
+      
+      liSalBase.setAttribute('fill', '#2ecc71');
+      liSalExcess.setAttribute('fill', '#e67e22');
+      zhangSalBase.setAttribute('fill', '#2ecc71');
+      zhangSalExcess.setAttribute('fill', '#e67e22');
+      
+      thresholdLine.setAttribute('opacity', '1');
+      thresholdText.setAttribute('opacity', '1');
+      
+      liBaseVal.setAttribute('opacity', '1');
+      liExcessVal.setAttribute('opacity', '1');
+      zhangBaseVal.setAttribute('opacity', '1');
+      zhangExcessVal.setAttribute('opacity', '1');
+      
+      liSalVal.setAttribute('opacity', '0.3');
+      zhangSalVal.setAttribute('opacity', '0.3');
+      
+      liTaxBar.setAttribute('height', '60');
+      liTaxBar.setAttribute('y', '220');
+      liTaxBar.setAttribute('opacity', '1');
+      zhangTaxBar.setAttribute('height', '120');
+      zhangTaxBar.setAttribute('y', '160');
+      zhangTaxBar.setAttribute('opacity', '1');
+      
+      liTaxVal.setAttribute('opacity', '1');
+      zhangTaxVal.setAttribute('opacity', '1');
+      
+      // 显示对比弧线和比例
+      salBracket.setAttribute('opacity', '1');
+      salRatioText.setAttribute('opacity', '1');
+      taxBracket.setAttribute('opacity', '1');
+      taxRatioText.setAttribute('opacity', '1');
+    }
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      updateStep();
+    }
+  });
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    if (currentStep < 4) {
+      currentStep++;
+      updateStep();
+    } else {
+      currentStep = 1;
+      updateStep();
+    }
+  });
+
+
+  // 自由探究逻辑
+  const liSalSlider = document.getElementById('li-sal-slider');
+  const zhangSalSlider = document.getElementById('zhang-sal-slider');
+  const sbResetBtn = document.getElementById('sb-reset-btn');
+
+  function updateSandbox() {
+    const sLi = parseFloat(liSalSlider.value);
+    const sZhang = parseFloat(zhangSalSlider.value);
+    
+    // 更新滑块数值文本显示
+    document.getElementById('li-sal-val-text').innerText = sLi + ' 元';
+    document.getElementById('zhang-sal-val-text').innerText = sZhang + ' 元';
+    
+    // 计算应纳税额
+    const tLi = Math.max(0, sLi - 5000);
+    const tZhang = Math.max(0, sZhang - 5000);
+    const taxLi = tLi * 0.03;
+    const taxZhang = tZhang * 0.03;
+    
+    // 更新对比分析卡片
+    const salDiffPct = (((sZhang - sLi) / sLi) * 100).toFixed(1);
+    const salDiffText = sZhang >= sLi ? `多 ${salDiffPct}%` : `少 ${Math.abs(salDiffPct)}%`;
+    document.getElementById('comp-sal-ratio').innerText = `${sZhang} vs ${sLi} (${salDiffText})`;
+    
+    document.getElementById('comp-taxable-li').innerText = tLi + ' 元';
+    document.getElementById('comp-taxable-zhang').innerText = tZhang + ' 元';
+    
+    let taxRatioText = '-';
+    if (taxLi > 0) {
+      taxRatioText = (taxZhang / taxLi).toFixed(2) + ' 倍';
+    } else if (taxZhang > 0) {
+      taxRatioText = '无限大 (李阿姨免税)';
+    } else {
+      taxRatioText = '均为 0 元';
+    }
+    document.getElementById('comp-tax-ratio').innerText = `${taxZhang.toFixed(1)}元 vs ${taxLi.toFixed(1)}元 (${taxRatioText})`;
+    
+    // 动态更新 SVG 柱状图高度和位置
+    const scaleSal = 200 / 15000; // 工资比例尺
+    const scaleTax = 150 / 300;   // 个税比例尺 (最大个税300元对应150px)
+    const baselineY = 280;
+    const thresholdY = baselineY - 5000 * scaleSal; // 213.33
+    
+    // 李阿姨工资柱
+    const liBaseHeight = Math.min(sLi, 5000) * scaleSal;
+    const liBaseY = baselineY - liBaseHeight;
+    const liExcessHeight = tLi * scaleSal;
+    const liExcessY = thresholdY - liExcessHeight;
+    
+    document.getElementById('sb-li-sal-base').setAttribute('y', liBaseY);
+    document.getElementById('sb-li-sal-base').setAttribute('height', liBaseHeight);
+    document.getElementById('sb-li-sal-excess').setAttribute('y', liExcessY);
+    document.getElementById('sb-li-sal-excess').setAttribute('height', liExcessHeight);
+    
+    // 张叔叔工资柱
+    const zhangBaseHeight = Math.min(sZhang, 5000) * scaleSal;
+    const zhangBaseY = baselineY - zhangBaseHeight;
+    const zhangExcessHeight = tZhang * scaleSal;
+    const zhangExcessY = thresholdY - zhangExcessHeight;
+    
+    document.getElementById('sb-zhang-sal-base').setAttribute('y', zhangBaseY);
+    document.getElementById('sb-zhang-sal-base').setAttribute('height', zhangBaseHeight);
+    document.getElementById('sb-zhang-sal-excess').setAttribute('y', zhangExcessY);
+    document.getElementById('sb-zhang-sal-excess').setAttribute('height', zhangExcessHeight);
+    
+    // 个税柱
+    const liTaxHeight = taxLi * scaleTax;
+    const liTaxY = baselineY - liTaxHeight;
+    const zhangTaxHeight = taxZhang * scaleTax;
+    const zhangTaxY = baselineY - zhangTaxHeight;
+    
+    document.getElementById('sb-li-tax-bar').setAttribute('y', liTaxY);
+    document.getElementById('sb-li-tax-bar').setAttribute('height', liTaxHeight);
+    document.getElementById('sb-zhang-tax-bar').setAttribute('y', zhangTaxY);
+    document.getElementById('sb-zhang-tax-bar').setAttribute('height', zhangTaxHeight);
+    
+    // 标签位置更新
+    document.getElementById('sb-li-sal-label').setAttribute('y', Math.min(liBaseY, liExcessY) - 10);
+    document.getElementById('sb-li-sal-label').textContent = sLi + '元';
+    document.getElementById('sb-zhang-sal-label').setAttribute('y', Math.min(zhangBaseY, zhangExcessY) - 10);
+    document.getElementById('sb-zhang-sal-label').textContent = sZhang + '元';
+    
+    document.getElementById('sb-li-tax-label').setAttribute('y', liTaxY - 10);
+    document.getElementById('sb-li-tax-label').textContent = taxLi > 0 ? taxLi.toFixed(0) + '元' : '0元';
+    document.getElementById('sb-zhang-tax-label').setAttribute('y', zhangTaxY - 10);
+    document.getElementById('sb-zhang-tax-label').textContent = taxZhang > 0 ? taxZhang.toFixed(0) + '元' : '0元';
+  }
+
+  liSalSlider.addEventListener('input', updateSandbox);
+  zhangSalSlider.addEventListener('input', updateSandbox);
+  
+  sbResetBtn.addEventListener('click', () => {
+    liSalSlider.value = 7000;
+    zhangSalSlider.value = 9000;
+    updateSandbox();
+  });
+
+  // 初始化加载
+  window.addEventListener('DOMContentLoaded', () => {
+    updateStep();
+    updateSandbox();
+  });
+</script>
+
+</body>
+</html>

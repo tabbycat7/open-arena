@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人送餐任务分析</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .step-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        #step-2.warning {
+            border-color: var(--danger);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0.7; } }
+        
+        .robot-area {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+        #robot { transition: transform 0.5s; }
+        
+        .controls { margin-top: 20px; }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+        #hint { color: var(--danger); font-weight: bold; margin-top: 10px; visibility: hidden; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>机器人送餐任务分析</h2>
+    
+    <div class="robot-area">
+        <div id="robot">🤖</div>
+    </div>
+
+    <div id="step-1" class="step-card">步骤1：向前走3格</div>
+    <div id="step-2" class="step-card">步骤2：在走廊原地转圈3次</div>
+    <div id="step-3" class="step-card">步骤3：向右转，把餐盘放到3号桌</div>
+
+    <div class="controls">
+        <button id="runBtn">模拟运行</button>
+        <div id="hint">提示：这一步真的有用吗？</div>
+    </div>
+</div>
+
+<script>
+    const runBtn = document.getElementById('runBtn');
+    const robot = document.getElementById('robot');
+    const step2 = document.getElementById('step-2');
+    const hint = document.getElementById('hint');
+
+    runBtn.addEventListener('click', async () => {
+        runBtn.disabled = true;
+        hint.style.visibility = 'hidden';
+        step2.classList.remove('warning');
+
+        // 步骤1
+        robot.style.transform = 'translateX(100px)';
+        await new Promise(r => setTimeout(r, 1000));
+
+        // 步骤2
+        step2.classList.add('warning');
+        for(let i=0; i<3; i++) {
+            robot.style.transform += ' rotate(360deg)';
+            await new Promise(r => setTimeout(r, 600));
+        }
+        hint.style.visibility = 'visible';
+        await new Promise(r => setTimeout(r, 1000));
+
+        // 步骤3
+        robot.style.transform = 'translateX(200px) rotate(90deg)';
+        runBtn.disabled = false;
+    });
+</script>
+
+</body>
+</html>

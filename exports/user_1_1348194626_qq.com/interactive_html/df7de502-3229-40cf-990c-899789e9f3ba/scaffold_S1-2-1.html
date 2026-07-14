@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人送餐与电量消耗</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 10px; }
+        #canvas-area {
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #status-text { font-size: 1.5rem; font-weight: bold; color: #d9534f; margin-top: 10px; height: 2em; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>机器人送餐：电量消耗演示</h2>
+    <div id="canvas-area">
+        <svg width="100%" height="100%" viewBox="0 0 400 300">
+            <!-- 机器人 -->
+            <g id="robot" transform="translate(50, 150)">
+                <rect x="-20" y="-30" width="40" height="50" rx="5" fill="#5bc0de" />
+                <circle cx="-10" cy="-10" r="5" fill="white" />
+                <circle cx="10" cy="-10" r="5" fill="white" />
+                <!-- 电池槽 -->
+                <rect x="-15" y="5" width="30" height="8" fill="#eee" stroke="#333" />
+                <rect id="battery-level" x="-15" y="5" width="30" height="8" fill="#5cb85c" />
+            </g>
+            <!-- 路径点 -->
+            <path d="M 50 150 L 350 150" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5" />
+        </svg>
+    </div>
+    <div id="status-text"></div>
+    <div class="controls">
+        <button id="start-btn">让机器人跑起来</button>
+        <button id="reset-btn">重置</button>
+    </div>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const battery = document.getElementById('battery-level');
+    const startBtn = document.getElementById('start-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const statusText = document.getElementById('status-text');
+
+    let posX = 50;
+    let energy = 30;
+    let animationId = null;
+
+    function update() {
+        if (energy > 0) {
+            posX += 2;
+            energy -= 0.2;
+            robot.setAttribute('transform', `translate(${posX}, 150)`);
+            battery.setAttribute('width', energy);
+            
+            if (energy < 10) battery.setAttribute('fill', '#d9534f');
+            else if (energy < 20) battery.setAttribute('fill', '#f0ad4e');
+            
+            animationId = requestAnimationFrame(update);
+        } else {
+            statusText.textContent = "电量耗尽！请充电。";
+            startBtn.disabled = true;
+        }
+    }
+
+    startBtn.addEventListener('click', () => {
+        if (!animationId) {
+            statusText.textContent = "移动需要消耗电量...";
+            update();
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+        posX = 50;
+        energy = 30;
+        robot.setAttribute('transform', `translate(${posX}, 150)`);
+        battery.setAttribute('width', energy);
+        battery.setAttribute('fill', '#5cb85c');
+        statusText.textContent = "";
+        startBtn.disabled = false;
+    });
+</script>
+
+</body>
+</html>

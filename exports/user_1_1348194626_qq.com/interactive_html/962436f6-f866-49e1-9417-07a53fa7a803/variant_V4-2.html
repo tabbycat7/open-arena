@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税款计算错误诊断与修正模型</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #eff6ff;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            padding: 20px 24px;
+            background: linear-gradient(to right, #f1f5f9, #ffffff);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-area h1 {
+            font-size: 20px;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .title-area p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 主交互区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 24px;
+            justify-content: space-between;
+        }
+
+        /* 算式演示区 */
+        .formula-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .formula-box {
+            display: flex;
+            align-items: center;
+            font-family: "Consolas", "Courier New", monospace, sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            gap: 12px;
+        }
+
+        .num-box {
+            padding: 4px 12px;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .num-income {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: 2px solid transparent;
+        }
+
+        .num-rate {
+            position: relative;
+        }
+
+        .num-rate.wrong {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border: 2px dashed var(--danger);
+        }
+
+        .num-rate.correct {
+            background-color: var(--success-light);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .num-result {
+            transition: all 0.5s ease;
+        }
+
+        .num-result.wrong {
+            color: var(--danger);
+            text-decoration: line-through;
+        }
+
+        .num-result.correct {
+            color: var(--success);
+            font-size: 36px;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        /* 转换指示器 */
+        .rate-transform-hint {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--success);
+            opacity: 0;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--success);
+        }
+
+        .rate-transform-hint.show {
+            bottom: -15px;
+            opacity: 1;
+        }
+
+        /* 可视化图形区 */
+        .visual-area {
+            flex: 1;
+            margin: 25px 0;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .step-desc {
+            font-size: 14px;
+            color: var(--text-main);
+            max-width: 60%;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            box-shadow: 0 4px 12px -1px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 205, 0.3);
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        /* SVG 内部样式 */
+        .bar-label {
+            font-size: 12px;
+            font-weight: bold;
+            fill: var(--text-main);
+        }
+        .bar-sublabel {
+            font-size: 10px;
+            fill: var(--text-muted);
+        }
+        .grid-line {
+            stroke: #f1f5f9;
+            stroke-width: 1;
+        }
+        .animate-width {
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), x 0.8s cubic-bezier(0.4, 0, 0.2, 1), fill 0.5s ease;
+        }
+        .animate-fade {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="title-area">
+                <h1>税款计算错误诊断与修正</h1>
+                <p>知识点：百分数乘法的实际应用与数理模型对比</p>
+            </div>
+            <span class="badge">六年级 · 数学</span>
+        </div>
+
+        <!-- 主交互区 -->
+        <div class="main-content">
+            <!-- 算式卡片 -->
+            <div class="formula-card">
+                <div class="formula-box">
+                    <span class="num-box num-income">1000</span>
+                    <span>×</span>
+                    <span id="formula-rate" class="num-box num-rate wrong">5</span>
+                    <span>=</span>
+                    <span id="formula-result" class="num-result wrong">5000</span>
+                </div>
+                <div id="transform-hint" class="rate-transform-hint">
+                    <span>5%</span>
+                    <span>➔</span>
+                    <span>0.05</span>
+                </div>
+            </div>
+
+            <!-- 可视化图形区 (SVG) -->
+            <div class="visual-area">
+                <svg id="visual-svg" width="100%" height="100%" viewBox="0 0 750 220" preserveAspectRatio="xMidYMid meet">
+                    <!-- 背景网格线 -->
+                    <g id="grid-lines"></g>
+
+                    <!-- 错误模型组 (小明的算法) -->
+                    <g id="group-error" class="animate-fade" opacity="1">
+                        <!-- 总收入条 -->
+                        <text x="30" y="45" class="bar-label">总收入 (1000元)</text>
+                        <rect x="150" y="30" width="100" height="24" rx="4" fill="#3b82f6" opacity="0.8"></rect>
+                        <text x="260" y="46" class="bar-sublabel">基数 = 1</text>
+
+                        <!-- 错误税额条 (5倍) -->
+                        <text x="30" y="95" class="bar-label" fill="#ef4444">小明算的税额 (5000元)</text>
+                        <!-- 5倍长度，超出屏幕截断效果 -->
+                        <rect x="150" y="80" width="450" height="24" rx="4" fill="#ef4444" opacity="0.85"></rect>
+                        <!-- 截断波浪线 -->
+                        <path d="M 595 80 L 605 84 L 595 88 L 605 92 L 595 96 L 605 100 L 595 104" fill="none" stroke="#ffffff" stroke-width="3"></path>
+                        <text x="615" y="96" class="bar-label" fill="#ef4444">5倍！超出总收入！</text>
+                        
+                        <!-- 比例辅助虚线 -->
+                        <line x1="150" y1="54" x2="150" y2="80" stroke="#cbd5e1" stroke-dasharray="4 4"></line>
+                        <line x1="250" y1="54" x2="250" y2="80" stroke="#cbd5e1" stroke-dasharray="4 4"></line>
+                    </g>
+
+                    <!-- 正确模型组 (修正后的算法) -->
+                    <g id="group-correct" class="animate-fade" opacity="0" transform="translate(0, 20)">
+                        <!-- 总收入条 (细分为100份的示意，这里用20格，每格5%) -->
+                        <text x="30" y="45" class="bar-label">总收入 (1000元)</text>
+                        <g id="income-grid-group"></g>
+                        <text x="565" y="46" class="bar-sublabel">等分成100份 (每份10元)</text>
+
+                        <!-- 正确税额条 (5%) -->
+                        <text x="30" y="105" class="bar-label" fill="#10b981">实际应纳税额 (50元)</text>
+                        <rect id="correct-tax-rect" x="150" y="90" width="0" height="24" rx="4" fill="#10b981" class="animate-width"></rect>
+                        <text id="correct-tax-text" x="155" y="106" class="bar-label" fill="#ffffff" opacity="0">50元</text>
+                        <text x="565" y="106" class="bar-sublabel" fill="#10b981">占总收入的 5% (0.05倍)</text>
+
+                        <!-- 投影辅助线 -->
+                        <path id="projection-lines" d="M 150 54 L 150 90 M 170 54 L 170 90" stroke="#10b981" stroke-dasharray="3 3" opacity="0" class="animate-fade"></path>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- 控制与说明 -->
+            <div class="control-panel">
+                <div id="step-description" class="step-desc">
+                    小明直接用总收入乘了税率中的数字 5。请观察左侧算式和下方模型，找出不合理的地方。
+                </div>
+                <div class="btn-group">
+                    <button id="btn-reset" class="btn btn-secondary">重置</button>
+                    <button id="btn-next" class="btn btn-primary">诊断错误</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const formulaRate = document.getElementById('formula-rate');
+        const formulaResult = document.getElementById('formula-result');
+        const transformHint = document.getElementById('transform-hint');
+        const groupError = document.getElementById('group-error');
+        const groupCorrect = document.getElementById('group-correct');
+        const correctTaxRect = document.getElementById('correct-tax-rect');
+        const correctTaxText = document.getElementById('correct-tax-text');
+        const projectionLines = document.getElementById('projection-lines');
+        const stepDescription = document.getElementById('step-description');
+        const btnReset = document.getElementById('btn-reset');
+        const btnNext = document.getElementById('btn-next');
+        const incomeGridGroup = document.getElementById('income-grid-group');
+        const gridLines = document.getElementById('grid-lines');
+
+        let currentStep = 0; // 0: 错误展示, 1: 诊断原因, 2: 修正对比
+
+        // 初始化SVG背景网格和等分格
+        function initSVG() {
+            // 绘制背景网格线
+            let gridHtml = '';
+            for (let i = 150; i <= 700; i += 50) {
+                gridHtml += `<line x1="${i}" y1="10" x2="${i}" y2="210" class="grid-line"></line>`;
+            }
+            gridLines.innerHTML = gridHtml;
+
+            // 绘制正确模型中的20个等分格 (每格代表5%，即50元，总共1000元)
+            let gridGroupHtml = '';
+            for (let i = 0; i < 20; i++) {
+                const x = 150 + i * 20;
+                gridGroupHtml += `<rect x="${x}" y="30" width="18" height="24" rx="2" fill="#3b82f6" opacity="0.15" stroke="#3b82f6" stroke-width="1"></rect>`;
+            }
+            incomeGridGroup.innerHTML = gridGroupHtml;
+        }
+
+        // 步骤控制逻辑
+        function nextStep() {
+            if (currentStep === 0) {
+                // 进入步骤1：诊断原因
+                currentStep = 1;
+                
+                // 算式高亮与变化
+                formulaRate.classList.remove('wrong');
+                formulaRate.classList.add('correct');
+                formulaRate.textContent = '5%';
+                
+                // 弹出转换提示
+                transformHint.classList.add('show');
+                
+                // 更新描述
+                stepDescription.innerHTML = '<strong>诊断：</strong>税率 <span style="color:var(--success)">5%</span> 是一个百分数，表示整体的百分之五，不能直接当成整数 <span style="color:var(--danger)">5</span> 去乘。';
+                
+                btnNext.textContent = '修正并对比';
+                btnNext.className = 'btn btn-success';
+
+            } else if (currentStep === 1) {
+                // 进入步骤2：修正对比
+                currentStep = 2;
+
+                // 算式最终修正
+                formulaRate.textContent = '0.05';
+                formulaResult.textContent = '50';
+                formulaResult.className = 'num-result correct';
+                transformHint.classList.remove('show');
+
+                // 图形动画切换
+                groupError.style.opacity = '0.15';
+                groupCorrect.style.opacity = '1';
+                
+                // 延迟触发条形比例动画，让过渡更自然
+                setTimeout(() => {
+                    correctTaxRect.setAttribute('width', '20'); // 1格宽度为20
+                    setTimeout(() => {
+                        correctTaxText.style.opacity = '1';
+                        projectionLines.style.opacity = '1';
+                    }, 500);
+                }, 100);
+
+                // 更新描述
+                stepDescription.innerHTML = '<strong>修正：</strong>1000 × 5% = 1000 × 0.05 = <span style="color:var(--success); font-weight:bold;">50元</span>。小明算出的5000元整整<strong>扩大了100倍</strong>！';
+                
+                btnNext.style.display = 'none';
+            }
+        }
+
+        function resetApp() {
+            currentStep = 0;
+            
+            // 恢复算式初始状态
+            formulaRate.className = 'num-box num-rate wrong';
+            formulaRate.textContent = '5';
+            formulaResult.className = 'num-result wrong';
+            formulaResult.textContent = '5000';
+            transformHint.classList.remove('show');
+
+            // 恢复图形初始状态
+            groupError.style.opacity = '1';
+            groupCorrect.style.opacity = '0';
+            correctTaxRect.setAttribute('width', '0');
+            correctTaxText.style.opacity = '0';
+            projectionLines.style.opacity = '0';
+
+            // 恢复控制面板
+            stepDescription.innerHTML = '小明直接用总收入乘了税率中的数字 5。请观察左侧算式和下方模型，找出不合理的地方。';
+            btnNext.style.display = 'block';
+            btnNext.textContent = '诊断错误';
+            btnNext.className = 'btn btn-primary';
+        }
+
+        // 事件监听
+        btnNext.addEventListener('click', nextStep);
+        btnReset.addEventListener('click', resetApp);
+
+        // 初始化
+        initSVG();
+    </script>
+</body>
+</html>

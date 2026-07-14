@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税率直观对比体验 - 六年级数学</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --grain-color: #2ecc71;
+            --grain-dark: #27ae60;
+            --cosmetic-color: #9b59b6;
+            --cosmetic-dark: #8e44ad;
+            --bg-color: #f8f9fa;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #dcdde1;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .app-wrapper {
+            width: 960px;
+            height: 720px;
+            background-color: var(--bg-color);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+        }
+
+        /* 头部标题区 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        /* 主展示区：左右分栏 */
+        .main-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: stretch;
+            flex: 1;
+            margin: 20px 0;
+        }
+
+        .column {
+            width: 42%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #eaedf1;
+        }
+
+        /* 模拟账单样式 */
+        .receipt {
+            width: 100%;
+            background: #fffdf0;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        .receipt::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(-45deg, var(--bg-color) 5px, transparent 0), 
+                        linear-gradient(45deg, var(--bg-color) 5px, transparent 0);
+            background-size: 10px 10px;
+        }
+
+        .receipt-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0;
+            font-size: 15px;
+            color: #34495e;
+        }
+
+        .receipt-row.bold {
+            font-weight: bold;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .tag-grain {
+            background-color: var(--grain-color);
+        }
+
+        .tag-cosmetic {
+            background-color: var(--cosmetic-color);
+        }
+
+        /* 柱状图展示区 */
+        .chart-area {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            border-bottom: 3px solid #34495e;
+            margin-top: 20px;
+        }
+
+        /* 刻度线 */
+        .y-axis {
+            position: absolute;
+            left: 10px;
+            bottom: 0;
+            height: 100%;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .tick {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            border-bottom: 1px dashed #e0e0e0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        /* 柱子样式 */
+        .bar-container {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .bar {
+            width: 100%;
+            height: 0; /* 动态控制 */
+            border-radius: 6px 6px 0 0;
+            transition: height 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .bar-grain {
+            background: linear-gradient(to top, var(--grain-dark), var(--grain-color));
+        }
+
+        .bar-cosmetic {
+            background: linear-gradient(to top, var(--cosmetic-dark), var(--cosmetic-color));
+        }
+
+        /* 柱顶数值标签 */
+        .bar-value {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            white-space: nowrap;
+        }
+
+        .bar-value.show {
+            opacity: 1;
+        }
+
+        .color-grain { color: var(--grain-dark); }
+        .color-cosmetic { color: var(--cosmetic-dark); }
+
+        /* 计算公式展示 */
+        .formula-box {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 24px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .formula-box.show {
+            opacity: 1;
+        }
+
+        /* 控制按钮区 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 底部提示 */
+        .footer-tips {
+            text-align: center;
+            font-size: 15px;
+            color: #7f8c8d;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🌾 粮食税率 vs 💄 高档化妆品税率</h1>
+            <p>通过相同的 100 元基数，直观感受不同税率带来的纳税额差异</p>
+        </div>
+
+        <!-- 主体对比区域 -->
+        <div class="main-content">
+            <!-- 左侧：粮食 -->
+            <div class="column">
+                <div class="receipt">
+                    <div class="receipt-title">🧾 消费账单（粮食）</div>
+                    <div class="receipt-row"><span>商品名称:</span><span>优质大米</span></div>
+                    <div class="receipt-row"><span>商品金额:</span><span>100.00 元</span></div>
+                    <div class="receipt-row bold"><span>应纳税率:</span><span class="tag tag-grain">9%</span></div>
+                </div>
+
+                <div class="chart-area">
+                    <!-- 刻度线 -->
+                    <div class="y-axis">
+                        <div class="tick" style="bottom: 30px;"><span>10元</span></div>
+                        <div class="tick" style="bottom: 90px;"><span>30元</span></div>
+                    </div>
+                    <!-- 柱子 -->
+                    <div class="bar-container">
+                        <div class="bar bar-grain" id="bar-grain">
+                            <div class="bar-value color-grain" id="val-grain">0 元</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-box color-grain" id="formula-grain">
+                    100 × 9% = 9元
+                </div>
+            </div>
+
+            <!-- 右侧：高档化妆品 -->
+            <div class="column">
+                <div class="receipt">
+                    <div class="receipt-title">🧾 消费账单（化妆品）</div>
+                    <div class="receipt-row"><span>商品名称:</span><span>高档香水</span></div>
+                    <div class="receipt-row"><span>商品金额:</span><span>100.00 元</span></div>
+                    <div class="receipt-row bold"><span>应纳税率:</span><span class="tag tag-cosmetic">30%</span></div>
+                </div>
+
+                <div class="chart-area">
+                    <!-- 刻度线 -->
+                    <div class="y-axis">
+                        <div class="tick" style="bottom: 30px;"><span>10元</span></div>
+                        <div class="tick" style="bottom: 90px;"><span>30元</span></div>
+                    </div>
+                    <!-- 柱子 -->
+                    <div class="bar-container">
+                        <div class="bar bar-cosmetic" id="bar-cosmetic">
+                            <div class="bar-value color-cosmetic" id="val-cosmetic">0 元</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-box color-cosmetic" id="formula-cosmetic">
+                    100 × 30% = 30元
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <button class="btn btn-primary" id="btn-calc">📊 计算应纳税款</button>
+            <button class="btn btn-secondary" id="btn-reset">🔄 重置对比</button>
+        </div>
+
+        <!-- 底部教学引导 -->
+        <div class="footer-tips">
+            💡 <strong>思考：</strong> 为什么购买同样是 100 元的商品，高档化妆品要交的税比粮食多这么多？这体现了国家怎样的税收政策？
+        </div>
+    </div>
+
+    <script>
+        const btnCalc = document.getElementById('btn-calc');
+        const btnReset = document.getElementById('btn-reset');
+        
+        const barGrain = document.getElementById('bar-grain');
+        const barCosmetic = document.getElementById('bar-cosmetic');
+        
+        const valGrain = document.getElementById('val-grain');
+        const valCosmetic = document.getElementById('val-cosmetic');
+        
+        const formulaGrain = document.getElementById('formula-grain');
+        const formulaCosmetic = document.getElementById('formula-cosmetic');
+
+        // 映射比例：1元 = 6像素高度 (最大30元 = 180像素)
+        const SCALE = 6; 
+
+        btnCalc.addEventListener('click', () => {
+            // 1. 柱状图伸展
+            barGrain.style.height = `${9 * SCALE}px`;
+            barCosmetic.style.height = `${30 * SCALE}px`;
+
+            // 2. 数字渐现并跑表动画
+            setTimeout(() => {
+                valGrain.classList.add('show');
+                valCosmetic.classList.add('show');
+                animateValue(valGrain, 0, 9, 1000);
+                animateValue(valCosmetic, 0, 30, 1000);
+            }, 300);
+
+            // 3. 公式渐现
+            setTimeout(() => {
+                formulaGrain.classList.add('show');
+                formulaCosmetic.classList.add('show');
+            }, 1000);
+
+            // 禁用计算按钮，启用重置
+            btnCalc.disabled = true;
+            btnCalc.style.opacity = '0.5';
+            btnCalc.style.cursor = 'not-allowed';
+        });
+
+        btnReset.addEventListener('click', () => {
+            // 1. 恢复柱状图高度
+            barGrain.style.height = '0px';
+            barCosmetic.style.height = '0px';
+
+            // 2. 隐藏并重置数字
+            valGrain.classList.remove('show');
+            valCosmetic.classList.remove('show');
+            valGrain.innerText = '0 元';
+            valCosmetic.innerText = '0 元';
+
+            // 3. 隐藏公式
+            formulaGrain.classList.remove('show');
+            formulaCosmetic.classList.remove('show');
+
+            // 恢复按钮状态
+            btnCalc.disabled = false;
+            btnCalc.style.opacity = '1';
+            btnCalc.style.cursor = 'pointer';
+        });
+
+        // 数字递增动画函数
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + ' 元';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.innerHTML = end + ' 元';
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>

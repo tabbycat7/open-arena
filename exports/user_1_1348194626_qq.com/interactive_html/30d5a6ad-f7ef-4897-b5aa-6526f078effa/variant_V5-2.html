@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>艺术版权溯源天平</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; --bg: #f4f7f6; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 90%; max-width: 800px; text-align: center; }
+        h2 { margin-bottom: 10px; }
+        #canvas-area { width: 100%; height: 400px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background: var(--primary); color: white; transition: 0.3s; }
+        button:hover { background: #34495e; }
+        .label { font-weight: bold; font-size: 14px; }
+        .hidden { display: none; }
+        #status-text { margin-top: 15px; font-style: italic; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>艺术版权溯源天平</h2>
+    <div id="canvas-area">
+        <svg id="svg-root" width="100%" height="100%" viewBox="0 0 800 400">
+            <!-- 天平支架 -->
+            <line x1="400" y1="50" x2="400" y2="150" stroke="#333" stroke-width="4" />
+            <line id="balance-beam" x1="200" y1="150" x2="600" y2="150" stroke="#333" stroke-width="6" />
+            
+            <!-- 托盘 -->
+            <rect id="left-tray" x="180" y="150" width="40" height="10" fill="#bdc3c7" />
+            <rect id="right-tray" x="580" y="150" width="40" height="10" fill="#bdc3c7" />
+            
+            <!-- 物品 -->
+            <rect id="item-left" x="170" y="80" width="60" height="70" fill="#3498db" />
+            <text x="200" y="120" text-anchor="middle" fill="white" font-size="10">小明的画</text>
+            
+            <g id="right-items">
+                <rect x="570" y="100" width="60" height="50" fill="#95a5a6" />
+                <text x="600" y="130" text-anchor="middle" fill="white" font-size="10">原作者库</text>
+            </g>
+
+            <!-- 溯源连线层 -->
+            <g id="lines-group"></g>
+            
+            <!-- 提示文字 -->
+            <text id="conflict-text" x="400" y="350" text-anchor="middle" fill="#e74c3c" font-weight="bold" class="hidden">
+                冲突：风格借鉴 vs 无偿洗稿
+            </text>
+        </svg>
+    </div>
+    
+    <div class="controls">
+        <button id="btn-trace">点击溯源</button>
+        <button id="btn-compensate">合理补偿公约</button>
+    </div>
+    <p id="status-text">观察天平的变化，思考版权的公平性。</p>
+</div>
+
+<script>
+    const svg = document.getElementById('svg-root');
+    const linesGroup = document.getElementById('lines-group');
+    const beam = document.getElementById('balance-beam');
+    const leftTray = document.getElementById('left-tray');
+    const rightTray = document.getElementById('right-tray');
+    const itemLeft = document.getElementById('item-left');
+    const conflictText = document.getElementById('conflict-text');
+
+    let traced = false;
+    let compensated = false;
+
+    document.getElementById('btn-trace').addEventListener('click', () => {
+        if (traced) return;
+        traced = true;
+        
+        for (let i = 0; i < 20; i++) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", "200");
+            line.setAttribute("y1", "150");
+            line.setAttribute("x2", 550 + Math.random() * 100);
+            line.setAttribute("y2", 100 + Math.random() * 50);
+            line.setAttribute("stroke", `hsl(${Math.random() * 360}, 70%, 60%)`);
+            line.setAttribute("stroke-width", "1");
+            linesGroup.appendChild(line);
+        }
+    });
+
+    document.getElementById('btn-compensate').addEventListener('click', () => {
+        compensated = !compensated;
+        if (compensated) {
+            // 天平倾斜
+            beam.setAttribute("transform", "rotate(-15 400 150)");
+            leftTray.setAttribute("transform", "rotate(-15 200 150) translate(0 50)");
+            rightTray.setAttribute("transform", "rotate(-15 600 150) translate(0 -50)");
+            itemLeft.setAttribute("transform", "rotate(-15 200 150) translate(0 50)");
+            conflictText.classList.remove('hidden');
+        } else {
+            beam.setAttribute("transform", "rotate(0 400 150)");
+            leftTray.setAttribute("transform", "rotate(0 200 150) translate(0 0)");
+            rightTray.setAttribute("transform", "rotate(0 600 150) translate(0 0)");
+            itemLeft.setAttribute("transform", "rotate(0 200 150) translate(0 0)");
+            conflictText.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>

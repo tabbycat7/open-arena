@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小数化百分数教学可视化</title>
+  <style>
+    /* 全局样式与大屏适配 */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1e293b;
+      user-select: none;
+    }
+
+    /* 4:3 比例教学看板 */
+    .board {
+      width: 800px;
+      height: 600px;
+      background-color: #ffffff;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 40px;
+      box-sizing: border-box;
+      position: relative;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 顶部标题栏 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 15px;
+    }
+
+    .title-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      background-color: #3b82f6;
+      color: #ffffff;
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    /* 步骤指示器 */
+    .steps-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .steps-line {
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      right: 5%;
+      height: 3px;
+      background-color: #e2e8f0;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .steps-line-progress {
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      width: 0%;
+      height: 3px;
+      background-color: #3b82f6;
+      transform: translateY(-50%);
+      z-index: 2;
+      transition: width 0.5s ease;
+    }
+
+    .step-node {
+      position: relative;
+      z-index: 3;
+      background-color: #ffffff;
+      border: 3px solid #e2e8f0;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .step-node.active {
+      border-color: #3b82f6;
+      color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+
+    .step-node.completed {
+      border-color: #10b981;
+      background-color: #10b981;
+      color: #ffffff;
+    }
+
+    /* 核心可视化区域 */
+    .visual-area {
+      flex-grow: 1;
+      background-color: #f8fafc;
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+      margin: 15px 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* 数学网格背景效果 */
+    .math-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: 30px 30px;
+      background-image: linear-gradient(to right, rgba(203, 213, 225, 0.15) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(203, 213, 225, 0.15) 1px, transparent 1px);
+      pointer-events: none;
+    }
+
+    /* 数字容器 */
+    .number-container {
+      position: relative;
+      width: 420px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 字符基本样式 */
+    .digit {
+      font-family: "Courier New", Courier, monospace, sans-serif;
+      font-size: 84px;
+      font-weight: bold;
+      position: absolute;
+      width: 50px;
+      text-align: center;
+      transition: opacity 0.4s ease, color 0.4s ease;
+    }
+
+    /* 专门定位每个字符 */
+    .digit-0-1 { left: 60px; }
+    .digit-0-2 { left: 160px; }
+    .digit-5   { left: 260px; }
+
+    /* 小数点：需要平滑移动 */
+    .digit-dot {
+      left: 120px; /* 初始在第一个0和第二个0之间 */
+      width: 30px;
+      color: #3b82f6;
+      transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+    }
+
+    /* 百分号：初始隐藏，带缩放动画 */
+    .digit-percent {
+      left: 330px;
+      color: #ef4444;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .digit-percent.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* 划线消除效果 */
+    .strike-line {
+      position: absolute;
+      height: 6px;
+      background-color: #ef4444;
+      border-radius: 3px;
+      width: 0;
+      transform: rotate(-35deg);
+      transition: width 0.4s ease;
+      pointer-events: none;
+    }
+
+    .strike-1 {
+      left: 65px;
+      top: 80px;
+    }
+
+    .strike-2 {
+      left: 165px;
+      top: 80px;
+    }
+
+    /* SVG 动画曲线覆盖层 */
+    .svg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .jump-path {
+      fill: none;
+      stroke: #f59e0b;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 150;
+      stroke-dashoffset: 150;
+      transition: stroke-dashoffset 0.6s ease-in-out;
+    }
+
+    .jump-path.active {
+      stroke-dashoffset: 0;
+    }
+
+    .jump-text {
+      font-size: 16px;
+      font-weight: bold;
+      fill: #d97706;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .jump-text.active {
+      opacity: 1;
+    }
+
+    /* 底部控制与说明区域 */
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .explanation-box {
+      background-color: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 12px 20px;
+      border-radius: 0 8px 8px 0;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+    }
+
+    .explanation-text {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #1e3a8a;
+      font-weight: 500;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #475569;
+    }
+
+    .btn-secondary:hover {
+      background-color: #cbd5e1;
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+
+    .btn-accent {
+      background-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-accent:hover {
+      background-color: #059669;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 快捷提示卡片 */
+    .tip-card {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      z-index: 20;
+    }
+
+    .tip-title {
+      font-weight: bold;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .tip-content {
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="board">
+    <!-- 顶部标题 -->
+    <div class="header">
+      <div class="title-container">
+        <span class="badge">数学 · 六年级</span>
+        <h1 class="title">小数化成百分数</h1>
+      </div>
+      <div class="subtitle">知识点：小数与百分数的互化</div>
+    </div>
+
+    <!-- 步骤指示器 -->
+    <div class="steps-indicator">
+      <div class="steps-line"></div>
+      <div class="steps-line-progress" id="lineProgress"></div>
+      <div class="step-node active" data-step="0">始</div>
+      <div class="step-node" data-step="1">1</div>
+      <div class="step-node" data-step="2">2</div>
+      <div class="step-node" data-step="3">终</div>
+    </div>
+
+    <!-- 核心可视化区域 -->
+    <div class="visual-area">
+      <div class="math-grid"></div>
+      
+      <!-- 快捷提示 -->
+      <div class="tip-card">
+        <div class="tip-title">💡 转换秘诀</div>
+        <div class="tip-content">小数点向右移两位，添上 %</div>
+      </div>
+
+      <!-- 数字展示 -->
+      <div class="number-container">
+        <!-- 字符 -->
+        <div class="digit digit-0-1" id="digit01">0</div>
+        <div class="digit digit-dot" id="digitDot">.</div>
+        <div class="digit digit-0-2" id="digit02">0</div>
+        <div class="digit digit-5" id="digit5">5</div>
+        <div class="digit digit-percent" id="digitPercent">%</div>
+
+        <!-- 消除红线 -->
+        <div class="strike-line strike-1" id="strike1"></div>
+        <div class="strike-line strike-2" id="strike2"></div>
+      </div>
+
+      <!-- SVG 动画曲线 -->
+      <svg class="svg-overlay" viewBox="0 0 800 320">
+        <defs>
+          <!-- 箭头定义 -->
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+          </marker>
+        </defs>
+        <!-- 第一步跳跃弧线 (从135到235) -->
+        <path id="jump1" class="jump-path" d="M 335,160 Q 385,100 435,160" marker-end="url(#arrow)" />
+        <text id="jumpText1" class="jump-text" x="365" y="110">向右移1位 (×10)</text>
+
+        <!-- 第二步跳跃弧线 (从235到335) -->
+        <path id="jump2" class="jump-path" d="M 435,160 Q 485,100 535,160" marker-end="url(#arrow)" />
+        <text id="jumpText2" class="jump-text" x="465" y="110">再向右移1位 (×10)</text>
+      </svg>
+    </div>
+
+    <!-- 底部控制与说明 -->
+    <div class="control-panel">
+      <div class="explanation-box">
+        <p class="explanation-text" id="explanation">我们得到了小数 0.05。要把它变成百分数，该怎么做呢？点击“下一步”开始演示。</p>
+      </div>
+
+      <div class="button-group">
+        <div>
+          <button class="btn btn-secondary" id="btnPrev" disabled>上一步</button>
+          <button class="btn btn-primary" id="btnNext">下一步</button>
+        </div>
+        <div>
+          <button class="btn btn-secondary" id="btnReset">重置</button>
+          <button class="btn btn-accent" id="btnAuto">自动演示</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态定义
+    const states = [
+      {
+        step: 0,
+        dotLeft: '120px',
+        dotOpacity: 1,
+        zero1Opacity: 1,
+        zero2Opacity: 1,
+        percentShow: false,
+        strike1Width: '0px',
+        strike2Width: '0px',
+        arrow1Active: false,
+        arrow2Active: false,
+        desc: "我们得到了小数 0.05。要把它变成百分数，我们需要把小数点向右移动两位。"
+      },
+      {
+        step: 1,
+        dotLeft: '220px',
+        dotOpacity: 1,
+        zero1Opacity: 1,
+        zero2Opacity: 1,
+        percentShow: false,
+        strike1Width: '0px',
+        strike2Width: '0px',
+        arrow1Active: true,
+        arrow2Active: false,
+        desc: "第一步：小数点向右移动一位（相当于扩大到原来的10倍），此时数字变为 00.5。"
+      },
+      {
+        step: 2,
+        dotLeft: '320px',
+        dotOpacity: 1,
+        zero1Opacity: 1,
+        zero2Opacity: 1,
+        percentShow: false,
+        strike1Width: '0px',
+        strike2Width: '0px',
+        arrow1Active: true,
+        arrow2Active: true,
+        desc: "第二步：小数点再向右移动一位（共扩大到原来的100倍），此时数字变为 005.。"
+      },
+      {
+        step: 3,
+        dotLeft: '320px',
+        dotOpacity: 0, // 隐藏末尾小数点
+        zero1Opacity: 0.15, // 淡化无意义的0
+        zero2Opacity: 0.15,
+        percentShow: true, // 展现百分号
+        strike1Width: '40px', // 划线消除
+        strike2Width: '40px',
+        arrow1Active: true,
+        arrow2Active: true,
+        desc: "最后：去掉整数前面无意义的“0”，省去末尾的小数点，并添上红色的百分号“%”。最终得到 5%！"
+      }
+    ];
+
+    let currentStateIndex = 0;
+    let autoPlayInterval = null;
+
+    // DOM 元素获取
+    const digitDot = document.getElementById('digitDot');
+    const digit01 = document.getElementById('digit01');
+    const digit02 = document.getElementById('digit02');
+    const digitPercent = document.getElementById('digitPercent');
+    const strike1 = document.getElementById('strike1');
+    const strike2 = document.getElementById('strike2');
+    const jump1 = document.getElementById('jump1');
+    const jump2 = document.getElementById('jump2');
+    const jumpText1 = document.getElementById('jumpText1');
+    const jumpText2 = document.getElementById('jumpText2');
+    const explanation = document.getElementById('explanation');
+    
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnReset = document.getElementById('btnReset');
+    const btnAuto = document.getElementById('btnAuto');
+    
+    const stepNodes = document.querySelectorAll('.step-node');
+    const lineProgress = document.getElementById('lineProgress');
+
+    // 渲染状态
+    function renderState(index) {
+      const state = states[index];
+
+      // 更新数字位置与状态
+      digitDot.style.left = state.dotLeft;
+      digitDot.style.opacity = state.dotOpacity;
+      digit01.style.opacity = state.zero1Opacity;
+      digit02.style.opacity = state.zero2Opacity;
+
+      if (state.percentShow) {
+        digitPercent.classList.add('show');
+      } else {
+        digitPercent.classList.remove('show');
+      }
+
+      // 划线消除
+      strike1.style.width = state.strike1Width;
+      strike2.style.width = state.strike2Width;
+
+      // SVG 弧线与文字
+      if (state.arrow1Active) {
+        jump1.classList.add('active');
+        jumpText1.classList.add('active');
+      } else {
+        jump1.classList.remove('active');
+        jumpText1.classList.remove('active');
+      }
+
+      if (state.arrow2Active) {
+        jump2.classList.add('active');
+        jumpText2.classList.add('active');
+      } else {
+        jump2.classList.remove('active');
+        jumpText2.classList.remove('active');
+      }
+
+      // 文字说明
+      explanation.textContent = state.desc;
+
+      // 步骤指示器更新
+      stepNodes.forEach((node, idx) => {
+        node.className = 'step-node';
+        if (idx < index) {
+          node.classList.add('completed');
+          node.innerHTML = '✓';
+        } else if (idx === index) {
+          node.classList.add('active');
+          node.innerHTML = idx === 0 ? '始' : idx === 3 ? '终' : idx;
+        } else {
+          node.innerHTML = idx === 3 ? '终' : idx;
+        }
+      });
+      
+      // 进度条比例
+      const progressWidths = [0, 33.3, 66.6, 100];
+      lineProgress.style.width = `${progressWidths[index]}%`;
+
+      // 按钮状态控制
+      btnPrev.disabled = index === 0;
+      btnNext.disabled = index === states.length - 1;
+      
+      if (index === states.length - 1) {
+        btnNext.textContent = '完成';
+        btnNext.classList.replace('btn-primary', 'btn-accent');
+      } else {
+        btnNext.textContent = '下一步';
+        btnNext.classList.replace('btn-accent', 'btn-primary');
+      }
+    }
+
+    // 交互事件绑定
+    function goToStep(index) {
+      currentStateIndex = index;
+      renderState(currentStateIndex);
+      stopAutoPlay();
+    }
+
+    function nextStep() {
+      if (currentStateIndex < states.length - 1) {
+        currentStateIndex++;
+        renderState(currentStateIndex);
+      } else {
+        stopAutoPlay();
+      }
+    }
+
+    function prevStep() {
+      if (currentStateIndex > 0) {
+        currentStateIndex--;
+        renderState(currentStateIndex);
+      }
+      stopAutoPlay();
+    }
+
+    function resetDemo() {
+      goToStep(0);
+    }
+
+    function toggleAutoPlay() {
+      if (autoPlayInterval) {
+        stopAutoPlay();
+      } else {
+        if (currentStateIndex === states.length - 1) {
+          currentStateIndex = 0;
+        }
+        renderState(currentStateIndex);
+        btnAuto.textContent = '暂停演示';
+        btnAuto.classList.replace('btn-accent', 'btn-secondary');
+        autoPlayInterval = setInterval(() => {
+          if (currentStateIndex < states.length - 1) {
+            nextStep();
+          } else {
+            stopAutoPlay();
+          }
+        }, 2500);
+      }
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        btnAuto.textContent = '自动演示';
+        btnAuto.classList.replace('btn-secondary', 'btn-accent');
+      }
+    }
+
+    // 按钮事件监听
+    btnNext.addEventListener('click', nextStep);
+    btnPrev.addEventListener('click', prevStep);
+    btnReset.addEventListener('click', resetDemo);
+    btnAuto.addEventListener('click', toggleAutoPlay);
+
+    // 步骤节点点击事件
+    stepNodes.forEach((node) => {
+      node.addEventListener('click', () => {
+        const step = parseInt(node.getAttribute('data-step'));
+        goToStep(step);
+      });
+    });
+
+    // 初始化渲染
+    renderState(0);
+  </script>
+</body>
+</html>

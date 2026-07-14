@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学微课：税率与计税基数</title>
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --gray-light: #f3f4f6;
+      --gray-med: #9ca3af;
+      --text-dark: #1f2937;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #eef2f6;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 95vw;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+      padding: 24px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 头部标题与提问 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: var(--text-dark);
+      margin: 0 0 8px 0;
+    }
+
+    .question-box {
+      background-color: #eff6ff;
+      border-left: 4px solid var(--primary-color);
+      padding: 10px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #1e40af;
+      text-align: left;
+    }
+
+    /* 可视化主区域 */
+    .visualization-area {
+      position: relative;
+      flex-grow: 1;
+      width: 100%;
+      background: #fafafa;
+      border: 1px double #e5e7eb;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+
+    .svg-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 交互元素样式 */
+    .taxable-rect {
+      fill: url(#blue-cake);
+      cursor: pointer;
+      transition: filter 0.2s, stroke 0.2s;
+    }
+
+    .taxable-rect:hover {
+      filter: brightness(1.05);
+    }
+
+    .taxable-rect.highlighted {
+      fill: url(#gold-cake);
+      stroke: #d97706;
+      stroke-width: 3px;
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    .taxfree-rect {
+      fill: url(#gray-cake);
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    .taxfree-rect:hover {
+      filter: brightness(0.95);
+    }
+
+    @keyframes pulse {
+      from { filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4)); }
+      to { filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.8)); }
+    }
+
+    /* 气泡提示样式 */
+    .bubble {
+      position: absolute;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transform: translate(-50%, -120%) scale(0.8);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+      text-align: center;
+      max-width: 220px;
+    }
+
+    .bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px 8px 0;
+      border-style: solid;
+      display: block;
+      width: 0;
+    }
+
+    .bubble.success {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .bubble.success::after {
+      border-color: var(--success-color) transparent;
+    }
+
+    .bubble.hint {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .bubble.hint::after {
+      border-color: var(--danger-color) transparent;
+    }
+
+    .bubble.visible {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1);
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background-color: var(--gray-light);
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .slider-label {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    input[type=range] {
+      flex-grow: 1;
+      height: 8px;
+      border-radius: 4px;
+      background: #d1d5db;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .btn {
+      background-color: #ffffff;
+      border: 1px solid var(--gray-med);
+      color: var(--text-dark);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* 辅助说明 */
+    .guide-text {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 13px;
+      color: var(--gray-med);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>百分数（二）—— 税率</h1>
+      <div class="question-box">
+        <strong>思考：</strong>如果总收入是一块大蛋糕，其中有一部分是国家规定不用交税的（免税额）。请你在图上<strong>点击指出</strong>，哪部分是我们要拿来计算税额的？
+      </div>
+    </div>
+
+    <!-- 可视化交互区 -->
+    <div class="visualization-area">
+      <div class="guide-text">💡 拖动下方滑块可改变免税额</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 800 420" id="tax-svg">
+          <!-- 渐变定义 -->
+          <defs>
+            <linearGradient id="blue-cake" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#60a5fa" />
+              <stop offset="100%" stop-color="#2563eb" />
+            </linearGradient>
+            <linearGradient id="gray-cake" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#f3f4f6" />
+              <stop offset="100%" stop-color="#9ca3af" />
+            </linearGradient>
+            <linearGradient id="gold-cake" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fbbf24" />
+              <stop offset="100%" stop-color="#d97706" />
+            </linearGradient>
+            
+            <!-- 网格背景 -->
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+            </pattern>
+          </defs>
+
+          <!-- 背景网格 -->
+          <rect width="100%" height="100%" fill="url(#grid)" />
+
+          <!-- 总收入大括号与文字 -->
+          <path id="top-bracket" d="" fill="none" stroke="#1e2937" stroke-width="2" />
+          <text id="total-label" x="400" y="90" font-size="18" font-weight="bold" fill="#1e2937" text-anchor="middle">总收入：8000 元</text>
+
+          <!-- 收入长条图 (免税部分) -->
+          <rect id="taxfree-rect" class="taxfree-rect" x="100" y="140" width="0" height="80" rx="6" />
+          
+          <!-- 收入长条图 (计税部分) -->
+          <rect id="taxable-rect" class="taxable-rect" x="100" y="140" width="600" height="80" rx="6" />
+
+          <!-- 剪裁虚线与剪刀 -->
+          <line id="cut-line" x1="100" y1="120" x2="100" y2="240" stroke="#ef4444" stroke-width="2" stroke-dasharray="6 4" />
+          <text id="scissors" x="100" y="115" font-size="22" text-anchor="middle" style="user-select: none;">✂️</text>
+
+          <!-- 下方大括号与文字 -->
+          <path id="free-bracket" d="" fill="none" stroke="#6b7280" stroke-width="2" />
+          <text id="free-label" x="100" y="285" font-size="15" font-weight="bold" fill="#4b5563" text-anchor="middle"></text>
+
+          <path id="taxable-bracket" d="" fill="none" stroke="#2563eb" stroke-width="2" />
+          <text id="taxable-label" x="400" y="285" font-size="15" font-weight="bold" fill="#1d4ed8" text-anchor="middle"></text>
+        </svg>
+
+        <!-- 浮动气泡提示 -->
+        <div id="bubble" class="bubble success">🎉 答对了！只有这一部分才乘税率哦！</div>
+        <div id="hint-bubble" class="bubble hint">这是免税部分，不用交税哦。请再想想！</div>
+      </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <div class="slider-group">
+        <span class="slider-label">调整免税额 (起征点)：</span>
+        <input type="range" id="tax-free-slider" min="0" max="5000" value="3000" step="500">
+        <span class="slider-label" style="color: var(--primary-dark); width: 80px;" id="tax-free-val">3000 元</span>
+      </div>
+      <button class="btn" id="reset-btn">重置探索</button>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('tax-free-slider');
+    const taxFreeVal = document.getElementById('tax-free-val');
+    const taxFreeRect = document.getElementById('taxfree-rect');
+    const taxableRect = document.getElementById('taxable-rect');
+    const cutLine = document.getElementById('cut-line');
+    const scissors = document.getElementById('scissors');
+    const topBracket = document.getElementById('top-bracket');
+    const freeBracket = document.getElementById('free-bracket');
+    const taxableBracket = document.getElementById('taxable-bracket');
+    const freeLabel = document.getElementById('free-label');
+    const taxableLabel = document.getElementById('taxable-label');
+    const bubble = document.getElementById('bubble');
+    const hintBubble = document.getElementById('hint-bubble');
+    const resetBtn = document.getElementById('reset-btn');
+
+    const totalIncome = 8000;
+    const startX = 100;
+    const totalWidth = 600;
+    const scale = totalWidth / totalIncome;
+
+    let hasClickedCorrect = false;
+
+    // 生成大括号的 SVG Path (朝上或朝下)
+    function getBracketPath(x1, x2, y, direction) {
+      const size = 10;
+      const mid = (x1 + x2) / 2;
+      if (direction === 'up') {
+        return `M ${x1},${y} 
+                L ${x1},${y - size} 
+                L ${mid - size},${y - size} 
+                L ${mid},${y - size - 8} 
+                L ${mid + size},${y - size} 
+                L ${x2},${y - size} 
+                L ${x2},${y}`;
+      } else {
+        return `M ${x1},${y} 
+                L ${x1},${y + size} 
+                L ${mid - size},${y + size} 
+                L ${mid},${y + size + 8} 
+                L ${mid + size},${y + size} 
+                L ${x2},${y + size} 
+                L ${x2},${y}`;
+      }
+    }
+
+    // 定位 HTML 气泡到 SVG 坐标
+    function positionBubble(el, svgX, svgY) {
+      const pctX = (svgX / 800) * 100;
+      const pctY = (svgY / 420) * 100;
+      el.style.left = `${pctX}%`;
+      el.style.top = `${pctY}%`;
+    }
+
+    // 更新视图
+    function update() {
+      const taxFree = parseInt(slider.value);
+      const taxable = totalIncome - taxFree;
+
+      const w_free = taxFree * scale;
+      const w_taxable = taxable * scale;
+
+      // 1. 更新矩形宽度和位置
+      taxFreeRect.setAttribute('width', w_free);
+      taxableRect.setAttribute('x', startX + w_free);
+      taxableRect.setAttribute('width', w_taxable);
+
+      // 2. 更新剪裁线和剪刀位置
+      const cutX = startX + w_free;
+      cutLine.setAttribute('x1', cutX);
+      cutLine.setAttribute('x2', cutX);
+      scissors.setAttribute('x', cutX);
+
+      // 3. 更新上方大括号 (总收入)
+      topBracket.setAttribute('d', getBracketPath(startX, startX + totalWidth, 130, 'up'));
+
+      // 4. 更新下方大括号与文本
+      if (taxFree > 0) {
+        freeBracket.setAttribute('display', 'inline');
+        freeLabel.setAttribute('display', 'inline');
+        freeBracket.setAttribute('d', getBracketPath(startX, cutX, 230, 'down'));
+        
+        const midFree = startX + w_free / 2;
+        freeLabel.setAttribute('x', midFree);
+        freeLabel.innerHTML = `<tspan x="${midFree}" dy="0">免税部分</tspan><tspan x="${midFree}" dy="20" fill="#6b7280" font-size="14">${taxFree} 元</tspan>`;
+      } else {
+        freeBracket.setAttribute('display', 'none');
+        freeLabel.setAttribute('display', 'none');
+      }
+
+      if (taxable > 0) {
+        taxableBracket.setAttribute('display', 'inline');
+        taxableLabel.setAttribute('display', 'inline');
+        taxableBracket.setAttribute('d', getBracketPath(cutX, startX + totalWidth, 230, 'down'));
+
+        const midTaxable = cutX + w_taxable / 2;
+        taxableLabel.setAttribute('x', midTaxable);
+        taxableLabel.innerHTML = `<tspan x="${midTaxable}" dy="0">计税部分 (应纳税所得额)</tspan><tspan x="${midTaxable}" dy="20" fill="#1d4ed8" font-size="14">${taxable} 元</tspan>`;
+      } else {
+        taxableBracket.setAttribute('display', 'none');
+        taxableLabel.setAttribute('display', 'none');
+      }
+
+      // 5. 动态更新数值显示
+      taxFreeVal.textContent = `${taxFree} 元`;
+
+      // 6. 动态更新气泡位置
+      if (bubble.classList.contains('visible')) {
+        positionBubble(bubble, cutX + w_taxable / 2, 130);
+      }
+      if (hintBubble.classList.contains('visible')) {
+        positionBubble(hintBubble, startX + w_free / 2, 130);
+      }
+    }
+
+    // 事件监听
+    slider.addEventListener('input', () => {
+      update();
+      // 拖动时隐藏提示，鼓励重新点击
+      bubble.classList.remove('visible');
+      hintBubble.classList.remove('visible');
+      taxableRect.classList.remove('highlighted');
+    });
+
+    taxableRect.addEventListener('click', () => {
+      taxableRect.classList.add('highlighted');
+      bubble.classList.add('visible');
+      hintBubble.classList.remove('visible');
+      hasClickedCorrect = true;
+      update();
+    });
+
+    taxFreeRect.addEventListener('click', () => {
+      if (parseInt(slider.value) > 0) {
+        hintBubble.classList.add('visible');
+        bubble.classList.remove('visible');
+        taxableRect.classList.remove('highlighted');
+        update();
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      slider.value = 3000;
+      taxableRect.classList.remove('highlighted');
+      bubble.classList.remove('visible');
+      hintBubble.classList.remove('visible');
+      hasClickedCorrect = false;
+      update();
+    });
+
+    // 初始化
+    update();
+  </script>
+</body>
+</html>

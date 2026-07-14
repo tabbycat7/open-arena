@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>逆向纳税模型推导教学课件</title>
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --bg-light: #f3f4f6;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      background-color: #708090;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* 4:3 比例容器，适合课堂投影 */
+    .aspect-ratio-container {
+      width: 95vw;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部区域 */
+    .header {
+      background-color: var(--card-bg);
+      padding: 16px 24px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title-badge {
+      background-color: #dbeafe;
+      color: var(--primary-color);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    /* 主体内容区 */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px;
+      justify-content: space-between;
+    }
+
+    /* 题干展示区 */
+    .problem-card {
+      background-color: var(--card-bg);
+      border-left: 6px solid var(--primary-color);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .problem-card span.highlight {
+      color: #ef4444;
+      font-weight: bold;
+      border-bottom: 2px dashed #ef4444;
+      padding: 0 4px;
+    }
+
+    /* 交互控制与可视化区域 */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+      min-height: 0; /* 防止溢出 */
+    }
+
+    /* 左侧：公式推导与动画 */
+    .formula-panel {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 核心公式动画容器 */
+    .formula-container {
+      position: relative;
+      height: 110px;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      border: 2px dashed #cbd5e1;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .formula-term {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .term-tax { background-color: var(--primary-color); }
+    .term-income { background-color: var(--success-color); }
+    .term-rate { background-color: var(--warning-color); }
+
+    .term-label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+      margin-bottom: 2px;
+    }
+    .term-val {
+      font-size: 1.1rem;
+    }
+
+    .formula-operator {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--text-main);
+      width: 30px;
+      text-align: center;
+    }
+
+    /* 控制按钮与滑块 */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toggle-group {
+      display: flex;
+      background-color: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      border: none;
+      background: none;
+      padding: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s;
+      color: var(--text-muted);
+    }
+
+    .toggle-btn.active {
+      background-color: var(--card-bg);
+      color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .slider-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .slider-box {
+      background-color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .slider-box label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slider-row input {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-weight: bold;
+      min-width: 45px;
+      text-align: right;
+      color: var(--text-main);
+    }
+
+    /* 右侧：线段图模型可视化 */
+    .visual-panel {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .tape-diagram-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 底部引导与答案揭示 */
+    .footer-action {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .instruction-text {
+      font-size: 1rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .instruction-text .icon {
+      font-size: 1.2rem;
+    }
+
+    .math-expression {
+      font-family: 'Cambria', 'Georgia', serif;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reveal-btn {
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all-3s;
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    }
+
+    .reveal-btn:hover {
+      background-color: #059669;
+    }
+
+    .reveal-btn:active {
+      transform: scale(0.98);
+    }
+
+    .result-box {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-value {
+      color: #ef4444;
+      font-size: 1.6rem;
+      border-bottom: 3px double #ef4444;
+      padding: 0 6px;
+    }
+
+    /* 辅助类 */
+    .svg-transition {
+      transition: all 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+      <div class="title">纳税问题：逆向思维推导</div>
+      <div class="title-badge">六年级数学 · 百分数应用</div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="content">
+      <!-- 题干 -->
+      <div class="problem-card">
+        <strong>例题：</strong>某服装店本月依法向国家缴纳了 <span class="highlight">3 万元</span> 的营业税。已知该服装店适用的是 <span class="highlight">3%</span> 的营业税率。你能帮店老板算算，这家服装店本月的营业额（计税收入）是多少万元吗？
+      </div>
+
+      <!-- 工作区 -->
+      <div class="workspace">
+        <!-- 左侧：公式与控制 -->
+        <div class="formula-panel">
+          <div>
+            <div class="panel-title">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>
+              数量关系模型推导
+            </div>
+            
+            <!-- 动画公式容器 -->
+            <div class="formula-container" id="formula-container">
+              <div id="term-tax" class="formula-term term-tax">
+                <span class="term-label">应纳税额</span>
+                <span class="term-val" id="f-val-tax">3 万元</span>
+              </div>
+              <div id="op-equal" class="formula-operator">=</div>
+              <div id="term-income" class="formula-term term-income">
+                <span class="term-label">营业额</span>
+                <span class="term-val" id="f-val-income">? 万元</span>
+              </div>
+              <div id="op-math" class="formula-operator">×</div>
+              <div id="term-rate" class="formula-term term-rate">
+                <span class="term-label">税率</span>
+                <span class="term-val" id="f-val-rate">3%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 控制器 -->
+          <div class="controls">
+            <div class="toggle-group">
+              <button id="btn-forward" class="toggle-btn active">顺向：求应纳税额</button>
+              <button id="btn-reverse" class="toggle-btn">逆向：求营业额 (本题)</button>
+            </div>
+
+            <div class="slider-container">
+              <div class="slider-box">
+                <label for="slider-tax">应纳税额 (万元)</label>
+                <div class="slider-row">
+                  <input type="range" id="slider-tax" min="1" max="15" step="0.5" value="3">
+                  <span class="slider-val" id="lbl-tax">3</span>
+                </div>
+              </div>
+              <div class="slider-box">
+                <label for="slider-rate">营业税率 (%)</label>
+                <div class="slider-row">
+                  <input type="range" id="slider-rate" min="1" max="10" step="1" value="3">
+                  <span class="slider-val" id="lbl-rate">3%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：线段图可视化 -->
+        <div class="visual-panel">
+          <div class="panel-title">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 7.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/></svg>
+            线段图模型 (量率对应)
+          </div>
+          <div class="tape-diagram-container">
+            <svg id="tape-svg" width="100%" height="100%" viewBox="0 0 360 240">
+              <!-- 定义渐变和箭头 -->
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563" />
+                </marker>
+              </defs>
+
+              <!-- 营业额总线段 (100%) -->
+              <rect x="30" y="100" width="300" height="24" rx="4" fill="#e2e8f0" />
+              
+              <!-- 税额占比线段 -->
+              <rect id="svg-tax-bar" class="svg-transition" x="30" y="100" width="30" height="24" rx="4" fill="#3b82f6" />
+              
+              <!-- 100% 括号与标注 -->
+              <path d="M 30 140 L 30 150 L 180 150 L 180 158 L 180 150 L 330 150 L 330 140" fill="none" stroke="#4b5563" stroke-width="1.5" />
+              <text x="180" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#10b981">营业额 (单位“1”): ? 万元</text>
+              <text x="180" y="200" text-anchor="middle" font-size="11" fill="#9ca3af">( 对应整体 100% )</text>
+
+              <!-- 税额标注 (动态位置) -->
+              <!-- 虚线指示 -->
+              <line id="svg-tax-line" class="svg-transition" x1="45" y1="100" x2="45" y2="45" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="3,3" />
+              <!-- 税额文本 -->
+              <text id="svg-tax-text" class="svg-transition" x="45" y="35" text-anchor="middle" font-size="13" font-weight="bold" fill="#3b82f6">应纳税额: 3 万元</text>
+              
+              <!-- 税率标注 (动态位置) -->
+              <text id="svg-rate-text" class="svg-transition" x="45" y="85" text-anchor="middle" font-size="12" font-weight="bold" fill="#f59e0b">税率: 3%</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部操作与答案 -->
+      <div class="footer-action">
+        <div class="instruction-text">
+          <span class="icon">💡</span>
+          <span id="instruction-desc">请观察公式中各部分位置的变化，尝试列式计算。</span>
+        </div>
+        
+        <div class="math-expression">
+          <span id="math-formula-show">3 ÷ 3%</span>
+          <button id="btn-reveal" class="reveal-btn">点击计算结果</button>
+          <div id="result-box" class="result-box">
+            <span class="result-value" id="result-val">100</span> 万元
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    const state = {
+      mode: 'forward', // 'forward' (顺向) 或 'reverse' (逆向)
+      tax: 3.0,
+      rate: 3,
+      revealed: false
+    };
+
+    // DOM 元素
+    const btnForward = document.getElementById('btn-forward');
+    const btnReverse = document.getElementById('btn-reverse');
+    const sliderTax = document.getElementById('slider-tax');
+    const sliderRate = document.getElementById('slider-rate');
+    const lblTax = document.getElementById('lbl-tax');
+    const lblRate = document.getElementById('lbl-rate');
+    
+    const termTax = document.getElementById('term-tax');
+    const termIncome = document.getElementById('term-income');
+    const termRate = document.getElementById('term-rate');
+    const opEqual = document.getElementById('op-equal');
+    const opMath = document.getElementById('op-math');
+
+    const fValTax = document.getElementById('f-val-tax');
+    const fValIncome = document.getElementById('f-val-income');
+    const fValRate = document.getElementById('f-val-rate');
+
+    const svgTaxBar = document.getElementById('svg-tax-bar');
+    const svgTaxLine = document.getElementById('svg-tax-line');
+    const svgTaxText = document.getElementById('svg-tax-text');
+    const svgRateText = document.getElementById('svg-rate-text');
+
+    const instructionDesc = document.getElementById('instruction-desc');
+    const mathFormulaShow = document.getElementById('math-formula-show');
+    const btnReveal = document.getElementById('btn-reveal');
+    const resultBox = document.getElementById('result-box');
+    const resultVal = document.getElementById('result-val');
+
+    // 布局常量 (百分比定位)
+    // 容器宽度基准，用于计算绝对定位
+    const slots = {
+      forward: {
+        tax: { left: '4%' },
+        equal: { left: '32%' },
+        income: { left: '38%' },
+        op: { left: '66%' },
+        rate: { left: '72%' }
+      },
+      reverse: {
+        income: { left: '4%' },
+        equal: { left: '32%' },
+        tax: { left: '38%' },
+        op: { left: '66%' },
+        rate: { left: '72%' }
+      }
+    };
+
+    // 初始化与更新视图
+    function updateView() {
+      // 1. 更新滑块标签
+      lblTax.textContent = state.tax;
+      lblRate.textContent = state.rate + '%';
+
+      // 计算营业额
+      const income = parseFloat((state.tax / (state.rate / 100)).toFixed(2));
+
+      // 2. 更新公式卡片内的数值
+      fValTax.textContent = state.tax + ' 万元';
+      fValRate.textContent = state.rate + '%';
+      
+      if (state.mode === 'forward') {
+        fValIncome.textContent = state.revealed ? income + ' 万元' : '? 万元';
+      } else {
+        fValIncome.textContent = state.revealed ? income + ' 万元' : '? 万元';
+      }
+
+      // 3. 公式位置与符号动画
+      const currentSlots = slots[state.mode];
+      
+      termTax.style.left = currentSlots.tax.left;
+      termIncome.style.left = currentSlots.income.left;
+      termRate.style.left = currentSlots.rate.left;
+      opEqual.style.left = currentSlots.equal.left;
+      opMath.style.left = currentSlots.op.left;
+
+      if (state.mode === 'forward') {
+        opMath.textContent = '×';
+        termTax.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        termIncome.style.boxShadow = 'none';
+        termIncome.style.border = '2px dashed var(--success-color)';
+        termIncome.style.backgroundColor = 'transparent';
+        termIncome.style.color = 'var(--success-color)';
+        termTax.style.backgroundColor = 'var(--primary-color)';
+        termTax.style.color = 'white';
+      } else {
+        opMath.textContent = '÷';
+        termIncome.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        termTax.style.boxShadow = 'none';
+        termTax.style.border = '2px dashed var(--primary-color)';
+        termTax.style.backgroundColor = 'transparent';
+        termTax.style.color = 'var(--primary-color)';
+        termIncome.style.backgroundColor = 'var(--success-color)';
+        termIncome.style.color = 'white';
+      }
+
+      // 4. 更新线段图 (SVG)
+      // 总宽度 300px 对应 100%
+      const totalWidth = 300;
+      const taxWidth = Math.max((state.rate / 100) * totalWidth, 15); // 设定最小视觉宽度防止看不见
+      
+      svgTaxBar.setAttribute('width', taxWidth);
+      
+      // 动态调整标注位置
+      const midX = 30 + taxWidth / 2;
+      const textX = Math.max(midX, 55); // 防止文字靠左出界
+      
+      svgTaxLine.setAttribute('x1', midX);
+      svgTaxLine.setAttribute('x2', midX);
+      svgTaxText.setAttribute('x', textX);
+      svgTaxText.textContent = `应纳税额: ${state.tax} 万元`;
+      
+      svgRateText.setAttribute('x', textX);
+      svgRateText.textContent = `占 ${state.rate}%`;
+
+      // 5. 更新底部算式与答案
+      if (state.mode === 'forward') {
+        instructionDesc.innerHTML = '💡 <strong>顺向思考：</strong>营业额 × 税率 = 应纳税额';
+        mathFormulaShow.textContent = `营业额 × ${state.rate}% = ${state.tax}`;
+        btnReveal.textContent = '显示营业额';
+      } else {
+        instructionDesc.innerHTML = '💡 <strong>逆向推导：</strong>应纳税额 ÷ 税率 = 营业额';
+        mathFormulaShow.textContent = `${state.tax} ÷ ${state.rate}%`;
+        btnReveal.textContent = '点击计算结果';
+      }
+
+      if (state.revealed) {
+        btnReveal.style.display = 'none';
+        resultBox.style.display = 'flex';
+        resultVal.textContent = income;
+      } else {
+        btnReveal.style.display = 'inline-block';
+        resultBox.style.display = 'none';
+      }
+    }
+
+    // 事件监听
+    btnForward.addEventListener('click', () => {
+      state.mode = 'forward';
+      btnForward.classList.add('active');
+      btnReverse.classList.remove('active');
+      state.revealed = false; // 切换模式时重置答案显示
+      updateView();
+    });
+
+    btnReverse.addEventListener('click', () => {
+      state.mode = 'reverse';
+      btnReverse.classList.add('active');
+      btnForward.classList.remove('active');
+      state.revealed = false;
+      updateView();
+    });
+
+    sliderTax.addEventListener('input', (e) => {
+      state.tax = parseFloat(e.target.value);
+      state.revealed = false; // 修改数据时重置答案，引导学生思考
+      updateView();
+    });
+
+    sliderRate.addEventListener('input', (e) => {
+      state.rate = parseInt(e.target.value);
+      state.revealed = false;
+      updateView();
+    });
+
+    btnReveal.addEventListener('click', () => {
+      state.revealed = true;
+      updateView();
+    });
+
+    // 页面首次加载初始化
+    updateView();
+  </script>
+</body>
+</html>

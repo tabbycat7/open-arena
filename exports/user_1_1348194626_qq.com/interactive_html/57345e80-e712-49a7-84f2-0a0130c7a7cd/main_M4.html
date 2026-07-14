@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人煎蛋实验</title>
+    <style>
+        :root { --primary: #4a90e2; --error: #e74c3c; --success: #27ae60; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f4f8; }
+        #canvas-container { width: 800px; height: 600px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .controls { display: flex; gap: 20px; margin-top: 20px; }
+        button { padding: 15px 25px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; background: var(--primary); color: white; transition: 0.3s; }
+        button:hover { opacity: 0.9; }
+        #feedback { position: absolute; top: 50px; left: 50px; width: 300px; font-size: 20px; font-weight: bold; color: #333; }
+        .robot-eye { transition: all 0.3s; }
+        .smoke { animation: float 1s infinite; }
+        @keyframes float { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-50px); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="canvas-container">
+    <svg width="800" height="600" viewBox="0 0 800 600">
+        <!-- 场景 -->
+        <rect x="400" y="400" width="300" height="20" fill="#ccc" />
+        <path d="M450 400 L470 350 L680 350 L700 400 Z" fill="#999" /> <!-- 锅 -->
+        
+        <!-- 机器人 -->
+        <g id="robot">
+            <rect x="100" y="250" width="150" height="200" rx="20" fill="#bdc3c7" />
+            <circle id="eye-l" cx="135" cy="300" r="15" fill="#333" />
+            <circle id="eye-r" cx="215" cy="300" r="15" fill="#333" />
+            <text id="eye-text" x="175" y="305" text-anchor="middle" font-size="20" fill="white">?</text>
+        </g>
+
+        <!-- 结果显示区 -->
+        <text id="msg" x="400" y="100" text-anchor="middle" font-size="24" fill="#333"></text>
+        <g id="smoke-group"></g>
+        <g id="egg-group"></g>
+    </svg>
+</div>
+
+<div class="controls">
+    <button id="btn-a">指令A：加适量盐，煎一会儿</button>
+    <button id="btn-b">指令B：加2克盐，煎3分钟</button>
+</div>
+
+<script>
+    const eyeText = document.getElementById('eye-text');
+    const msg = document.getElementById('msg');
+    const smokeGroup = document.getElementById('smoke-group');
+    const eggGroup = document.getElementById('egg-group');
+
+    document.getElementById('btn-a').addEventListener('click', () => {
+        eyeText.textContent = "!?";
+        msg.textContent = "无法理解“适量”与“一会儿”";
+        msg.setAttribute("fill", "#e74c3c");
+        eggGroup.innerHTML = "";
+        smokeGroup.innerHTML = '<circle class="smoke" cx="575" cy="320" r="10" fill="#333" />';
+    });
+
+    document.getElementById('btn-b').addEventListener('click', () => {
+        eyeText.textContent = "●";
+        msg.textContent = "特征二：明确，特征三：可执行";
+        msg.setAttribute("fill", "#27ae60");
+        smokeGroup.innerHTML = "";
+        eggGroup.innerHTML = '<ellipse cx="575" cy="360" rx="60" ry="40" fill="#f1c40f" /><ellipse cx="575" cy="360" rx="30" ry="20" fill="#f39c12" />';
+    });
+</script>
+
+</body>
+</html>

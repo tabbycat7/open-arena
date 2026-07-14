@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税率天平 - 探索税率背后的国家心意</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-secondary: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 主体可视化区域 */
+        .visualization-area {
+            flex: 1;
+            display: flex;
+            position: relative;
+            border: 1px solid #eaeded;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #fcfdfe 100%);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        /* 左右状态面板 */
+        .status-panel {
+            width: 220px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .status-panel.left {
+            border-right: 1px dashed #e0e0e0;
+        }
+
+        .status-panel.right {
+            border-left: 1px dashed #e0e0e0;
+        }
+
+        .status-card {
+            background: #fdfefe;
+            border: 1px solid #eef2f3;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .status-card h3 {
+            font-size: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-card p {
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* 天平画布区域 */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 控制区域 */
+        .control-area {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #eef2f3;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 2px solid #dcdde1;
+            background-color: white;
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            border-color: #b2bec3;
+            color: var(--primary-color);
+        }
+
+        .btn.active-low {
+            background-color: #e8f8f5;
+            border-color: var(--success-color);
+            color: #117a65;
+        }
+
+        .btn.active-high {
+            background-color: #fdedec;
+            border-color: var(--warning-color);
+            color: #922b21;
+        }
+
+        /* 底部引导思考 */
+        .guidance-box {
+            background-color: #ebf5fb;
+            border-left: 4px solid #3498db;
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+
+        .guidance-box strong {
+            color: #2980b9;
+        }
+
+        /* 动画过渡 */
+        .smooth-transition {
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>⚖️ 探索税率背后的“国家心意”</h1>
+        <p>通过调整不同商品的税率，观察社会天平的变化，体会国家宏观调控的智慧。</p>
+    </div>
+
+    <!-- 主体可视化 -->
+    <div class="visualization-area">
+        <!-- 左侧状态：百姓生活 -->
+        <div class="status-panel left">
+            <div class="status-card" id="left-status-card">
+                <h3 id="left-status-title">🟢 百姓生活账本</h3>
+                <p id="left-status-desc">加载中...</p>
+            </div>
+        </div>
+
+        <!-- 中间天平 SVG -->
+        <div class="canvas-container">
+            <svg viewBox="0 0 500 340" id="scale-svg">
+                <!-- 背景装饰：和谐光芒 -->
+                <circle id="harmony-glow" cx="250" cy="150" r="100" fill="rgba(46, 204, 113, 0.1)" style="display: none; filter: blur(20px);"/>
+                
+                <!-- 刻度盘背景 -->
+                <path d="M 210 100 A 40 40 0 0 1 290 100" fill="none" stroke="#eaeded" stroke-width="6" stroke-linecap="round"/>
+                <line x1="250" y1="60" x2="250" y2="100" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="2,2"/>
+                
+                <!-- 底座与支柱 -->
+                <path d="M 210 300 L 290 300 L 270 130 L 230 130 Z" fill="#7f8c8d"/>
+                <rect x="180" y="300" width="140" height="15" rx="5" fill="#34495e"/>
+                
+                <!-- 支点 -->
+                <circle cx="250" cy="130" r="10" fill="#2c3e50"/>
+                <circle cx="250" cy="130" r="4" fill="#f1c40f"/>
+
+                <!-- 可动部分组合 (天平横梁、指针、托盘) -->
+                <g id="movable-group" class="smooth-transition">
+                    <!-- 指针 -->
+                    <line x1="250" y1="130" x2="250" y2="70" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
+                    <polygon points="250,65 246,75 254,75" fill="#e74c3c"/>
+
+                    <!-- 横梁 -->
+                    <line x1="100" y1="130" x2="400" y2="130" stroke="#34495e" stroke-width="8" stroke-linecap="round"/>
+                    <circle cx="100" cy="130" r="5" fill="#f1c40f"/>
+                    <circle cx="400" cy="130" r="5" fill="#f1c40f"/>
+                </g>
+
+                <!-- 左托盘组合 (保持垂直下垂，需动态计算位置) -->
+                <g id="left-pan-group" class="smooth-transition">
+                    <!-- 吊绳 -->
+                    <line x1="0" y1="0" x2="-35" y2="80" stroke="#7f8c8d" stroke-width="2"/>
+                    <line x1="0" y1="0" x2="35" y2="80" stroke="#7f8c8d" stroke-width="2"/>
+                    <!-- 秤盘 -->
+                    <path d="M -45 80 L 45 80 C 40 100, -40 100, -45 80 Z" fill="#bdc3c7" stroke="#95a5a6" stroke-width="2"/>
+                    <!-- 货物：粮食/大米 -->
+                    <path d="M -20 80 C -20 55, 20 55, 20 80 Z" fill="#f5b041"/>
+                    <text x="0" y="75" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle">粮食</text>
+                </g>
+
+                <!-- 右托盘组合 -->
+                <g id="right-pan-group" class="smooth-transition">
+                    <!-- 吊绳 -->
+                    <line x1="0" y1="0" x2="-35" y2="80" stroke="#7f8c8d" stroke-width="2"/>
+                    <line x1="0" y1="0" x2="35" y2="80" stroke="#7f8c8d" stroke-width="2"/>
+                    <!-- 秤盘 -->
+                    <path d="M -45 80 L 45 80 C 40 100, -40 100, -45 80 Z" fill="#bdc3c7" stroke="#95a5a6" stroke-width="2"/>
+                    <!-- 货物：烟草/奢侈品 -->
+                    <rect x="-15" y="50" width="30" height="30" rx="3" fill="#9b59b6"/>
+                    <text x="0" y="70" font-size="11" fill="#ffffff" font-weight="bold" text-anchor="middle">烟草</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 右侧状态：社会引导 -->
+        <div class="status-panel right">
+            <div class="status-card" id="right-status-card">
+                <h3 id="right-status-title">🟢 社会引导效应</h3>
+                <p id="right-status-desc">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制台 -->
+    <div class="control-area">
+        <!-- 左侧控制 -->
+        <div class="control-group">
+            <span class="control-label">🌾 粮食等生活必需品税率</span>
+            <div class="btn-group">
+                <button class="btn" id="btn-left-low">9% (低税率)</button>
+                <button class="btn" id="btn-left-high">30% (高税率)</button>
+            </div>
+        </div>
+
+        <!-- 右侧控制 -->
+        <div class="control-group">
+            <span class="control-label">🚬 烟草等限制消费品税率</span>
+            <div class="btn-group">
+                <button class="btn" id="btn-right-low">10% (低税率)</button>
+                <button class="btn" id="btn-right-high">50% (高税率)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 教师引导语 -->
+    <div class="guidance-box" id="guidance-text">
+        <strong>💡 课堂思考：</strong>请同学们尝试不同的税率组合，观察天平何时能达到“完美平衡”？想一想，为什么国家不把所有商品的税率都设成一样的呢？
+    </div>
+</div>
+
+<script>
+    // 状态变量
+    let leftTax = 9;   // 9 或 30
+    let rightTax = 50; // 10 或 50
+
+    // DOM 元素
+    const movableGroup = document.getElementById('movable-group');
+    const leftPanGroup = document.getElementById('left-pan-group');
+    const rightPanGroup = document.getElementById('right-pan-group');
+    const harmonyGlow = document.getElementById('harmony-glow');
+
+    const btnLeftLow = document.getElementById('btn-left-low');
+    const btnLeftHigh = document.getElementById('btn-left-high');
+    const btnRightLow = document.getElementById('btn-right-low');
+    const btnRightHigh = document.getElementById('btn-right-high');
+
+    const leftStatusCard = document.getElementById('left-status-card');
+    const leftStatusTitle = document.getElementById('left-status-title');
+    const leftStatusDesc = document.getElementById('left-status-desc');
+
+    const rightStatusCard = document.getElementById('right-status-card');
+    const rightStatusTitle = document.getElementById('right-status-title');
+    const rightStatusDesc = document.getElementById('right-status-desc');
+    
+    const guidanceText = document.getElementById('guidance-text');
+
+    // 物理常量
+    const centerX = 250;
+    const centerY = 130;
+    const armLength = 150; // 半臂长
+
+    // 更新天平物理状态
+    function updatePhysicalScale() {
+        // 计算目标倾角 (度)
+        // 设想：
+        // 1. 左低(9) 右高(50) -> 最优社会状态，天平平衡 (0度)
+        // 2. 左高(30) 右高(50) -> 百姓负担重，左边重 (倾斜 -10度)
+        // 3. 左低(9) 右低(10) -> 烟草泛滥，右边社会危害重 (倾斜 10度)
+        // 4. 左高(30) 右低(10) -> 双重糟糕，天平剧烈失衡 (倾斜 -5度，且显示警告)
+        
+        let angle = 0;
+        if (leftTax === 9 && rightTax === 50) {
+            angle = 0;
+        } else if (leftTax === 30 && rightTax === 50) {
+            angle = -10; // 左倾
+        } else if (leftTax === 9 && rightTax === 10) {
+            angle = 10;  // 右倾
+        } else if (leftTax === 30 && rightTax === 10) {
+            angle = -6;  // 混乱失衡
+        }
+
+        // 应用旋转到横梁和指针
+        movableGroup.setAttribute('transform', `rotate(${angle}, ${centerX}, ${centerY})`);
+
+        // 计算左右吊点在旋转后的实际坐标，以保持托盘垂直向下
+        const rad = (angle * Math.PI) / 180;
+        const leftX = centerX - armLength * Math.cos(rad);
+        const leftY = centerY - armLength * Math.sin(rad);
+        const rightX = centerX + armLength * Math.cos(rad);
+        const rightY = centerY + armLength * Math.sin(rad);
+
+        // 移动托盘
+        leftPanGroup.setAttribute('transform', `translate(${leftX}, ${leftY})`);
+        rightPanGroup.setAttribute('transform', `translate(${rightX}, ${rightY})`);
+
+        // 更新 UI 样式与文本
+        updateUI(angle);
+    }
+
+    // 更新文本与卡片颜色
+    function updateUI(angle) {
+        // 1. 按钮高亮切换
+        if (leftTax === 9) {
+            btnLeftLow.className = 'btn active-low';
+            btnLeftHigh.className = 'btn';
+        } else {
+            btnLeftLow.className = 'btn';
+            btnLeftHigh.className = 'btn active-high';
+        }
+
+        if (rightTax === 50) {
+            btnRightLow.className = 'btn';
+            btnRightHigh.className = 'btn active-high';
+        } else {
+            btnRightLow.className = 'btn active-low';
+            btnRightHigh.className = 'btn';
+        }
+
+        // 2. 左侧卡片更新 (百姓生活)
+        if (leftTax === 9) {
+            leftStatusCard.style.borderColor = 'var(--success-color)';
+            leftStatusTitle.innerHTML = '🟢 百姓生活：轻松';
+            leftStatusTitle.style.color = 'var(--success-color)';
+            leftStatusDesc.innerHTML = '<b>税率 9% (低)</b>：粮食是生存之本。低税率保障了人人都能买得起、吃得饱，基本生活有保障，社会安稳！';
+        } else {
+            leftStatusCard.style.borderColor = 'var(--warning-color)';
+            leftStatusTitle.innerHTML = '🔴 百姓生活：沉重';
+            leftStatusTitle.style.color = 'var(--warning-color)';
+            leftStatusDesc.innerHTML = '<b>税率 30% (高)</b>：如果粮食税率过高，会导致物价飞涨，普通家庭尤其是低收入群体的生活压力会成倍增加！';
+        }
+
+        // 3. 右侧卡片更新 (社会引导)
+        if (rightTax === 50) {
+            rightStatusCard.style.borderColor = 'var(--success-color)';
+            rightStatusTitle.innerHTML = '🟢 社会引导：积极';
+            rightStatusTitle.style.color = 'var(--success-color)';
+            rightStatusDesc.innerHTML = '<b>税率 50% (高)</b>：对烟草等有害健康或奢侈品征收高税，能有效抑制过度消费，同时为国家建设积累资金。';
+        } else {
+            rightStatusCard.style.borderColor = 'var(--warning-color)';
+            rightStatusTitle.innerHTML = '🔴 社会引导：放任';
+            rightStatusTitle.style.color = 'var(--warning-color)';
+            rightStatusDesc.innerHTML = '<b>税率 10% (低)</b>：税率过低会导致烟草等商品价格便宜，可能引发青少年吸烟率上升，增加社会公共医疗负担。';
+        }
+
+        // 4. 整体和谐状态与引导语
+        if (leftTax === 9 && rightTax === 50) {
+            harmonyGlow.style.display = 'block';
+            guidanceText.innerHTML = '<strong>✨ 达成完美平衡！</strong> <b>“保民生，调贫富”</b>。对生活必需品实行低税率，对限制消费品实行高税率。这正是国家制定税率的智慧与温度！';
+            guidanceText.style.backgroundColor = '#e8f8f5';
+            guidanceText.style.borderLeftColor = 'var(--success-color)';
+        } else {
+            harmonyGlow.style.display = 'none';
+            guidanceText.style.backgroundColor = '#ebf5fb';
+            guidanceText.style.borderLeftColor = '#3498db';
+            
+            if (leftTax === 30 && rightTax === 50) {
+                guidanceText.innerHTML = '<strong>⚠️ 天平向左倾斜：</strong>虽然限制了有害消费，但<b>基本民生税率过高</b>，百姓生活吃力。请试着降低粮食税率。';
+            } else if (leftTax === 9 && rightTax === 10) {
+                guidanceText.innerHTML = '<strong>⚠️ 天平向右倾斜：</strong>虽然百姓生活轻松，但<b>烟草税率过低</b>，不利于国民健康和环境保护。请试着调高烟草税率。';
+            } else {
+                guidanceText.innerHTML = '<strong>❌ 双重失衡状态：</strong>民生负担重，且社会不良消费得不到抑制。请重新调整，寻找最合理的国家治理方案！';
+                guidanceText.style.backgroundColor = '#fdedec';
+                guidanceText.style.borderLeftColor = 'var(--warning-color)';
+            }
+        }
+    }
+
+    // 事件监听器绑定
+    btnLeftLow.addEventListener('click', () => {
+        leftTax = 9;
+        updatePhysicalScale();
+    });
+
+    btnLeftHigh.addEventListener('click', () => {
+        leftTax = 30;
+        updatePhysicalScale();
+    });
+
+    btnRightLow.addEventListener('click', () => {
+        rightTax = 10;
+        updatePhysicalScale();
+    });
+
+    btnRightHigh.addEventListener('click', () => {
+        rightTax = 50;
+        updatePhysicalScale();
+    });
+
+    // 初始化运行
+    updatePhysicalScale();
+</script>
+
+</body>
+</html>

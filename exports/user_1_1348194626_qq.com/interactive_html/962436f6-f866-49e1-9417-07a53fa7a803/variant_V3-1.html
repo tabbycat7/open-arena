@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六年级数学微课：探究计税基数</title>
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --emerald-green: #10b981;
+            --amber-orange: #f59e0b;
+            --slate-dark: #0f172a;
+            --slate-light: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例课堂投影容器 */
+        .classroom-container {
+            width: 100vw;
+            height: 75vw; /* 4:3 Aspect Ratio */
+            max-width: 960px;
+            max-height: 720px;
+            background-color: var(--slate-light);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部标题区 */
+        .header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--slate-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header h1::before {
+            content: "📊";
+        }
+
+        .scenario-box {
+            margin-top: 8px;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-blue);
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .scenario-text {
+            font-size: 16px;
+            color: #1e3a8a;
+            line-height: 1.5;
+        }
+
+        /* 主可视化区 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 16px 0;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            max-height: 320px;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            background-color: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .toggle-btn {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 免税收入按钮样式 */
+        .btn-taxfree {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border-color: var(--emerald-green);
+        }
+        .btn-taxfree.deducted {
+            background-color: var(--emerald-green);
+            color: white;
+        }
+
+        /* 经营成本按钮样式 */
+        .btn-cost {
+            background-color: #fffbeb;
+            color: #92400e;
+            border-color: var(--amber-orange);
+        }
+        .btn-cost.deducted {
+            background-color: var(--amber-orange);
+            color: white;
+        }
+
+        /* 重置按钮 */
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #475569;
+            border-color: #cbd5e1;
+            margin-left: auto;
+        }
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* 动态算式展示 */
+        .formula-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--slate-dark);
+            background-color: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .formula-item {
+            transition: all 0.3s ease;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .formula-item.active {
+            background-color: #e0f2fe;
+            color: var(--primary-blue);
+        }
+
+        .formula-item.deducted {
+            text-decoration: line-through;
+            color: #94a3b8;
+            background-color: #f1f5f9;
+        }
+
+        /* 底部引导思考 */
+        .footer-tips {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #475569;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* SVG 内部动画过渡 */
+        .animate-g {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .animate-rect {
+            transition: fill 0.6s ease, stroke 0.6s ease, stroke-dasharray 0.6s ease;
+        }
+        .animate-text {
+            transition: fill 0.6s ease;
+        }
+        .animate-path {
+            transition: d 0.6s cubic-bezier(0.25, 1, 0.5, 1), stroke 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="classroom-container">
+        <!-- 头部：情境引入 -->
+        <div class="header">
+            <h1>探究：什么是“计税基数”？</h1>
+            <div class="scenario-box">
+                <p class="scenario-text">
+                    <strong>情境：</strong>某公司本月总收入 <strong>10 万元</strong>。其中包含：<strong>免税收入 2 万元</strong>，以及必要的<strong>经营成本 3 万元</strong>。请通过下方工具进行“扣除”操作，观察计税基数的变化。
+                </p>
+            </div>
+        </div>
+
+        <!-- 中部：SVG 动态切割可视化 -->
+        <div class="visualization-area">
+            <svg viewBox="0 0 600 300" id="svg-vis">
+                <!-- 扣除项收集区（虚线框） -->
+                <rect x="48" y="155" width="504" height="115" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,4" />
+                <text x="300" y="255" fill="#94a3b8" font-size="14" font-weight="bold" text-anchor="middle">已扣除项目（不计入纳税范围）</text>
+
+                <!-- 括号指示器：计税基数 -->
+                <g id="tax-bracket">
+                    <path id="bracket-path" d="M 50,35 L 50,20 L 550,20 L 550,35" fill="none" stroke="#3b82f6" stroke-width="3" class="animate-path" />
+                    <text id="bracket-text" x="300" y="12" fill="#3b82f6" font-size="16" font-weight="bold" text-anchor="middle" class="animate-text">当前计税基数：10 万元</text>
+                </g>
+
+                <!-- 核心应纳税部分 (5万) - 始终在上方 -->
+                <g id="block-core" transform="translate(50, 50)">
+                    <rect width="250" height="70" rx="8" fill="#3b82f6" />
+                    <text x="125" y="32" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">应纳税收入</text>
+                    <text x="125" y="52" fill="#eff6ff" font-size="13" text-anchor="middle">5 万元</text>
+                </g>
+
+                <!-- 免税收入部分 (2万) -->
+                <g id="block-taxfree" transform="translate(300, 50)" class="animate-g">
+                    <rect id="rect-taxfree" width="100" height="70" rx="8" fill="#10b981" class="animate-rect" />
+                    <text id="text-title-taxfree" x="50" y="32" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle" class="animate-text">免税收入</text>
+                    <text id="text-val-taxfree" x="50" y="52" fill="#ecfdf5" font-size="13" text-anchor="middle" class="animate-text">2 万元</text>
+                </g>
+
+                <!-- 经营成本部分 (3万) -->
+                <g id="block-cost" transform="translate(400, 50)" class="animate-g">
+                    <rect id="rect-cost" width="150" height="70" rx="8" fill="#f59e0b" class="animate-rect" />
+                    <text id="text-title-cost" x="75" y="32" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle" class="animate-text">经营成本</text>
+                    <text id="text-val-cost" x="75" y="52" fill="#fffbeb" font-size="13" text-anchor="middle" class="animate-text">3 万元</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 下部：交互控制与动态算式 -->
+        <div class="control-panel">
+            <div class="button-group">
+                <button id="btn-taxfree" class="toggle-btn btn-taxfree">
+                    <span>✂️ 扣除 免税收入 (2万)</span>
+                </button>
+                <button id="btn-cost" class="toggle-btn btn-cost">
+                    <span>✂️ 扣除 经营成本 (3万)</span>
+                </button>
+                <button id="btn-reset" class="toggle-btn btn-reset">
+                    <span>🔄 重置</span>
+                </button>
+            </div>
+
+            <!-- 动态算式 -->
+            <div class="formula-container">
+                <span>计税基数 = </span>
+                <span class="formula-item active">总收入 10 万</span>
+                <span id="formula-taxfree" class="formula-item">— 免税收入 2 万</span>
+                <span id="formula-cost" class="formula-item">— 经营成本 3 万</span>
+                <span> = </span>
+                <span id="formula-result" style="color: var(--primary-blue); font-size: 24px;">10 万元</span>
+            </div>
+        </div>
+
+        <!-- 底部提示：引导课堂提问 -->
+        <div class="footer-tips">
+            <div>
+                <span class="tip-title">💡 课堂思考：</span>
+                <span>这三笔钱里，哪些是真正需要纳税的？为什么要扣除免税收入和经营成本？</span>
+            </div>
+            <div style="font-weight: bold; color: var(--primary-blue);">[ 难度系数：0.78 ]</div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const btnTaxFree = document.getElementById('btn-taxfree');
+        const btnCost = document.getElementById('btn-cost');
+        const btnReset = document.getElementById('btn-reset');
+
+        const blockTaxFree = document.getElementById('block-taxfree');
+        const blockCost = document.getElementById('block-cost');
+
+        const rectTaxFree = document.getElementById('rect-taxfree');
+        const rectCost = document.getElementById('rect-cost');
+
+        const textTitleTaxFree = document.getElementById('text-title-taxfree');
+        const textValTaxFree = document.getElementById('text-val-taxfree');
+        const textTitleCost = document.getElementById('text-title-cost');
+        const textValCost = document.getElementById('text-val-cost');
+
+        const bracketPath = document.getElementById('bracket-path');
+        const bracketText = document.getElementById('bracket-text');
+
+        const formulaTaxFree = document.getElementById('formula-taxfree');
+        const formulaCost = document.getElementById('formula-cost');
+        const formulaResult = document.getElementById('formula-result');
+
+        // 初始状态
+        let isTaxFreeDeducted = false;
+        let isCostDeducted = false;
+
+        // 更新可视化状态
+        function updateVisualization() {
+            // 1. 计算各模块的位置
+            // 核心块始终在 X=50, 宽度 250
+            let currentX = 300; // 紧跟核心块的起点
+
+            // 免税收入块位置
+            if (!isTaxFreeDeducted) {
+                blockTaxFree.style.transform = `translate(${currentX}px, 50px)`;
+                currentX += 100; // 宽度 100
+
+                // 恢复彩色外观
+                rectTaxFree.setAttribute('fill', '#10b981');
+                rectTaxFree.setAttribute('stroke', 'none');
+                rectTaxFree.removeAttribute('stroke-dasharray');
+                textTitleTaxFree.setAttribute('fill', '#ffffff');
+                textValTaxFree.setAttribute('fill', '#ecfdf5');
+                btnTaxFree.classList.remove('deducted');
+                btnTaxFree.innerHTML = '<span>✂️ 扣除 免税收入 (2万)</span>';
+                formulaTaxFree.className = 'formula-item';
+            } else {
+                // 移动到下方收集区
+                blockTaxFree.style.transform = `translate(100px, 170px)`;
+                
+                // 变为灰色虚线外观
+                rectTaxFree.setAttribute('fill', '#f8fafc');
+                rectTaxFree.setAttribute('stroke', '#10b981');
+                rectTaxFree.setAttribute('stroke-width', '2');
+                rectTaxFree.setAttribute('stroke-dasharray', '4,4');
+                textTitleTaxFree.setAttribute('fill', '#475569');
+                textValTaxFree.setAttribute('fill', '#94a3b8');
+                btnTaxFree.classList.add('deducted');
+                btnTaxFree.innerHTML = '<span>➕ 恢复 免税收入 (2万)</span>';
+                formulaTaxFree.className = 'formula-item deducted';
+            }
+
+            // 经营成本块位置
+            if (!isCostDeducted) {
+                blockCost.style.transform = `translate(${currentX}px, 50px)`;
+                currentX += 150; // 宽度 150
+
+                // 恢复彩色外观
+                rectCost.setAttribute('fill', '#f59e0b');
+                rectCost.setAttribute('stroke', 'none');
+                rectCost.removeAttribute('stroke-dasharray');
+                textTitleCost.setAttribute('fill', '#ffffff');
+                textValCost.setAttribute('fill', '#fffbeb');
+                btnCost.classList.remove('deducted');
+                btnCost.innerHTML = '<span>✂️ 扣除 经营成本 (3万)</span>';
+                formulaCost.className = 'formula-item';
+            } else {
+                // 移动到下方收集区
+                blockCost.style.transform = `translate(350px, 170px)`;
+
+                // 变为灰色虚线外观
+                rectCost.setAttribute('fill', '#f8fafc');
+                rectCost.setAttribute('stroke', '#f59e0b');
+                rectCost.setAttribute('stroke-width', '2');
+                rectCost.setAttribute('stroke-dasharray', '4,4');
+                textTitleCost.setAttribute('fill', '#475569');
+                textValCost.setAttribute('fill', '#94a3b8');
+                btnCost.classList.add('deducted');
+                btnCost.innerHTML = '<span>➕ 恢复 经营成本 (3万)</span>';
+                formulaCost.className = 'formula-item deducted';
+            }
+
+            // 2. 更新上方括号（计税基数范围）
+            const endX = currentX;
+            bracketPath.setAttribute('d', `M 50,35 L 50,20 L ${endX},20 L ${endX},35`);
+            
+            // 计算当前计税基数值
+            let baseValue = 10;
+            if (isTaxFreeDeducted) baseValue -= 2;
+            if (isCostDeducted) baseValue -= 3;
+
+            bracketText.setAttribute('x', (50 + endX) / 2);
+            bracketText.textContent = `当前计税基数：${baseValue} 万元`;
+            formulaResult.textContent = `${baseValue} 万元`;
+
+            // 如果全部扣除，高亮最终结果
+            if (isTaxFreeDeducted && isCostDeducted) {
+                formulaResult.style.color = '#ef4444';
+                bracketText.setAttribute('fill', '#ef4444');
+                bracketPath.setAttribute('stroke', '#ef4444');
+            } else {
+                formulaResult.style.color = 'var(--primary-blue)';
+                bracketText.setAttribute('fill', 'var(--primary-blue)');
+                bracketPath.setAttribute('stroke', 'var(--primary-blue)');
+            }
+        }
+
+        // 绑定交互事件
+        btnTaxFree.addEventListener('click', () => {
+            isTaxFreeDeducted = !isTaxFreeDeducted;
+            updateVisualization();
+        });
+
+        btnCost.addEventListener('click', () => {
+            isCostDeducted = !isCostDeducted;
+            updateVisualization();
+        });
+
+        btnReset.addEventListener('click', () => {
+            isTaxFreeDeducted = false;
+            isCostDeducted = false;
+            updateVisualization();
+        });
+
+        // 初始化运行
+        updateVisualization();
+    </script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+{
+  "task_id": "870f1392-fbfc-45be-a759-1e769d991881",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "你在生活中听说过'交税'这件事吗？教材里有一句话是这样说的——'纳税是根据国家税法的有关规定，按照一定的比率把集体或个人收入的一部分缴纳给国家'。你能用自己的话说说，纳税到底是怎么回事吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "教材里说，税率是'应纳税额与各种收入中应纳税部分的比率'。有同学觉得，税率就是应纳税额占全部收入的比率——你觉得这个说法对吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们已经知道税率等于应纳税额除以应纳税部分，那反过来想一想，应纳税额应该怎么算？你能从这个关系里推出计算方法，再用教材里的例题验证一下吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "老师这里有一道题，同时给出了'全部销售额'和'应纳税销售额'两个数。有两位同学分别用这两个数乘以税率，算出了不同的结果——你觉得哪种做法是对的，为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "教材'做一做'里有这道题：李阿姨某月工资中应纳税的部分是2500元，税率是3%，她应缴多少个人所得税？算完之后，想一想：这道题和前面的例题，有什么相同的地方？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "你有没有注意到，超市的小票上有时会印着'税额：××元'？有同学说，买东西的时候商家帮我们交了税，这也是纳税的一种。你觉得这种说法符合教材里说的纳税是怎么回事吗？'一定的比率'和'收入的一部分'这两个关键词，在这里还适用吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有人说，罚款和捐款也是把自己的钱交出去，和纳税差不多。你同意吗？回到教材里纳税的说法——'按照一定的比率''收入的一部分''依据国家税法'——罚款和捐款符合这几个条件吗？你能说说它们之间最关键的区别在哪里吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果一家企业的全部销售额是20万元，而且这20万元全部都需要纳税，税率是3%——这时候，用全部销售额乘以税率，和用应纳税部分乘以税率，算出来的结果一样。有同学说，那两种算法都对。你觉得这个说法站得住脚吗？税率的定义里，分母到底是哪个数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "我们知道税率的定义是'应纳税额与应纳税部分的比率'。如果用一个数学关系式来表示，括号里该填什么？税率=（　　）÷（　　）。你填的两个括号，和'应纳税额''应纳税部分''全部收入'这三个词，分别对应哪一个？填完之后说说你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "某饮料厂生产的应税饮料，应纳税销售额是60万元，消费税税率是5%。这家工厂应缴纳多少万元消费税？你用的计算方法和之前例题里的一样吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "小明做了这道题——应纳税销售额30万元，税率3%，求应纳税额。他的解答是：30×3%=0.9。你觉得他的解答完整吗？如果你是老师，会在哪里打问号？一个完整的解答步骤应该包含哪些部分？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "一位作者这个月收到稿费800元，其中超过500元的部分需要按20%的税率缴纳个人所得税。你能先圈出'应纳税部分'是哪个数，再算出他应缴多少税吗？这里的应纳税部分是800元，还是300元，还是500元？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "有两家店铺，一家月销售额8万元全部需要纳税，另一家月销售额10万元但其中只有8万元需要纳税，税率都是3%。这两家店应缴的增值税一样多吗？你会怎么判断？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "张叔叔将一套房子出租，每月租金收入中应纳税的部分是4000元，需要按10%的税率缴纳房屋出租所得税。他每月应缴多少税？这道题和李阿姨工资个人所得税那道题，计算的方法一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "王叔叔某月缴纳了个人所得税75元，已知税率是3%。你能推算出他那个月工资中应纳税的部分是多少元吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "教材里说纳税是'按照一定的比率缴纳收入的一部分'。这个'比率'，你觉得它大概是什么样子的？是一个整数、一个分数，还是一个百分数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果一个人月收入是10000元，但其中只有4000元是需要缴税的部分，那'应该缴税的那部分收入'是10000元，还是4000元？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "部分、整体、百分率这三个量之间，有一个怎样的关系式？你能写出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "税率的定义说：税率等于应纳税额除以应纳税部分。对照你刚才写的关系式，应纳税额对应的是'部分'还是'整体'？应纳税部分对应的又是哪个？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "这道题里同时出现了两个数：全部销售额和应纳税销售额。根据税率的定义，计算应纳税额时，应该用哪个数来乘税率？你能在题目里把它圈出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果有同学用全部销售额乘税率，你能说说，他哪里用错了？可以回到税率的定义里找一找理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "题目说'李阿姨某月工资中应纳税的部分是2500元'。这里的2500元，对应的是'全部工资'还是'应纳税部分'？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2a",
+      "question_type": "scaffold",
+      "content": "要算李阿姨应缴多少个人所得税，应该用哪个数乘3%？请你算一算。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2b",
+      "question_type": "scaffold",
+      "content": "你刚才算李阿姨个人所得税用的方法，和前面算企业增值税时用的方法，有什么一样的地方？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

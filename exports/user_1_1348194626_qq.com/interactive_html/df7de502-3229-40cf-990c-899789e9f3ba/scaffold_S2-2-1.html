@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法效率对比：专用 vs 通用</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 { color: #333; margin-bottom: 10px; }
+        .visual-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .box {
+            width: 40%;
+            height: 200px;
+            border: 4px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 10px;
+        }
+        .box:hover { border-color: #666; }
+        .file {
+            width: 30px;
+            height: 40px;
+            margin: 2px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.5s ease-out;
+            position: relative;
+        }
+        .red { background-color: #ff4d4f; }
+        .green { background-color: #52c41a; width: 60px; height: 80px; font-size: 14px; }
+        
+        #msg { margin-top: 20px; font-size: 1.2em; font-weight: bold; color: #555; height: 30px; }
+    </style>
+</head>
+<body>
+
+    <h2>算法甲 vs 算法乙：你需要写多少个算法？</h2>
+    
+    <div class="container">
+        <div class="visual-area">
+            <div id="boxA" class="box">
+                <div style="position:absolute; top:-30px; font-weight:bold;">算法甲（写死桌号）</div>
+                <!-- 10个文件袋 -->
+            </div>
+            <div id="boxB" class="box">
+                <div style="position:absolute; top:-30px; font-weight:bold;">算法乙（通用）</div>
+                <div class="file green" id="greenFile">通用</div>
+            </div>
+        </div>
+        <div id="msg">点击左侧或右侧区域进行观察</div>
+    </div>
+
+    <script>
+        const boxA = document.getElementById('boxA');
+        const boxB = document.getElementById('boxB');
+        const msg = document.getElementById('msg');
+        const greenFile = document.getElementById('greenFile');
+
+        // 初始化算法甲的文件袋
+        for(let i=1; i<=10; i++) {
+            const div = document.createElement('div');
+            div.className = 'file red';
+            div.innerText = i;
+            boxA.appendChild(div);
+        }
+
+        boxA.addEventListener('click', () => {
+            const files = boxA.querySelectorAll('.file');
+            files.forEach(f => {
+                f.style.position = 'absolute';
+                f.style.left = Math.random() * 100 + '%';
+                f.style.top = Math.random() * 100 + '%';
+                f.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            });
+            msg.innerText = "算法甲：你需要写 10 个不同的算法！太繁琐了！";
+            msg.style.color = "#ff4d4f";
+        });
+
+        boxB.addEventListener('click', () => {
+            greenFile.style.transform = 'scale(1.5)';
+            greenFile.style.boxShadow = '0 0 20px #52c41a';
+            msg.innerText = "算法乙：只需要 1 个算法！1 个顶 10 个！";
+            msg.style.color = "#52c41a";
+            
+            setTimeout(() => {
+                greenFile.style.transform = 'scale(1)';
+                greenFile.style.boxShadow = 'none';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

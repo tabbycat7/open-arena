@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>税务计算对比可视化</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --safe: #27ae60;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--primary);
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; margin-top: 0; }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 300px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 20px;
+        }
+        .company {
+            text-align: center;
+            width: 40%;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .tax-free {
+            background: var(--safe);
+            opacity: 0.8;
+        }
+        .removed {
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .calc-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eee;
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>营业额相同，纳税额为何不同？</h2>
+    <div class="stage">
+        <div class="company" id="compA">
+            <h3>A公司</h3>
+            <div class="box" id="revenueA">收入: 100万</div>
+            <div class="box tax-free" id="subsidyA">免税额: 30万</div>
+            <div class="calc-panel">
+                计税基数: <span id="baseA">100</span>万<br>
+                应纳税(10%): <span id="taxA">10</span>万
+            </div>
+        </div>
+        <div class="company" id="compB">
+            <h3>B公司</h3>
+            <div class="box" id="revenueB">收入: 100万</div>
+            <div class="calc-panel">
+                计税基数: <span id="baseB">100</span>万<br>
+                应纳税(10%): <span id="taxB">10</span>万
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="resetBtn">重置实验</button>
+        <p>提示：点击A公司的“免税额”方块，观察基数变化。</p>
+    </div>
+</div>
+
+<script>
+    const subsidyA = document.getElementById('subsidyA');
+    const baseA = document.getElementById('baseA');
+    const taxA = document.getElementById('taxA');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let isApplied = false;
+
+    subsidyA.addEventListener('click', () => {
+        if (!isApplied) {
+            subsidyA.classList.add('removed');
+            baseA.textContent = "70";
+            taxA.textContent = "7";
+            isApplied = true;
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        subsidyA.classList.remove('removed');
+        baseA.textContent = "100";
+        taxA.textContent = "10";
+        isApplied = false;
+    });
+</script>
+
+</body>
+</html>

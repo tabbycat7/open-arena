@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税收的奥秘 - 课堂互动教学可视化</title>
+  <style>
+    /* 全局重置与课堂投影优化样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #1a202c;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #2d3748;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .classroom-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      position: relative;
+      border: 4px solid #4a5568;
+    }
+
+    /* 左侧互动地图区域 */
+    .map-area {
+      flex: 1.3;
+      position: relative;
+      background-color: #ebf8ff;
+      border-right: 2px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    /* 右侧教学引导与信息面板 */
+    .info-panel {
+      flex: 0.7;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #ffffff;
+      z-index: 10;
+      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 顶部标题 */
+    .panel-header h2 {
+      font-size: 24px;
+      color: #2b6cb0;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-header p {
+      font-size: 14px;
+      color: #718096;
+      line-height: 1.4;
+    }
+
+    /* 动态内容卡片 */
+    .content-card {
+      flex-grow: 1;
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #f7fafc;
+      border-radius: 12px;
+      border: 2px dashed #cbd5e0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .content-card.active {
+      border-style: solid;
+      border-color: #4299e1;
+      background-color: #ebf8ff;
+    }
+    .content-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .content-body {
+      font-size: 16px;
+      color: #4a5568;
+      line-height: 1.6;
+    }
+
+    /* 进度与控制区域 */
+    .panel-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #edf2f7;
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+    .progress-text {
+      font-size: 14px;
+      font-weight: bold;
+      color: #4a5568;
+    }
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #cbd5e0;
+      transition: all 0.3s ease;
+    }
+    .dot.active {
+      background-color: #48bb78;
+      transform: scale(1.2);
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 12px;
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-reset:hover {
+      background-color: #3182ce;
+    }
+
+    /* SVG 交互元素样式 */
+    .interactive-node {
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .interactive-node:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0px 0px 8px rgba(66, 153, 225, 0.6));
+    }
+    .interactive-node.active {
+      filter: drop-shadow(0px 0px 12px rgba(72, 187, 120, 0.8));
+    }
+
+    /* 资金流动线条动画 */
+    .flow-line {
+      stroke: #cbd5e0;
+      stroke-width: 3;
+      stroke-dasharray: 8, 8;
+      fill: none;
+      transition: stroke 0.5s, stroke-width 0.5s;
+    }
+    .flow-line.active {
+      stroke-width: 5;
+      animation: dash 1.5s linear infinite;
+    }
+    #line-school.active { stroke: #3182ce; }
+    #line-hospital.active { stroke: #319795; }
+    #line-road.active { stroke: #dd6b20; }
+
+    /* 纳税流入线条（常态微弱流动，代表持续纳税） */
+    .tax-in-line {
+      stroke: #f6e05e;
+      stroke-width: 2;
+      stroke-dasharray: 6, 6;
+      fill: none;
+      animation: dash-reverse 3s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -20;
+      }
+    }
+    @keyframes dash-reverse {
+      to {
+        stroke-dashoffset: 20;
+      }
+    }
+
+    /* 漂浮的云朵动画 */
+    .cloud {
+      animation: float 12s ease-in-out infinite;
+    }
+    .cloud-slow {
+      animation: float 18s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+    @keyframes float {
+      0% { transform: translateX(0px); }
+      50% { transform: translateX(20px); }
+      100% { transform: translateX(0px); }
+    }
+
+    /* 隐藏类 */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="classroom-container">
+    
+    <!-- 左侧：SVG 交互式城市公共设施地图 -->
+    <div class="map-area">
+      <svg viewBox="0 0 550 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <!-- 装饰性背景：天空与地面 -->
+        <rect width="550" height="600" fill="#ebf8ff" />
+        <path d="M 0 420 Q 275 380 550 420 L 550 600 L 0 600 Z" fill="#e2e8f0" />
+        <path d="M 0 460 Q 275 430 550 460 L 550 600 L 0 600 Z" fill="#cbd5e0" />
+
+        <!-- 漂浮的云朵 -->
+        <g class="cloud" fill="#ffffff" opacity="0.8">
+          <circle cx="80" cy="80" r="20" />
+          <circle cx="110" cy="80" r="25" />
+          <circle cx="140" cy="80" r="18" />
+          <rect x="80" y="70" width="60" height="20" rx="10" />
+        </g>
+        <g class="cloud-slow" fill="#ffffff" opacity="0.6">
+          <circle cx="420" cy="100" r="15" />
+          <circle cx="440" cy="100" r="20" />
+          <circle cx="460" cy="100" r="15" />
+          <rect x="420" y="92" width="40" height="15" rx="8" />
+        </g>
+
+        <!-- 关系连线层 (先画线，保证节点压在上面) -->
+        <!-- 纳税流入线 (居民/企业 -> 国家财政) -->
+        <path d="M 100 460 Q 180 400 275 330" class="tax-in-line" />
+        <path d="M 450 460 Q 370 400 275 330" class="tax-in-line" />
+
+        <!-- 财政拨款流向线 (国家财政 -> 公共设施) -->
+        <path id="line-school" d="M 275 310 Q 200 230 130 150" class="flow-line" />
+        <path id="line-hospital" d="M 275 310 Q 350 230 420 150" class="flow-line" />
+        <path id="line-road" d="M 275 330 L 275 490" class="flow-line" />
+
+        <!-- 纳税源头节点 1：居民家庭 -->
+        <g transform="translate(100, 460)">
+          <circle cx="0" cy="0" r="35" fill="#5a67d8" opacity="0.15" />
+          <circle cx="0" cy="0" r="28" fill="#5a67d8" />
+          <!-- 房子简易图标 -->
+          <polygon points="0,-15 -15,0 15,0" fill="#ffffff" />
+          <rect x="-10" y="0" width="20" height="12" fill="#ffffff" />
+          <rect x="-3" y="4" width="6" height="8" fill="#5a67d8" />
+          <text x="0" y="25" font-size="12" fill="#2d3748" font-weight="bold" text-anchor="middle" bgcolor="#ffffff">居民家庭</text>
+        </g>
+
+        <!-- 纳税源头节点 2：企业公司 -->
+        <g transform="translate(450, 460)">
+          <circle cx="0" cy="0" r="35" fill="#4c51bf" opacity="0.15" />
+          <circle cx="0" cy="0" r="28" fill="#4c51bf" />
+          <!-- 工厂/写字楼简易图标 -->
+          <rect x="-12" y="-12" width="10" height="24" fill="#ffffff" />
+          <rect x="2" y="-4" width="10" height="16" fill="#ffffff" />
+          <polygon points="-12,-12 -7,-18 -2,-12" fill="#ffffff" />
+          <text x="0" y="25" font-size="12" fill="#2d3748" font-weight="bold" text-anchor="middle">企业公司</text>
+        </g>
+
+        <!-- 中央枢纽：国家财政 (国库) -->
+        <g transform="translate(275, 320)">
+          <circle cx="0" cy="0" r="55" fill="#ecc94b" opacity="0.2" />
+          <circle cx="0" cy="0" r="45" fill="#ecc94b" stroke="#d69e2e" stroke-width="2" />
+          <!-- 雄伟建筑/国徽意象简易图标 -->
+          <polygon points="0,-22 -20,-10 20,-10" fill="#d69e2e" />
+          <rect x="-15" y="-10" width="30" height="20" fill="#ffffff" />
+          <rect x="-10" y="-10" width="4" height="20" fill="#d69e2e" />
+          <rect x="-2" y="-10" width="4" height="20" fill="#d69e2e" />
+          <rect x="6" y="-10" width="4" height="20" fill="#d69e2e" />
+          <text x="0" y="22" font-size="14" fill="#744210" font-weight="bold" text-anchor="middle">国家财政</text>
+        </g>
+
+        <!-- 互动回馈点 A：公立学校 -->
+        <g id="node-school" class="interactive-node" transform="translate(130, 140)" data-target="school">
+          <circle cx="0" cy="0" r="45" fill="#3182ce" opacity="0.15" />
+          <circle class="node-bg" cx="0" cy="0" r="38" fill="#3182ce" />
+          <!-- 学校简易图标 -->
+          <polygon points="0,-18 -18,-5 18,-5" fill="#ffffff" />
+          <rect x="-14" y="-5" width="28" height="18" fill="#ffffff" />
+          <rect x="-4" y="3" width="8" height="10" fill="#3182ce" />
+          <!-- 钟表 -->
+          <circle cx="0" cy="-9" r="4" fill="#3182ce" />
+          <text x="0" y="28" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle">公立学校</text>
+        </g>
+
+        <!-- 互动回馈点 B：公共医疗 -->
+        <g id="node-hospital" class="interactive-node" transform="translate(420, 140)" data-target="hospital">
+          <circle cx="0" cy="0" r="45" fill="#319795" opacity="0.15" />
+          <circle class="node-bg" cx="0" cy="0" r="38" fill="#319795" />
+          <!-- 医院红十图标 -->
+          <rect x="-14" y="-14" width="28" height="28" rx="4" fill="#ffffff" />
+          <path d="M -8 0 L 8 0 M 0 -8 L 0 8" stroke="#e53e3e" stroke-width="4" stroke-linecap="round" />
+          <text x="0" y="28" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle">公共医疗</text>
+        </g>
+
+        <!-- 互动回馈点 C：交通设施 -->
+        <g id="node-road" class="interactive-node" transform="translate(275, 500)" data-target="road">
+          <circle cx="0" cy="0" r="45" fill="#dd6b20" opacity="0.15" />
+          <circle class="node-bg" cx="0" cy="0" r="38" fill="#dd6b20" />
+          <!-- 道路与立交桥图标 -->
+          <path d="M -15 10 L 15 -10 M -15 -10 L 15 10" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+          <circle cx="0" cy="0" r="8" fill="#dd6b20" />
+          <circle cx="0" cy="0" r="5" fill="#ffffff" />
+          <text x="0" y="28" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle">交通设施</text>
+        </g>
+
+        <!-- 引导文字指示 -->
+        <text x="100" y="515" font-size="11" fill="#718096" text-anchor="middle">依法纳税 ↗</text>
+        <text x="450" y="515" font-size="11" fill="#718096" text-anchor="middle">↖ 依法纳税</text>
+      </svg>
+    </div>
+
+    <!-- 右侧：教学引导与信息面板 -->
+    <div class="info-panel">
+      <div class="panel-header">
+        <h2>💡 探索：税收去哪儿了？</h2>
+        <p>我们身边的美丽学校、便利交通和健康保障，资金是从哪里来的？点击左侧地图上的<b>公共设施</b>一探究竟吧！</p>
+      </div>
+
+      <!-- 动态展示卡片 -->
+      <div id="info-card" class="content-card">
+        <div id="card-default">
+          <div class="content-title">👋 准备好了吗？</div>
+          <div class="content-body">
+            请点击左侧地图中蓝、绿、橙色的<b>公共设施图标</b>，观察税收是如何通过国家财政，源源不断地转化为社会福利的。
+          </div>
+        </div>
+        
+        <div id="card-content" class="hidden">
+          <div class="content-title" id="active-title">设施名称</div>
+          <div class="content-body" id="active-desc">设施描述内容。</div>
+        </div>
+      </div>
+
+      <!-- 底部进度与复位 -->
+      <div class="panel-footer">
+        <div class="progress-container">
+          <span class="progress-text" id="progress-label">探索进度：0 / 3</span>
+          <div class="progress-dots">
+            <div class="dot" id="dot-school"></div>
+            <div class="dot" id="dot-hospital"></div>
+            <div class="dot" id="dot-road"></div>
+          </div>
+        </div>
+        <button id="btn-reset" class="btn-reset">
+          🔄 重新演示
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 教学数据配置
+    const taxData = {
+      school: {
+        title: "🎒 公立学校与义务教育",
+        desc: "我们明亮的教室、宽敞的操场、先进的多媒体设备，以及大家享受的<b>免学费义务教育</b>，背后都有国家财政的巨大投入。税收，让每个孩子都能享有平等的受教育机会！",
+        color: "#3182ce"
+      },
+      hospital: {
+        title: "🏥 公共医疗与健康保障",
+        desc: "公立医院的建设、先进医疗设备的购置、传染病防控体系，以及我们生病时能报销的<b>医疗保险</b>，都离不开税收的支持。税收，是全民健康的坚实护盾！",
+        color: "#319795"
+      },
+      road: {
+        title: "🛣️ 交通设施与公共出行",
+        desc: "平坦宽阔的马路、飞驰的高铁、雄伟的跨海大桥，还有路边的红绿灯和路灯。这些耗资巨大的<b>公共基础设施</b>都是由国家用税收修建的，极大地方便了我们的出行！",
+        color: "#dd6b20"
+      }
+    };
+
+    // 状态管理
+    const exploredNodes = {
+      school: false,
+      hospital: false,
+      road: false
+    };
+
+    // 获取 DOM 元素
+    const nodes = {
+      school: document.getElementById('node-school'),
+      hospital: document.getElementById('node-hospital'),
+      road: document.getElementById('node-road')
+    };
+
+    const lines = {
+      school: document.getElementById('line-school'),
+      hospital: document.getElementById('line-hospital'),
+      road: document.getElementById('line-road')
+    };
+
+    const dots = {
+      school: document.getElementById('dot-school'),
+      hospital: document.getElementById('dot-hospital'),
+      road: document.getElementById('dot-road')
+    };
+
+    const infoCard = document.getElementById('info-card');
+    const cardDefault = document.getElementById('card-default');
+    const cardContent = document.getElementById('card-content');
+    const activeTitle = document.getElementById('active-title');
+    const activeDesc = document.getElementById('active-desc');
+    const progressLabel = document.getElementById('progress-label');
+    const btnReset = document.getElementById('btn-reset');
+
+    // 初始化交互事件
+    Object.keys(nodes).forEach(key => {
+      nodes[key].addEventListener('click', () => {
+        selectNode(key);
+      });
+    });
+
+    btnReset.addEventListener('click', resetSimulation);
+
+    // 选择节点逻辑
+    function selectNode(key) {
+      // 1. 标记已探索
+      exploredNodes[key] = true;
+
+      // 2. 更新 SVG 节点与线条状态
+      Object.keys(nodes).forEach(k => {
+        if (k === key) {
+          nodes[k].classList.add('active');
+          nodes[k].querySelector('.node-bg').setAttribute('fill', '#48bb78'); // 激活变绿
+          lines[k].classList.add('active');
+        } else {
+          nodes[k].classList.remove('active');
+          if (!exploredNodes[k]) {
+            // 未探索过的恢复原色
+            const originalColors = { school: '#3182ce', hospital: '#319795', road: '#dd6b20' };
+            nodes[k].querySelector('.node-bg').setAttribute('fill', originalColors[k]);
+          }
+        }
+      });
+
+      // 3. 更新右侧面板内容
+      cardDefault.classList.add('hidden');
+      cardContent.classList.remove('hidden');
+      infoCard.classList.add('active');
+      infoCard.style.borderColor = taxData[key].color;
+
+      activeTitle.innerHTML = taxData[key].title;
+      activeTitle.style.color = taxData[key].color;
+      activeDesc.innerHTML = taxData[key].desc;
+
+      // 4. 更新进度条
+      dots[key].classList.add('active');
+      const exploredCount = Object.values(exploredNodes).filter(v => v).length;
+      progressLabel.textContent = `探索进度：${exploredCount} / 3`;
+
+      // 5. 检查是否全部完成
+      if (exploredCount === 3) {
+        triggerCompletion();
+      }
+    }
+
+    // 触发最终总结状态
+    function triggerCompletion() {
+      setTimeout(() => {
+        infoCard.style.borderColor = '#48bb78';
+        activeTitle.innerHTML = "🎉 总结：取之于民，用之于民";
+        activeTitle.style.color = "#2f855a";
+        activeDesc.innerHTML = "太棒了！我们发现：居民和企业依法纳税，资金汇聚到<b>国家财政</b>；国家再把这些钱用于<b>学校、医院、道路</b>等公共建设，最终回馈给每一个家庭。<br><br>这就是税收的本质：<b>取之于民，用之于民</b>。我们每个人既是纳税人，也是国家福利的受益者！";
+        progressLabel.textContent = "🎉 探索完成！";
+      }, 800);
+    }
+
+    // 重置模拟
+    function resetSimulation() {
+      Object.keys(exploredNodes).forEach(key => {
+        exploredNodes[key] = false;
+        nodes[key].classList.remove('active');
+        lines[key].classList.remove('active');
+        dots[key].classList.remove('active');
+        
+        // 恢复初始颜色
+        const originalColors = { school: '#3182ce', hospital: '#319795', road: '#dd6b20' };
+        nodes[key].querySelector('.node-bg').setAttribute('fill', originalColors[key]);
+      });
+
+      cardDefault.classList.remove('hidden');
+      cardContent.classList.add('hidden');
+      infoCard.classList.remove('active');
+      infoCard.style.borderColor = '#cbd5e0';
+      progressLabel.textContent = "探索进度：0 / 3";
+    }
+  </script>
+</body>
+</html>

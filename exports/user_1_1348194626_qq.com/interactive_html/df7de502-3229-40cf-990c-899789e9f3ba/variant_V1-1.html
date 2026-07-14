@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>校园快递无人车路径规划</title>
+    <style>
+        :root { --bg: #f0f4f8; --grid: #cbd5e0; --start: #48bb78; --end: #ed8936; --obs: #68d391; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #2d3748; }
+        .main-layout { display: flex; gap: 20px; }
+        #grid-svg { background: #fff; border: 2px solid #a0aec0; cursor: pointer; }
+        .controls { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .btn-group { display: flex; gap: 10px; }
+        button { padding: 10px; cursor: pointer; border: none; border-radius: 6px; background: #4a90e2; color: white; font-weight: bold; }
+        button.active { background: #2b6cb0; outline: 3px solid #bee3f8; }
+        .log { height: 200px; overflow-y: auto; background: #f7fafc; padding: 10px; border: 1px solid #e2e8f0; font-size: 14px; line-height: 1.6; }
+        .cell { stroke: #e2e8f0; stroke-width: 1; fill: white; }
+        .cell.obs { fill: #9ae6b4; }
+        .cell.start { fill: #68d391; }
+        .cell.end { fill: #f6ad55; }
+        .path-1 { stroke: #48bb78; stroke-width: 4; fill: none; stroke-linecap: round; }
+        .path-2 { stroke: #9f7aea; stroke-width: 4; fill: none; stroke-linecap: round; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>校园快递无人车路径规划</h2>
+    <div class="main-layout">
+        <svg id="grid-svg" width="400" height="400" viewBox="0 0 400 400">
+            <g id="grid-layer"></g>
+            <path id="path1" class="path-1" d="" />
+            <path id="path2" class="path-2" d="" />
+        </svg>
+        <div class="controls">
+            <div class="btn-group">
+                <button id="btn1">方案一 (绿色)</button>
+                <button id="btn2">方案二 (紫色)</button>
+            </div>
+            <button id="btn-compare">对比显示</button>
+            <p>点击网格绘制路线（起点左下，终点右上）：</p>
+            <div id="log" class="log">请选择一个方案开始绘制...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const size = 10;
+    const cellSize = 40;
+    const gridLayer = document.getElementById('grid-layer');
+    const log = document.getElementById('log');
+    const path1 = document.getElementById('path1');
+    const path2 = document.getElementById('path2');
+    
+    let currentMode = 1;
+    let paths = { 1: [[0, 9]], 2: [[0, 9]] };
+    let showBoth = false;
+
+    // 初始化网格
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", i * cellSize);
+            rect.setAttribute("y", j * cellSize);
+            rect.setAttribute("width", cellSize);
+            rect.setAttribute("height", cellSize);
+            rect.setAttribute("class", "cell");
+            
+            // 障碍物设置
+            if ((i > 3 && i < 7) && (j > 2 && j < 7)) rect.classList.add('obs');
+            if (i === 0 && j === 9) rect.classList.add('start');
+            if (i === 9 && j === 0) rect.classList.add('end');
+            
+            rect.addEventListener('click', () => handleCellClick(i, j));
+            gridLayer.appendChild(rect);
+        }
+    }
+
+    function handleCellClick(x, y) {
+        const p = paths[currentMode];
+        const last = p[p.length - 1];
+        if (Math.abs(last[0] - x) + Math.abs(last[1] - y) === 1) {
+            p.push([x, y]);
+            updatePaths();
+        }
+    }
+
+    function updatePaths() {
+        path1.setAttribute('d', pathToSvg(paths[1]));
+        path2.setAttribute('d', pathToSvg(paths[2]));
+        path1.style.display = (showBoth || currentMode === 1) ? 'block' : 'none';
+        path2.style.display = (showBoth || currentMode === 2) ? 'block' : 'none';
+        
+        const p = paths[currentMode];
+        let text = `方案 ${currentMode} 指令：<br>`;
+        p.forEach((pt, i) => {
+            if(i === 0) text += `从起点(${pt[0]},${9-pt[1]})出发<br>`;
+            else {
+                const dx = pt[0] - p[i-1][0];
+                const dy = pt[1] - p[i-1][1];
+                const dir = dx > 0 ? "向右" : dx < 0 ? "向左" : dy > 0 ? "向下" : "向上";
+                text += `第${i}步：${dir}移动<br>`;
+            }
+        });
+        log.innerHTML = text;
+    }
+
+    function pathToSvg(arr) {
+        return arr.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt[0]*cellSize + 20} ${pt[1]*cellSize + 20}`).join(' ');
+    }
+
+    document.getElementById('btn1').addEventListener('click', () => { currentMode = 1; updatePaths(); });
+    document.getElementById('btn2').addEventListener('click', () => { currentMode = 2; updatePaths(); });
+    document.getElementById('btn-compare').addEventListener('click', () => { showBoth = !showBoth; updatePaths(); });
+</script>
+</body>
+</html>

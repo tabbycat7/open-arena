@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S1-1-2 数学教学可视化：寻找纳税的比较基准</title>
+  <style>
+    /* 全局重置与课堂投屏优化样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    body {
+      background-color: #f0f4f8;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      width: 95vw;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 顶部标题与引导 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .question-title {
+      font-size: 24px;
+      color: #1a202c;
+      line-height: 1.4;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .instruction {
+      font-size: 16px;
+      color: #4a5568;
+      background-color: #ebf8ff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      border: 1px dashed #bee3f8;
+    }
+
+    /* 主展示区：两家店铺 */
+    .shops-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+      flex: 1;
+      margin: 15px 0;
+      gap: 20px;
+    }
+
+    .shop-card {
+      flex: 1;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .shop-card.active {
+      border-color: #4299e1;
+      background-color: #f7fafc;
+    }
+
+    .shop-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .shop-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .shop-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2d3748;
+    }
+
+    /* 营业额展示区域 */
+    .turnover-box {
+      width: 100%;
+      background: #edf2f7;
+      border: 2px dashed #cbd5e0;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 16px;
+      min-height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .turnover-box.revealed {
+      background: #e6fffa;
+      border: 2px solid #319795;
+    }
+
+    .turnover-label {
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+
+    .turnover-value {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2d3748;
+    }
+
+    .turnover-placeholder {
+      font-size: 16px;
+      color: #a0aec0;
+      font-style: italic;
+    }
+
+    /* 拖拽目标区域（大箱子） */
+    .drop-zone {
+      width: 100%;
+      flex: 1;
+      border: 3px dashed #cbd5e0;
+      border-radius: 12px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transition: all 0.3s ease;
+      min-height: 120px;
+    }
+
+    .drop-zone.active-hover {
+      border-color: #3182ce;
+      background-color: #ebf8ff;
+      transform: scale(1.02);
+    }
+
+    .drop-zone.success {
+      border-color: #38a169;
+      background-color: #f0fff4;
+      border-style: solid;
+    }
+
+    .drop-zone-label {
+      font-size: 15px;
+      color: #a0aec0;
+      pointer-events: none;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* 拖拽成功后的关系展示 */
+    .relation-tag {
+      display: none;
+      background-color: #38a169;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 8px;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* 底部控制与拖拽源区 */
+    .bottom-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      border-top: 2px solid #edf2f7;
+      padding-top: 16px;
+    }
+
+    .action-btn {
+      background-color: #3182ce;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background-color: #2b6cb0;
+      transform: translateY(-1px);
+    }
+
+    .action-btn:active {
+      transform: translateY(1px);
+    }
+
+    .action-btn.disabled {
+      background-color: #cbd5e0;
+      color: #a0aec0;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* 纳税额硬币区域 */
+    .coins-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      width: 100%;
+      height: 80px;
+      position: relative;
+    }
+
+    .coin {
+      width: 180px;
+      height: 60px;
+      background: linear-gradient(135deg, #ecc94b 0%, #d69e2e 100%);
+      border: 3px solid #f6e05e;
+      border-radius: 30px;
+      box-shadow: 0 6px 12px rgba(214, 158, 46, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      position: absolute;
+      touch-action: none;
+      transition: transform 0.1s ease, opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .coin.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .coin:active:not(.locked) {
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+
+    .coin-text {
+      color: #744210;
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .coin-icon {
+      width: 24px;
+      height: 24px;
+      fill: #744210;
+    }
+
+    /* 重置按钮 */
+    .reset-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: 1px solid #cbd5e0;
+      color: #718096;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background-color: #edf2f7;
+      color: #4a5568;
+    }
+
+    /* 动画效果 */
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .pulse {
+      animation: pulseGlow 1.5s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 5px rgba(49, 130, 206, 0.2); }
+      100% { box-shadow: 0 0 20px rgba(49, 130, 206, 0.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <button class="reset-btn" id="resetBtn">重置演示</button>
+
+    <!-- 顶部引导 -->
+    <div class="header">
+      <h1 class="question-title">要公平地比较谁的纳税负担更重，我们需要把“交的税”和它们的什么数放在一起比一比？</h1>
+      <div class="instruction" id="instructionText">第一步：请点击下方按钮，展开两家店铺的营业额。</div>
+    </div>
+
+    <!-- 中部：两家店铺 -->
+    <div class="shops-container">
+      <!-- 餐馆卡片 -->
+      <div class="shop-card" id="shopRestaurant">
+        <div class="shop-header">
+          <!-- 餐馆 SVG 图标 -->
+          <svg class="shop-icon" viewBox="0 0 64 64">
+            <rect x="4" y="28" width="56" height="32" rx="4" fill="#4299e1"/>
+            <polygon points="32,4 4,28 60,28" fill="#3182ce"/>
+            <rect x="24" y="40" width="16" height="20" fill="#ebf8ff"/>
+            <circle cx="16" cy="40" r="4" fill="#ecc94b"/>
+            <circle cx="48" cy="40" r="4" fill="#ecc94b"/>
+          </svg>
+          <span class="shop-name">美味餐馆</span>
+        </div>
+        
+        <!-- 营业额展示 -->
+        <div class="turnover-box" id="turnoverRest">
+          <span class="turnover-placeholder">营业额已隐藏</span>
+        </div>
+
+        <!-- 拖拽目标箱子 -->
+        <div class="drop-zone" id="dropRest" data-target="restaurant">
+          <span class="drop-zone-label">请将“餐馆纳税额”拖入此处</span>
+          <div class="relation-tag" id="tagRest">纳税额 ↔ 营业额</div>
+        </div>
+      </div>
+
+      <!-- 超市卡片 -->
+      <div class="shop-card" id="shopSupermarket">
+        <div class="shop-header">
+          <!-- 超市 SVG 图标 -->
+          <svg class="shop-icon" viewBox="0 0 64 64">
+            <rect x="4" y="28" width="56" height="32" rx="4" fill="#48bb78"/>
+            <polygon points="32,4 4,28 60,28" fill="#38a169"/>
+            <rect x="24" y="40" width="16" height="20" fill="#ebf8ff"/>
+            <circle cx="16" cy="40" r="4" fill="#ecc94b"/>
+            <circle cx="48" cy="40" r="4" fill="#ecc94b"/>
+          </svg>
+          <span class="shop-name">天天超市</span>
+        </div>
+
+        <!-- 营业额展示 -->
+        <div class="turnover-box" id="turnoverSuper">
+          <span class="turnover-placeholder">营业额已隐藏</span>
+        </div>
+
+        <!-- 拖拽目标箱子 -->
+        <div class="drop-zone" id="dropSuper" data-target="supermarket">
+          <span class="drop-zone-label">请将“超市纳税额”拖入此处</span>
+          <div class="relation-tag" id="tagSuper">纳税额 ↔ 营业额</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部控制与拖拽源 -->
+    <div class="bottom-area">
+      <button class="action-btn" id="revealBtn">展开两家店的营业额</button>
+      
+      <!-- 纳税额硬币（拖拽源） -->
+      <div class="coins-container" id="coinsContainer">
+        <!-- 餐馆硬币 -->
+        <div class="coin locked" id="coinRest" data-source="restaurant" style="left: calc(50% - 210px); top: 10px;">
+          <div class="coin-text">
+            <svg class="coin-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="#744210" stroke-width="2"/>
+              <path d="M12 6v12M9 9h6M9 15h6" stroke="#744210" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            餐馆纳税额: 1500元
+          </div>
+        </div>
+
+        <!-- 超市硬币 -->
+        <div class="coin locked" id="coinSuper" data-source="supermarket" style="left: calc(50% + 30px); top: 10px;">
+          <div class="coin-text">
+            <svg class="coin-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="#744210" stroke-width="2"/>
+              <path d="M12 6v12M9 9h6M9 15h6" stroke="#744210" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            超市纳税额: 600元
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const revealBtn = document.getElementById('revealBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const instructionText = document.getElementById('instructionText');
+    
+    const turnoverRest = document.getElementById('turnoverRest');
+    const turnoverSuper = document.getElementById('turnoverSuper');
+    
+    const coinRest = document.getElementById('coinRest');
+    const coinSuper = document.getElementById('coinSuper');
+    
+    const dropRest = document.getElementById('dropRest');
+    const dropSuper = document.getElementById('dropSuper');
+    
+    const tagRest = document.getElementById('tagRest');
+    const tagSuper = document.getElementById('tagSuper');
+
+    // 初始坐标记录，用于重置
+    const initialPositions = {
+      restaurant: { left: 'calc(50% - 210px)', top: '10px' },
+      supermarket: { left: 'calc(50% + 30px)', top: '10px' }
+    };
+
+    let isRevealed = false;
+    let successCount = 0;
+
+    // 第一步：展开营业额
+    revealBtn.addEventListener('click', () => {
+      if (isRevealed) return;
+      
+      isRevealed = true;
+      revealBtn.classList.add('disabled');
+      revealBtn.disabled = true;
+
+      // 展开餐馆营业额
+      turnoverRest.classList.add('revealed');
+      turnoverRest.innerHTML = `
+        <div class="turnover-label">营业额</div>
+        <div class="turnover-value">30000 元</div>
+      `;
+
+      // 展开超市营业额
+      turnoverSuper.classList.add('revealed');
+      turnoverSuper.innerHTML = `
+        <div class="turnover-label">营业额</div>
+        <div class="turnover-value">12000 元</div>
+      `;
+
+      // 解锁硬币
+      coinRest.classList.remove('locked');
+      coinSuper.classList.remove('locked');
+
+      // 更新引导语
+      instructionText.textContent = '第二步：请将代表“纳税额”的金色卡片，拖入对应店铺的“营业额”大箱子里。';
+      
+      // 给目标区域增加呼吸灯效果提示
+      dropRest.classList.add('pulse');
+      dropSuper.classList.add('pulse');
+    });
+
+    // 实现拖拽逻辑 (兼容鼠标与触摸屏)
+    setupDragAndDrop(coinRest, dropRest, 'restaurant');
+    setupDragAndDrop(coinSuper, dropSuper, 'supermarket');
+
+    function setupDragAndDrop(coin, dropZone, type) {
+      let active = false;
+      let currentX;
+      let currentY;
+      let initialX;
+      let initialY;
+      let xOffset = 0;
+      let yOffset = 0;
+
+      coin.addEventListener('pointerdown', dragStart);
+
+      function dragStart(e) {
+        if (coin.classList.contains('locked')) return;
+        
+        // 记录初始点击位置
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+
+        if (e.target === coin || coin.contains(e.target)) {
+          active = true;
+          coin.style.zIndex = '1000';
+          coin.style.transition = 'none';
+          coin.setPointerCapture(e.pointerId);
+          
+          // 拖拽开始时，高亮对应的目标区域
+          dropZone.classList.add('active-hover');
+          
+          coin.addEventListener('pointermove', drag);
+          coin.addEventListener('pointerup', dragEnd);
+        }
+      }
+
+      function drag(e) {
+        if (!active) return;
+        e.preventDefault();
+
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        setTranslate(currentX, currentY, coin);
+      }
+
+      function dragEnd(e) {
+        if (!active) return;
+        
+        active = false;
+        coin.releasePointerCapture(e.pointerId);
+        coin.style.zIndex = '10';
+        dropZone.classList.remove('active-hover');
+
+        // 碰撞检测
+        const coinRect = coin.getBoundingClientRect();
+        const dropRect = dropZone.getBoundingClientRect();
+
+        const isOverlapping = !(
+          coinRect.right < dropRect.left ||
+          coinRect.left > dropRect.right ||
+          coinRect.bottom < dropRect.top ||
+          coinRect.top > dropRect.bottom
+        );
+
+        if (isOverlapping) {
+          // 成功放入
+          snapToTarget(coin, dropZone);
+        } else {
+          // 没放入，弹回原位
+          resetCoinPosition(coin);
+        }
+
+        coin.removeEventListener('pointermove', drag);
+        coin.removeEventListener('pointerup', dragEnd);
+      }
+
+      function setTranslate(xPos, yPos, el) {
+        el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+      }
+
+      function resetCoinPosition(el) {
+        el.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        el.style.transform = 'translate3d(0px, 0px, 0)';
+        xOffset = 0;
+        yOffset = 0;
+      }
+
+      function snapToTarget(el, target) {
+        // 禁用该硬币的进一步拖拽
+        el.classList.add('locked');
+        el.style.pointerEvents = 'none';
+        
+        // 隐藏硬币，并在目标区域内展示成功状态
+        el.style.opacity = '0';
+        
+        target.classList.remove('pulse');
+        target.classList.add('success');
+        
+        // 改变目标区域内的文字和标签
+        const label = target.querySelector('.drop-zone-label');
+        const tag = target.querySelector('.relation-tag');
+        
+        if (type === 'restaurant') {
+          label.innerHTML = `<strong style="color: #2f855a; font-size: 18px;">餐馆：1500元 ↔ 30000元</strong>`;
+        } else {
+          label.innerHTML = `<strong style="color: #2f855a; font-size: 18px;">超市：600元 ↔ 12000元</strong>`;
+        }
+        
+        tag.style.display = 'block';
+        
+        successCount++;
+        checkCompletion();
+      }
+    }
+
+    // 检查是否全部完成
+    function checkCompletion() {
+      if (successCount === 2) {
+        instructionText.style.backgroundColor = '#c6f6d5';
+        instructionText.style.borderColor = '#9ae6b4';
+        instructionText.style.color = '#22543d';
+        instructionText.innerHTML = '<strong>配对成功！</strong> 观察两组对应关系，我们要比较纳税负担，应该把“纳税额”和“营业额”放在一起比。';
+      }
+    }
+
+    // 重置所有状态
+    resetBtn.addEventListener('click', () => {
+      isRevealed = false;
+      successCount = 0;
+
+      // 重置控制按钮
+      revealBtn.classList.remove('disabled');
+      revealBtn.disabled = false;
+
+      // 重置引导语
+      instructionText.style.backgroundColor = '#ebf8ff';
+      instructionText.style.borderColor = '#bee3f8';
+      instructionText.style.color = '#4a5568';
+      instructionText.textContent = '第一步：请点击下方按钮，展开两家店铺的营业额。';
+
+      // 重置营业额展示
+      turnoverRest.classList.remove('revealed');
+      turnoverRest.innerHTML = `<span class="turnover-placeholder">营业额已隐藏</span>`;
+      turnoverSuper.classList.remove('revealed');
+      turnoverSuper.innerHTML = `<span class="turnover-placeholder">营业额已隐藏</span>`;
+
+      // 重置硬币
+      [coinRest, coinSuper].forEach(coin => {
+        coin.classList.add('locked');
+        coin.style.pointerEvents = 'auto';
+        coin.style.opacity = '1';
+        coin.style.transform = 'translate3d(0px, 0px, 0)';
+        // 强制重置内部偏移量
+        coin.style.transition = 'none';
+      });
+
+      // 重置目标区域
+      [dropRest, dropSuper].forEach(drop => {
+        drop.classList.remove('success', 'pulse', 'active-hover');
+      });
+
+      dropRest.querySelector('.drop-zone-label').textContent = '请将“餐馆纳税额”拖入此处';
+      dropSuper.querySelector('.drop-zone-label').textContent = '请将“超市纳税额”拖入此处';
+
+      tagRest.style.display = 'none';
+      tagSuper.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>路径规划：应对施工路障</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #27ae60; --danger: #e74c3c; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; margin: 0; padding: 10px; height: 100vh; box-sizing: border-box; }
+        #container { width: 80vh; height: 60vh; background: white; border: 2px solid #ddd; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .controls { margin-top: 10px; text-align: center; }
+        #msg { font-size: 1.2em; color: var(--primary); font-weight: bold; margin-bottom: 5px; }
+        .hint { font-size: 0.9em; color: #666; }
+        #visitor { cursor: grab; transition: transform 0.1s; }
+        .roadblock { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+
+<div id="msg">请拖动“访客”避开路障到达图书馆</div>
+<div id="container">
+    <svg viewBox="0 0 400 300" width="100%" height="100%">
+        <!-- 背景：校园 -->
+        <rect x="50" y="50" width="100" height="80" fill="#eee" stroke="#999"/> <!-- 教学楼 -->
+        <rect x="250" y="150" width="100" height="100" fill="#d5e8d4" stroke="#82b366"/> <!-- 图书馆 -->
+        <rect x="50" y="200" width="150" height="60" fill="#fff2cc" stroke="#d6b656"/> <!-- 操场 -->
+        
+        <!-- 路径 -->
+        <path id="path-main" d="M 150 90 L 300 90 L 300 150" fill="none" stroke="#27ae60" stroke-width="4" stroke-dasharray="5,5"/>
+        <path id="path-alt" d="M 150 230 L 300 230 L 300 250" fill="none" stroke="#27ae60" stroke-width="4" stroke-dasharray="5,5"/>
+        
+        <!-- 路障 -->
+        <g id="block" class="roadblock">
+            <rect x="210" y="80" width="20" height="20" fill="#e74c3c"/>
+            <text x="212" y="95" fill="white" font-size="12">X</text>
+        </g>
+
+        <!-- 访客 -->
+        <circle id="visitor" cx="60" cy="90" r="10" fill="#3498db" />
+    </svg>
+</div>
+
+<div class="controls">
+    <div class="hint" id="status">当前步骤：直行穿过教学楼前广场</div>
+</div>
+
+<script>
+    const visitor = document.getElementById('visitor');
+    const status = document.getElementById('status');
+    const container = document.getElementById('container');
+    
+    let isDragging = false;
+
+    visitor.addEventListener('mousedown', () => isDragging = true);
+    window.addEventListener('mouseup', () => isDragging = false);
+    
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        visitor.setAttribute('cx', x);
+        visitor.setAttribute('cy', y);
+
+        // 碰撞检测逻辑
+        if (x > 200 && x < 240 && y > 70 && y < 110) {
+            alert("警告：前方施工，无法通行！");
+            visitor.setAttribute('cx', 60);
+            visitor.setAttribute('cy', 90);
+        }
+
+        // 到达终点检测
+        if (x > 250 && y > 150) {
+            if (y > 200) {
+                status.innerHTML = "<span style='color:green; font-weight:bold;'>成功！根据环境变化调整步骤：绕行操场，避开施工区。</span>";
+            }
+        }
+    });
+</script>
+</body>
+</html>

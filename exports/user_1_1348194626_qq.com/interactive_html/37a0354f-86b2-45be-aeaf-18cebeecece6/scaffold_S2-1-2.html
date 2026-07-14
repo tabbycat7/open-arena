@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学模型迁移：从捐款到纳税</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --old-color: #ff7675;
+      --old-dark: #d63031;
+      --new-color: #0984e3;
+      --new-dark: #0056b3;
+      --bg-color: #f5f7fa;
+      --card-bg: #ffffff;
+      --text-main: #2d3436;
+      --text-muted: #636e72;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #dfe6e9;
+      font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-main);
+      user-select: none;
+    }
+
+    /* 4:3 比例容器 */
+    .container {
+      width: 90vw;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background: var(--bg-color);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 头部标题 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0 0 8px 0;
+      color: var(--text-main);
+    }
+
+    .header p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* 可视化主体区域 */
+    .canvas-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    /* 卡片行 */
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 2;
+    }
+
+    /* 运算符 */
+    .operator {
+      font-size: 32px;
+      font-weight: bold;
+      color: #b2bec3;
+      width: 40px;
+      text-align: center;
+    }
+
+    /* 卡片基础样式 */
+    .card {
+      width: 160px;
+      height: 100px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    /* 第一排：旧知卡片 */
+    .old-card {
+      background: linear-gradient(135deg, #ff8a80, var(--old-color));
+      color: white;
+      border: 2px solid transparent;
+    }
+
+    .old-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 20px rgba(255, 118, 117, 0.3);
+    }
+
+    .old-card.active {
+      border-color: #fff;
+      box-shadow: 0 0 0 4px var(--old-dark);
+    }
+
+    /* 槽位（第二排占位） */
+    .slot {
+      width: 160px;
+      height: 100px;
+      border-radius: 14px;
+      border: 3px dashed #b2bec3;
+      background-color: rgba(220, 225, 230, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .slot-placeholder {
+      font-size: 28px;
+      color: #b2bec3;
+      font-weight: bold;
+    }
+
+    /* 第二排：新知卡片（飞入） */
+    .new-card {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: 160px;
+      height: 100px;
+      background: linear-gradient(135deg, #54a0ff, var(--new-color));
+      color: white;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 16px rgba(9, 132, 227, 0.2);
+      opacity: 0;
+      transform: translateY(-150px) scale(0.6);
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .new-card.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* 卡片文字内容 */
+    .card-title {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .card-value {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* SVG 连线层 */
+    .connector-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .connection-path {
+      fill: none;
+      stroke: var(--new-color);
+      stroke-width: 3;
+      stroke-dasharray: 8, 6;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .connection-path.active {
+      opacity: 0.6;
+      animation: dash 30s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    /* 底部控制与提示 */
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .prompt-box {
+      background-color: #e4f2fe;
+      border-left: 5px solid var(--new-color);
+      padding: 12px 20px;
+      border-radius: 4px 8px 8px 4px;
+      font-size: 16px;
+      color: #2c3e50;
+      width: 90%;
+      box-sizing: border-box;
+      text-align: center;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .prompt-box.success {
+      background-color: #e8f8f5;
+      border-left-color: #2ecc71;
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .btn-reset {
+      background-color: #ffffff;
+      border: 2px solid #b2bec3;
+      color: var(--text-muted);
+      padding: 8px 20px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: bold;
+    }
+
+    .btn-reset:hover {
+      background-color: #dfe6e9;
+      color: var(--text-main);
+      border-color: var(--text-main);
+    }
+
+    /* 引导点击的呼吸动画 */
+    @keyframes breathe {
+      0% { box-shadow: 0 0 0 0 rgba(255, 118, 117, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(255, 118, 117, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 118, 117, 0); }
+    }
+
+    .breathe-effect {
+      animation: breathe 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>从“旧模型”迁移到“新知识”</h1>
+      <p>点击上排的橙色卡片，观察它们在“纳税问题”中对应什么新概念</p>
+    </div>
+
+    <!-- 可视化交互区 -->
+    <div class="canvas-area">
+      <!-- SVG 动态连线 -->
+      <svg class="connector-svg" id="svg-canvas">
+        <path id="path-0" class="connection-path" d="" />
+        <path id="path-1" class="connection-path" d="" />
+        <path id="path-2" class="connection-path" d="" />
+      </svg>
+
+      <!-- 第一排：旧知（生活实例） -->
+      <div class="row">
+        <div class="card old-card breathe-effect" id="old-0" data-index="0">
+          <span class="card-title">压岁钱</span>
+          <span class="card-value">100元</span>
+        </div>
+        <div class="operator">×</div>
+        <div class="card old-card" id="old-1" data-index="1">
+          <span class="card-title">捐款比例</span>
+          <span class="card-value">5%</span>
+        </div>
+        <div class="operator">=</div>
+        <div class="card old-card" id="old-2" data-index="2">
+          <span class="card-title">捐款金额</span>
+          <span class="card-value">5元</span>
+        </div>
+      </div>
+
+      <!-- 第二排：新知（纳税概念） -->
+      <div class="row">
+        <div class="slot" id="slot-0">
+          <div class="slot-placeholder">？</div>
+          <div class="card new-card" id="new-0">
+            <span class="card-title">营业额</span>
+            <span class="card-value">100万元</span>
+          </div>
+        </div>
+        <div class="operator">×</div>
+        <div class="slot" id="slot-1">
+          <div class="slot-placeholder">？</div>
+          <div class="card new-card" id="new-1">
+            <span class="card-title">税率</span>
+            <span class="card-value">5%</span>
+          </div>
+        </div>
+        <div class="operator">=</div>
+        <div class="slot" id="slot-2">
+          <div class="slot-placeholder">？</div>
+          <div class="card new-card" id="new-2">
+            <span class="card-title">应纳税额</span>
+            <span class="card-value">？万元</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部控制与提示 -->
+    <div class="footer">
+      <div class="prompt-box" id="prompt-text">
+        请点击第一排的【压岁钱】卡片开始探索...
+      </div>
+      <button class="btn-reset" id="btn-reset">重置演示</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const oldCards = document.querySelectorAll('.old-card');
+      const newCards = document.querySelectorAll('.new-card');
+      const placeholders = document.querySelectorAll('.slot-placeholder');
+      const promptText = document.getElementById('prompt-text');
+      const btnReset = document.getElementById('btn-reset');
+      const svgCanvas = document.getElementById('svg-canvas');
+
+      // 状态记录
+      let clickedCount = 0;
+      const clickedState = [false, false, false];
+
+      // 提示语配置
+      const prompts = [
+        "非常好！“压岁钱（整体）”对应纳税中的“营业额（计税依据）”。接下来请点击【捐款比例】。",
+        "太棒了！“捐款比例”对应纳税中的“税率”。最后请点击【捐款金额】。",
+        "模型迁移完成！对比两排卡片，想一想：现在的“应纳税额”应该怎么列式计算呢？"
+      ];
+
+      // 动态计算并绘制 SVG 贝塞尔曲线
+      function drawConnector(index) {
+        const oldEl = document.getElementById(`old-${index}`);
+        const slotEl = document.getElementById(`slot-${index}`);
+        const pathEl = document.getElementById(`path-${index}`);
+        
+        const svgRect = svgCanvas.getBoundingClientRect();
+        const oldRect = oldEl.getBoundingClientRect();
+        const slotRect = slotEl.getBoundingClientRect();
+
+        // 起点：旧卡片底部中心
+        const x1 = oldRect.left + oldRect.width / 2 - svgRect.left;
+        const y1 = oldRect.bottom - svgRect.top;
+
+        // 终点：新卡片（槽位）顶部中心
+        const x2 = slotRect.left + slotRect.width / 2 - svgRect.left;
+        const y2 = slotRect.top - svgRect.top;
+
+        // 控制点
+        const cpY1 = y1 + (y2 - y1) / 3;
+        const cpY2 = y2 - (y2 - y1) / 3;
+
+        const d = `M ${x1} ${y1} C ${x1} ${cpY1}, ${x2} ${cpY2}, ${x2} ${y2}`;
+        pathEl.setAttribute('d', d);
+        pathEl.classList.add('active');
+      }
+
+      // 清除所有连线
+      function clearConnectors() {
+        for (let i = 0; i < 3; i++) {
+          const pathEl = document.getElementById(`path-${i}`);
+          pathEl.classList.remove('active');
+          pathEl.setAttribute('d', '');
+        }
+      }
+
+      // 处理卡片点击
+      function handleCardClick(e) {
+        const card = e.currentTarget;
+        const index = parseInt(card.getAttribute('data-index'));
+
+        // 限制必须按顺序点击，或者引导式点击
+        if (index !== clickedCount) {
+          return; // 必须按 0 -> 1 -> 2 的顺序点击以保证教学逻辑
+        }
+
+        if (clickedState[index]) return;
+
+        // 标记已点击
+        clickedState[index] = true;
+        card.classList.remove('breathe-effect');
+        card.classList.add('active');
+
+        // 对应新卡片飞入
+        placeholders[index].style.opacity = '0';
+        newCards[index].classList.add('active');
+
+        // 绘制连线
+        drawConnector(index);
+
+        // 更新下一步引导
+        clickedCount++;
+        if (clickedCount < 3) {
+          promptText.textContent = prompts[index];
+          // 给下一个卡片加上呼吸效果
+          document.getElementById(`old-${clickedCount}`).classList.add('breathe-effect');
+        } else {
+          // 全部完成
+          promptText.textContent = prompts[2];
+          promptText.classList.add('success');
+        }
+      }
+
+      // 重置状态
+      function resetAll() {
+        clickedCount = 0;
+        clickedState.fill(false);
+        
+        oldCards.forEach((card, idx) => {
+          card.classList.remove('active', 'breathe-effect');
+          if (idx === 0) card.classList.add('breathe-effect');
+        });
+
+        newCards.forEach(card => {
+          card.classList.remove('active');
+        });
+
+        placeholders.forEach(p => {
+          p.style.opacity = '1';
+        });
+
+        promptText.textContent = "请点击第一排的【压岁钱】卡片开始探索...";
+        promptText.classList.remove('success');
+        clearConnectors();
+      }
+
+      // 绑定事件
+      oldCards.forEach(card => {
+        card.addEventListener('click', handleCardClick);
+      });
+
+      btnReset.addEventListener('click', resetAll);
+
+      // 窗口大小改变时重绘连线
+      window.addEventListener('resize', () => {
+        for (let i = 0; i < 3; i++) {
+          if (clickedState[i]) {
+            drawConnector(i);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

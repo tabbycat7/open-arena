@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值方程的几何意义探究（三定点）</title>
+    <style>
+        /* 课堂投屏优化：清爽、高对比度、自适应 4:3 比例 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        /* 头部标题与问题引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .highlight-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+            color: #166534;
+            text-align: left;
+        }
+
+        /* 可视化主区域 */
+        .visual-area {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background-color: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        button.secondary {
+            background-color: #64748b;
+        }
+        button.secondary:hover {
+            background-color: #475569;
+        }
+        .status-text {
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* 拖拽提示与样式 */
+        .draggable {
+            cursor: grab;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>探究：三个定点的绝对值方程几何意义</h1>
+        <p>方程：<strong>|x - p| + |x - g| + |x - q| = a</strong> （其中 p &lt; g &lt; q）</p>
+        <div class="highlight-box">
+            <strong>思考：</strong> 拖动动点 x 或定点 P, G, Q，观察上方距离之和的变化。决定该方程解的个数的<strong>“关键临界值（最小值）”</strong>是谁？此时动点 x 应该停在哪里？
+        </div>
+    </div>
+
+    <!-- 可视化画布 -->
+    <div class="visual-area">
+        <svg id="canvas" viewBox="0 0 800 320">
+            <!-- 坐标轴 -->
+            <line x1="50" y1="220" x2="750" y2="220" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+            <!-- 刻度线与数字 -->
+            <g id="ticks"></g>
+
+            <!-- 辅助虚线（当x=g时显示） -->
+            <line id="min-helper-line" x1="0" y1="0" x2="0" y2="0" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5" style="display: none;" />
+            <path id="min-bracket" d="" fill="none" stroke="#ef4444" stroke-width="2" style="display: none;" />
+            <text id="min-text" x="400" y="70" fill="#ef4444" font-size="14" font-weight="bold" text-anchor="middle" style="display: none;">
+                此时达到最小值 = |P - Q| = q - p
+            </text>
+
+            <!-- 距离拱桥（动态弧线） -->
+            <path id="arc-p" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="4,2" opacity="0.8" />
+            <path id="arc-g" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4,2" opacity="0.8" />
+            <path id="arc-q" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,2" opacity="0.8" />
+
+            <!-- 距离标注文字 -->
+            <text id="label-p" font-size="12" fill="#2563eb" text-anchor="middle"></text>
+            <text id="label-g" font-size="12" fill="#059669" text-anchor="middle"></text>
+            <text id="label-q" font-size="12" fill="#d97706" text-anchor="middle"></text>
+
+            <!-- 实时计算结果显示 -->
+            <g transform="translate(400, 40)">
+                <rect x="-220" y="-25" width="440" height="38" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+                <text id="calc-sum" x="0" y="0" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">
+                    |x - p| + |x - g| + |x - q| = 0.0
+                </text>
+            </g>
+
+            <!-- 定点 P, G, Q (可拖动) -->
+            <g id="point-P" class="draggable" transform="translate(200, 220)">
+                <circle r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="2" />
+                <text y="30" font-size="14" font-weight="bold" fill="#3b82f6" text-anchor="middle">P (p)</text>
+            </g>
+            <g id="point-G" class="draggable" transform="translate(400, 220)">
+                <circle r="10" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+                <text y="30" font-size="14" font-weight="bold" fill="#10b981" text-anchor="middle">G (g)</text>
+            </g>
+            <g id="point-Q" class="draggable" transform="translate(600, 220)">
+                <circle r="10" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
+                <text y="30" font-size="14" font-weight="bold" fill="#f59e0b" text-anchor="middle">Q (q)</text>
+            </g>
+
+            <!-- 动点 X (可拖动，层级最高) -->
+            <g id="point-X" class="draggable" transform="translate(320, 220)">
+                <circle r="12" fill="#ef4444" stroke="#ffffff" stroke-width="2.5" />
+                <text y="-20" font-size="15" font-weight="bold" fill="#ef4444" text-anchor="middle">x</text>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 控制与状态栏 -->
+    <div class="control-panel">
+        <div class="status-text" id="status-msg">
+            拖动红色的 x 或蓝/绿/黄色的定点进行探究
+        </div>
+        <div class="btn-group">
+            <button id="btn-snap" class="secondary">将 x 自动对齐到中位数点 G</button>
+            <button id="btn-reset">重置位置</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const svg = document.getElementById('canvas');
+    const ptP = document.getElementById('point-P');
+    const ptG = document.getElementById('point-G');
+    const ptQ = document.getElementById('point-Q');
+    const ptX = document.getElementById('point-X');
+
+    const arcP = document.getElementById('arc-p');
+    const arcG = document.getElementById('arc-g');
+    const arcQ = document.getElementById('arc-q');
+
+    const labelP = document.getElementById('label-p');
+    const labelG = document.getElementById('label-g');
+    const labelQ = document.getElementById('label-q');
+
+    const calcSum = document.getElementById('calc-sum');
+    const statusMsg = document.getElementById('status-msg');
+    const ticksContainer = document.getElementById('ticks');
+
+    const minHelperLine = document.getElementById('min-helper-line');
+    const minBracket = document.getElementById('min-bracket');
+    const minText = document.getElementById('min-text');
+
+    const btnReset = document.getElementById('btn-reset');
+    const btnSnap = document.getElementById('btn-snap');
+
+    // 物理坐标与数轴数值映射 (数轴范围：-10 到 10)
+    const minVal = -10;
+    const maxVal = 10;
+    const leftX = 80;
+    const rightX = 720;
+
+    function valToPos(val) {
+        return leftX + ((val - minVal) / (maxVal - minVal)) * (rightX - leftX);
+    }
+
+    function posToVal(pos) {
+        let val = minVal + ((pos - leftX) / (rightX - leftX)) * (maxVal - minVal);
+        return Math.round(val * 10) / 10; // 保留一位小数
+    }
+
+    // 初始状态数值
+    let pVal = -5.0;
+    let gVal = 0.0;
+    let qVal = 5.0;
+    let xVal = -2.0;
+
+    // 绘制数轴刻度
+    function drawTicks() {
+        ticksContainer.innerHTML = '';
+        for (let i = minVal; i <= maxVal; i += 2) {
+            const x = valToPos(i);
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x);
+            line.setAttribute("y1", "220");
+            line.setAttribute("x2", x);
+            line.setAttribute("y2", "228");
+            line.setAttribute("stroke", "#94a3b8");
+            line.setAttribute("stroke-width", "2");
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", x);
+            text.setAttribute("y", "245");
+            text.setAttribute("fill", "#64748b");
+            text.setAttribute("font-size", "12");
+            text.setAttribute("text-anchor", "middle");
+            text.textContent = i;
+
+            ticksContainer.appendChild(line);
+            ticksContainer.appendChild(text);
+        }
+    }
+
+    // 更新视图
+    function update() {
+        // 限制定点顺序：p < g < q，且保持最小间距 1.0
+        if (pVal > gVal - 1.0) pVal = gVal - 1.0;
+        if (qVal < gVal + 1.0) qVal = gVal + 1.0;
+
+        // 限制在数轴范围内
+        pVal = Math.max(minVal + 1, Math.min(maxVal - 3, pVal));
+        gVal = Math.max(pVal + 1, Math.min(qVal - 1, gVal));
+        qVal = Math.max(gVal + 1, Math.min(maxVal - 1, qVal));
+        xVal = Math.max(minVal, Math.min(maxVal, xVal));
+
+        // 计算物理坐标
+        const px = valToPos(pVal);
+        const gx = valToPos(gVal);
+        const qx = valToPos(qVal);
+        const xx = valToPos(xVal);
+
+        // 更新点的位置
+        ptP.setAttribute("transform", `translate(${px}, 220)`);
+        ptG.setAttribute("transform", `translate(${gx}, 220)`);
+        ptQ.setAttribute("transform", `translate(${qx}, 220)`);
+        ptX.setAttribute("transform", `translate(${xx}, 220)`);
+
+        // 计算距离
+        const dP = Math.abs(xVal - pVal);
+        const dG = Math.abs(xVal - gVal);
+        const dQ = Math.abs(xVal - qVal);
+        const total = dP + dG + dQ;
+
+        // 绘制拱桥 (SVG Arc)
+        drawArc(arcP, xx, px, 100, "#3b82f6");
+        drawArc(arcG, xx, gx, 70, "#10b981");
+        drawArc(arcQ, xx, qx, 130, "#f59e0b");
+
+        // 标注距离文字
+        updateLabel(labelP, xx, px, dP, 100, "#2563eb");
+        updateLabel(labelG, xx, gx, dG, 70, "#059669");
+        updateLabel(labelQ, xx, qx, dQ, 130, "#d97706");
+
+        // 更新公式显示
+        calcSum.innerHTML = `|x - p| + |x - g| + |x - q| = <tspan fill="#3b82f6">${dP.toFixed(1)}</tspan> + <tspan fill="#10b981">${dG.toFixed(1)}</tspan> + <tspan fill="#f59e0b">${dQ.toFixed(1)}</tspan> = <tspan fill="#ef4444" font-size="18">${total.toFixed(1)}</tspan>`;
+
+        // 临界值判定：当 x 极其接近中位数点 G 时 (容差 0.05)
+        if (Math.abs(xVal - gVal) < 0.05) {
+            xVal = gVal; // 强行吸附
+            const snapX = valToPos(gVal);
+            ptX.setAttribute("transform", `translate(${snapX}, 220)`);
+            
+            // 显示特殊几何状态
+            minHelperLine.setAttribute("x1", px);
+            minHelperLine.setAttribute("y1", "220");
+            minHelperLine.setAttribute("x2", qx);
+            minHelperLine.setAttribute("y2", "220");
+            minHelperLine.setAttribute("stroke-width", "4");
+            minHelperLine.style.display = "block";
+
+            // 绘制下方大括号或指示线
+            const bracketY = 160;
+            minBracket.setAttribute("d", `M ${px} ${bracketY} L ${px} ${bracketY - 15} L ${qx} ${bracketY - 15} L ${qx} ${bracketY}`);
+            minBracket.style.display = "block";
+
+            minText.setAttribute("x", (px + qx) / 2);
+            minText.setAttribute("y", bracketY - 25);
+            minText.textContent = `此时达到最小值 = PQ = ${(qVal - pVal).toFixed(1)}`;
+            minText.style.display = "block";
+
+            statusMsg.innerHTML = `✨ 发现规律！当 <strong>x 停在中间点 G</strong> 时，距离之和达到<strong>最小值 ${(qVal - pVal).toFixed(1)}</strong>！`;
+            statusMsg.style.color = "#166534";
+        } else {
+            minHelperLine.style.display = "none";
+            minBracket.style.display = "none";
+            minText.style.display = "none";
+            statusMsg.textContent = "拖动红色的 x 或蓝/绿/黄色的定点进行探究";
+            statusMsg.style.color = "#0f172a";
+        }
+    }
+
+    // 绘制拱桥辅助函数
+    function drawArc(pathElement, x1, x2, height, color) {
+        if (Math.abs(x1 - x2) < 1) {
+            pathElement.setAttribute("d", "");
+            return;
+        }
+        const mx = (x1 + x2) / 2;
+        const h = 220 - Math.min(120, Math.abs(x1 - x2) * 0.4 + height * 0.3);
+        pathElement.setAttribute("d", `M ${x1} 220 Q ${mx} ${h} ${x2} 220`);
+        pathElement.setAttribute("stroke", color);
+    }
+
+    // 更新距离标签位置
+    function updateLabel(labelElement, x1, x2, value, height, color) {
+        if (value < 0.1) {
+            labelElement.textContent = "";
+            return;
+        }
+        const mx = (x1 + x2) / 2;
+        const h = 220 - Math.min(120, Math.abs(x1 - x2) * 0.4 + height * 0.3) - 8;
+        labelElement.setAttribute("x", mx);
+        labelElement.setAttribute("y", h);
+        labelElement.textContent = value.toFixed(1);
+    }
+
+    // 拖拽交互实现
+    let activeDrag = null;
+    let startX = 0;
+    let startVal = 0;
+
+    function getMouseX(e) {
+        const rect = svg.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        // 映射到 SVG viewBox (800px 宽度)
+        return ((clientX - rect.left) / rect.width) * 800;
+    }
+
+    function setupDrag(element, getValue, setValue) {
+        const onStart = (e) => {
+            e.preventDefault();
+            activeDrag = { setValue, getValue };
+            startX = getMouseX(e);
+            startVal = getValue();
+        };
+
+        element.addEventListener('mousedown', onStart);
+        element.addEventListener('touchstart', onStart, { passive: false });
+    }
+
+    setupDrag(ptP, () => pVal, (v) => { pVal = v; });
+    setupDrag(ptG, () => gVal, (v) => { gVal = v; });
+    setupDrag(ptQ, () => qVal, (v) => { qVal = v; });
+    setupDrag(ptX, () => xVal, (v) => { xVal = v; });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!activeDrag) return;
+        const currentX = getMouseX(e);
+        const dx = currentX - startX;
+        // 将像素位移转换为数值位移
+        const dVal = (dx / (rightX - leftX)) * (maxVal - minVal);
+        activeDrag.setValue(Math.round((startVal + dVal) * 10) / 10);
+        update();
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!activeDrag) return;
+        const currentX = getMouseX(e);
+        const dx = currentX - startX;
+        const dVal = (dx / (rightX - leftX)) * (maxVal - minVal);
+        activeDrag.setValue(Math.round((startVal + dVal) * 10) / 10);
+        update();
+    }, { passive: false });
+
+    const endDrag = () => { activeDrag = null; };
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+
+    // 按钮事件
+    btnReset.addEventListener('click', () => {
+        pVal = -5.0;
+        gVal = 0.0;
+        qVal = 5.0;
+        xVal = -2.0;
+        update();
+    });
+
+    btnSnap.addEventListener('click', () => {
+        xVal = gVal;
+        update();
+    });
+
+    // 初始化
+    drawTicks();
+    update();
+</script>
+
+</body>
+</html>

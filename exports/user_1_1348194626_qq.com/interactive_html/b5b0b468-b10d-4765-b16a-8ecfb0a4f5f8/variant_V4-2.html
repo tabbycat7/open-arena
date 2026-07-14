@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值方程临界值探测器</title>
+    <style>
+        /* 基础样式与投屏自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #121214;
+            color: #e4e4e7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        /* 4:3 比例容器 */
+        .container {
+            width: 800px;
+            height: 600px;
+            background-color: #1e1e24;
+            border: 3px solid #3f3f46;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 20px;
+            justify-content: space-between;
+        }
+        /* 头部标题与题干 */
+        .header {
+            border-bottom: 2px solid #3f3f46;
+            padding-bottom: 10px;
+        }
+        .title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        .tag {
+            background-color: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .question-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #d4d4d8;
+        }
+        .highlight-eq {
+            color: #fbbf24;
+            font-weight: bold;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 18px;
+        }
+
+        /* 可视化区域 */
+        .visualization {
+            flex-grow: 1;
+            position: relative;
+            margin: 15px 0;
+            background-color: #151518;
+            border-radius: 8px;
+            border: 1px solid #27272a;
+            overflow: hidden;
+        }
+        
+        /* 交互控制区 */
+        .control-panel {
+            background-color: #27272a;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+        }
+        .slider-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="range"] {
+            flex-grow: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #4b5563;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #38bdf8;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .value-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fbbf24;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* 弹窗挑战区 */
+        .challenge-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+        }
+        .challenge-title {
+            font-size: 24px;
+            color: #4ade80;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+        .challenge-desc {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #e4e4e7;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background-color: #27272a;
+            border: 2px solid #3f3f46;
+            color: #e4e4e7;
+            padding: 12px;
+            font-size: 18px;
+            font-family: "Times New Roman", Times, serif;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background-color: #3f3f46;
+            border-color: #38bdf8;
+        }
+        .option-btn.correct {
+            background-color: #065f46;
+            border-color: #10b981;
+            color: #a7f3d0;
+        }
+        .option-btn.wrong {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+        .feedback-msg {
+            font-size: 18px;
+            font-weight: bold;
+            height: 24px;
+        }
+        
+        /* 辅助提示 */
+        .info-tip {
+            font-size: 13px;
+            color: #a1a1aa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="title-bar">
+            <span class="title">绝对值方程的几何本质探究</span>
+            <span class="tag">高一数学 · 函数与方程</span>
+        </div>
+        <p class="question-text">
+            思考：若将方程定点右移，变为 <span class="highlight-eq">|x - 3| + |x - 7| = a</span>。
+            拖动下方滑块调节参数 <span class="highlight-eq">a</span> 的值，观察图像交点变化。当 <span class="highlight-eq">a</span> 满足什么条件时，方程会产生<b>“无数个解”</b>？
+        </p>
+    </div>
+
+    <!-- 可视化画布 -->
+    <div class="visualization">
+        <svg id="canvas" width="756" height="310" style="background-color: #151518;"></svg>
+        
+        <!-- 挑战弹窗 -->
+        <div id="challengeOverlay" class="challenge-overlay">
+            <div class="challenge-title">✨ 成功触发临界状态！ ✨</div>
+            <div class="challenge-desc">
+                当 <span class="highlight-eq" style="color:#4ade80;">a = 4</span> 时，折线底端与水平线完全重合，产生无数个解。<br>
+                请问此时方程的<b>解集</b>应该如何正确表示？
+            </div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false">{3, 7}</button>
+                <button class="option-btn" data-correct="false">(3, 7)</button>
+                <button class="option-btn" data-correct="true">[3, 7]</button>
+                <button class="option-btn" data-correct="false">(-∞, +∞)</button>
+            </div>
+            <div id="feedback" class="feedback-msg"></div>
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="input-row">
+            <span style="font-weight: bold; color: #e4e4e7;">调节参数 a 的值:</span>
+            <div class="slider-container">
+                <span style="color: #a1a1aa; font-size: 14px;">2</span>
+                <input type="range" id="aSlider" min="2" max="8" step="0.1" value="6">
+                <span style="color: #a1a1aa; font-size: 14px;">8</span>
+            </div>
+            <div class="value-display">a = <span id="aValue">6.0</span></div>
+        </div>
+        <div class="info-tip">
+            提示：观察折线 <span style="color:#f43f5e; font-weight:bold;">y = |x-3| + |x-7|</span> 与水平线 <span style="color:#38bdf8; font-weight:bold;">y = a</span> 的交点个数。
+        </div>
+    </div>
+</div>
+
+<script>
+    const svg = document.getElementById('canvas');
+    const slider = document.getElementById('aSlider');
+    const aValueDisplay = document.getElementById('aValue');
+    const overlay = document.getElementById('challengeOverlay');
+    const feedback = document.getElementById('feedback');
+    const optionBtns = document.querySelectorAll('.option-btn');
+
+    // 坐标系映射参数
+    // 数轴范围：x 从 0 到 10
+    // y 轴范围：y 从 -1 到 9
+    const width = 756;
+    const height = 310;
+    
+    function mapX(x) {
+        return 80 + (x / 10) * (width - 160);
+    }
+    function mapY(y) {
+        return (height - 60) - (y / 9) * (height - 100);
+    }
+
+    // 绘制静态背景（数轴、刻度、定点）
+    function drawStatic() {
+        let html = '';
+        
+        // 绘制网格线(水平)
+        for (let y = 0; y <= 8; y += 2) {
+            const py = mapY(y);
+            html += `<line x1="50" y1="${py}" x2="${width-50}" y2="${py}" stroke="#27272a" stroke-dasharray="4" stroke-width="1" />`;
+            html += `<text x="35" y="${py+5}" fill="#71717a" font-size="12" text-anchor="end">${y}</text>`;
+        }
+
+        // 绘制数轴 (y=0)
+        const yZero = mapY(0);
+        html += `<line x1="50" y1="${yZero}" x2="${width-50}" y2="${yZero}" stroke="#71717a" stroke-width="2" />`;
+        // 数轴箭头
+        html += `<polygon points="${width-50},${yZero-5} ${width-40},${yZero} ${width-50},${yZero+5}" fill="#71717a" />`;
+
+        // 绘制刻度与数字
+        for (let x = 1; x <= 9; x++) {
+            const px = mapX(x);
+            html += `<line x1="${px}" y1="${yZero}" x2="${px}" y2="${yZero-6}" stroke="#71717a" stroke-width="1.5" />`;
+            html += `<text x="${px}" y="${yZero+20}" fill="#a1a1aa" font-size="14" text-anchor="middle" font-family="sans-serif">${x}</text>`;
+        }
+
+        // 标注定点 3 和 7
+        const x3 = mapX(3);
+        const x7 = mapX(7);
+        
+        // 虚线投影
+        html += `<line x1="${x3}" y1="${yZero}" x2="${x3}" y2="${mapY(4)}" stroke="#a1a1aa" stroke-dasharray="3" />`;
+        html += `<line x1="${x7}" y1="${yZero}" x2="${x7}" y2="${mapY(4)}" stroke="#a1a1aa" stroke-dasharray="3" />`;
+
+        // 定点圆点
+        html += `<circle cx="${x3}" cy="${yZero}" r="6" fill="#fbbf24" />`;
+        html += `<circle cx="${x7}" cy="${yZero}" r="6" fill="#fbbf24" />`;
+        html += `<text x="${x3}" y="${yZero-12}" fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle">A(3)</text>`;
+        html += `<text x="${x7}" y="${yZero-12}" fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle">B(7)</text>`;
+
+        return html;
+    }
+
+    // 动态绘制折线与交点
+    function updateVisualization() {
+        const a = parseFloat(slider.value);
+        aValueDisplay.textContent = a.toFixed(1);
+
+        let html = drawStatic();
+
+        // 1. 绘制折线 y = |x-3| + |x-7|
+        // 关键折点：(0, 10), (3, 4), (7, 4), (10, 10)
+        const p0 = {x: mapX(0), y: mapY(10)};
+        const p1 = {x: mapX(3), y: mapY(4)};
+        const p2 = {x: mapX(7), y: mapY(4)};
+        const p3 = {x: mapX(10), y: mapY(10)};
+
+        // 荧光绿色高亮区间 [3, 7] (当 a = 4 时)
+        const isCritical = Math.abs(a - 4) < 0.05;
+        const polylineColor = isCritical ? '#4ade80' : '#f43f5e';
+        const polylineWidth = isCritical ? 4 : 3;
+        const glowFilter = isCritical ? 'filter="drop-shadow(0px 0px 8px #4ade80)"' : '';
+
+        html += `<path d="M ${p0.x} ${p0.y} L ${p1.x} ${p1.y} L ${p2.x} ${p2.y} L ${p3.x} ${p3.y}" 
+                      fill="none" stroke="${polylineColor}" stroke-width="${polylineWidth}" ${glowFilter} />`;
+
+        // 2. 绘制水平线 y = a
+        const pyA = mapY(a);
+        html += `<line x1="${mapX(0.5)}" y1="${pyA}" x2="${mapX(9.5)}" y2="${pyA}" stroke="#38bdf8" stroke-width="3" filter="drop-shadow(0px 0px 4px #38bdf8)" />`;
+        html += `<text x="${mapX(9.5)+10}" y="${pyA+5}" fill="#38bdf8" font-size="16" font-weight="bold">y = ${a.toFixed(1)}</text>`;
+
+        // 3. 计算并绘制交点
+        if (a > 4) {
+            // 两个交点
+            // x1: 3 - (a-4)/2 = (10-a)/2
+            // x2: 7 + (a-4)/2 = (10+a)/2
+            const xVal1 = (10 - a) / 2;
+            const xVal2 = (10 + a) / 2;
+            const cx1 = mapX(xVal1);
+            const cx2 = mapX(xVal2);
+
+            html += `<circle cx="${cx1}" cy="${pyA}" r="6" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />`;
+            html += `<circle cx="${cx2}" cy="${pyA}" r="6" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />`;
+            
+            // 投影到数轴
+            html += `<line x1="${cx1}" y1="${pyA}" x2="${cx1}" y2="${mapY(0)}" stroke="#38bdf8" stroke-dasharray="2" />`;
+            html += `<line x1="${cx2}" y1="${pyA}" x2="${cx2}" y2="${mapY(0)}" stroke="#38bdf8" stroke-dasharray="2" />`;
+            
+            // 交点坐标文本
+            html += `<text x="${cx1}" y="${pyA-12}" fill="#ffffff" font-size="12" text-anchor="middle">x₁=${xVal1.toFixed(2)}</text>`;
+            html += `<text x="${cx2}" y="${pyA-12}" fill="#ffffff" font-size="12" text-anchor="middle">x₂=${xVal2.toFixed(2)}</text>`;
+        } else if (isCritical) {
+            // 临界状态：重合线段 [3, 7]
+            html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#4ade80" stroke-width="6" filter="drop-shadow(0px 0px 12px #4ade80)" />`;
+            // 数轴上对应区间高亮
+            html += `<line x1="${p1.x}" y1="${mapY(0)}" x2="${p2.x}" y2="${mapY(0)}" stroke="#4ade80" stroke-width="6" filter="drop-shadow(0px 0px 8px #4ade80)" />`;
+        }
+
+        svg.innerHTML = html;
+
+        // 触发挑战弹窗
+        if (isCritical) {
+            setTimeout(() => {
+                overlay.style.display = 'flex';
+            }, 500);
+        }
+    }
+
+    // 选项点击事件
+    optionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 清除之前的状态
+            optionBtns.forEach(b => b.className = 'option-btn');
+            
+            const isCorrect = this.getAttribute('data-correct') === 'true';
+            if (isCorrect) {
+                this.classList.add('correct');
+                feedback.innerHTML = '🎉 回答正确！当 a = 4 时，[3, 7] 内任意一点到 3 和 7 的距离之和都恰好等于 4。';
+                feedback.style.color = '#4ade80';
+                // 允许点击空白处或3秒后关闭，让学生继续探索
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    // 稍微拨动滑块避免卡死在4
+                    slider.value = 4.1;
+                    updateVisualization();
+                    feedback.innerHTML = '';
+                    optionBtns.forEach(b => b.className = 'option-btn');
+                }, 3000);
+            } else {
+                this.classList.add('wrong');
+                feedback.innerHTML = '❌ 仔细想想，端点 3 和 7 能取到吗？距离之和是否仍为 4？';
+                feedback.style.color = '#f87171';
+            }
+        });
+    });
+
+    // 监听滑块
+    slider.addEventListener('input', updateVisualization);
+
+    // 初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纳税问题数学模型推导教学课件</title>
+    <style>
+        /* 全局样式设计，适合课堂投影 */
+        :root {
+            --color-bg: #f5f7fa;
+            --color-card: #ffffff;
+            --color-text-dark: #2c3e50;
+            --color-text-muted: #7f8c8d;
+            
+            /* 三要素专属配色 */
+            --color-rate: #ff9800;      /* 税率 - 橙色 */
+            --color-rate-bg: #fff3e0;
+            --color-tax: #4caf50;       /* 应纳税额 - 绿色 */
+            --color-tax-bg: #e8f5e9;
+            --color-income: #2196f3;    /* 计税收入 - 蓝色 */
+            --color-income-bg: #e3f2fd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .workspace {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--color-card);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        /* 头部标题区 */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--color-text-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--color-text-muted);
+        }
+
+        /* 主交互区布局 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 30px;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 0; /* 允许子元素缩放 */
+        }
+
+        /* 左侧：公式与控制区 */
+        .left-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 100%;
+        }
+
+        /* 公式容器 */
+        .formula-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background-color: #fafafa;
+            border: 2px solid #eaeaea;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* 公式卡片通用样式 */
+        .formula-block {
+            position: absolute;
+            width: 125px;
+            height: 80px;
+            top: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+        }
+
+        .formula-block .label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .formula-block .value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* 各卡片特有样式 */
+        .block-rate {
+            background-color: var(--color-rate-bg);
+            border: 2px solid var(--color-rate);
+            color: #e65100;
+        }
+
+        .block-tax {
+            background-color: var(--color-tax-bg);
+            border: 2px solid var(--color-tax);
+            color: #1b5e20;
+        }
+
+        .block-income {
+            background-color: var(--color-income-bg);
+            border: 2px solid var(--color-income);
+            color: #0d47a1;
+        }
+
+        /* 运算符通用样式 */
+        .operator {
+            position: absolute;
+            top: 20px;
+            height: 80px;
+            line-height: 80px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-align: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        /* 状态1：除法公式位置 (税率 = 应纳税额 ÷ 计税收入) */
+        .state-div .block-rate { left: 20px; }
+        .state-div .op-eq { left: 155px; opacity: 1; }
+        .state-div .block-tax { left: 195px; }
+        .state-div .op-div { left: 330px; opacity: 1; }
+        .state-div .op-mul { left: 330px; opacity: 0; pointer-events: none; }
+        .state-div .block-income { left: 370px; }
+
+        /* 状态2：乘法公式位置 (应纳税额 = 计税收入 × 税率) */
+        .state-mul .block-tax { left: 20px; }
+        .state-mul .op-eq { left: 155px; opacity: 1; }
+        .state-mul .block-income { left: 195px; }
+        .state-mul .op-mul { left: 330px; opacity: 1; }
+        .state-mul .op-div { left: 330px; opacity: 0; pointer-events: none; }
+        .state-mul .block-rate { left: 370px; }
+
+        /* 控制按钮区 */
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: #9c27b0;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d5d5d5;
+            transform: translateY(-2px);
+        }
+
+        /* 滑块控制区 */
+        .sliders-container {
+            background-color: #fcfcfc;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .slider-group {
+            margin-bottom: 12px;
+        }
+
+        .slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-income { background-color: var(--color-income); }
+        .dot-rate { background-color: var(--color-rate); }
+
+        .slider-input {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #666;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        #slideIncome::-webkit-slider-thumb { border-color: var(--color-income); }
+        #slideRate::-webkit-slider-thumb { border-color: var(--color-rate); }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 右侧：可视化图表区 */
+        .right-panel {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            border-left: 2px solid #f0f0f0;
+            padding-left: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--color-text-dark);
+            margin-bottom: 15px;
+        }
+
+        /* 教学引导提示 */
+        .instruction-box {
+            background-color: #fffde7;
+            border-left: 5px solid #fff176;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #5d4037;
+        }
+    </style>
+</head>
+<body>
+
+<div class="workspace">
+    <!-- 头部标题 -->
+    <header>
+        <h1>纳税问题数学模型推导</h1>
+        <p class="subtitle">探索“应纳税额”、“计税收入”与“税率”之间的数量关系</p>
+    </header>
+
+    <!-- 主交互区 -->
+    <div class="main-content">
+        <!-- 左侧控制与公式 -->
+        <div class="left-panel">
+            <!-- 动态公式卡片 -->
+            <div class="formula-container state-div" id="formulaContainer">
+                <!-- 税率 -->
+                <div class="formula-block block-rate" id="blockRate">
+                    <span class="label">税率</span>
+                    <span class="value" id="valRate">5%</span>
+                </div>
+                <!-- 等号 -->
+                <div class="operator op-eq" style="width: 30px;">=</div>
+                <!-- 应纳税额 -->
+                <div class="formula-block block-tax" id="blockTax">
+                    <span class="label">应纳税额</span>
+                    <span class="value" id="valTax">25万</span>
+                </div>
+                <!-- 除号 -->
+                <div class="operator op-div" style="width: 30px;">÷</div>
+                <!-- 乘号 -->
+                <div class="operator op-mul" style="width: 30px;">×</div>
+                <!-- 计税收入 -->
+                <div class="formula-block block-income" id="blockIncome">
+                    <span class="label">计税收入</span>
+                    <span class="value" id="valIncome">500万</span>
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="btnTransform">公式变形 ↻</button>
+                <button class="btn btn-secondary" id="btnReset">重置数据</button>
+            </div>
+
+            <!-- 交互滑块 -->
+            <div class="sliders-container">
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span><span class="dot dot-income"></span>计税收入 (营业额)</span>
+                        <span style="color: var(--color-income);" id="lblIncome">500 万元</span>
+                    </div>
+                    <input type="range" id="slideIncome" class="slider-input" min="100" max="1000" step="50" value="500">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span><span class="dot dot-rate"></span>适用税率</span>
+                        <span style="color: var(--color-rate);" id="lblRate">5%</span>
+                    </div>
+                    <input type="range" id="slideRate" class="slider-input" min="1" max="20" step="1" value="5">
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧直观图表 -->
+        <div class="right-panel">
+            <div class="chart-title">营业额与应纳税额关系图</div>
+            <!-- SVG 动态比例图 -->
+            <svg id="chartSvg" width="240" height="300" viewBox="0 0 240 300" style="background: #fafafa; border-radius: 8px; border: 1px solid #eee;">
+                <!-- 背景网格线 -->
+                <line x1="30" y1="50" x2="210" y2="50" stroke="#eee" stroke-dasharray="4"/>
+                <line x1="30" y1="110" x2="210" y2="110" stroke="#eee" stroke-dasharray="4"/>
+                <line x1="30" y1="170" x2="210" y2="170" stroke="#eee" stroke-dasharray="4"/>
+                <line x1="30" y1="230" x2="210" y2="230" stroke="#eee" stroke-dasharray="4"/>
+                
+                <!-- 计税收入柱状图 (总营业额) -->
+                <rect id="rectIncome" x="70" y="100" width="100" height="170" fill="#e3f2fd" stroke="#2196f3" stroke-width="3" rx="6"/>
+                
+                <!-- 应纳税额柱状图 (占比部分) -->
+                <rect id="rectTax" x="70" y="250" width="100" height="20" fill="#e8f5e9" stroke="#4caf50" stroke-width="3" rx="6"/>
+                
+                <!-- 动态标注文本 -->
+                <text id="txtIncome" x="120" y="90" text-anchor="middle" font-size="14" font-weight="bold" fill="#0d47a1">计税收入: 500万</text>
+                <text id="txtTax" x="120" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">应纳税额: 25万</text>
+                
+                <!-- 底部基准线 -->
+                <line x1="20" y1="270" x2="220" y2="270" stroke="#b0bec5" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 教学引导 -->
+    <div class="instruction-box">
+        <strong>💡 课堂思考：</strong>
+        1. 观察默认公式，理解税率、应纳税额、计税收入三者之间的除法关系。<br>
+        2. 点击<strong>【公式变形】</strong>按钮，观察公式如何通过等式性质转化为乘法模型。<br>
+        3. 拖动下方滑块改变数值，观察右侧图表中“应纳税额”占“计税收入”比例的动态变化。
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const formulaContainer = document.getElementById('formulaContainer');
+    const btnTransform = document.getElementById('btnTransform');
+    const btnReset = document.getElementById('btnReset');
+    
+    const slideIncome = document.getElementById('slideIncome');
+    const slideRate = document.getElementById('slideRate');
+    
+    const lblIncome = document.getElementById('lblIncome');
+    const lblRate = document.getElementById('lblRate');
+    
+    const valIncome = document.getElementById('valIncome');
+    const valRate = document.getElementById('valRate');
+    const valTax = document.getElementById('valTax');
+    
+    const rectIncome = document.getElementById('rectIncome');
+    const rectTax = document.getElementById('rectTax');
+    const txtIncome = document.getElementById('txtIncome');
+    const txtTax = document.getElementById('txtTax');
+
+    // 状态变量
+    let isTransformed = false;
+
+    // 更新计算与显示
+    function update() {
+        const income = parseInt(slideIncome.value);
+        const rate = parseInt(slideRate.value);
+        const tax = (income * rate) / 100;
+
+        // 1. 更新滑块旁边的文本
+        lblIncome.textContent = `${income} 万元`;
+        lblRate.textContent = `${rate}%`;
+
+        // 2. 更新公式卡片内部的数值
+        valIncome.textContent = `${income}万`;
+        valRate.textContent = `${rate}%`;
+        valTax.textContent = `${tax.toFixed(1)}万`;
+
+        // 3. 更新右侧 SVG 比例图
+        // 设定最大计税收入 1000万 对应柱状图高度 220px
+        const maxIncome = 1000;
+        const maxBarHeight = 220;
+        const baselineY = 270; // 底部基准线 Y 坐标
+
+        // 计算计税收入柱状图的高度和Y坐标
+        const incomeHeight = (income / maxIncome) * maxBarHeight;
+        const incomeY = baselineY - incomeHeight;
+
+        rectIncome.setAttribute('height', incomeHeight);
+        rectIncome.setAttribute('y', incomeY);
+
+        // 计算应纳税额柱状图的高度和Y坐标 (它是计税收入的一部分)
+        const taxHeight = incomeHeight * (rate / 100);
+        const taxY = baselineY - taxHeight;
+
+        rectTax.setAttribute('height', taxHeight);
+        rectTax.setAttribute('y', taxY);
+
+        // 更新文本位置与内容
+        txtIncome.setAttribute('y', Math.max(incomeY - 10, 30)); // 避免超出顶部
+        txtIncome.textContent = `计税收入: ${income}万`;
+
+        // 动态调整应纳税额文本位置，防止与计税收入文本重叠
+        if (taxHeight < 30) {
+            txtTax.setAttribute('y', taxY - 8);
+            txtTax.setAttribute('fill', '#1b5e20');
+        } else {
+            txtTax.setAttribute('y', taxY + taxHeight / 2 + 5);
+            txtTax.setAttribute('fill', '#1b5e20');
+        }
+        txtTax.textContent = `应纳税额: ${tax.toFixed(1)}万`;
+    }
+
+    // 公式变形切换
+    function toggleFormula() {
+        isTransformed = !isTransformed;
+        if (isTransformed) {
+            formulaContainer.className = 'formula-container state-mul';
+            btnTransform.textContent = '还原公式 ↺';
+            btnTransform.style.backgroundColor = '#009688';
+        } else {
+            formulaContainer.className = 'formula-container state-div';
+            btnTransform.textContent = '公式变形 ↻';
+            btnTransform.style.backgroundColor = '#9c27b0';
+        }
+    }
+
+    // 重置功能
+    function reset() {
+        slideIncome.value = 500;
+        slideRate.value = 5;
+        isTransformed = true; // 触发一次toggle使其回到初始div状态
+        toggleFormula();
+        update();
+    }
+
+    // 绑定事件监听器
+    slideIncome.addEventListener('input', update);
+    slideRate.addEventListener('input', update);
+    btnTransform.addEventListener('click', toggleFormula);
+    btnReset.addEventListener('click', reset);
+
+    // 初始化运行
+    update();
+</script>
+
+</body>
+</html>

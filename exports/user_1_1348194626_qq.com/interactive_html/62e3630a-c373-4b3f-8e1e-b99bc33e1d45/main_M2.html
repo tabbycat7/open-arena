@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>营业税计算演示器</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .formula {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-radius: 0.5rem;
+        }
+        .highlight { color: var(--primary); }
+        .control-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        select { width: 100%; padding: 0.5rem; font-size: 1rem; border-radius: 0.4rem; border: 1px solid #cbd5e1; }
+        .result-box {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+        .value-display { font-size: 2rem; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="formula">
+        应纳税额 = <span id="disp-income">1000</span> × <span id="disp-rate">3%</span>
+    </div>
+
+    <div class="control-group">
+        <label>计税收入 (元): <span id="val-income">1000</span></label>
+        <input type="range" id="slider-income" min="100" max="10000" step="100" value="1000">
+    </div>
+
+    <div class="control-group">
+        <label>税率:</label>
+        <select id="select-rate">
+            <option value="0.03">3%</option>
+            <option value="0.05">5%</option>
+            <option value="0.10">10%</option>
+        </select>
+    </div>
+
+    <div class="result-box">
+        应纳税额：<span class="value-display" id="result">30</span> 元
+    </div>
+</div>
+
+<script>
+    const sliderIncome = document.getElementById('slider-income');
+    const selectRate = document.getElementById('select-rate');
+    
+    const dispIncome = document.getElementById('disp-income');
+    const dispRate = document.getElementById('disp-rate');
+    const valIncome = document.getElementById('val-income');
+    const result = document.getElementById('result');
+
+    function updateCalculation() {
+        const income = parseFloat(sliderIncome.value);
+        const rate = parseFloat(selectRate.value);
+        const tax = income * rate;
+
+        // 更新显示
+        valIncome.textContent = income;
+        dispIncome.textContent = income;
+        dispRate.textContent = (rate * 100) + "%";
+        result.textContent = tax.toFixed(2);
+    }
+
+    sliderIncome.addEventListener('input', updateCalculation);
+    selectRate.addEventListener('change', updateCalculation);
+
+    // 初始化
+    updateCalculation();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小税务官纠错诊所 - 六年级数学纳税专题</title>
+  <style>
+    /* 全局样式与重置 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      background-color: #f0f4f8;
+      color: #2c3e50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 4px solid #d2e2f2;
+    }
+
+    /* 头部导航 */
+    header {
+      background: linear-gradient(135deg, #2f80ed, #56ccf2);
+      color: white;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #2d7cdb;
+    }
+    header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* 主交互区域 */
+    .main-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      padding: 20px;
+      background-color: #f8fafc;
+      overflow: hidden;
+    }
+
+    /* 左侧：导师与对话框 */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+    .mentor-container {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .speech-bubble {
+      background-color: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      line-height: 1.5;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      width: 100%;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 10px 10px 10px;
+      border-style: solid;
+      border-color: transparent transparent #ffffff transparent;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 11px 11px 11px;
+      border-style: solid;
+      border-color: transparent transparent #e2e8f0 transparent;
+      z-index: -1;
+    }
+
+    /* 右侧：黑板与诊断台 */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      overflow: hidden;
+    }
+
+    /* 黑板样式 */
+    .blackboard-wrapper {
+      position: relative;
+      flex: 1;
+    }
+    .blackboard {
+      background-color: #1b4332;
+      border: 12px solid #8b5a2b;
+      border-radius: 10px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 8px 16px rgba(0,0,0,0.2);
+      padding: 25px;
+      color: #f8fafc;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .blackboard-title {
+      color: #fbd38d;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px dashed rgba(255,255,255,0.2);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .statement {
+      font-size: 20px;
+      line-height: 2;
+      letter-spacing: 1px;
+      font-family: 'STKaiti', 'KaiTi', sans-serif;
+    }
+
+    /* 交互词汇槽 */
+    .word-slot {
+      display: inline-block;
+      padding: 2px 10px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      border: 2px dashed #fbd38d;
+      background-color: rgba(251, 211, 141, 0.1);
+      color: #fbd38d;
+    }
+    .word-slot:hover {
+      background-color: rgba(251, 211, 141, 0.25);
+      transform: scale(1.05);
+    }
+    .word-slot.active {
+      border: 2px solid #ff6b6b;
+      background-color: rgba(255, 107, 107, 0.2);
+      color: #ff8787;
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+    .word-slot.correct {
+      border: 2px solid #4ade80;
+      background-color: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+    }
+    .word-slot.incorrect {
+      border: 2px dashed #f87171;
+      background-color: rgba(248, 113, 113, 0.15);
+      color: #f87171;
+    }
+    .highlight-val {
+      color: #63b3ed;
+      font-weight: bold;
+      border-bottom: 2px solid #63b3ed;
+      padding: 0 4px;
+    }
+
+    /* 诊断印章 */
+    .stamp {
+      position: absolute;
+      right: 30px;
+      bottom: 20px;
+      width: 120px;
+      height: 120px;
+      border: 4px double #f87171;
+      border-radius: 50%;
+      color: #f87171;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      transform: rotate(-15deg) scale(0);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      background-color: rgba(27, 67, 50, 0.8);
+    }
+    .stamp.stamped {
+      transform: rotate(-15deg) scale(1);
+      opacity: 0.9;
+    }
+    .stamp.professional {
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    /* 诊断控制台 */
+    .control-panel {
+      background-color: #edf2f7;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .control-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #4a5568;
+    }
+    .options-group {
+      display: flex;
+      gap: 10px;
+    }
+    .opt-btn {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #cbd5e0;
+      background-color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: all 0.2s;
+      color: #4a5568;
+    }
+    .opt-btn:hover {
+      border-color: #3182ce;
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+    }
+    .opt-btn.selected {
+      background-color: #3182ce;
+      border-color: #2b6cb0;
+      color: white;
+    }
+
+    /* 底部：公式与规则分析 */
+    .analysis-bar {
+      background-color: #ebf8ff;
+      border-top: 2px solid #bee3f8;
+      padding: 15px 24px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    /* 动态公式 */
+    .formula-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      background-color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid #bbee3f8;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .formula-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 80px;
+    }
+    .formula-term {
+      font-size: 11px;
+      color: #718096;
+      margin-bottom: 2px;
+    }
+    .formula-val {
+      font-size: 15px;
+      font-weight: bold;
+      color: #2d3748;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: #f7fafc;
+      border: 1px solid #e2e8f0;
+      width: 100%;
+      text-align: center;
+    }
+    .formula-val.correct {
+      background-color: #f0fff4;
+      border-color: #c6f6d5;
+      color: #38a169;
+    }
+    .formula-val.incorrect {
+      background-color: #fff5f5;
+      border-color: #fed7d7;
+      color: #e53e3e;
+    }
+    .formula-op {
+      font-size: 18px;
+      font-weight: bold;
+      color: #a0aec0;
+    }
+
+    /* 规则检查清单 */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #4a5568;
+    }
+    .check-icon {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .check-icon.success { color: #48bb78; }
+    .check-icon.error { color: #f56565; }
+
+    /* 辅助按钮 */
+    .btn-reset {
+      background-color: #718096;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+      transition: background-color 0.2s;
+    }
+    .btn-reset:hover {
+      background-color: #4a5568;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <header>
+      <h1>🔍 小税务官纠错诊所</h1>
+      <div>
+        <button class="btn-reset" id="btn-reset">🔄 重置案例</button>
+      </div>
+    </header>
+
+    <!-- 主交互区 -->
+    <div class="main-layout">
+      <!-- 左侧：导师 -->
+      <div class="left-panel">
+        <div class="mentor-container">
+          <!-- 导师 SVG 动画形象 -->
+          <svg viewBox="0 0 200 220" width="100%" height="100%">
+            <!-- 阴影 -->
+            <ellipse cx="100" cy="205" rx="50" ry="8" fill="rgba(0,0,0,0.1)" />
+            <!-- 身体 -->
+            <ellipse cx="100" cy="135" rx="55" ry="60" fill="#3182ce" />
+            <ellipse cx="100" cy="145" rx="40" ry="45" fill="#ffffff" />
+            <!-- 眼睛 -->
+            <circle cx="75" cy="100" r="18" fill="#ecc94b" />
+            <circle cx="75" cy="100" r="13" fill="#ffffff" />
+            <circle cx="77" cy="100" r="6" fill="#2d3748" />
+            <circle cx="79" cy="98" r="2" fill="#ffffff" />
+
+            <circle cx="125" cy="100" r="18" fill="#ecc94b" />
+            <circle cx="125" cy="100" r="13" fill="#ffffff" />
+            <circle cx="123" cy="100" r="6" fill="#2d3748" />
+            <circle cx="121" cy="98" r="2" fill="#ffffff" />
+            <!-- 眼镜架 -->
+            <circle cx="75" cy="100" r="19" stroke="#4a5568" stroke-width="3" fill="none" />
+            <circle cx="125" cy="100" r="19" stroke="#4a5568" stroke-width="3" fill="none" />
+            <line x1="94" y1="100" x2="106" y2="100" stroke="#4a5568" stroke-width="3" />
+            <!-- 嘴巴 -->
+            <polygon points="100,112 94,123 106,123" fill="#dd6b20" />
+            <!-- 翅膀/手 -->
+            <path d="M 48,125 C 30,145 30,165 48,175 C 55,155 55,135 48,125 Z" fill="#2b6cb0" />
+            <path d="M 152,125 C 170,145 170,165 152,175 C 145,155 145,135 152,125 Z" fill="#2b6cb0" />
+            <!-- 指示棒 -->
+            <line x1="40" y1="155" x2="12" y2="90" stroke="#b7791f" stroke-width="4" stroke-linecap="round" />
+            <!-- 博士帽 -->
+            <polygon points="100,45 145,60 100,75 55,60" fill="#2d3748" />
+            <rect x="92" y="65" width="16" height="10" fill="#2d3748" />
+            <path d="M 145,60 L 155,85 L 150,88" stroke="#ecc94b" stroke-width="2" fill="none" />
+          </svg>
+        </div>
+        <div class="speech-bubble" id="mentor-speech">
+          请点击黑板上的黄色词语，帮实习生纠正用错的专业名词吧！
+        </div>
+      </div>
+
+      <!-- 右侧：黑板与诊断 -->
+      <div class="right-panel">
+        <!-- 黑板 -->
+        <div class="blackboard-wrapper">
+          <div class="blackboard">
+            <div>
+              <div class="blackboard-title">📋 实习小税务官的汇报发言：</div>
+              <p class="statement">
+                “因为这家商店本月的<span class="word-slot active" id="slot1" data-index="1">税率</span>是<span class="highlight-val">5000元</span>，<span class="word-slot" id="slot2" data-index="2">营业额</span>是<span class="highlight-val">5%</span>，所以计算得出他们应该缴纳的<span class="word-slot" id="slot3" data-index="3">应纳税额</span>是<span class="highlight-val">250元</span>。”
+              </p>
+            </div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5); text-align: right; font-style: italic;">
+              * 点击黄色虚线词语进行修改
+            </div>
+          </div>
+          <!-- 诊断印章 -->
+          <div class="stamp" id="stamp">诊断中...</div>
+        </div>
+
+        <!-- 诊断控制台 -->
+        <div class="control-panel">
+          <div class="control-title" id="control-title">正在诊断：关联到“5000元”的名词</div>
+          <div class="options-group">
+            <button class="opt-btn" data-val="营业额">营业额</button>
+            <button class="opt-btn" data-val="税率">税率</button>
+            <button class="opt-btn" data-val="应纳税额">应纳税额</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部：公式与规则分析 -->
+    <div class="analysis-bar">
+      <!-- 动态公式 -->
+      <div class="formula-container">
+        <div class="formula-box">
+          <span class="formula-term">应纳税额</span>
+          <div class="formula-val" id="f-tax">？</div>
+        </div>
+        <span class="formula-op">=</span>
+        <div class="formula-box">
+          <span class="formula-term">营业额</span>
+          <div class="formula-val" id="f-turnover">？</div>
+        </div>
+        <span class="formula-op">×</span>
+        <div class="formula-box">
+          <span class="formula-term">税率</span>
+          <div class="formula-val" id="f-rate">？</div>
+        </div>
+      </div>
+
+      <!-- 规则检查清单 -->
+      <div class="checklist">
+        <div class="check-item" id="rule-1">
+          <span class="check-icon">❓</span>
+          <span>5000元 对应的概念属性正确</span>
+        </div>
+        <div class="check-item" id="rule-2">
+          <span class="check-icon">❓</span>
+          <span>5% 对应的概念属性正确</span>
+        </div>
+        <div class="check-item" id="rule-3">
+          <span class="check-icon">❓</span>
+          <span>250元 对应的概念属性正确</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 初始状态
+    const initialState = {
+      slot1: "税率",      // 对应 5000元
+      slot2: "营业额",    // 对应 5%
+      slot3: "应纳税额",  // 对应 250元
+      activeSlot: 1
+    };
+
+    let state = { ...initialState };
+
+    // DOM 元素
+    const slots = {
+      1: document.getElementById('slot1'),
+      2: document.getElementById('slot2'),
+      3: document.getElementById('slot3')
+    };
+    const optBtns = document.querySelectorAll('.opt-btn');
+    const controlTitle = document.getElementById('control-title');
+    const mentorSpeech = document.getElementById('mentor-speech');
+    const stamp = document.getElementById('stamp');
+    const btnReset = document.getElementById('btn-reset');
+
+    // 公式元素
+    const fTax = document.getElementById('f-tax');
+    const fTurnover = document.getElementById('f-turnover');
+    const fRate = document.getElementById('f-rate');
+
+    // 规则元素
+    const rules = {
+      1: document.getElementById('rule-1'),
+      2: document.getElementById('rule-2'),
+      3: document.getElementById('rule-3')
+    };
+
+    // 槽位关联的数值描述
+    const slotValues = {
+      1: "5000元",
+      2: "5%",
+      3: "250元"
+    };
+
+    // 初始化
+    function init() {
+      // 绑定槽位点击事件
+      Object.keys(slots).forEach(key => {
+        slots[key].addEventListener('click', () => {
+          selectSlot(parseInt(key));
+        });
+      });
+
+      // 绑定选项按钮点击事件
+      optBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.getAttribute('data-val');
+          updateSlotValue(val);
+        });
+      });
+
+      // 重置按钮
+      btnReset.addEventListener('click', resetGame);
+
+      // 首次渲染
+      selectSlot(1);
+      render();
+    }
+
+    // 选择当前诊断的槽位
+    function selectSlot(index) {
+      state.activeSlot = index;
+      
+      // 更新槽位高亮
+      Object.keys(slots).forEach(key => {
+        slots[key].classList.remove('active');
+      });
+      slots[index].classList.add('active');
+
+      // 更新控制台标题
+      controlTitle.textContent = `正在诊断：关联到“${slotValues[index]}”的名词`;
+
+      // 更新选项按钮高亮
+      updateOptionButtonsHighlight();
+    }
+
+    // 更新选项按钮的高亮状态
+    function updateOptionButtonsHighlight() {
+      const currentVal = state[`slot${state.activeSlot}`];
+      optBtns.forEach(btn => {
+        if (btn.getAttribute('data-val') === currentVal) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    // 更新当前槽位的值
+    function updateSlotValue(value) {
+      state[`slot${state.activeSlot}`] = value;
+      slots[state.activeSlot].textContent = value;
+      render();
+    }
+
+    // 重置
+    function resetGame() {
+      state = { ...initialState };
+      Object.keys(slots).forEach(key => {
+        slots[key].textContent = state[`slot${key}`];
+      });
+      selectSlot(1);
+      render();
+    }
+
+    // 核心渲染与逻辑判断
+    function render() {
+      // 1. 判断各槽位正确性
+      // 5000元 应该是 营业额
+      const isSlot1Correct = state.slot1 === "营业额";
+      // 5% 应该是 税率
+      const isSlot2Correct = state.slot2 === "税率";
+      // 250元 应该是 应纳税额
+      const isSlot3Correct = state.slot3 === "应纳税额";
+
+      // 更新黑板词汇的对错样式
+      updateSlotStyle(1, isSlot1Correct);
+      updateSlotStyle(2, isSlot2Correct);
+      updateSlotStyle(3, isSlot3Correct);
+
+      // 2. 更新公式看板
+      updateFormulaDisplay();
+
+      // 3. 更新规则检查清单
+      updateRuleChecklist(1, isSlot1Correct, "5000元 是资金总额，应对应“营业额”");
+      updateRuleChecklist(2, isSlot2Correct, "5% 是征税比例，应对应“税率”");
+      updateRuleChecklist(3, isSlot3Correct, "250元 是计算出的税金，应对应“应纳税额”");
+
+      // 4. 综合诊断结果
+      const isAllCorrect = isSlot1Correct && isSlot2Correct && isSlot3Correct;
+      
+      if (isAllCorrect) {
+        // 成功状态
+        stamp.className = "stamp stamped professional";
+        stamp.textContent = "诊断合格";
+        mentorSpeech.innerHTML = "<strong>太棒了！修改得非常专业！</strong><br>“营业额是5000元，税率是5%，应纳税额是250元。” 概念与数值完全匹配，逻辑严密！";
+      } else {
+        // 错误或进行中状态
+        stamp.className = "stamp stamped";
+        stamp.textContent = "概念混淆";
+        
+        // 智能导师提示
+        if (state.slot1 === "税率") {
+          mentorSpeech.innerHTML = "<strong>导师提示：</strong><br>唔，实习生说‘税率是5000元’。想一想，税率通常是一个百分数，怎么会是5000元呢？";
+        } else if (state.slot2 === "营业额") {
+          mentorSpeech.innerHTML = "<strong>导师提示：</strong><br>看这里：‘营业额是5%’。营业额是商店的销售收入，应该是一个具体的资金数额，不可能是百分数哦。";
+        } else {
+          mentorSpeech.innerHTML = "<strong>导师提示：</strong><br>请继续调整。确保<strong>资金数额</strong>、<strong>百分比</strong>与它们对应的<strong>税务名词</strong>一一对应。";
+        }
+      }
+
+      updateOptionButtonsHighlight();
+    }
+
+    // 辅助：更新槽位样式
+    function updateSlotStyle(index, isCorrect) {
+      const slot = slots[index];
+      if (isCorrect) {
+        slot.classList.remove('incorrect');
+        slot.classList.add('correct');
+      } else {
+        slot.classList.remove('correct');
+        slot.classList.add('incorrect');
+      }
+    }
+
+    // 辅助：更新公式显示
+    function updateFormulaDisplay() {
+      // 找出用户设定中，哪个词被设定为了“应纳税额”、“营业额”、“税率”
+      let taxVal = "？";
+      let turnoverVal = "？";
+      let rateVal = "？";
+
+      // 遍历槽位，收集数值
+      for (let i = 1; i <= 3; i++) {
+        const term = state[`slot${i}`];
+        const val = slotValues[i];
+        if (term === "应纳税额") taxVal = val;
+        if (term === "营业额") turnoverVal = val;
+        if (term === "税率") rateVal = val;
+      }
+
+      fTax.textContent = taxVal;
+      fTurnover.textContent = turnoverVal;
+      fRate.textContent = rateVal;
+
+      // 公式数值对错样式
+      setElementCorrectnessClass(fTax, taxVal === "250元");
+      setElementCorrectnessClass(fTurnover, turnoverVal === "5000元");
+      setElementCorrectnessClass(fRate, rateVal === "5%");
+    }
+
+    function setElementCorrectnessClass(el, isCorrect) {
+      if (isCorrect) {
+        el.className = "formula-val correct";
+      } else {
+        el.className = "formula-val incorrect";
+      }
+    }
+
+    // 辅助：更新规则清单
+    function updateRuleChecklist(index, isCorrect, text) {
+      const item = rules[index];
+      const icon = item.querySelector('.check-icon');
+      const label = item.querySelector('span:last-child');
+
+      if (isCorrect) {
+        icon.textContent = "✅";
+        icon.className = "check-icon success";
+        label.style.color = "#2d3748";
+        label.textContent = text.split("，")[0] + " 正确！";
+      } else {
+        icon.textContent = "❌";
+        icon.className = "check-icon error";
+        label.style.color = "#e53e3e";
+        label.textContent = text;
+      }
+    }
+
+    // 执行初始化
+    window.onload = init;
+  </script>
+</body>
+</html>

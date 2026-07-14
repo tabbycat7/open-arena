@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法与日记的对比</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 90%; max-width: 800px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        .main-view { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .box { width: 45%; border: 2px solid #ccc; border-radius: 8px; padding: 10px; min-height: 200px; background: #fafafa; }
+        .item { padding: 8px; margin: 5px 0; background: #eef; cursor: pointer; border-radius: 4px; transition: 0.3s; border: 1px solid #ccd; }
+        .item:hover { background: #d1e7ff; }
+        .item.selected { background: #ffeb3b; border-color: #fbc02d; }
+        
+        #scale-svg { width: 100%; height: 150px; }
+        .balance-beam { stroke: #555; stroke-width: 4; }
+        .tray { fill: #888; }
+        
+        #result-msg { text-align: center; font-weight: bold; color: #d32f2f; height: 30px; margin-top: 10px; }
+        .definition { display: none; background: #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; border: 2px dashed #2e7d32; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>算法 vs 日记：你能分清吗？</h2>
+    <div class="main-view">
+        <div class="box" id="box-algo">
+            <h4 style="text-align:center">番茄炒蛋步骤</h4>
+            <div class="item" data-type="algo">1. 切番茄</div>
+            <div class="item" data-type="algo">2. 打鸡蛋</div>
+            <div class="item" data-type="algo">3. 下锅炒</div>
+        </div>
+        <div class="box" id="box-diary">
+            <h4 style="text-align:center">小明的日记</h4>
+            <div class="item" data-type="diary">今天天气很好</div>
+            <div class="item" data-type="diary">我去吃了个苹果</div>
+            <div class="item" data-type="diary">心情很愉快</div>
+        </div>
+    </div>
+
+    <svg id="scale-svg" viewBox="0 0 400 150">
+        <line x1="200" y1="20" x2="200" y2="100" stroke="#333" stroke-width="6" />
+        <line id="beam" x1="50" y1="20" x2="350" y2="20" class="balance-beam" transform="rotate(10 200 20)" />
+        <circle cx="200" cy="20" r="8" fill="#333" />
+        <rect id="tray-left" x="30" y="20" width="40" height="10" class="tray" />
+        <rect id="tray-right" x="330" y="20" width="40" height="10" class="tray" />
+    </svg>
+
+    <div id="result-msg">点击句子，将其放入天平两端进行对比</div>
+    <div id="definition" class="definition">
+        结论：算法是解决问题的方法和步骤，具有明确的顺序和目标！
+    </div>
+</div>
+
+<script>
+    const items = document.querySelectorAll('.item');
+    const beam = document.getElementById('beam');
+    const resultMsg = document.getElementById('result-msg');
+    const definition = document.getElementById('definition');
+    
+    let algoCount = 0;
+    let diaryCount = 0;
+
+    items.forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('selected')) return;
+            
+            this.classList.add('selected');
+            if (this.dataset.type === 'algo') {
+                algoCount++;
+            } else {
+                diaryCount++;
+            }
+            
+            updateScale();
+        });
+    });
+
+    function updateScale() {
+        // 简单的天平逻辑：左边多则左倾，右边多则右倾，相等则平衡
+        let rotation = (diaryCount - algoCount) * 15;
+        beam.setAttribute('transform', `rotate(${rotation} 200 20)`);
+        
+        if (algoCount === 3 && diaryCount === 0) {
+            resultMsg.innerText = "太棒了！你找出了所有步骤，天平平衡了！";
+            definition.style.display = 'block';
+        } else if (algoCount > 0 || diaryCount > 0) {
+            resultMsg.innerText = "观察天平的倾斜，思考哪一侧更符合“解决问题”的特征？";
+        }
+    }
+</script>
+
+</body>
+</html>

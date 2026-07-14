@@ -1,0 +1,889 @@
+{
+  "id": "08284a93-396e-440c-8074-1c204261bcf4",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1、经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”，会用“鸽巢原理”解决简单的实际问题。2、通过操作发展学生的类推能力，形成比较抽象的数学思维。3、通过“鸽巢原理”的灵活应用感受数学的魅力。\r\n",
+  "student_profile": "学习者分析为了更准确的了解学情，我做了课前问卷调查，设计的问题是：你知道什么是鸽巢原理吗？若知道，请举例说明。调查人数 41人，41.4%学生能正确举例。34.5%学生理解模糊，24.1%学生完全不知道。也就是说很多同学课前接触过鸽巢问题，基本都可以用平均分的方法解决问题，但知其然，不知其所以然。基于以上调查，我认为六年级的学生对于总结规律的方法研究比较少，尤其对于“数学证明”。因此，教学过程中教师要耐心细致的引导，重在让学生经历知识的发生、发展过程，而不是生搬硬套，只求结论，要让学生知其然，更要知其所以然。",
+  "difficulty_analysis": "教学重难点分析及解决措施重点：使学生经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”。新课标提倡“做数学”。学生只有亲历知识形成的过程，才能真正理解知识，灵活运用知识。本节课主要采用了游戏激趣法、活动体验法、讲授法、实践操作法。通过猜测、验证、观察、分析等活动，建立数学模型，渗透数学思想。激发学生参与学习的积极性，让学生在求知的学习状态中展示个性。促进学生思考，引导学生自己进行探索，丰富数学活动经验。难点：“对鸽巢原理的认识，尤其是对“总有”“至少”的意义，和“至少数=商数十1”的理解”。学生通过动手实践、自主探索、合作交流等活动，体验知识的形成过程，掌握基本知识和技能，建立数学模型，发展数学思考和解决问题的能力，形成良好的情感、态度和价值观。",
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"4支铅笔放进3个笔筒，动手摆一摆，是不是不管怎么放，总有一个笔筒里至少有2支铅笔？你发现了什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，今天我们要研究一个有趣的数学问题。大家手里都有4支铅笔和3个笔筒，动手摆一摆，看看是不是不管怎么放，总有一个笔筒里至少有2支铅笔？摆的时候想一想，'总有'和'至少'到底是什么意思。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"通过'4支铅笔放入3个笔筒'的动手操作，让全体学生在具体活动中感知'总有'和'至少'的现象，引发认知冲突，为抽象建模奠定经验基础。特别照顾学困生的具体形象思维特点。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"有同学说'总有'就是'可能会有'，'至少2支'就是'恰好2支'，这样理解对吗？能不能举个例子说明？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才大家通过操作发现了一个现象，但这里有两个词很关键。有同学对'总有'和'至少'的理解不太一样，认为'总有'就是'可能会有'，'至少2支'就是'恰好2支'。这样理解准确吗？大家讨论一下，能不能举个例子来说明你的观点？\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"通过反例、追问和对比，引导学生区分'总有'与'可能有'、'至少'与'恰好'的数学含义。这是后续逻辑推理的前提，必须确保全体学生准确掌握，避免学困生因语义模糊导致后续探究失效。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们刚才都试了几种摆法，结论都对。但'不管怎么放'有无数种可能，我们试不完。有没有什么办法，不用把所有摆法都试一遍，就能让大家百分之百相信这个结论？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"我们刚才都试了几种摆法，结论都对。但'不管怎么放'有无数种可能，我们试不完。有没有什么办法，不用把所有摆法都试一遍，就能让大家百分之百相信这个结论？大家可以独立思考，也可以小组讨论，看看能想到几种不同的方法？\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"在理解关键词基础上，引导学生自主探索枚举法和假设法。通过'如何证明这个结论'的挑战性问题，让学优生展示完整逻辑，普通生模仿学习，学困生通过具体操作理解证明思路，实现差异化发展。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"数字变大时，摆来摆去太麻烦了。想想看，7本书放进3个抽屉，能不能用一个除法算式来表示这个分配过程？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才的枚举法和假设法都很好，但如果数字变大，比如100支铅笔放进99个笔筒，这些方法还方便吗？数学追求简洁，我们能不能用一个算式来表示这个分配过程？看看7本书放进3个抽屉怎么用算式表示？\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"通过'怎样分能让每个抽屉尽可能少'的引导性问题，激活学生平均分经验，自然过渡到除法算式。利用表格整理枚举结果，帮助学生观察每份数量与余数关系，搭建从具体到抽象的桥梁，攻克学困生的抽象建模障碍。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"7÷3余1至少数是3，8÷3余2至少数怎么还是3？10÷3余1至少数是4。余数变了，为什么至少数的变化不一样？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家列出了7÷3、8÷3、10÷3这些算式，都算出了至少数。现在请大家对比思考：7÷3余1至少数是3，8÷3余2至少数怎么还是3？10÷3余1至少数是4。余数变了，为什么至少数的变化不一样？这背后有什么道理？\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"通过对比7÷3、8÷3、10÷3等多个例子，引导学生发现'至少数=商数+1'的规律。利用余数大于1的反例引发认知冲突，借助直观图示揭示'加1'的本质，避免机械记忆，深化数学思维。\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"11只鸽子飞进4个鸽笼，总有一个鸽笼至少飞进几只？扑克牌魔术里，52张牌9人抽，为什么至少3张同花色？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"我们来看两个实际问题。11只鸽子飞进4个鸽笼，扑克牌魔术里52张牌9人抽。这两个情境比铅笔笔筒复杂，关键是要找出什么是'物体'、什么是'抽屉'。请大家先独立思考，再和同桌交流你是怎么分析的。\", \"knowledge_points\": [\"KP6\", \"KP7\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"在标准情境（书本入抽屉）和复杂情境（扑克牌、属相）中应用原理。提供问题分析框架支架，帮助学困生识别'物体'与'抽屉'。通过'你能创造一个新的鸽巢问题吗'的开放任务，激发学优生的创造性思维。\", \"design_rationale\": \"\"}, {\"id\": \"M7\", \"content\": \"生活中还有哪些现象藏着鸽巢原理？请当'数学侦探'，设计一个实际问题来考考你的伙伴。\", \"question_type\": \"main\", \"lesson_presentation_script\": \"通过今天的学习，我们像有了数学透视眼。现在请大家当一回数学侦探，到生活中去发现鸽巢原理的身影。能不能设计一个你自己的鸽巢问题，让其他同学来解答？设计的时候要让别人也能找出物体和抽屉。\", \"knowledge_points\": [\"KP7\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.85, \"design_intent\": \"提供开放性问题情境，激发学优生创造性思维，实现知识的迁移与创新应用，让不同层次学生都能在生活中发现数学原理的实际价值。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"5只鸽子飞进4个鸽巢，不管怎么飞，总有一个鸽巢里至少有2只鸽子。你能用画图或列举的方法验证吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将铅笔入笔筒替换为鸽子入鸽巢，保持'物体数=抽屉数+1'的结构，让学生在熟悉的情境中再次感知'总有'和'至少'的现象，通过画图或列举验证结论，巩固直观理解。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"从4支铅笔到7本书，'至少数'从2变成了3。你发现物体数量、抽屉数量和'至少数'之间有什么关系吗？试着猜一猜。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.62, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将认知焦点从验证现象转向探究规律，引导学生初步归纳数量关系，为后续学习KP4、KP5埋下伏笔，实现真正的认知进阶。\", \"design_rationale\": \"\"}, {\"id\": \"V1-3\", \"content\": \"班上有13名同学，至少有2人是同一个月出生的。这个结论对吗？你能用今天的原理解释吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将具体问题转化为经典的'生日问题'，引导学生识别隐藏的'抽屉'（12个月），感受数学原理在日常生活中的广泛应用，提升知识迁移能力。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"5支铅笔放进3个笔筒，'总有1个笔筒至少有2支'还成立吗？那'总有'和'至少'的意思变了吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过改变物体数量制造反例追问，引导学生辨析关键词含义的稳定性，理解'总有'和'至少'的数学定义不随具体数值变化，强化语义精确性。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"把5个苹果分给3个小朋友，'总有1人至少分到2个'是什么意思？'至少'能换成'恰好'吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"采用新情境（分苹果）承载关键词辨析，通过具体例子引导学生区分'至少'与'恰好'的数学差异，避免与主干问题重复，深化概念理解。\", \"design_rationale\": \"\"}, {\"id\": \"V2-3\", \"content\": \"如果只有2支铅笔要放进3个笔筒，'总有一个笔筒至少有2支'还成立吗？这时'总有'和'至少'还能用吗？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.65, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过极端反例（物体数<抽屉数）引导学生思考原理的适用边界，制造更强的认知冲突，理解数学概念的使用条件，培养思维的严谨性。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"5只鸽子飞进4个鸽巢，假设每个鸽巢最多1只，最多住几只？实际有5只，这个矛盾说明了什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"将假设法迁移到鸽子问题，通过'假设-矛盾-结论'的逻辑链条，让学生体验假设法的严谨性，理解反证思想，提升逻辑推理能力。\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"100支铅笔放进99个笔筒，用枚举法好还是假设法好？数字很大时，哪种方法更有说服力？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.75, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过极端数值对比两种方法的优劣，引导学生从效率和严谨性角度评价不同证明方法，理解数学追求简洁的本质，培养方法选择意识。\", \"design_rationale\": \"\"}, {\"id\": \"V3-3\", \"content\": \"枚举时如果漏掉了（1,1,2）这种分法，结论还成立吗？这说明枚举法要注意什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"针对枚举法的局限性设计反例追问，引导学生思考枚举的完整性与结论可靠性的关系，培养严谨求实的科学态度，理解完全归纳的必要性。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"班级有25个同学分成4个小组，至少有一个小组不少于几人？用除法算式表示，并说说每个数的意思。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"采用生活迁移策略，新情境触发新鲜感，'不少于'与'至少'形成语言变式，同时紧扣'列除法算式表示分配过程'的核心，促进数学建模。\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"8本书放3个抽屉，列式8÷3=2...2。这里的'2本'和'余下的2本'意思一样吗？分别表示什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.78, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"聚焦除法算式各部分意义，引导学生区分商和余数在'尽量平均分'中的不同含义，为后续理解'商+1'规律做好铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"V4-3\", \"content\": \"19颗糖分给6个小朋友，怎样列式能让每人分到的尽可能少？有余数怎么办？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.76, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"将数学模型迁移到分糖果的生活情境中，强化'尽量平均分'的思路，引导学生主动应用除法算式解决新问题，实现知识的灵活迁移。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"8÷3余2，有同学认为至少数应该是2+2=4。你觉得对吗？用'尽量平均分'的思路说说道理。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.82, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"针对'至少数=商+余数'的常见错误设计反例追问，引导学生用'尽量平均分'的推理方式自主发现'加1'的本质，避免机械记忆。\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"14÷4余2，小华认为'至少数=3+2=5'。你能举出一个分法说明他错了吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"设计易误判案例引发认知冲突，通过构造反例深化对'商+1'规律的理解，避免与主干问题思维路径重复。\", \"design_rationale\": \"\"}, {\"id\": \"V5-3\", \"content\": \"11只鸽子飞入4个鸽巢，总有一个鸽巢至少飞进几只？请直接用'商+1'的规律快速得出答案。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将规律应用于鸽子问题，训练学生快速运用'商+1'模型解决新情境问题的能力，巩固对规律的掌握。\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"9人各抽1张扑克牌，为什么至少有3人同花色？识别'物体'与'抽屉'，并对比鸽子入笼问题，关键步骤有何不同？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\", \"KP7\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.85, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"在扑克牌问题中训练识别'物体'与'抽屉'的能力，通过对比鸽子问题引导学生进行方法论比较和总结，更贴合M6综合应用与拓展创造的目标。\", \"design_rationale\": \"\"}, {\"id\": \"V6-2\", \"content\": \"13位老师中，至少有2人同属相。这个问题隐藏的'抽屉'是什么？你是怎么识别的？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP7\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.88, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"设计属相问题强化隐藏抽屉的识别能力，通过追问'怎么识别的'引导学生总结识别方法，为自主设计问题提供思维支架。\", \"design_rationale\": \"\"}, {\"id\": \"V6-3\", \"content\": \"367人中至少有2人同一天生日，这结论可靠吗？请评价鸽巢原理的适用范围。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP7\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过极端数据（367人）引导学生评价原理的普适性和适用条件，思考'抽屉'数量（366天）与原理应用的关系，培养批判性思维和元认知能力。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"“总有”和“可能会有”意思一样吗？哪句更确定？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"连接M1的实物操作与M2的关键词辨析，通过对比辨析引导学生理解'总有'的精确数学含义\", \"design_intent\": \"锚定学困生'日常语义替代数学语义'的断层，强制学生关注数学精确性，为后续逻辑推理扫清语言障碍\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"'至少2支'的意思，可能是3支吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.42, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"连接M1的发现与M2的'至少'理解，通过追问可能性打破'恰好'的刻板印象\", \"design_intent\": \"锚定学困生'至少=恰好'的刻板理解，建立'不少于'的数学意义\", \"design_rationale\": \"\"}, {\"id\": \"S1-3\", \"content\": \"'总有'和'一定有'意思一样吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"连接M1的语言描述与M2的数学语义，通过近义词对比培养语言敏感性\", \"design_intent\": \"锚定学困生'关键词混淆'问题，培养数学语言的敏感性\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"如果结论不对，每个笔筒最多放几支？4支铅笔够分吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.48, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"连接M2的关键词理解与M3的证明方法，从具体数值出发提供反证法的逻辑起点\", \"design_intent\": \"锚定学困生'不知从何下手'的探究障碍，将证明任务拆解为可操作的子任务\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"能不能先假设结论不对？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"连接M2的语义辨析与M3的多种证明思路，直接提示'假设'思路降低方法选择难度\", \"design_intent\": \"锚定学困生'方法选择困难'，直接提示假设法思路\", \"design_rationale\": \"\"}, {\"id\": \"S2-3\", \"content\": \"如果每个笔筒最多1支，4支铅笔放得下吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.52, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"连接M2的理解与M3的逻辑推理，通过具体数值对比直观展示反证法的逻辑起点\", \"design_intent\": \"锚定学困生'逻辑链条断裂'问题，通过应用具体情境展示反证法逻辑\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"怎么分，才能让每个笔筒里的铅笔都尽可能少？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"连接M3的证明思路与M4的符号表征，通过'尽可能少'激活平均分经验\", \"design_intent\": \"锚定学困生'平均分思路缺失'的断层，自然引出平均分概念\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"尽量平均分后，每份是2本，这和除法里的哪个数一样？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.58, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"连接M3的枚举结果与M4的除法模型，明确连接平均分结果与除法算式的对应关系\", \"design_intent\": \"锚定学困生'数据观察能力不足'，通过具体对应为除法算式铺垫\", \"design_rationale\": \"\"}, {\"id\": \"S3-3\", \"content\": \"7÷3=2...1，哪个数表示剩下的书？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"连接M3的分配过程与M4的算式表达，明确算式各部分的数学意义\", \"design_intent\": \"锚定学困生'符号表征困难'，细化算式各部分的对应关系\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"余数从1变成2，至少数为什么没变？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"连接M4的除法算式与M5的规律发现，通过对比余数变化引发对分配本质的思考\", \"design_intent\": \"锚定学困生'余数意义理解不清'的断层，引导学生关注余数的分配本质\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"余数是2，至少数就要加2吗？说说你的想法。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.68, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"连接M4的算式计算与M5的本质理解，用温和的反例打破机械记忆\", \"design_intent\": \"锚定学困生'机械记忆公式'倾向，通过温和邀请引发认知冲突\", \"design_rationale\": \"\"}, {\"id\": \"S4-3\", \"content\": \"多余的2支，为什么不能给同一个抽屉？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"连接M4的余数处理与M5的模型本质，深化余数分配机制理解\", \"design_intent\": \"锚定学困生'余数大于1时出错'的难点，揭示'加1'的本质\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"11只鸽子飞进4个鸽笼，谁是'物体'，谁是'抽屉'？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\", \"KP7\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.72, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"连接M5的模型理解与M6的复杂情境，提供'物体-抽屉'识别框架\", \"design_intent\": \"锚定学困生'结构识别困难'，降低复杂情境的认知负荷\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"算出11÷4后，商和余数分别告诉我们什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.75, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"连接M5的算式应用与M6的解题步骤，引导学生理解算式结果的数学意义\", \"design_intent\": \"锚定学困生'解题步骤混乱'，引导关注算式意义而非机械操作\", \"design_rationale\": \"\"}, {\"id\": \"S5-3\", \"content\": \"扑克牌问题，能转化成'把书放进抽屉'吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP7\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"连接M5的模型掌握与M6的情境迁移，通过简化策略促进知识迁移\", \"design_intent\": \"锚定学困生'情境迁移困难'，将复杂问题还原为熟悉模型\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M6\", \"target\": \"M7\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"S1-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-3\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"S2-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-3\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"S3-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-3\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"S4-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"S5-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-3\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-04 17:14:01",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "4支铅笔放进3个笔筒，动手摆一摆，是不是不管怎么放，总有一个笔筒里至少有2支铅笔？你发现了什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，今天我们要研究一个有趣的数学问题。大家手里都有4支铅笔和3个笔筒，动手摆一摆，看看是不是不管怎么放，总有一个笔筒里至少有2支铅笔？摆的时候想一想，'总有'和'至少'到底是什么意思。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "通过'4支铅笔放入3个笔筒'的动手操作，让全体学生在具体活动中感知'总有'和'至少'的现象，引发认知冲突，为抽象建模奠定经验基础。特别照顾学困生的具体形象思维特点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "有同学说'总有'就是'可能会有'，'至少2支'就是'恰好2支'，这样理解对吗？能不能举个例子说明？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才大家通过操作发现了一个现象，但这里有两个词很关键。有同学对'总有'和'至少'的理解不太一样，认为'总有'就是'可能会有'，'至少2支'就是'恰好2支'。这样理解准确吗？大家讨论一下，能不能举个例子来说明你的观点？",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "通过反例、追问和对比，引导学生区分'总有'与'可能有'、'至少'与'恰好'的数学含义。这是后续逻辑推理的前提，必须确保全体学生准确掌握，避免学困生因语义模糊导致后续探究失效。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们刚才都试了几种摆法，结论都对。但'不管怎么放'有无数种可能，我们试不完。有没有什么办法，不用把所有摆法都试一遍，就能让大家百分之百相信这个结论？",
+        "question_type": "main",
+        "lesson_presentation_script": "我们刚才都试了几种摆法，结论都对。但'不管怎么放'有无数种可能，我们试不完。有没有什么办法，不用把所有摆法都试一遍，就能让大家百分之百相信这个结论？大家可以独立思考，也可以小组讨论，看看能想到几种不同的方法？",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "在理解关键词基础上，引导学生自主探索枚举法和假设法。通过'如何证明这个结论'的挑战性问题，让学优生展示完整逻辑，普通生模仿学习，学困生通过具体操作理解证明思路，实现差异化发展。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "数字变大时，摆来摆去太麻烦了。想想看，7本书放进3个抽屉，能不能用一个除法算式来表示这个分配过程？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才的枚举法和假设法都很好，但如果数字变大，比如100支铅笔放进99个笔筒，这些方法还方便吗？数学追求简洁，我们能不能用一个算式来表示这个分配过程？看看7本书放进3个抽屉怎么用算式表示？",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "通过'怎样分能让每个抽屉尽可能少'的引导性问题，激活学生平均分经验，自然过渡到除法算式。利用表格整理枚举结果，帮助学生观察每份数量与余数关系，搭建从具体到抽象的桥梁，攻克学困生的抽象建模障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "7÷3余1至少数是3，8÷3余2至少数怎么还是3？10÷3余1至少数是4。余数变了，为什么至少数的变化不一样？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家列出了7÷3、8÷3、10÷3这些算式，都算出了至少数。现在请大家对比思考：7÷3余1至少数是3，8÷3余2至少数怎么还是3？10÷3余1至少数是4。余数变了，为什么至少数的变化不一样？这背后有什么道理？",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "通过对比7÷3、8÷3、10÷3等多个例子，引导学生发现'至少数=商数+1'的规律。利用余数大于1的反例引发认知冲突，借助直观图示揭示'加1'的本质，避免机械记忆，深化数学思维。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "11只鸽子飞进4个鸽笼，总有一个鸽笼至少飞进几只？扑克牌魔术里，52张牌9人抽，为什么至少3张同花色？",
+        "question_type": "main",
+        "lesson_presentation_script": "我们来看两个实际问题。11只鸽子飞进4个鸽笼，扑克牌魔术里52张牌9人抽。这两个情境比铅笔笔筒复杂，关键是要找出什么是'物体'、什么是'抽屉'。请大家先独立思考，再和同桌交流你是怎么分析的。",
+        "knowledge_points": [
+          "KP6",
+          "KP7"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "在标准情境（书本入抽屉）和复杂情境（扑克牌、属相）中应用原理。提供问题分析框架支架，帮助学困生识别'物体'与'抽屉'。通过'你能创造一个新的鸽巢问题吗'的开放任务，激发学优生的创造性思维。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M7",
+        "content": "生活中还有哪些现象藏着鸽巢原理？请当'数学侦探'，设计一个实际问题来考考你的伙伴。",
+        "question_type": "main",
+        "lesson_presentation_script": "通过今天的学习，我们像有了数学透视眼。现在请大家当一回数学侦探，到生活中去发现鸽巢原理的身影。能不能设计一个你自己的鸽巢问题，让其他同学来解答？设计的时候要让别人也能找出物体和抽屉。",
+        "knowledge_points": [
+          "KP7"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.85,
+        "design_intent": "提供开放性问题情境，激发学优生创造性思维，实现知识的迁移与创新应用，让不同层次学生都能在生活中发现数学原理的实际价值。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "5只鸽子飞进4个鸽巢，不管怎么飞，总有一个鸽巢里至少有2只鸽子。你能用画图或列举的方法验证吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将铅笔入笔筒替换为鸽子入鸽巢，保持'物体数=抽屉数+1'的结构，让学生在熟悉的情境中再次感知'总有'和'至少'的现象，通过画图或列举验证结论，巩固直观理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "从4支铅笔到7本书，'至少数'从2变成了3。你发现物体数量、抽屉数量和'至少数'之间有什么关系吗？试着猜一猜。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.62,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将认知焦点从验证现象转向探究规律，引导学生初步归纳数量关系，为后续学习KP4、KP5埋下伏笔，实现真正的认知进阶。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-3",
+        "content": "班上有13名同学，至少有2人是同一个月出生的。这个结论对吗？你能用今天的原理解释吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将具体问题转化为经典的'生日问题'，引导学生识别隐藏的'抽屉'（12个月），感受数学原理在日常生活中的广泛应用，提升知识迁移能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "5支铅笔放进3个笔筒，'总有1个笔筒至少有2支'还成立吗？那'总有'和'至少'的意思变了吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过改变物体数量制造反例追问，引导学生辨析关键词含义的稳定性，理解'总有'和'至少'的数学定义不随具体数值变化，强化语义精确性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "把5个苹果分给3个小朋友，'总有1人至少分到2个'是什么意思？'至少'能换成'恰好'吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "采用新情境（分苹果）承载关键词辨析，通过具体例子引导学生区分'至少'与'恰好'的数学差异，避免与主干问题重复，深化概念理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-3",
+        "content": "如果只有2支铅笔要放进3个笔筒，'总有一个笔筒至少有2支'还成立吗？这时'总有'和'至少'还能用吗？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.65,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过极端反例（物体数<抽屉数）引导学生思考原理的适用边界，制造更强的认知冲突，理解数学概念的使用条件，培养思维的严谨性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "5只鸽子飞进4个鸽巢，假设每个鸽巢最多1只，最多住几只？实际有5只，这个矛盾说明了什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "将假设法迁移到鸽子问题，通过'假设-矛盾-结论'的逻辑链条，让学生体验假设法的严谨性，理解反证思想，提升逻辑推理能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "100支铅笔放进99个笔筒，用枚举法好还是假设法好？数字很大时，哪种方法更有说服力？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.75,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过极端数值对比两种方法的优劣，引导学生从效率和严谨性角度评价不同证明方法，理解数学追求简洁的本质，培养方法选择意识。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-3",
+        "content": "枚举时如果漏掉了（1,1,2）这种分法，结论还成立吗？这说明枚举法要注意什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "针对枚举法的局限性设计反例追问，引导学生思考枚举的完整性与结论可靠性的关系，培养严谨求实的科学态度，理解完全归纳的必要性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "班级有25个同学分成4个小组，至少有一个小组不少于几人？用除法算式表示，并说说每个数的意思。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "采用生活迁移策略，新情境触发新鲜感，'不少于'与'至少'形成语言变式，同时紧扣'列除法算式表示分配过程'的核心，促进数学建模。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "8本书放3个抽屉，列式8÷3=2...2。这里的'2本'和'余下的2本'意思一样吗？分别表示什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.78,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "聚焦除法算式各部分意义，引导学生区分商和余数在'尽量平均分'中的不同含义，为后续理解'商+1'规律做好铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-3",
+        "content": "19颗糖分给6个小朋友，怎样列式能让每人分到的尽可能少？有余数怎么办？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.76,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "将数学模型迁移到分糖果的生活情境中，强化'尽量平均分'的思路，引导学生主动应用除法算式解决新问题，实现知识的灵活迁移。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "8÷3余2，有同学认为至少数应该是2+2=4。你觉得对吗？用'尽量平均分'的思路说说道理。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.82,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "针对'至少数=商+余数'的常见错误设计反例追问，引导学生用'尽量平均分'的推理方式自主发现'加1'的本质，避免机械记忆。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "14÷4余2，小华认为'至少数=3+2=5'。你能举出一个分法说明他错了吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "设计易误判案例引发认知冲突，通过构造反例深化对'商+1'规律的理解，避免与主干问题思维路径重复。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-3",
+        "content": "11只鸽子飞入4个鸽巢，总有一个鸽巢至少飞进几只？请直接用'商+1'的规律快速得出答案。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将规律应用于鸽子问题，训练学生快速运用'商+1'模型解决新情境问题的能力，巩固对规律的掌握。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "9人各抽1张扑克牌，为什么至少有3人同花色？识别'物体'与'抽屉'，并对比鸽子入笼问题，关键步骤有何不同？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6",
+          "KP7"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.85,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "在扑克牌问题中训练识别'物体'与'抽屉'的能力，通过对比鸽子问题引导学生进行方法论比较和总结，更贴合M6综合应用与拓展创造的目标。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-2",
+        "content": "13位老师中，至少有2人同属相。这个问题隐藏的'抽屉'是什么？你是怎么识别的？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP7"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.88,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "设计属相问题强化隐藏抽屉的识别能力，通过追问'怎么识别的'引导学生总结识别方法，为自主设计问题提供思维支架。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-3",
+        "content": "367人中至少有2人同一天生日，这结论可靠吗？请评价鸽巢原理的适用范围。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP7"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过极端数据（367人）引导学生评价原理的普适性和适用条件，思考'抽屉'数量（366天）与原理应用的关系，培养批判性思维和元认知能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "“总有”和“可能会有”意思一样吗？哪句更确定？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "连接M1的实物操作与M2的关键词辨析，通过对比辨析引导学生理解'总有'的精确数学含义",
+        "design_intent": "锚定学困生'日常语义替代数学语义'的断层，强制学生关注数学精确性，为后续逻辑推理扫清语言障碍",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "'至少2支'的意思，可能是3支吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.42,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "连接M1的发现与M2的'至少'理解，通过追问可能性打破'恰好'的刻板印象",
+        "design_intent": "锚定学困生'至少=恰好'的刻板理解，建立'不少于'的数学意义",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-3",
+        "content": "'总有'和'一定有'意思一样吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "连接M1的语言描述与M2的数学语义，通过近义词对比培养语言敏感性",
+        "design_intent": "锚定学困生'关键词混淆'问题，培养数学语言的敏感性",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "如果结论不对，每个笔筒最多放几支？4支铅笔够分吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.48,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "连接M2的关键词理解与M3的证明方法，从具体数值出发提供反证法的逻辑起点",
+        "design_intent": "锚定学困生'不知从何下手'的探究障碍，将证明任务拆解为可操作的子任务",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "能不能先假设结论不对？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "连接M2的语义辨析与M3的多种证明思路，直接提示'假设'思路降低方法选择难度",
+        "design_intent": "锚定学困生'方法选择困难'，直接提示假设法思路",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-3",
+        "content": "如果每个笔筒最多1支，4支铅笔放得下吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.52,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "连接M2的理解与M3的逻辑推理，通过具体数值对比直观展示反证法的逻辑起点",
+        "design_intent": "锚定学困生'逻辑链条断裂'问题，通过应用具体情境展示反证法逻辑",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "怎么分，才能让每个笔筒里的铅笔都尽可能少？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "连接M3的证明思路与M4的符号表征，通过'尽可能少'激活平均分经验",
+        "design_intent": "锚定学困生'平均分思路缺失'的断层，自然引出平均分概念",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "尽量平均分后，每份是2本，这和除法里的哪个数一样？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.58,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "连接M3的枚举结果与M4的除法模型，明确连接平均分结果与除法算式的对应关系",
+        "design_intent": "锚定学困生'数据观察能力不足'，通过具体对应为除法算式铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-3",
+        "content": "7÷3=2...1，哪个数表示剩下的书？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "连接M3的分配过程与M4的算式表达，明确算式各部分的数学意义",
+        "design_intent": "锚定学困生'符号表征困难'，细化算式各部分的对应关系",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "余数从1变成2，至少数为什么没变？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "连接M4的除法算式与M5的规律发现，通过对比余数变化引发对分配本质的思考",
+        "design_intent": "锚定学困生'余数意义理解不清'的断层，引导学生关注余数的分配本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "余数是2，至少数就要加2吗？说说你的想法。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.68,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "连接M4的算式计算与M5的本质理解，用温和的反例打破机械记忆",
+        "design_intent": "锚定学困生'机械记忆公式'倾向，通过温和邀请引发认知冲突",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-3",
+        "content": "多余的2支，为什么不能给同一个抽屉？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "连接M4的余数处理与M5的模型本质，深化余数分配机制理解",
+        "design_intent": "锚定学困生'余数大于1时出错'的难点，揭示'加1'的本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "11只鸽子飞进4个鸽笼，谁是'物体'，谁是'抽屉'？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6",
+          "KP7"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.72,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "连接M5的模型理解与M6的复杂情境，提供'物体-抽屉'识别框架",
+        "design_intent": "锚定学困生'结构识别困难'，降低复杂情境的认知负荷",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "算出11÷4后，商和余数分别告诉我们什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.75,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "连接M5的算式应用与M6的解题步骤，引导学生理解算式结果的数学意义",
+        "design_intent": "锚定学困生'解题步骤混乱'，引导关注算式意义而非机械操作",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-3",
+        "content": "扑克牌问题，能转化成'把书放进抽屉'吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP7"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "连接M5的模型掌握与M6的情境迁移，通过简化策略促进知识迁移",
+        "design_intent": "锚定学困生'情境迁移困难'，将复杂问题还原为熟悉模型",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M6",
+        "target": "M7",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "S1-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-3",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "S2-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-3",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "S3-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-3",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "S4-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "S5-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-3",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

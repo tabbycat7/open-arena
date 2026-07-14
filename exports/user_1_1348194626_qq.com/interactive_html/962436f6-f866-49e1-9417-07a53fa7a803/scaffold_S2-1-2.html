@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认识计税基数 - 数学教学可视化</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-light: #eff6ff;
+            --gray-color: #64748b;
+            --gray-light: #f1f5f9;
+            --accent-color: #f59e0b;
+            --accent-light: #fef3c7;
+            --success-color: #10b981;
+            --text-main: #1e293b;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* 4:3 比例课堂投影容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+        }
+
+        /* 头部标题与问题 */
+        .header {
+            border-bottom: 2px solid var(--gray-light);
+            padding-bottom: 15px;
+        }
+
+        .meta-info {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .question-highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+            border-bottom: 2px dashed var(--primary-color);
+        }
+
+        /* 主可视化区域 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        /* 算式卡片布局 */
+        .formula-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .formula-card {
+            background: var(--gray-light);
+            border: 3px solid transparent;
+            border-radius: var(--border-radius);
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 160px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .formula-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-income {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+        }
+
+        .card-allowance {
+            background-color: var(--gray-light);
+            border-color: var(--gray-color);
+        }
+
+        .card-result {
+            background-color: var(--accent-light);
+            border-color: var(--accent-color);
+            min-width: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-result.revealed {
+            background-color: #d1fae5;
+            border-color: var(--success-color);
+        }
+
+        .card-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .card-result .card-value {
+            color: var(--accent-color);
+        }
+
+        .card-result.revealed .card-value {
+            color: var(--success-color);
+            font-size: 1.6rem;
+        }
+
+        .formula-operator {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gray-color);
+            user-select: none;
+        }
+
+        /* 动态直观条形图 (SVG) */
+        .chart-container {
+            width: 100%;
+            height: 120px;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            display: flex;
+            gap: 20px;
+            background: var(--gray-light);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 8px;
+            border-radius: 5px;
+            background: #cbd5e1;
+            outline: none;
+            transition: background .3s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 底部提示信息区 */
+        .message-box {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+        }
+
+        .message-box.warning {
+            background-color: var(--accent-light);
+            border-left-color: var(--accent-color);
+            color: #78350f;
+        }
+
+        .message-box.success {
+            background-color: #d1fae5;
+            border-left-color: var(--success-color);
+            color: #065f46;
+        }
+
+        /* 呼吸灯动画提示点击 */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="classroom-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="meta-info">数学 | 六年级 · 百分数（税率）</div>
+            <div class="question-title">
+                在开始计算税额之前，我们先做一个小动作：用<strong>总收入</strong>减去<strong>免税额</strong>。算出的这个数叫什么名字？
+            </div>
+        </div>
+
+        <!-- 可视化交互区 -->
+        <div class="visualization-area">
+            <!-- 算式框 -->
+            <div class="formula-container">
+                <div class="formula-card card-income" id="card-income">
+                    <div class="card-label">总收入</div>
+                    <div class="card-value" id="val-income">8000 元</div>
+                </div>
+                
+                <div class="formula-operator">−</div>
+                
+                <div class="formula-card card-allowance" id="card-allowance">
+                    <div class="card-label">免税额</div>
+                    <div class="card-value" id="val-allowance">5000 元</div>
+                </div>
+                
+                <div class="formula-operator">=</div>
+                
+                <div class="formula-card card-result pulse-effect" id="card-result">
+                    <div class="card-label" id="result-label">点击揭晓答案</div>
+                    <div class="card-value" id="val-result">？</div>
+                </div>
+            </div>
+
+            <!-- 动态直观条形图 -->
+            <div class="chart-container">
+                <svg width="100%" height="100%" viewBox="0 0 800 100" preserveAspectRatio="none" id="svg-chart">
+                    <!-- 总收入背景条 -->
+                    <rect x="10" y="20" width="780" height="35" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4"/>
+                    
+                    <!-- 免税额部分 (扣除部分) -->
+                    <rect id="bar-allowance" x="10" y="20" width="487.5" height="35" rx="6" fill="#cbd5e1" />
+                    <text id="text-bar-allowance" x="253.75" y="42" fill="#475569" font-size="14" font-weight="bold" text-anchor="middle">免税额 (5000元)</text>
+                    
+                    <!-- 计税基数部分 (超出部分) -->
+                    <rect id="bar-taxable" x="497.5" y="20" width="292.5" height="35" rx="6" fill="#f59e0b" />
+                    <text id="text-bar-taxable" x="643.75" y="42" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">？</text>
+
+                    <!-- 底部大括号/辅助线标注 -->
+                    <path id="bracket-taxable" d="M 497.5 65 L 497.5 75 L 643.75 75 L 643.75 80 L 643.75 75 L 790 75 L 790 65" fill="none" stroke="#f59e0b" stroke-width="2" />
+                    <text id="bracket-text" x="643.75" y="95" fill="#d97706" font-size="14" font-weight="bold" text-anchor="middle">先扣除，再计算</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="control-group">
+                <label for="slider-income">调整总收入：</label>
+                <input type="range" id="slider-income" class="slider" min="5500" max="15000" step="500" value="8000">
+                <span style="font-weight: bold; width: 70px;" id="lbl-income">8000元</span>
+            </div>
+            <div class="control-group">
+                <label for="slider-allowance">调整免税额：</label>
+                <input type="range" id="slider-allowance" class="slider" min="3000" max="5000" step="500" value="5000">
+                <span style="font-weight: bold; width: 70px;" id="lbl-allowance">5000元</span>
+            </div>
+        </div>
+
+        <!-- 提示信息区 -->
+        <div class="message-box" id="message-box">
+            💡 提示：试着点击上方算式中的数字，或者点击右侧的 [ ？ ] 看看这个差额叫什么名字。
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const sliderIncome = document.getElementById('slider-income');
+        const sliderAllowance = document.getElementById('slider-allowance');
+        const lblIncome = document.getElementById('lbl-income');
+        const lblAllowance = document.getElementById('lbl-allowance');
+        
+        const valIncome = document.getElementById('val-income');
+        const valAllowance = document.getElementById('val-allowance');
+        const valResult = document.getElementById('val-result');
+        const resultLabel = document.getElementById('result-label');
+        
+        const cardIncome = document.getElementById('card-income');
+        const cardAllowance = document.getElementById('card-allowance');
+        const cardResult = document.getElementById('card-result');
+        
+        const barAllowance = document.getElementById('bar-allowance');
+        const barTaxable = document.getElementById('bar-taxable');
+        const textBarAllowance = document.getElementById('text-bar-allowance');
+        const textBarTaxable = document.getElementById('text-bar-taxable');
+        const bracketTaxable = document.getElementById('bracket-taxable');
+        const bracketText = document.getElementById('bracket-text');
+        
+        const messageBox = document.getElementById('message-box');
+
+        let isRevealed = false;
+
+        // 更新视图函数
+        function updateVisualization() {
+            const income = parseInt(sliderIncome.value);
+            const allowance = parseInt(sliderAllowance.value);
+            
+            // 确保总收入不低于免税额
+            if (income < allowance) {
+                sliderIncome.value = allowance;
+                updateVisualization();
+                return;
+            }
+
+            const taxable = income - allowance;
+
+            // 更新文本显示
+            lblIncome.textContent = income + '元';
+            lblAllowance.textContent = allowance + '元';
+            valIncome.textContent = income + ' 元';
+            valAllowance.textContent = allowance + ' 元';
+
+            // 计算SVG条形图比例 (总宽度 780px 对应最大值 15000)
+            const maxVal = 15000;
+            const startX = 10;
+            const totalWidth = 780;
+            
+            const widthAllowance = (allowance / maxVal) * totalWidth;
+            const widthTaxable = (taxable / maxVal) * totalWidth;
+            const xTaxable = startX + widthAllowance;
+
+            // 更新免税额条
+            barAllowance.setAttribute('width', widthAllowance);
+            textBarAllowance.setAttribute('x', startX + widthAllowance / 2);
+            textBarAllowance.textContent = `免税额 (${allowance}元)`;
+
+            // 更新计税基数条
+            barTaxable.setAttribute('x', xTaxable);
+            barTaxable.setAttribute('width', widthTaxable);
+            
+            // 更新大括号和标注
+            const midTaxable = xTaxable + widthTaxable / 2;
+            bracketTaxable.setAttribute('d', `M ${xTaxable} 65 L ${xTaxable} 75 L ${midTaxable} 75 L ${midTaxable} 80 L ${midTaxable} 75 L ${startX + widthAllowance + widthTaxable} 75 L ${startX + widthAllowance + widthTaxable} 65`);
+            bracketText.setAttribute('x', midTaxable);
+
+            if (isRevealed) {
+                valResult.textContent = "计税基数";
+                resultLabel.textContent = `差额: ${taxable} 元`;
+                textBarTaxable.textContent = `计税基数 (${taxable}元)`;
+                barTaxable.setAttribute('fill', '#10b981');
+                bracketText.textContent = `计税基数 = ${taxable} 元`;
+            } else {
+                valResult.textContent = "？";
+                resultLabel.textContent = "点击揭晓答案";
+                textBarTaxable.textContent = "？";
+                barTaxable.setAttribute('fill', '#f59e0b');
+                bracketText.textContent = "先扣除，再计算";
+            }
+        }
+
+        // 揭晓答案交互
+        cardResult.addEventListener('click', () => {
+            isRevealed = true;
+            cardResult.classList.remove('pulse-effect');
+            cardResult.classList.add('revealed');
+            
+            messageBox.className = "message-box success";
+            messageBox.innerHTML = "🎉 <strong>正确！这个差额叫做【计税基数】（也称应纳税所得额）。</strong><br>记住：在计算任何税率之前，必须【先做减法】扣除免税额，确定基数！";
+            
+            updateVisualization();
+        });
+
+        // 点击数字卡片提示“先做减法”
+        const promptSubAction = () => {
+            messageBox.className = "message-box warning";
+            messageBox.innerHTML = "💡 <strong>先做减法！</strong> 无论我们要计算多少税率，第一步永远是：用总收入减去免税额，确定【计税基数】。";
+        };
+
+        cardIncome.addEventListener('click', promptSubAction);
+        cardAllowance.addEventListener('click', promptSubAction);
+
+        // 滑块交互
+        sliderIncome.addEventListener('input', () => {
+            if (parseInt(sliderIncome.value) < parseInt(sliderAllowance.value)) {
+                sliderAllowance.value = sliderIncome.value;
+            }
+            updateVisualization();
+        });
+
+        sliderAllowance.addEventListener('input', () => {
+            if (parseInt(sliderAllowance.value) > parseInt(sliderIncome.value)) {
+                sliderIncome.value = sliderAllowance.value;
+            }
+            updateVisualization();
+        });
+
+        // 初始化
+        updateVisualization();
+    </script>
+</body>
+</html>

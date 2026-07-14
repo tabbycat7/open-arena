@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能物流派单系统 - 绝对值方程的几何意义</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1d1d1f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* 主可视化区域 */
+        .visualization {
+            flex-grow: 1;
+            position: relative;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        /* 状态警报面板 */
+        .status-panel {
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .status-error {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+        .status-success {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+        .status-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+        }
+
+        /* SVG 绘图区 */
+        .svg-container {
+            width: 100%;
+            height: 180px;
+        }
+        .road-line {
+            stroke: #94a3b8;
+            stroke-width: 6;
+            stroke-linecap: round;
+        }
+        .highlight-segment {
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        .station-node {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .station-node:hover {
+            transform: scale(1.1);
+        }
+        .car-node {
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .control-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #334155;
+            min-width: 140px;
+        }
+        .slider-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slider {
+            flex-grow: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #cbd5e1;
+            border-radius: 3px;
+            outline: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .value-display {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0f172a;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* 快捷分类按钮 */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            padding: 6px 12px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #475569;
+        }
+        .btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+        .btn-active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .btn-active:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        /* 引导思考 */
+        .footer-hint {
+            text-align: center;
+            font-size: 14px;
+            color: #475569;
+            background: #fef08a;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #fef08a;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>智能物流派单系统</h1>
+        <p>数学模型：绝对值方程 |x - p| + |x - q| = a 的几何意义讨论</p>
+    </div>
+
+    <!-- 可视化主区域 -->
+    <div class="visualization">
+        <!-- 状态警报面板 -->
+        <div id="statusPanel" class="status-panel status-info">
+            系统就绪，请调节参数观察
+        </div>
+
+        <!-- SVG 绘图 -->
+        <div class="svg-container">
+            <svg width="100%" height="100%" viewBox="0 0 700 180" id="mainSvg">
+                <!-- 刻度尺/公路背景 -->
+                <line x1="50" y1="100" x2="650" y2="100" class="road-line" />
+                
+                <!-- 动态高亮区间/点 -->
+                <line x1="0" y1="100" x2="0" y2="100" id="highlightLine" class="highlight-segment" stroke="transparent" />
+                <circle cx="-100" cy="100" r="8" id="solPoint1" fill="#16a34a" style="display: none;" />
+                <circle cx="-100" cy="100" r="8" id="solPoint2" fill="#16a34a" style="display: none;" />
+
+                <!-- P 站 (p) -->
+                <g class="station-node" id="nodeP">
+                    <circle cx="250" cy="100" r="12" fill="#3b82f6" />
+                    <text x="250" y="100" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle" dominant-baseline="central">P</text>
+                    <text x="250" y="130" fill="#334155" font-size="14" font-weight="bold" text-anchor="middle">P (p=25)</text>
+                </g>
+
+                <!-- Q 站 (q) -->
+                <g class="station-node" id="nodeQ">
+                    <circle cx="450" cy="100" r="12" fill="#3b82f6" />
+                    <text x="450" y="100" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle" dominant-baseline="central">Q</text>
+                    <text x="450" y="130" fill="#334155" font-size="14" font-weight="bold" text-anchor="middle">Q (q=45)</text>
+                </g>
+
+                <!-- 距离 L 标注线 -->
+                <path d="M 250 70 L 250 60 L 450 60 L 450 70" fill="none" stroke="#64748b" stroke-width="1.5" />
+                <text x="350" y="50" fill="#475569" font-size="14" font-weight="bold" text-anchor="middle" id="labelL">两站距离 L = 20</text>
+
+                <!-- 动态配送车位置示意 (仅在有解时显示) -->
+                <g id="carGroup" class="car-node" style="display: none;">
+                    <rect x="-15" y="-35" width="30" height="20" rx="4" fill="#ef4444" transform="translate(0, 100)" />
+                    <polygon points="-5,-15 5,-15 0,-5" fill="#ef4444" transform="translate(0, 100)" />
+                    <text x="0" y="80" fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle" id="carLabel">配送车 x</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <!-- 设定 L -->
+        <div class="control-row">
+            <div class="control-label">两站距离 L (固定)</div>
+            <div class="slider-container">
+                <span class="value-display" style="text-align: left;">L = 20</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="btnLess">设 a < L</button>
+                <button class="btn" id="btnEqual">设 a = L</button>
+                <button class="btn" id="btnGreater">设 a > L</button>
+            </div>
+        </div>
+
+        <!-- 设定 a -->
+        <div class="control-row">
+            <div class="control-label">设定总路程之和 a</div>
+            <div class="slider-container">
+                <input type="range" id="sliderA" class="slider" min="5" max="40" value="25" step="1">
+                <span class="value-display" id="valA">25</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引导思考 -->
+    <div class="footer-hint" id="hintText">
+        思考：当总路程之和 a 发生变化时，满足条件的配送车位置 x（解）的个数如何变化？
+    </div>
+</div>
+
+<script>
+    // 常量定义
+    const pX = 250; // P站的X坐标
+    const qX = 450; // Q站的X坐标
+    const L = 20;   // 比例尺：1单位 = 10像素。所以 L = 20 对应 200像素
+
+    // DOM 元素
+    const sliderA = document.getElementById('sliderA');
+    const valA = document.getElementById('valA');
+    const statusPanel = document.getElementById('statusPanel');
+    const highlightLine = document.getElementById('highlightLine');
+    const solPoint1 = document.getElementById('solPoint1');
+    const solPoint2 = document.getElementById('solPoint2');
+    const carGroup = document.getElementById('carGroup');
+    const hintText = document.getElementById('hintText');
+    
+    const btnLess = document.getElementById('btnLess');
+    const btnEqual = document.getElementById('btnEqual');
+    const btnGreater = document.getElementById('btnGreater');
+
+    // 更新视图主函数
+    function updateVisualization() {
+        const a = parseInt(sliderA.value);
+        valA.textContent = a;
+
+        // 重置按钮高亮
+        btnLess.classList.remove('btn-active');
+        btnEqual.classList.remove('btn-active');
+        btnGreater.classList.remove('btn-active');
+
+        if (a < L) {
+            // 分类 1: a < L (无解)
+            btnLess.classList.add('btn-active');
+            
+            statusPanel.className = "status-panel status-error";
+            statusPanel.textContent = "⚠️ 无法派单：总路程 a 小于两站距离 L，超出物理极限！";
+            
+            // 隐藏高亮和解点
+            highlightLine.setAttribute('stroke', 'transparent');
+            solPoint1.style.display = 'none';
+            solPoint2.style.display = 'none';
+            carGroup.style.display = 'none';
+
+            hintText.textContent = "【分析】|x - p| + |x - q| 的几何意义是数轴上点 x 到 p 和 q 的距离之和，其最小值等于 L。因此当 a < L 时，方程无解。";
+        } 
+        else if (a === L) {
+            // 分类 2: a = L (无数解)
+            btnEqual.classList.add('btn-active');
+
+            statusPanel.className = "status-panel status-success";
+            statusPanel.textContent = "✅ 自由派单：整段公路 [P, Q] 均可自由停靠发货（无数个解）";
+
+            // 高亮整条线段 PQ
+            highlightLine.setAttribute('x1', pX);
+            highlightLine.setAttribute('x2', qX);
+            highlightLine.setAttribute('stroke', '#16a34a');
+            
+            solPoint1.style.display = 'none';
+            solPoint2.style.display = 'none';
+            
+            // 车辆显示在中间
+            carGroup.style.display = 'block';
+            carGroup.setAttribute('transform', `translate(${ (pX + qX) / 2 }, 0)`);
+            
+            hintText.textContent = "【分析】当 a = L 时，线段 PQ 上的任意一点到两端点的距离之和都正好等于 L。因此，[p, q] 区间内的任意位置都是可行解。";
+        } 
+        else {
+            // 分类 3: a > L (两个解)
+            btnGreater.classList.add('btn-active');
+
+            statusPanel.className = "status-panel status-info";
+            statusPanel.textContent = "📍 精准派单：在 P 左侧和 Q 右侧各有一个指定停靠点（2个解）";
+
+            // 计算解的坐标 (像素)
+            // 方程：|x - p| + |x - q| = a
+            // 解为：x1 = p - (a - L)/2,  x2 = q + (a - L)/2
+            const offsetPx = ((a - L) / 2) * 10; 
+            const x1 = pX - offsetPx;
+            const x2 = qX + offsetPx;
+
+            // 隐藏线段高亮
+            highlightLine.setAttribute('stroke', 'transparent');
+
+            // 显示两个精准解点
+            solPoint1.setAttribute('cx', x1);
+            solPoint2.setAttribute('cx', x2);
+            solPoint1.style.display = 'block';
+            solPoint2.style.display = 'block';
+
+            // 车辆显示在其中一个解上（演示用）
+            carGroup.style.display = 'block';
+            carGroup.setAttribute('transform', `translate(${x2}, 0)`);
+
+            hintText.textContent = `【分析】当 a > L 时，满足条件的点对称分布在两端外侧。解为：x = p - (a-L)/2 或 x = q + (a-L)/2。`;
+        }
+    }
+
+    // 绑定滑块事件
+    sliderA.addEventListener('input', updateVisualization);
+
+    // 绑定快捷按钮事件
+    btnLess.addEventListener('click', () => {
+        sliderA.value = 12;
+        updateVisualization();
+    });
+    btnEqual.addEventListener('click', () => {
+        sliderA.value = 20;
+        updateVisualization();
+    });
+    btnGreater.addEventListener('click', () => {
+        sliderA.value = 30;
+        updateVisualization();
+    });
+
+    // 初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

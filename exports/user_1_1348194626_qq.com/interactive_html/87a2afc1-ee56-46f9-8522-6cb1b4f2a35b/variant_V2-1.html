@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税率与税金交互可视化教学</title>
+    <style>
+        :root {
+            --primary-color: #8D7B68;
+            --primary-light: #F1DEC9;
+            --accent-tax: #FF6F3C;
+            --accent-tax-light: #FFECE5;
+            --milk-tea: #E6C594;
+            --milk-tea-dark: #D4B281;
+            --boba: #3D250A;
+            --bg-color: #FDFBF7;
+            --text-color: #3F3A35;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #F5EFE6;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(141, 123, 104, 0.18);
+            border: 4px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 顶部标题栏 */
+        .header {
+            background: var(--primary-color);
+            color: #FFFDF9;
+            padding: 16px 24px;
+            border-bottom: 3px solid #7A6957;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "🥤";
+            font-size: 26px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* 左侧：可视化图表 */
+        .visualizer-panel {
+            flex: 1.2;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: 90%;
+        }
+
+        /* 右侧：控制与交互问答 */
+        .control-panel {
+            flex: 0.8;
+            background: #FDF9F3;
+            border-left: 3px dashed var(--primary-light);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+            margin-bottom: 4px;
+        }
+
+        /* 滑块样式 */
+        .slider-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider-label {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .slider-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent-tax);
+        }
+
+        .slider-input {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #EFEBE4;
+            outline: none;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-tax);
+            cursor: pointer;
+            border: 2px solid #FFF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        /* 快捷预设按钮 */
+        .preset-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 12px;
+            border: 1px solid var(--primary-light);
+            background: #FFF;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .preset-btn.active {
+            background: var(--accent-tax);
+            color: #FFF;
+            border-color: var(--accent-tax);
+        }
+
+        /* 实时计算卡片 */
+        .math-card {
+            background: var(--accent-tax-light);
+            border: 1.5px solid var(--accent-tax);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .formula-row {
+            font-size: 15px;
+            margin: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .formula-row strong {
+            color: var(--primary-color);
+        }
+
+        .calc-res {
+            font-weight: bold;
+            color: var(--accent-tax);
+            font-size: 16px;
+        }
+
+        /* 课堂探究问答区 */
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .quiz-question {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-btn {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 13px;
+            background: #FDFDFD;
+            border: 1px solid #E2DCD5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            line-height: 1.3;
+        }
+
+        .option-btn:hover {
+            background: #F5EFE6;
+            border-color: var(--primary-color);
+        }
+
+        .option-btn.correct {
+            background: #E8F5E9;
+            border-color: #4CAF50;
+            color: #2E7D32;
+        }
+
+        .option-btn.incorrect {
+            background: #FFEBEE;
+            border-color: #EF5350;
+            color: #C62828;
+        }
+
+        .feedback {
+            margin-top: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 8px 10px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback-correct {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #EF5350;
+        }
+
+        /* 底部提示 */
+        .footer-tip {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: #8A8279;
+            background: #F0EAE1;
+            border-top: 1px solid var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 顶部题干 -->
+    <div class="header">
+        <h1>分店的税款一样多吗？</h1>
+        <p>同一家连锁奶茶店在A市和B市的两家分店，十月份的税率都是6%。其中A店营业额是10万元，B店营业额是20万元。这两家分店在这个月交的税款一样多吗？这里的“6%”表示什么意思？</p>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-content">
+        <!-- 左侧：奶茶杯比例图 -->
+        <div class="visualizer-panel">
+            <svg class="svg-container" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- 定义渐变和剪切路径 -->
+                <defs>
+                    <!-- 奶茶液体渐变 -->
+                    <linearGradient id="milk-tea-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="var(--milk-tea)" />
+                        <stop offset="100%" stop-color="var(--milk-tea-dark)" />
+                    </linearGradient>
+                    <!-- 税收高亮渐变 -->
+                    <linearGradient id="tax-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#FF8E53" />
+                        <stop offset="100%" stop-color="var(--accent-tax)" />
+                    </linearGradient>
+
+                    <!-- A杯剪切路径 (圆角杯身) -->
+                    <clipPath id="cup-a-clip">
+                        <rect x="100" y="230" width="80" height="120" rx="6" ry="6" />
+                    </clipPath>
+                    <!-- B杯剪切路径 -->
+                    <clipPath id="cup-b-clip">
+                        <rect x="320" y="110" width="80" height="240" rx="6" ry="6" />
+                    </clipPath>
+                </defs>
+
+                <!-- 物理背景：木质吧台/托盘 -->
+                <rect x="30" y="350" width="440" height="12" fill="#C8B6A6" rx="4" />
+                <rect x="20" y="362" width="460" height="8" fill="#A89686" rx="2" />
+
+                <!-- ==================== A店 (10万) ==================== -->
+                <!-- 吸管 A (在杯子后方) -->
+                <line x1="130" y1="190" x2="155" y2="340" stroke="#FFB0B0" stroke-width="8" stroke-linecap="round" opacity="0.8" />
+                
+                <!-- 液体填充 (带剪切路径) -->
+                <g clip-path="url(#cup-a-clip)">
+                    <!-- 基础奶茶液 -->
+                    <rect id="net-liquid-a" x="100" y="230" width="80" height="120" fill="url(#milk-tea-grad)" />
+                    <!-- 税收高亮层 (动态调整高度和Y) -->
+                    <rect id="tax-liquid-a" x="100" y="230" width="80" height="7.2" fill="url(#tax-grad)" />
+                    
+                    <!-- 珍珠 (固定在底部) -->
+                    <circle cx="115" cy="338" r="6" fill="var(--boba)" />
+                    <circle cx="130" cy="342" r="6" fill="var(--boba)" />
+                    <circle cx="145" cy="339" r="6" fill="var(--boba)" />
+                    <circle cx="160" cy="343" r="6" fill="var(--boba)" />
+                    <circle cx="122" cy="330" r="6" fill="var(--boba)" />
+                    <circle cx="138" cy="332" r="6" fill="var(--boba)" />
+                    <circle cx="153" cy="329" r="6" fill="var(--boba)" />
+                </g>
+
+                <!-- 杯身轮廓 -->
+                <rect x="100" y="230" width="80" height="120" rx="6" ry="6" fill="none" stroke="#8D7B68" stroke-width="3" />
+                <!-- 杯盖 -->
+                <path d="M 94 230 Q 140 220 186 230" stroke="#8D7B68" stroke-width="5" fill="none" stroke-linecap="round" />
+                
+                <!-- A店Logo -->
+                <circle cx="140" cy="290" r="14" fill="#FFF" opacity="0.9" stroke="#8D7B68" stroke-width="1.5" />
+                <text x="140" y="294" text-anchor="middle" font-size="12" font-weight="bold" fill="#8D7B68">A店</text>
+
+                <!-- A店标注 -->
+                <text x="140" y="385" text-anchor="middle" font-size="14" font-weight="bold" fill="var(--text-color)">A店 (营业额 10万)</text>
+
+
+                <!-- ==================== B店 (20万) ==================== -->
+                <!-- 吸管 B -->
+                <line x1="350" y1="70" x2="375" y2="340" stroke="#FFB0B0" stroke-width="8" stroke-linecap="round" opacity="0.8" />
+
+                <!-- 液体填充 -->
+                <g clip-path="url(#cup-b-clip)">
+                    <!-- 基础奶茶液 -->
+                    <rect id="net-liquid-b" x="320" y="110" width="80" height="240" fill="url(#milk-tea-grad)" />
+                    <!-- 税收高亮层 -->
+                    <rect id="tax-liquid-b" x="320" y="110" width="80" height="14.4" fill="url(#tax-grad)" />
+                    
+                    <!-- 珍珠 -->
+                    <circle cx="335" cy="338" r="6" fill="var(--boba)" />
+                    <circle cx="350" cy="342" r="6" fill="var(--boba)" />
+                    <circle cx="365" cy="339" r="6" fill="var(--boba)" />
+                    <circle cx="380" cy="343" r="6" fill="var(--boba)" />
+                    <circle cx="342" cy="330" r="6" fill="var(--boba)" />
+                    <circle cx="358" cy="332" r="6" fill="var(--boba)" />
+                    <circle cx="373" cy="329" r="6" fill="var(--boba)" />
+                </g>
+
+                <!-- 杯身轮廓 -->
+                <rect x="320" y="110" width="80" height="240" rx="6" ry="6" fill="none" stroke="#8D7B68" stroke-width="3" />
+                <!-- 杯盖 -->
+                <path d="M 314 110 Q 360 100 406 110" stroke="#8D7B68" stroke-width="5" fill="none" stroke-linecap="round" />
+
+                <!-- B店Logo -->
+                <circle cx="360" cy="230" r="16" fill="#FFF" opacity="0.9" stroke="#8D7B68" stroke-width="1.5" />
+                <text x="360" y="235" text-anchor="middle" font-size="14" font-weight="bold" fill="#8D7B68">B店</text>
+
+                <!-- B店标注 -->
+                <text x="360" y="385" text-anchor="middle" font-size="14" font-weight="bold" fill="var(--text-color)">B店 (营业额 20万)</text>
+
+
+                <!-- ==================== 动态指示线与标签 ==================== -->
+                <!-- A店税金指示 -->
+                <path id="tax-line-a" d="M 90 233.6 L 100 233.6" stroke="var(--accent-tax)" stroke-width="1.5" fill="none" />
+                <text id="tax-tag-a" x="85" y="237" text-anchor="end" fill="var(--accent-tax)" font-size="13" font-weight="bold">税金: 0.60万</text>
+
+                <!-- B店税金指示 -->
+                <path id="tax-line-b" d="M 410 117.2 L 400 117.2" stroke="var(--accent-tax)" stroke-width="1.5" fill="none" />
+                <text id="tax-tag-b" x="415" y="121" text-anchor="start" fill="var(--accent-tax)" font-size="13" font-weight="bold">税金: 1.20万</text>
+
+                <!-- 100% 整体高度标注线 -->
+                <!-- A店 100% -->
+                <path d="M 190 230 L 198 230 M 194 230 L 194 350 M 190 350 L 198 350" stroke="#8D7B68" stroke-width="1" />
+                <text x="204" y="295" fill="#8D7B68" font-size="11">100% (10万)</text>
+
+                <!-- B店 100% -->
+                <path d="M 310 110 L 302 110 M 306 110 L 306 350 M 310 350 L 302 350" stroke="#8D7B68" stroke-width="1" />
+                <text x="296" y="235" text-anchor="end" fill="#8D7B68" font-size="11">100% (20万)</text>
+            </svg>
+        </div>
+
+        <!-- 右侧：控制面板与探究 -->
+        <div class="control-panel">
+            <!-- 互动控制 -->
+            <div>
+                <div class="panel-title">动态调节税率</div>
+                <div class="slider-card">
+                    <div class="slider-header">
+                        <span class="slider-label">当前税率 (比率)</span>
+                        <span class="slider-value"><span id="rate-val">6</span>%</span>
+                    </div>
+                    <input type="range" id="rate-slider" min="1" max="15" value="6" class="slider-input">
+                    <div class="preset-container">
+                        <button class="preset-btn" data-val="3">3% (低税率)</button>
+                        <button class="preset-btn active" data-val="6">6% (本题设定)</button>
+                        <button class="preset-btn" data-val="10">10% (高税率)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实时数学计算 -->
+            <div>
+                <div class="panel-title">税金计算对比</div>
+                <div class="math-card">
+                    <div class="formula-row">
+                        <span>A店税金 (10万 × <span class="dynamic-rate">6%</span>) :</span>
+                        <span id="calc-a" class="calc-res">0.60 万元</span>
+                    </div>
+                    <div class="formula-row" style="border-top: 1px dashed #FFD0C0; margin-top: 8px; padding-top: 8px;">
+                        <span>B店税金 (20万 × <span class="dynamic-rate">6%</span>) :</span>
+                        <span id="calc-b" class="calc-res">1.20 万元</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课堂探究 -->
+            <div>
+                <div class="panel-title">课堂探究</div>
+                <div class="quiz-card">
+                    <div class="quiz-question">1. 两家分店交的税款一样多吗？为什么？</div>
+                    <div class="quiz-options">
+                        <button class="option-btn" id="q1-o1">一样多，因为税率都是 6%</button>
+                        <button class="option-btn" id="q1-o2">不一样多，因为两家店的营业额（基数）不同</button>
+                    </div>
+                    <div id="feedback-1" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部教学提示 -->
+    <div class="footer-tip">
+        💡 教学提示：拖动滑块改变税率，观察两杯中“橙色税收区域”的高度变化。理解“税率相同，基数不同，税金也不同”。
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const rateSlider = document.getElementById('rate-slider');
+    const rateVal = document.getElementById('rate-val');
+    const dynamicRates = document.querySelectorAll('.dynamic-rate');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+
+    // SVG 动态元素
+    const taxLiquidA = document.getElementById('tax-liquid-a');
+    const netLiquidA = document.getElementById('net-liquid-a');
+    const taxLiquidB = document.getElementById('tax-liquid-b');
+    const netLiquidB = document.getElementById('net-liquid-b');
+
+    const taxLineA = document.getElementById('tax-line-a');
+    const taxTagA = document.getElementById('tax-tag-a');
+    const taxLineB = document.getElementById('tax-line-b');
+    const taxTagB = document.getElementById('tax-tag-b');
+
+    // 计算显示元素
+    const calcA = document.getElementById('calc-a');
+    const calcB = document.getElementById('calc-b');
+
+    // 问答元素
+    const q1o1 = document.getElementById('q1-o1');
+    const q1o2 = document.getElementById('q1-o2');
+    const feedback1 = document.getElementById('feedback-1');
+
+    // 常量定义
+    const CUP_A_HEIGHT = 120; // A杯总高度(像素)
+    const CUP_B_HEIGHT = 240; // B杯总高度(像素)
+    const CUP_A_TOP = 230;    // A杯顶部Y坐标
+    const CUP_B_TOP = 110;    // B杯顶部Y坐标
+
+    // 更新视图函数
+    function updateVisualization(rate) {
+        // 1. 更新文本显示
+        rateVal.textContent = rate;
+        dynamicRates.forEach(el => el.textContent = rate + '%');
+
+        // 2. 计算实际税金 (万元)
+        const taxA = (10 * rate / 100).toFixed(2);
+        const taxB = (20 * rate / 100).toFixed(2);
+
+        calcA.textContent = taxA + ' 万元';
+        calcB.textContent = taxB + ' 万元';
+
+        // 3. 计算SVG中税收层的高度 (按比例)
+        const taxHeightA = CUP_A_HEIGHT * (rate / 100);
+        const taxHeightB = CUP_B_HEIGHT * (rate / 100);
+
+        // 4. 更新 A 杯 SVG
+        taxLiquidA.setAttribute('height', taxHeightA);
+        // 净营业额部分向下移动，高度减少
+        netLiquidA.setAttribute('y', CUP_A_TOP + taxHeightA);
+        netLiquidA.setAttribute('height', CUP_A_HEIGHT - taxHeightA);
+
+        // 5. 更新 B 杯 SVG
+        taxLiquidB.setAttribute('height', taxHeightB);
+        netLiquidB.setAttribute('y', CUP_B_TOP + taxHeightB);
+        netLiquidB.setAttribute('height', CUP_B_HEIGHT - taxHeightB);
+
+        // 6. 更新动态指示线和标签的 Y 坐标 (指向税收层的中间)
+        const midYA = CUP_A_TOP + (taxHeightA / 2);
+        const midYB = CUP_B_TOP + (taxHeightB / 2);
+
+        // A店指示线与标签
+        taxLineA.setAttribute('d', `M 90 ${midYA} L 100 ${midYA}`);
+        taxTagA.setAttribute('y', midYA + 4); // +4 用于文字垂直居中对齐
+        taxTagA.textContent = `税金: ${taxA}万`;
+
+        // B店指示线与标签
+        taxLineB.setAttribute('d', `M 410 ${midYB} L 400 ${midYB}`);
+        taxTagB.setAttribute('y', midYB + 4);
+        taxTagB.textContent = `税金: ${taxB}万`;
+    }
+
+    // 滑块事件监听
+    rateSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        updateVisualization(val);
+        
+        // 取消预设按钮的激活状态
+        presetBtns.forEach(btn => {
+            if (parseInt(btn.dataset.val) === val) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    });
+
+    // 预设按钮事件监听
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const val = parseInt(btn.dataset.val);
+            rateSlider.value = val;
+            updateVisualization(val);
+        });
+    });
+
+    // 课堂问答交互
+    q1o1.addEventListener('click', () => {
+        q1o1.className = 'option-btn incorrect';
+        q1o2.className = 'option-btn';
+        feedback1.className = 'feedback feedback-incorrect show';
+        feedback1.innerHTML = '<strong>不对哦！</strong> 虽然两店的税率都是 6%，但因为两家店的营业额（基数）不同，所以计算出来的税金是不一样的。';
+    });
+
+    q1o2.addEventListener('click', () => {
+        q1o2.className = 'option-btn correct';
+        q1o1.className = 'option-btn';
+        feedback1.className = 'feedback feedback-correct show';
+        feedback1.innerHTML = '<strong>完全正确！</strong> 这里的 6% 是一个<strong>比率</strong>。A店交的是10万的6%（0.6万），B店交的是20万的6%（1.2万）。基数越大，同样税率下交的税金就越多。';
+    });
+
+    // 初始化
+    updateVisualization(6);
+</script>
+
+</body>
+</html>

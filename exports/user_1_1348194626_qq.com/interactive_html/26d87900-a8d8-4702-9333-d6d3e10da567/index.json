@@ -1,0 +1,248 @@
+{
+  "task_id": "26d87900-a8d8-4702-9333-d6d3e10da567",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，今天我们要学习一个新知识，在这之前，先请大家拿出抽屉里的学具盒，我们来做个小操作：把4支铅笔放进3个笔筒里，任意放都可以，看看一共会有几种不同的放法？完成后跟同桌交流一下你们的发现。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "通过刚才的操作，大家都发现了无论怎么放，总有一个笔筒至少有2支铅笔。那同学们有没有注意到老师刚才说的这句话里有几个特别的词？谁能来说说'总有'和'至少'是什么意思？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们知道了结论，但为什么一定会这样呢？有没有更聪明的办法能证明这个结论？请同学们思考：如果我们假设每个笔筒最多只能放1支铅笔，那么3个笔筒最多能放几支？可我们现在要放几支？这说明什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "刚才我们用反证法证明了4支铅笔放进3个笔筒的情况。那如果有7本书放进3个抽屉，怎么很快算出至少有多少本书呢？请同学们试着用除法算一算，看看商和余数与'至少数'有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "现在我们有了这个'秘密武器'，谁想来挑战一下？老师这里有几个问题：1. 13位老师中，至少有几位老师属相相同？为什么？2. 5只鸽子飞进3个鸽笼，至少有几只鸽子会在同一个鸽笼里？3. 盒子里有红球和蓝球各4个，至少摸出几个球才能保证一定有两个同色？请同学们先用公式算一算，再和同桌说说你的想法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "小明说“5支笔放进4个笔筒，总有一个笔筒至少有2支笔”，小红说“不一定，要看怎么放”。你同意谁的说法？请举出一个具体的放法来证明你的观点。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果把3支铅笔放进3个笔筒，“总有一个笔筒至少有2支铅笔”这句话还成立吗？那应该怎么修改（只改数字），才能让这句话一定成立？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "仔细看这两句话：①“可能有2支铅笔在同一个笔筒”②“至少有2支铅笔在同一个笔筒”，它们的意思一样吗？谁能举例说明你的想法？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "老师把“总有”换成“一定有”，把“至少有2支”换成“最多有2支”，这句话还成立吗？请举例说明为什么不行。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "10个人要进入9间房间，如果每间房最多只能进1个人，可能吗？为什么？请用刚才学的方法推理一下。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "刚才我们假设每个笔筒只放1支铅笔，如果反过来想：假设每个笔筒放2支铅笔，会发生什么情况？这还能证明我们的结论吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "算一算：(1) 7本书放进3个抽屉；(2) 6本书放进3个抽屉。比较你的计算过程和结果，说说“至少数=商+1”这个公式在什么情况下需要特别注意？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "有个同学这样算：13本书放进5个抽屉，至少有2本书在同一个抽屉，因为13÷5=2余3，所以答案是2本。你同意吗？哪里算错了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "抽屉里有4只红袜子、4只蓝袜子、4只黄袜子（这些袜子都混在一起了），至少摸出多少只，才能保证一定摸到2只同色的袜子？请想一想，袜子的颜色相当于什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "我们学校二年级有6个班，要选多少人当班干部，才能保证至少有两个班选的是同一个人？请你想一想，这里的“抽屉”是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-3",
+      "question_type": "variant",
+      "content": "一个年级有367名学生，老师说其中至少有2个人的生日是同一天，这可能吗？请你想一想，一年到底有几天？这个结论跟闰年有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "把不同的放法画出来或写下来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "在所有不同的放法中，每个笔筒里的铅笔数量有什么共同特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-1",
+      "question_type": "scaffold",
+      "content": "在你摆出的放法中，铅笔最多的笔筒里最少有几支？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "所以，'至少2支'是说最少有2支，但有可能更多，对吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "既然'总有'表示一定会发生，那么，如果我们想让'总有一个笔筒至少有2支'这件事不发生，需要满足什么条件？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-0-1",
+      "question_type": "scaffold",
+      "content": "我们刚才看到，不管怎么放，总有一个笔筒至少有2支。那有没有一种放法，能让每个笔筒里的铅笔数都尽量少？试着摆一摆。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-0-2",
+      "question_type": "scaffold",
+      "content": "如果每个笔筒最多放1支，3个笔筒一共最多能放几支？你现在有4支，能这样放吗？动手试试看。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "如果每个笔筒只放1支，最多能放多少支？还剩下多少支？这剩下的铅笔应该放在哪里？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果变成7支铅笔放进3个笔筒，按照刚才的假设法思路，应该怎么推理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "10本书放进3个抽屉，用除法算一算，平均每个抽屉能分到几本？还多出几本？这多出来的书怎么办？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "用我们刚才的假设法来想：如果每个抽屉最多放2本（商），3个抽屉最多放几本？实际有7本，会怎样？这多出来的1本（余数）说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

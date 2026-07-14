@@ -1,0 +1,122 @@
+{
+  "task_id": "62e3630a-c373-4b3f-8e1e-b99bc33e1d45",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "我们每天走在宽敞的马路上，在明亮的教室里读书，这些公共设施的背后，有着怎样的资金支持呢？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "main_M1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果我们要计算一家饭店需要缴纳的营业税，在这个过程中，‘税率’这个百分数具体代表了什么？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "main_M2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "面对这道包含‘扣除标准’的纳税问题，为什么在计算税额时，不能直接用总收入去乘以税率？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M3.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果我们把手里的钱分成‘买零食’和‘交税’两部分，这两种钱的‘去向’和‘作用’有什么本质不同？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "variant_V1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果我们的城市突然取消了税收，不再有公共资金支持，我们的生活会发生哪些连锁反应？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果饭店一个月赚了10万元，但这10万元里还包含了买菜的成本，我们应该用哪一个数来计算税额呢？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "variant_V2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果税率从3%提高到5%，在坐标图上，我们的纳税线会有什么变化？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "variant_V2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "两家公司营业额一样，但一家有免税补贴，一家没有，为什么计算出的应纳税额差别这么大？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V3-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果你的工资是8000元，但国家规定5000元以内不用交税，你要怎么算自己需要交多少税？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V3-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-1",
+      "question_type": "scaffold",
+      "content": "一个人交给国家的钱，最后变成了我们身边的什么？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-2",
+      "question_type": "scaffold",
+      "content": "如果我们要保证每个人纳税都公平，应该依据什么来决定交多少钱？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-1",
+      "question_type": "scaffold",
+      "content": "题目中总收入是6000元，免税额是2000元，你觉得计算税额时应该选哪个数字作为基数？为什么？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-2",
+      "question_type": "scaffold",
+      "content": "如果在计算时直接用总收入6000元去乘税率，计算结果和实际应纳税额相比，会变大还是变小？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-2.html",
+      "image_files": []
+    }
+  ]
+}

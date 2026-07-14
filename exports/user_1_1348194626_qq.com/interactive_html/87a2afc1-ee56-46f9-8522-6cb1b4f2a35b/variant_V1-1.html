@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公园资金来源对比 - 教学可视化</title>
+    <style>
+        :root {
+            --primary-private: #FF6B6B;
+            --primary-private-light: #FFE3E3;
+            --primary-public: #2ECC71;
+            --primary-public-light: #E8F8F5;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --bg-light: #F8F9FA;
+            --accent-gold: #F1C40F;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #AEB6BF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .canvas-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            color: #FFFFFF;
+            padding: 20px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #BDC3C7;
+        }
+
+        /* 核心不可变事实：维护成本 */
+        .maintenance-banner {
+            background-color: #FEF9E7;
+            border-bottom: 2px dashed #F1C40F;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #B7950B;
+            font-size: 15px;
+            z-index: 10;
+        }
+
+        .lock-icon {
+            width: 20px;
+            height: 20px;
+            fill: #F1C40F;
+        }
+
+        /* 主对比区域 */
+        .comparison-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            background-color: #E5E8E8;
+            position: relative;
+        }
+
+        .park-column {
+            background-color: #FFFFFF;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .column-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .private-title {
+            color: var(--primary-private);
+            background-color: var(--primary-private-light);
+        }
+
+        .public-title {
+            color: var(--primary-public);
+            background-color: var(--primary-public-light);
+        }
+
+        /* 流程图示区域 */
+        .flow-visualization {
+            flex: 1;
+            position: relative;
+            border: 2px solid #F2F4F4;
+            border-radius: 12px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 15px;
+        }
+
+        /* 流程节点样式 */
+        .flow-node {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #FFFFFF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #BDC3C7;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .flow-node.active {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .private .flow-node.active {
+            border-left-color: var(--primary-private);
+        }
+
+        .public .flow-node.active {
+            border-left-color: var(--primary-public);
+        }
+
+        .node-icon {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+
+        .node-text {
+            flex: 1;
+        }
+
+        .node-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .node-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 动态连线/箭头 */
+        .flow-arrow {
+            text-align: center;
+            color: #BDC3C7;
+            font-size: 18px;
+            line-height: 1;
+            margin: -5px 0;
+            transition: color 0.3s;
+        }
+
+        .private .flow-arrow.active {
+            color: var(--primary-private);
+        }
+
+        .public .flow-arrow.active {
+            color: var(--primary-public);
+        }
+
+        /* 底部控制栏 */
+        .control-panel {
+            background-color: #F2F4F4;
+            padding: 15px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 2px solid #E5E8E8;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #BDC3C7;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .step-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #34495E;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .step-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .step-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .step-label.active {
+            color: #34495E;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: #34495E;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #2C3E50;
+        }
+
+        .btn:disabled {
+            background-color: #BDC3C7;
+            cursor: not-allowed;
+        }
+
+        .classroom-prompt {
+            font-size: 14px;
+            color: #34495E;
+            font-weight: bold;
+            background-color: #E8F8F5;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-public);
+        }
+
+        /* 动画金币粒子 */
+        .coin-particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-gold);
+            border-radius: 50%;
+            border: 1px solid #D4AC0D;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        @keyframes flowDown {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="canvas-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>公园资金来源与运作对比</h1>
+        <p>通过对比，观察“收费游乐园”与“免费市政公园”在资金流动和受益群体上的本质区别</p>
+    </div>
+
+    <!-- 锁定事实 -->
+    <div class="maintenance-banner">
+        <svg class="lock-icon" viewBox="0 0 24 24">
+            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+        <span>核心事实：无论是哪种公园，绿地、公厕和游乐设施的维护都需要持续的资金成本！</span>
+    </div>
+
+    <!-- 主对比区域 -->
+    <div class="comparison-grid">
+        <!-- 左侧：私人游乐园 -->
+        <div class="park-column private" id="col-private">
+            <div class="column-title private-title">私人游乐园 (收费)</div>
+            
+            <div class="flow-visualization">
+                <!-- 节点 1 -->
+                <div class="flow-node" id="node-pri-1">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#FF6B6B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">1. 资金来源</div>
+                        <div class="node-desc">仅由【购票入园的游客】支付门票费用</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-pri-1">↓</div>
+
+                <!-- 节点 2 -->
+                <div class="flow-node" id="node-pri-2">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#FF6B6B" d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">2. 资金去向</div>
+                        <div class="node-desc">流入【私人老板/运营公司】的账户</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-pri-2">↓</div>
+
+                <!-- 节点 3 -->
+                <div class="flow-node" id="node-pri-3">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#FF6B6B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">3. 谁能受益</div>
+                        <div class="node-desc">【仅限付过钱的游客】可以进入并使用设施</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：市政公园 -->
+        <div class="park-column public" id="col-public">
+            <div class="column-title public-title">市政公园 (免费)</div>
+            
+            <div class="flow-visualization">
+                <!-- 节点 1 -->
+                <div class="flow-node" id="node-pub-1">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#2ECC71" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">1. 资金来源</div>
+                        <div class="node-desc">来自【千家万户纳税人】依法缴纳的税收</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-pub-1">↓</div>
+
+                <!-- 节点 2 -->
+                <div class="flow-node" id="node-pub-2">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#2ECC71" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">2. 资金去向</div>
+                        <div class="node-desc">汇入【国库/政府财政】，再拨付给公园维护</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-pub-2">↓</div>
+
+                <!-- 节点 3 -->
+                <div class="flow-node" id="node-pub-3">
+                    <svg class="node-icon" viewBox="0 0 24 24">
+                        <path fill="#2ECC71" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+                    </svg>
+                    <div class="node-text">
+                        <div class="node-title">3. 谁能受益</div>
+                        <div class="node-desc">【所有人】都可以免费进入，共享公共资源</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span style="font-size: 14px; font-weight: bold; color: var(--text-dark);">对比步骤：</span>
+            <input type="range" min="1" max="3" value="1" class="step-slider" id="step-slider">
+            <button class="btn" id="btn-play">自动演示</button>
+        </div>
+        <div class="step-labels">
+            <span class="step-label active" id="label-1">1. 资金来源</span>
+            <span class="step-label" id="label-2">2. 资金去向</span>
+            <span class="step-label" id="label-3">3. 谁能受益</span>
+        </div>
+        <div class="button-group">
+            <div class="classroom-prompt">
+                💡 思考：为什么市政公园不收门票，里面的设施却能保持干净和完好？
+            </div>
+            <div>
+                <button class="btn" id="btn-prev" disabled>上一步</button>
+                <button class="btn" id="btn-next" style="margin-left: 8px;">下一步</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 用于动画的金币粒子容器 -->
+<div id="particle-container"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('step-slider');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnPlay = document.getElementById('btn-play');
+        
+        const labels = [
+            document.getElementById('label-1'),
+            document.getElementById('label-2'),
+            document.getElementById('label-3')
+        ];
+
+        // 节点定义
+        const nodes = {
+            private: [
+                document.getElementById('node-pri-1'),
+                document.getElementById('node-pri-2'),
+                document.getElementById('node-pri-3')
+            ],
+            public: [
+                document.getElementById('node-pub-1'),
+                document.getElementById('node-pub-2'),
+                document.getElementById('node-pub-3')
+            ]
+        };
+
+        const arrows = {
+            private: [
+                document.getElementById('arrow-pri-1'),
+                document.getElementById('arrow-pri-2')
+            ],
+            public: [
+                document.getElementById('arrow-pub-1'),
+                document.getElementById('arrow-pub-2')
+            ]
+        };
+
+        let currentStep = 1;
+        let playInterval = null;
+
+        // 更新视图状态
+        function updateVisualization(step) {
+            currentStep = step;
+            slider.value = step;
+
+            // 更新控制按钮状态
+            btnPrev.disabled = (step === 1);
+            btnNext.disabled = (step === 3);
+
+            // 更新标签高亮
+            labels.forEach((label, index) => {
+                if (index + 1 === step) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+
+            // 更新流程节点和箭头的激活状态
+            for (let i = 0; i < 3; i++) {
+                // 私人
+                if (i + 1 <= step) {
+                    nodes.private[i].classList.add('active');
+                } else {
+                    nodes.private[i].classList.remove('active');
+                }
+                // 箭头
+                if (i < 2) {
+                    if (i + 1 < step) {
+                        arrows.private[i].classList.add('active');
+                    } else {
+                        arrows.private[i].classList.remove('active');
+                    }
+                }
+
+                // 公共
+                if (i + 1 <= step) {
+                    nodes.public[i].classList.add('active');
+                } else {
+                    nodes.public[i].classList.remove('active');
+                }
+                // 箭头
+                if (i < 2) {
+                    if (i + 1 < step) {
+                        arrows.public[i].classList.add('active');
+                    } else {
+                        arrows.public[i].classList.remove('active');
+                    }
+                }
+            }
+
+            // 触发金币流动动画
+            triggerCoinAnimation(step);
+        }
+
+        // 模拟金币流动动画
+        function triggerCoinAnimation(step) {
+            // 清除旧的粒子
+            const container = document.getElementById('particle-container');
+            container.innerHTML = '';
+
+            if (step === 1) {
+                // 步骤1：资金来源
+                // 私人：从外部流入节点1
+                createCoins('col-private', 'node-pri-1', 5);
+                // 公共：从外部流入节点1
+                createCoins('col-public', 'node-pub-1', 8);
+            } else if (step === 2) {
+                // 步骤2：资金去向
+                // 私人：从节点1流向节点2
+                createCoinsBetweenNodes('node-pri-1', 'node-pri-2', 5);
+                // 公共：从节点1流向节点2
+                createCoinsBetweenNodes('node-pub-1', 'node-pub-2', 8);
+            } else if (step === 3) {
+                // 步骤3：谁能受益
+                // 私人：从节点2流向节点3
+                createCoinsBetweenNodes('node-pri-2', 'node-pri-3', 5);
+                // 公共：从节点2流向节点3
+                createCoinsBetweenNodes('node-pub-2', 'node-pub-3', 8);
+            }
+        }
+
+        function createCoins(columnId, targetNodeId, count) {
+            const col = document.getElementById(columnId);
+            const target = document.getElementById(targetNodeId);
+            if (!col || !target) return;
+
+            const colRect = col.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+
+            for (let i = 0; i < count; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'coin-particle';
+                document.body.appendChild(coin);
+
+                // 起始位置：列的顶部或边缘随机位置
+                const startX = colRect.left + Math.random() * colRect.width;
+                const startY = colRect.top + 20;
+
+                // 终点位置：目标节点中心随机偏移
+                const endX = targetRect.left + targetRect.width / 2 + (Math.random() - 0.5) * 30;
+                const endY = targetRect.top + targetRect.height / 2 + (Math.random() - 0.5) * 15;
+
+                animateCoin(coin, startX, startY, endX, endY, i * 150);
+            }
+        }
+
+        function createCoinsBetweenNodes(sourceId, targetId, count) {
+            const source = document.getElementById(sourceId);
+            const target = document.getElementById(targetId);
+            if (!source || !target) return;
+
+            const srcRect = source.getBoundingClientRect();
+            const tgtRect = target.getBoundingClientRect();
+
+            for (let i = 0; i < count; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'coin-particle';
+                document.body.appendChild(coin);
+
+                const startX = srcRect.left + srcRect.width / 2 + (Math.random() - 0.5) * 30;
+                const startY = srcRect.top + srcRect.height / 2;
+
+                const endX = tgtRect.left + tgtRect.width / 2 + (Math.random() - 0.5) * 30;
+                const endY = tgtRect.top + tgtRect.height / 2;
+
+                animateCoin(coin, startX, startY, endX, endY, i * 150);
+            }
+        }
+
+        function animateCoin(coin, sx, sy, ex, ey, delay) {
+            coin.style.left = `${sx}px`;
+            coin.style.top = `${sy}px`;
+            coin.style.setProperty('--tx', `${ex - sx}px`);
+            coin.style.setProperty('--ty', `${ey - sy}px`);
+
+            setTimeout(() => {
+                coin.style.display = 'block';
+                coin.style.animation = 'flowDown 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+                
+                // 动画结束后移除
+                setTimeout(() => {
+                    coin.remove();
+                }, 800);
+            }, delay);
+        }
+
+        // 事件监听
+        slider.addEventListener('input', (e) => {
+            updateVisualization(parseInt(e.target.value));
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentStep > 1) {
+                updateVisualization(currentStep - 1);
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentStep < 3) {
+                updateVisualization(currentStep + 1);
+            }
+        });
+
+        labels.forEach((label, index) => {
+            label.addEventListener('click', () => {
+                updateVisualization(index + 1);
+            });
+        });
+
+        // 自动播放逻辑
+        btnPlay.addEventListener('click', () => {
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+                btnPlay.textContent = '自动演示';
+                btnPlay.style.backgroundColor = '#34495E';
+            } else {
+                btnPlay.textContent = '停止演示';
+                btnPlay.style.backgroundColor = '#E74C3C';
+                
+                // 从当前步骤开始循环
+                playInterval = setInterval(() => {
+                    let next = currentStep + 1;
+                    if (next > 3) next = 1;
+                    updateVisualization(next);
+                }, 3000);
+            }
+        });
+
+        // 初始化
+        updateVisualization(1);
+    });
+</script>
+
+</body>
+</html>

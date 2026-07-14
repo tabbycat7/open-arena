@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人与人类的指令理解差异</title>
+    <style>
+        :root {
+            --bg-color: #f0f7ff;
+            --primary-color: #4a90e2;
+            --text-color: #333;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #stage {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h2 { color: var(--text-color); margin-bottom: 20px; }
+        #canvas-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+        .character {
+            position: absolute;
+            bottom: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .character:hover { transform: scale(1.05); }
+        #mom { left: 150px; }
+        #robot { right: 150px; }
+        
+        #dialog {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            background: #fff3cd;
+            border: 2px solid #ffeeba;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            width: 200px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        }
+        .shoe { position: absolute; bottom: 40px; font-size: 40px; }
+        #shoe1 { left: 350px; }
+        #shoe2 { left: 420px; }
+    </style>
+</head>
+<body>
+
+<div id="stage">
+    <h2>“拿鞋子”指令测试</h2>
+    <div id="canvas-container">
+        <!-- 妈妈 -->
+        <div id="mom" class="character">
+            <svg width="120" height="200" viewBox="0 0 100 200">
+                <circle cx="50" cy="40" r="30" fill="#ffccaa"/>
+                <rect x="30" y="70" width="40" height="80" fill="#ff9999" rx="10"/>
+                <text x="20" y="190" font-size="20">妈妈</text>
+            </svg>
+        </div>
+
+        <!-- 鞋子 -->
+        <div id="shoe1" class="shoe">👟</div>
+        <div id="shoe2" class="shoe">🩴</div>
+
+        <!-- 机器人 -->
+        <div id="robot" class="character">
+            <svg width="120" height="200" viewBox="0 0 100 200">
+                <rect x="30" y="20" width="40" height="40" fill="#bdc3c7" rx="5"/>
+                <circle cx="40" cy="35" r="5" fill="white"/>
+                <circle cx="60" cy="35" r="5" fill="white"/>
+                <text x="45" y="35" font-size="20" fill="red">?</text>
+                <rect x="20" y="70" width="60" height="80" fill="#7f8c8d" rx="10"/>
+                <text x="20" y="190" font-size="20">机器人</text>
+            </svg>
+        </div>
+
+        <!-- 对话框 -->
+        <div id="dialog">
+            <strong>机器人思考中...</strong><br>
+            鞋子在哪个房间？<br>
+            拿红色的还是蓝色的？<br>
+            拿左脚还是右脚？<br>
+            <span style="color:red">指令不明确，无法执行！</span>
+        </div>
+    </div>
+    <p style="color: #666;">点击右侧的机器人，看看它在想什么？</p>
+</div>
+
+<script>
+    (function() {
+        const robot = document.getElementById('robot');
+        const dialog = document.getElementById('dialog');
+
+        robot.addEventListener('click', function() {
+            if (dialog.style.display === 'block') {
+                dialog.style.display = 'none';
+            } else {
+                dialog.style.display = 'block';
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的评价标准</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        #svg-canvas { width: 100%; height: 70%; cursor: pointer; }
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff3cd;
+            border: 2px solid #ffeeba;
+            color: #856404;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-align: center;
+        }
+        .ruler { cursor: pointer; transition: transform 0.3s; }
+        .ruler:hover { transform: scale(1.05); }
+        .highlight { filter: drop-shadow(0 0 10px #ffd700); }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>算法评价标准：请点击“明确”尺子</h2>
+    <svg id="svg-canvas" viewBox="0 0 400 250">
+        <!-- 裁判包 -->
+        <rect x="50" y="50" width="300" height="150" rx="10" fill="#e9ecef" stroke="#adb5bd" stroke-width="3"/>
+        <text x="200" y="40" text-anchor="middle" font-size="16" fill="#666">算法裁判包</text>
+        
+        <!-- 尺子1 -->
+        <g id="ruler1" class="ruler">
+            <rect x="80" y="80" width="60" height="100" rx="5" fill="#ff9f43" />
+            <text x="110" y="140" text-anchor="middle" transform="rotate(-90 110 140)" fill="white" font-weight="bold">有顺序</text>
+        </g>
+        
+        <!-- 尺子2 (目标) -->
+        <g id="ruler2" class="ruler">
+            <rect x="170" y="80" width="60" height="100" rx="5" fill="#2e86de" />
+            <text x="200" y="140" text-anchor="middle" transform="rotate(-90 200 140)" fill="white" font-weight="bold">明确</text>
+        </g>
+        
+        <!-- 尺子3 -->
+        <g id="ruler3" class="ruler">
+            <rect x="260" y="80" width="60" height="100" rx="5" fill="#5f27cd" />
+            <text x="290" y="140" text-anchor="middle" transform="rotate(-90 290 140)" fill="white" font-weight="bold">可执行</text>
+        </g>
+    </svg>
+    <div id="feedback"></div>
+</div>
+
+<script>
+    const ruler2 = document.getElementById('ruler2');
+    const feedback = document.getElementById('feedback');
+    let isSelected = false;
+
+    ruler2.addEventListener('click', () => {
+        if (!isSelected) {
+            // 动画效果
+            ruler2.classList.add('highlight');
+            ruler2.style.transform = 'scale(1.2) translate(-20px, -20px)';
+            
+            // 显示反馈
+            feedback.style.opacity = '1';
+            feedback.innerHTML = '<strong>明确：</strong>不能用“凭感觉”、“适量”等模糊词汇，<br>每个人执行都必须一模一样！';
+            
+            isSelected = true;
+        } else {
+            // 重置
+            ruler2.classList.remove('highlight');
+            ruler2.style.transform = 'scale(1)';
+            feedback.style.opacity = '0';
+            isSelected = false;
+        }
+    });
+</script>
+
+</body>
+</html>

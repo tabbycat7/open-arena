@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百分数乘法计算转化 - 教学可视化</title>
+    <style>
+        /* 全局重置与课堂投影优化样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .canvas-container {
+            width: 100vw;
+            height: 75vw; /* 4:3 Aspect Ratio */
+            max-width: 800px;
+            max-height: 600px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 顶部标题区 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .question-tag {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-size: 22px;
+            color: #1e293b;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        /* 算式展示区 */
+        .formula-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .formula-box {
+            background: #f1f5f9;
+            padding: 16px 32px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #334155;
+            border: 2px solid #cbd5e1;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .target-percent {
+            color: #3b82f6;
+            background: #eff6ff;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 2px dashed #3b82f6;
+            position: relative;
+            animation: pulse-border 2s infinite;
+        }
+
+        /* 交互连线区 */
+        .connector-area {
+            position: relative;
+            height: 80px;
+            width: 100%;
+        }
+        .connector-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .connector-path {
+            fill: none;
+            stroke: #cbd5e1;
+            stroke-width: 3;
+            stroke-dasharray: 6, 6;
+            transition: stroke 0.3s, stroke-width 0.3s, stroke-dasharray 0.3s;
+        }
+        .connector-path.active {
+            stroke: #10b981;
+            stroke-width: 4;
+            stroke-dasharray: none;
+        }
+        .connector-path.active-secondary {
+            stroke: #6366f1;
+            stroke-width: 4;
+            stroke-dasharray: none;
+        }
+
+        /* 气泡选择区 */
+        .bubbles-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            z-index: 10;
+        }
+        .bubble {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            position: relative;
+        }
+        
+        /* 小数气泡样式 */
+        .bubble-decimal {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        .bubble-decimal:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* 分数气泡样式 */
+        .bubble-fraction {
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            color: white;
+        }
+        .bubble-fraction:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .bubble-sub {
+            font-size: 16px;
+            font-weight: normal;
+            opacity: 0.9;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* 气泡选中后的动画状态 */
+        .bubble.selected-decimal {
+            animation: flash-green 0.8s ease-in-out infinite alternate;
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+            background: linear-gradient(135deg, #10b981, #047857);
+        }
+        .bubble.selected-fraction {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #818cf8, #4f46e5);
+        }
+
+        /* 底部反馈提示区 */
+        .feedback-panel {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .feedback-text {
+            font-size: 18px;
+            color: #475569;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        .feedback-text strong {
+            color: #0f172a;
+            font-size: 20px;
+        }
+
+        /* 动画定义 */
+        @keyframes pulse-border {
+            0%, 100% { border-color: #3b82f6; box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            50% { border-color: #60a5fa; box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+        }
+
+        @keyframes flash-green {
+            0% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+            100% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.8); }
+        }
+
+        /* 辅助网格背景，增加数学课件质感 */
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas-container">
+        <div class="grid-bg"></div>
+        <div class="content-wrapper">
+            
+            <!-- 顶部标题 -->
+            <div class="header">
+                <span class="question-tag">思考与探索</span>
+                <h1 class="question-text">要计算 30万 的 5%，我们通常先把百分数 5% 化成什么数来计算？</h1>
+            </div>
+
+            <!-- 算式展示 -->
+            <div class="formula-area">
+                <div class="formula-box">
+                    <span>30万</span>
+                    <span>×</span>
+                    <span class="target-percent" id="target-percent">5%</span>
+                </div>
+            </div>
+
+            <!-- 动态连线 -->
+            <div class="connector-area">
+                <svg class="connector-svg" viewBox="0 0 600 80" preserveAspectRatio="none">
+                    <!-- 左侧连线指向小数 -->
+                    <path id="path-left" class="connector-path" d="M 300 0 C 300 40, 150 40, 150 80" />
+                    <!-- 右侧连线指向分数 -->
+                    <path id="path-right" class="connector-path" d="M 300 0 C 300 40, 450 40, 450 80" />
+                </svg>
+            </div>
+
+            <!-- 交互气泡 -->
+            <div class="bubbles-container">
+                <button class="bubble bubble-decimal" id="btn-decimal">
+                    <span>小数</span>
+                    <span class="bubble-sub">0.05</span>
+                </button>
+                <button class="bubble bubble-fraction" id="btn-fraction">
+                    <span>分数</span>
+                    <span class="bubble-sub">5/100</span>
+                </button>
+            </div>
+
+            <!-- 底部反馈 -->
+            <div class="feedback-panel" id="feedback-panel">
+                <p class="feedback-text" id="feedback-text">💡 请点击上方的气泡，选择你认为最常用的转化方式。</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnDecimal = document.getElementById('btn-decimal');
+            const btnFraction = document.getElementById('btn-fraction');
+            const pathLeft = document.getElementById('path-left');
+            const pathRight = document.getElementById('path-right');
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackText = document.getElementById('feedback-text');
+            const targetPercent = document.getElementById('target-percent');
+
+            // 点击“小数”气泡
+            btnDecimal.addEventListener('click', () => {
+                // 重置状态
+                btnFraction.classList.remove('selected-fraction');
+                pathRight.classList.remove('active-secondary');
+
+                // 激活当前状态
+                btnDecimal.classList.add('selected-decimal');
+                pathLeft.classList.add('active');
+                
+                // 改变算式中的高亮显示
+                targetPercent.style.animation = 'none';
+                targetPercent.style.borderColor = '#10b981';
+                targetPercent.style.backgroundColor = '#ecfdf5';
+                targetPercent.style.color = '#047857';
+                targetPercent.textContent = '0.05';
+
+                // 反馈面板更新
+                feedbackPanel.style.borderColor = '#10b981';
+                feedbackPanel.style.backgroundColor = '#f0fdf4';
+                feedbackText.innerHTML = '🎯 <strong>化成小数计算是最常用的方法哦！</strong><br>把 5% 化成 0.05，算式变为 30万 × 0.05，口算或笔算都非常方便快捷！';
+            });
+
+            // 点击“分数”气泡
+            btnFraction.addEventListener('click', () => {
+                // 重置状态
+                btnDecimal.classList.remove('selected-decimal');
+                pathLeft.classList.remove('active');
+
+                // 激活当前状态
+                btnFraction.classList.add('selected-fraction');
+                pathRight.classList.add('active-secondary');
+
+                // 改变算式中的高亮显示
+                targetPercent.style.animation = 'none';
+                targetPercent.style.borderColor = '#6366f1';
+                targetPercent.style.backgroundColor = '#eef2ff';
+                targetPercent.style.color = '#4338ca';
+                targetPercent.textContent = '5/100';
+
+                // 反馈面板更新
+                feedbackPanel.style.borderColor = '#6366f1';
+                feedbackPanel.style.backgroundColor = '#f5f3ff';
+                feedbackText.innerHTML = '✍️ <strong>化成分数也是一种好方法！</strong><br>把 5% 化成 5/100（即 1/20），在需要约分或特定简便计算时很有用。但通常情况下，<strong>化成小数</strong>是最常用的首选方法哦！';
+            });
+        });
+    </script>
+</body>
+</html>

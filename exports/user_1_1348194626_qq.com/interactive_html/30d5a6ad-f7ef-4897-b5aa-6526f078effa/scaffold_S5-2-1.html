@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>班规清晰度对比</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --bg: #fdfdfd;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 30px; }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .box {
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            width: 40%;
+            min-height: 200px;
+            transition: transform 0.3s;
+        }
+        .box h3 { margin-top: 0; color: #666; }
+        .item {
+            padding: 10px;
+            margin: 10px 0;
+            background: #eee;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .hint {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #888;
+            height: 20px;
+        }
+        .summary {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: var(--primary);
+            border: 2px dashed var(--primary);
+        }
+        .active-warning { border-color: var(--warning); background: #fffdf0; }
+        .active-success { border-color: var(--success); background: #f0fff4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>班规怎么写，才更容易遵守？</h2>
+    
+    <div class="stage">
+        <div class="box" id="vague-box">
+            <h3>模糊的口号</h3>
+            <div class="item" id="vague-btn">“做个好学生”</div>
+            <div class="hint" id="vague-hint"></div>
+        </div>
+
+        <div class="box" id="clear-box">
+            <h3>具体的行为</h3>
+            <div class="item" data-type="clear">“上课举手发言”</div>
+            <div class="item" data-type="clear">“排队不推搡”</div>
+            <div class="item" data-type="clear">“垃圾扔进桶”</div>
+            <div class="hint" id="clear-hint"></div>
+        </div>
+    </div>
+
+    <div class="summary">制定公约，就要写出具体的行动指南！</div>
+</div>
+
+<script>
+    const vagueBtn = document.getElementById('vague-btn');
+    const vagueHint = document.getElementById('vague-hint');
+    const vagueBox = document.getElementById('vague-box');
+    
+    const clearBtns = document.querySelectorAll('[data-type="clear"]');
+    const clearHint = document.getElementById('clear-hint');
+    const clearBox = document.getElementById('clear-box');
+
+    vagueBtn.addEventListener('click', () => {
+        vagueBox.classList.add('active-warning');
+        vagueHint.innerHTML = '⚠️ 太宽泛，不知道具体该怎么做？';
+        vagueHint.style.color = '#f39c12';
+    });
+
+    clearBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            clearBox.classList.add('active-success');
+            btn.style.background = '#d4edda';
+            btn.innerHTML = '✅ ' + btn.innerText.replace('✅ ', '');
+            clearHint.innerHTML = '✨ 具体明确，容易执行！';
+            clearHint.style.color = '#27ae60';
+        });
+    });
+</script>
+
+</body>
+</html>

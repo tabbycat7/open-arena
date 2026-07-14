@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI时代的隐私保险箱</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 20px;
+        }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        #svg-canvas { width: 100%; height: 400px; cursor: crosshair; }
+        .controls { text-align: center; margin-top: 10px; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #risk-box {
+            position: absolute;
+            top: 150px;
+            left: 200px;
+            width: 300px;
+            background: #ffeded;
+            border: 2px solid #ff4d4f;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            z-index: 10;
+        }
+        #agreement-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>AI时代的隐私保险箱</h2>
+    <svg id="svg-canvas" viewBox="0 0 800 400">
+        <!-- 保险箱 -->
+        <rect x="300" y="100" width="200" height="200" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="5" rx="10"/>
+        <circle cx="400" cy="200" r="30" fill="#7f8c8d"/>
+        <text x="350" y="280" font-size="18" fill="#2c3e50">隐私保险箱</text>
+        
+        <!-- 数据卡片组 -->
+        <g id="cards" cursor="grab">
+            <rect id="card-face" x="50" y="50" width="100" height="40" fill="#3498db" rx="5"/>
+            <text x="75" y="75" fill="white">人脸</text>
+            
+            <rect id="card-voice" x="50" y="120" width="100" height="40" fill="#3498db" rx="5"/>
+            <text x="75" y="145" fill="white">声音</text>
+            
+            <rect id="card-hobby" x="650" y="50" width="100" height="40" fill="#9b59b6" rx="5"/>
+            <text x="665" y="75" fill="white">日常喜好</text>
+            
+            <rect id="card-addr" x="650" y="120" width="100" height="40" fill="#9b59b6" rx="5"/>
+            <text x="665" y="145" fill="white">家庭地址</text>
+        </g>
+    </svg>
+
+    <div class="controls">
+        <button id="btn-agreement">查看协议陷阱</button>
+    </div>
+
+    <div id="risk-box">
+        <h4 style="color:#ff4d4f">⚠️ 风险警告</h4>
+        <p>如果泄露：可能被用于AI拟真诈骗，冒充你向亲友借钱。</p>
+        <button id="btn-close-risk">我知道了</button>
+    </div>
+
+    <div id="agreement-overlay">
+        <div style="background:white; color:black; padding:20px; width:60%; border-radius:10px;">
+            <h3>用户协议条款</h3>
+            <p style="background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">
+                “用户同意授予本平台对上传照片的、全球范围内的、无限期的免费使用权。”
+            </p>
+            <button id="btn-reject" style="background: #e74c3c;">一键拒绝不合理授权</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const svg = document.getElementById('svg-canvas');
+    const riskBox = document.getElementById('risk-box');
+    const agreementOverlay = document.getElementById('agreement-overlay');
+    
+    // 简单的拖拽逻辑
+    let activeElement = null;
+    
+    document.querySelectorAll('#cards rect').forEach(rect => {
+        rect.addEventListener('mousedown', (e) => { activeElement = e.target; });
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (activeElement) {
+            activeElement.setAttribute('x', e.clientX - 450);
+            activeElement.setAttribute('y', e.clientY - 150);
+            // 简单的碰撞检测
+            if (e.clientX > 350 && e.clientX < 550 && e.clientY > 200 && e.clientY < 400) {
+                if (activeElement.id === 'card-face' || activeElement.id === 'card-voice') {
+                    riskBox.style.display = 'block';
+                }
+            }
+        }
+    });
+
+    window.addEventListener('mouseup', () => { activeElement = null; });
+
+    document.getElementById('btn-close-risk').addEventListener('click', () => {
+        riskBox.style.display = 'none';
+    });
+
+    document.getElementById('btn-agreement').addEventListener('click', () => {
+        agreementOverlay.style.display = 'flex';
+    });
+
+    document.getElementById('btn-reject').addEventListener('click', () => {
+        alert('已成功拒绝不合理授权！保护个人隐私是您的权利。');
+        agreementOverlay.style.display = 'none';
+    });
+</script>
+</body>
+</html>

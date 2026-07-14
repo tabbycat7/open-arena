@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税率对商品价格的影响 - 课堂互动教学可视化</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --grain-color: #2e7d32;
+            --grain-bg: #e8f5e9;
+            --cosmetic-color: #c2185b;
+            --cosmetic-bg: #fce4ec;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例外壳，适合投影 */
+        .aspect-ratio-container {
+            width: 100vw;
+            max-width: 800px;
+            height: 75vw;
+            max-height: 600px;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部标题区 */
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .title {
+            font-size: 1.6rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* 主展示区：左右对比 */
+        .showcase {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            margin: 12px 0;
+        }
+
+        /* 收银台卡片 */
+        .counter-card {
+            flex: 1;
+            height: 100%;
+            max-height: 360px;
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .counter-card.active-grain {
+            border-color: var(--grain-color);
+            box-shadow: 0 0 15px rgba(46, 125, 50, 0.15);
+        }
+
+        .counter-card.active-cosmetic {
+            border-color: var(--cosmetic-color);
+            box-shadow: 0 0 15px rgba(194, 24, 91, 0.15);
+        }
+
+        /* 柜台标签 */
+        .counter-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .grain-title { color: var(--grain-color); }
+        .cosmetic-title { color: var(--cosmetic-color); }
+
+        /* 商品示意图区域 */
+        .product-display {
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        /* 模拟小票 */
+        .receipt {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace, sans-serif;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .receipt-row.highlight {
+            color: var(--text-main);
+            font-weight: bold;
+        }
+
+        .receipt-divider {
+            border-top: 1px dashed #ccc;
+            margin: 6px 0;
+        }
+
+        /* 关键交互元素：最终价格 */
+        .total-price-box {
+            background-color: #f3f4f6;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .total-price-box:hover {
+            transform: translateY(-2px);
+        }
+
+        .grain-card .total-price-box:hover {
+            background-color: var(--grain-bg);
+            border-color: var(--grain-color);
+        }
+
+        .cosmetic-card .total-price-box:hover {
+            background-color: var(--cosmetic-bg);
+            border-color: var(--cosmetic-color);
+        }
+
+        /* 激活状态 */
+        .grain-card.active .total-price-box {
+            background-color: var(--grain-bg);
+            border-color: var(--grain-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .cosmetic-card.active .total-price-box {
+            background-color: var(--cosmetic-bg);
+            border-color: var(--cosmetic-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(194, 24, 91, 0.2);
+        }
+
+        .total-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .total-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .grain-card .total-val { color: var(--grain-color); }
+        .cosmetic-card .total-val { color: var(--cosmetic-color); }
+
+        /* 动态指示箭头 (SVG 绝对定位) */
+        .arrow-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .arrow-path {
+            fill: none;
+            stroke-width: 3;
+            stroke-dasharray: 8, 4;
+            animation: dash 30s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .grain-card.active .arrow-path {
+            stroke: var(--grain-color);
+            opacity: 1;
+        }
+
+        .cosmetic-card.active .arrow-path {
+            stroke: var(--cosmetic-color);
+            opacity: 1;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
+
+        /* 底部控制与提示区 */
+        .footer-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9fafb;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tips {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tips-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background-color: #ffffff;
+            color: var(--text-main);
+        }
+
+        .btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        /* 呼吸灯提示效果 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+        }
+        .pulse-hint {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <span class="tag">数学 · 六年级 · 百分数（税率）</span>
+            <h1 class="title">哪一种商品交的税明显更多？</h1>
+            <p class="subtitle">点击下方的【实付总额】标签，观察税率如何影响最终价格</p>
+        </div>
+
+        <!-- 主展示区 -->
+        <div class="showcase">
+            <!-- 粮食收银台 -->
+            <div class="counter-card grain-card" id="card-grain">
+                <div class="counter-title grain-title">
+                    🌾 粮食收银台
+                </div>
+                <div class="product-display">
+                    <!-- 粮食 SVG 简图 -->
+                    <svg width="60" height="60" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 48C16 35 24 24 32 24C40 24 48 35 48 48H16Z" fill="#A1887F"/>
+                        <path d="M32 12C32 12 28 18 28 22C28 26 32 28 32 28C32 28 36 26 36 22C36 18 32 12 32 12Z" fill="#FFB74D"/>
+                        <path d="M24 16C24 16 20 21 20 25C20 29 24 31 24 31C24 31 28 29 28 25C28 21 24 16 24 16Z" fill="#FFA726"/>
+                        <path d="M40 16C40 16 36 21 36 25C36 29 40 31 40 31C40 31 44 29 44 25C44 21 40 16 40 16Z" fill="#FFA726"/>
+                        <rect x="12" y="48" width="40" height="8" rx="4" fill="#8D6E63"/>
+                    </svg>
+                </div>
+                <div class="receipt">
+                    <!-- 动态指示线 -->
+                    <svg class="arrow-svg" viewBox="0 0 200 200">
+                        <path id="arrow-grain" class="arrow-path" d="M 150,55 C 190,70 190,130 140,145" />
+                        <!-- 箭头 -->
+                        <polygon points="138,140 133,147 142,149" fill="currentColor" class="arrow-path" style="opacity: inherit; fill: var(--grain-color);"/>
+                    </svg>
+                    
+                    <div>
+                        <div class="receipt-row">
+                            <span>商品原价</span>
+                            <span>100.00 元</span>
+                        </div>
+                        <div class="receipt-row highlight" id="row-grain-rate">
+                            <span>适用税率</span>
+                            <span style="color: var(--grain-color);">9%</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>应交税额</span>
+                            <span style="font-weight: bold;">9.00 元</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="receipt-divider"></div>
+                        <div class="total-price-box pulse-hint" id="total-grain">
+                            <span class="total-label">实付总额 (原价+税)</span>
+                            <span class="total-val">109.00 元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 化妆品收银台 -->
+            <div class="counter-card cosmetic-card" id="card-cosmetic">
+                <div class="counter-title cosmetic-title">
+                    💄 化妆品收银台
+                </div>
+                <div class="product-display">
+                    <!-- 化妆品 SVG 简图 -->
+                    <svg width="60" height="60" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="24" y="28" width="16" height="28" rx="4" fill="#EC407A"/>
+                        <path d="M28 28V16H36V28H28Z" fill="#F48FB1"/>
+                        <rect x="26" y="12" width="12" height="4" fill="#D81B60"/>
+                        <circle cx="32" cy="38" r="4" fill="#FFF"/>
+                    </svg>
+                </div>
+                <div class="receipt">
+                    <!-- 动态指示线 -->
+                    <svg class="arrow-svg" viewBox="0 0 200 200">
+                        <path id="arrow-cosmetic" class="arrow-path" d="M 150,55 C 190,70 190,130 140,145" />
+                        <!-- 箭头 -->
+                        <polygon points="138,140 133,147 142,149" fill="currentColor" class="arrow-path" style="opacity: inherit; fill: var(--cosmetic-color);"/>
+                    </svg>
+
+                    <div>
+                        <div class="receipt-row">
+                            <span>商品原价</span>
+                            <span>100.00 元</span>
+                        </div>
+                        <div class="receipt-row highlight" id="row-cosmetic-rate">
+                            <span>适用税率</span>
+                            <span style="color: var(--cosmetic-color);">30%</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>应交税额</span>
+                            <span style="font-weight: bold;">30.00 元</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="receipt-divider"></div>
+                        <div class="total-price-box pulse-hint" id="total-cosmetic">
+                            <span class="total-label">实付总额 (原价+税)</span>
+                            <span class="total-val">130.00 元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部控制与引导 -->
+        <div class="footer-controls">
+            <div class="tips" id="interactive-tips">
+                <span class="tips-icon">💡</span>
+                <span id="tips-text">请点击任意一侧的【实付总额】开始探究。</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btn-compare-all">对比两边</button>
+                <button class="btn" id="btn-reset-view">重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cardGrain = document.getElementById('card-grain');
+            const cardCosmetic = document.getElementById('card-cosmetic');
+            const totalGrain = document.getElementById('total-grain');
+            const totalCosmetic = document.getElementById('total-cosmetic');
+            const btnCompare = document.getElementById('btn-compare-all');
+            const btnReset = document.getElementById('btn-reset-view');
+            const tipsText = document.getElementById('tips-text');
+
+            // 移除呼吸灯提示
+            function stopPulse() {
+                totalGrain.classList.remove('pulse-hint');
+                totalCosmetic.classList.remove('pulse-hint');
+            }
+
+            // 激活粮食卡片
+            function activateGrain() {
+                stopPulse();
+                cardGrain.classList.add('active', 'active-grain');
+                cardCosmetic.classList.remove('active', 'active-cosmetic');
+                tipsText.innerHTML = '<strong>粮食税率低 (9%)</strong>，税额仅 9 元，最终总价 109 元。';
+            }
+
+            // 激活化妆品卡片
+            function activateCosmetic() {
+                stopPulse();
+                cardCosmetic.classList.add('active', 'active-cosmetic');
+                cardGrain.classList.remove('active', 'active-grain');
+                tipsText.innerHTML = '<strong>化妆品税率高 (30%)</strong>，税额高达 30 元，最终总价 130 元！';
+            }
+
+            // 同时对比
+            function activateBoth() {
+                stopPulse();
+                cardGrain.classList.add('active', 'active-grain');
+                cardCosmetic.classList.add('active', 'active-cosmetic');
+                tipsText.innerHTML = '对比发现：原价相同，<strong>税率越高</strong>，交的税就<strong>越多</strong>，商品总价就<strong>越高</strong>。';
+            }
+
+            // 重置
+            function resetAll() {
+                cardGrain.classList.remove('active', 'active-grain');
+                cardCosmetic.classList.remove('active', 'active-cosmetic');
+                totalGrain.classList.add('pulse-hint');
+                totalCosmetic.classList.add('pulse-hint');
+                tipsText.innerText = '请点击任意一侧的【实付总额】开始探究。';
+            }
+
+            // 绑定点击事件
+            totalGrain.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activateGrain();
+            });
+
+            totalCosmetic.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activateCosmetic();
+            });
+
+            btnCompare.addEventListener('click', activateBoth);
+            btnReset.addEventListener('click', resetAll);
+
+            // 点击卡片空白处也能触发对应激活
+            cardGrain.addEventListener('click', activateGrain);
+            cardCosmetic.addEventListener('click', activateCosmetic);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理解税率：10% 与 每100元缴税10元</title>
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --tax-color: #ff5252;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft YaHei', sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* 4:3 比例容器，适合课堂投屏 */
+        .container {
+            width: 800px;
+            height: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #f1f5f9;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mode-selector {
+            display: flex;
+            background: #e2e8f0;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .mode-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .income-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .income-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .btn-adjust {
+            background: white;
+            border: 1px solid #cbd5e1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .btn-adjust:hover:not(:disabled) {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-adjust:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider {
+            width: 120px;
+            cursor: pointer;
+        }
+
+        /* 主展示区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            background: var(--bg-color);
+        }
+
+        .panel {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .panel.dimmed {
+            opacity: 0.15;
+            pointer-events: none;
+            filter: blur(1px);
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            width: 100%;
+            text-align: center;
+            border-bottom: 2px solid #f1f5f9;
+            color: #34495e;
+        }
+
+        /* 左侧：百分比饼图样式 */
+        .chart-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .donut-chart {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(var(--tax-color) 0% 10%, var(--primary-color) 10% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .donut-hole {
+            width: 105px;
+            height: 105px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-text-percent {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--tax-color);
+        }
+
+        .donut-text-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 右侧：百格图样式 */
+        .grid-scroll-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-content: center;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .hundred-grid-wrapper {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hundred-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 1px;
+            width: 110px;
+            height: 110px;
+            background-color: #cbd5e1;
+            border: 1px solid #cbd5e1;
+        }
+
+        .square {
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            transition: background-color 0.2s ease;
+        }
+
+        .square.tax {
+            background-color: var(--tax-color);
+        }
+
+        .grid-label {
+            font-size: 11px;
+            margin-top: 6px;
+            color: #475569;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* 数据看板 */
+        .data-board {
+            margin-top: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 15px;
+            width: 100%;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-value {
+            font-weight: bold;
+        }
+        .data-value.tax-text {
+            color: var(--tax-color);
+        }
+
+        /* 图例 */
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* 底部思考区域 */
+        .footer-prompt {
+            background: #fffbeb;
+            border-top: 1px solid #fef3c7;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prompt-icon {
+            background: #f59e0b;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .prompt-text {
+            font-size: 13px;
+            color: #b45309;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* 辅助高亮动画 */
+        .highlight-pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>理解税率：10% 的具象化表征</h1>
+            <div class="subtitle">六年级 · 百分数与纳税</div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="income-controls">
+                <span class="income-label">总收入：</span>
+                <button class="btn-adjust" id="btn-decrease" title="减少100元">-</button>
+                <div class="slider-container">
+                    <input type="range" id="income-slider" class="slider" min="100" max="400" step="100" value="100">
+                    <span class="income-label" id="income-display" style="min-width: 60px;">100 元</span>
+                </div>
+                <button class="btn-adjust" id="btn-increase" title="增加100元">+</button>
+            </div>
+
+            <div class="mode-selector">
+                <button class="mode-btn active" id="mode-compare">对比模式</button>
+                <button class="mode-btn" id="mode-percent">10% 视角</button>
+                <button class="mode-btn" id="mode-grid">每百元缴10元 视角</button>
+            </div>
+        </div>
+
+        <!-- 主展示区 -->
+        <div class="main-content">
+            <!-- 左侧：百分比视角 -->
+            <div class="panel" id="panel-left">
+                <div class="panel-title">抽象表征：税率 10%</div>
+                <div class="chart-container">
+                    <div class="donut-chart" id="donut-chart">
+                        <div class="donut-hole">
+                            <span class="donut-text-percent">10%</span>
+                            <span class="donut-text-label">固定税率</span>
+                        </div>
+                    </div>
+                    
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--tax-color);"></div>
+                            <span>应纳税额 (10%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--primary-color);"></div>
+                            <span>留存收入 (90%)</span>
+                        </div>
+                    </div>
+
+                    <div class="data-board">
+                        <div class="data-row">
+                            <span>总收入：</span>
+                            <span class="data-value" id="left-total">100 元</span>
+                        </div>
+                        <div class="data-row">
+                            <span>税率：</span>
+                            <span class="data-value" style="color: var(--tax-color);">10%</span>
+                        </div>
+                        <div class="data-row" style="border-top: 1px solid #e2e8f0; padding-top: 4px; margin-top: 4px;">
+                            <span>应纳税额：</span>
+                            <span class="data-value tax-text" id="left-tax">10 元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：百格图视角 -->
+            <div class="panel" id="panel-right">
+                <div class="panel-title">具象表征：每 100 元缴 10 元</div>
+                <div class="grid-scroll-container" id="grid-container">
+                    <!-- 动态生成百格图 -->
+                </div>
+                
+                <div class="data-board">
+                    <div class="data-row">
+                        <span>百元包个数：</span>
+                        <span class="data-value" id="right-bags">1 个</span>
+                    </div>
+                    <div class="data-row">
+                        <span>每包纳税：</span>
+                        <span class="data-value" style="color: var(--tax-color);">10 元 / 包</span>
+                    </div>
+                    <div class="data-row" style="border-top: 1px solid #e2e8f0; padding-top: 4px; margin-top: 4px;">
+                        <span>总纳税额：</span>
+                        <span class="data-value tax-text" id="right-tax">10 元</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部思考区域 -->
+        <div class="footer-prompt">
+            <div class="prompt-icon">?</div>
+            <div class="prompt-text">
+                <strong>思考：</strong>
+                当总收入增加时，左边的“税率（10%）”和右边“每100元中要缴的税（10元）”改变了吗？<br>
+                为什么说“每收入100元，要缴纳10元税”更容易让我们建立“单位基数”的感觉？
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const slider = document.getElementById('income-slider');
+        const incomeDisplay = document.getElementById('income-display');
+        const btnDecrease = document.getElementById('btn-decrease');
+        const btnIncrease = document.getElementById('btn-increase');
+        
+        const leftTotal = document.getElementById('left-total');
+        const leftTax = document.getElementById('left-tax');
+        
+        const rightBags = document.getElementById('right-bags');
+        const rightTax = document.getElementById('right-tax');
+        const gridContainer = document.getElementById('grid-container');
+        
+        const panelLeft = document.getElementById('panel-left');
+        const panelRight = document.getElementById('panel-right');
+        
+        const modeCompare = document.getElementById('mode-compare');
+        const modePercent = document.getElementById('mode-percent');
+        const modeGrid = document.getElementById('mode-grid');
+        const donutChart = document.getElementById('donut-chart');
+
+        let currentIncome = 100;
+
+        // 初始化渲染
+        function init() {
+            updateUI();
+            setupEventListeners();
+        }
+
+        // 更新界面
+        function updateUI() {
+            // 更新控制区
+            slider.value = currentIncome;
+            incomeDisplay.innerText = `${currentIncome} 元`;
+            
+            btnDecrease.disabled = currentIncome <= 100;
+            btnIncrease.disabled = currentIncome >= 400;
+
+            // 计算税额
+            const taxAmount = currentIncome * 0.1;
+
+            // 更新左侧面板数据
+            leftTotal.innerText = `${currentIncome} 元`;
+            leftTax.innerText = `${taxAmount.toFixed(0)} 元`;
+
+            // 更新右侧面板数据
+            const bagsCount = currentIncome / 100;
+            rightBags.innerText = `${bagsCount} 个 (共 ${currentIncome} 元)`;
+            rightTax.innerText = `${taxAmount.toFixed(0)} 元`;
+
+            // 动态生成百格图
+            renderGrids(bagsCount);
+        }
+
+        // 渲染百格图
+        function renderGrids(count) {
+            gridContainer.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'hundred-grid-wrapper';
+                
+                const grid = document.createElement('div');
+                grid.className = 'hundred-grid';
+                
+                // 填充100个格子，前10个为税收（红色），后90个为留存（蓝色）
+                for (let j = 1; j <= 100; j++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    if (j <= 10) {
+                        square.classList.add('tax');
+                    }
+                    grid.appendChild(square);
+                }
+                
+                const label = document.createElement('div');
+                label.className = 'grid-label';
+                label.innerHTML = `第 ${i} 个100元<br><span style="color: var(--tax-color);">纳税 10 元</span>`;
+                
+                wrapper.appendChild(grid);
+                wrapper.appendChild(label);
+                gridContainer.appendChild(wrapper);
+            }
+        }
+
+        // 事件监听设置
+        function setupEventListeners() {
+            // 滑块改变
+            slider.addEventListener('input', (e) => {
+                currentIncome = parseInt(e.target.value);
+                updateUI();
+            });
+
+            // 减少按钮
+            btnDecrease.addEventListener('click', () => {
+                if (currentIncome > 100) {
+                    currentIncome -= 100;
+                    updateUI();
+                }
+            });
+
+            // 增加按钮
+            btnIncrease.addEventListener('click', () => {
+                if (currentIncome < 400) {
+                    currentIncome += 100;
+                    updateUI();
+                }
+            });
+
+            // 模式切换：对比模式
+            modeCompare.addEventListener('click', () => {
+                setActiveMode(modeCompare);
+                panelLeft.classList.remove('dimmed');
+                panelRight.classList.remove('dimmed');
+                donutChart.classList.remove('highlight-pulse');
+            });
+
+            // 模式切换：10% 视角
+            modePercent.addEventListener('click', () => {
+                setActiveMode(modePercent);
+                panelLeft.classList.remove('dimmed');
+                panelRight.classList.add('dimmed');
+                donutChart.classList.add('highlight-pulse');
+            });
+
+            // 模式切换：每百元视角
+            modeGrid.addEventListener('click', () => {
+                setActiveMode(modeGrid);
+                panelLeft.classList.add('dimmed');
+                panelRight.classList.remove('dimmed');
+                donutChart.classList.remove('highlight-pulse');
+            });
+        }
+
+        // 激活按钮样式切换
+        function setActiveMode(activeBtn) {
+            [modeCompare, modePercent, modeGrid].forEach(btn => {
+                btn.classList.remove('active');
+            });
+            activeBtn.classList.add('active');
+        }
+
+        // 执行初始化
+        init();
+    </script>
+</body>
+</html>

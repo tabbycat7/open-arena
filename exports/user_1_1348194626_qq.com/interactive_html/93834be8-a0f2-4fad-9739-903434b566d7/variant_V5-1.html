@@ -1,0 +1,812 @@
+html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>控制结构调试器：并列 vs 嵌套</title>
+    <style>
+        :root {
+            --primary-color: #4c97ff;
+            --control-color: #ffab19;
+            --control-dark: #cf8b10;
+            --looks-color: #9966ff;
+            --looks-dark: #7a4ecc;
+            --bg-color: #f0f4f8;
+            --panel-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #d0d7de;
+            --success-color: #2ecc71;
+            --fail-color: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .app-container {
+            width: 100%;
+            max-width: 1024px;
+            aspect-ratio: 4 / 3;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 头部标题栏 */
+        .header {
+            background: linear-gradient(135deg, #2a6ecf, #4c97ff);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selector-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .num-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .num-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .num-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .custom-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border-left: 2px solid var(--border-color);
+            padding-left: 10px;
+        }
+
+        .custom-input {
+            width: 60px;
+            padding: 5px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #27ae60;
+        }
+
+        .btn-secondary {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #8e44ad;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* 主工作区 */
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: #f5f6f7;
+            overflow: hidden;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .column-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-title .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .tag-parallel { background-color: #e67e22; }
+        .tag-nested { background-color: #9b59b6; }
+
+        /* 代码区 */
+        .code-area {
+            flex: 1;
+            background: #fafafa;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Scratch 积木样式 */
+        .scratch-block {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .control-block {
+            background: var(--control-color);
+            border: 1px solid var(--control-dark);
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .control-block.active-check {
+            box-shadow: 0 0 0 3px #39ff14;
+            transform: scale(1.01);
+        }
+
+        .header-line {
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .cond-tag {
+            background: #e1930f;
+            border: 1px solid #b87503;
+            border-radius: 12px;
+            padding: 1px 8px;
+            font-size: 11px;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .scratch-body {
+            border-left: 15px solid var(--control-color);
+            padding: 4px 0 4px 10px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 20px;
+        }
+
+        .footer-line {
+            height: 6px;
+            background: var(--control-color);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .looks-block {
+            background: var(--looks-color);
+            border: 1px solid var(--looks-dark);
+            border-radius: 4px;
+            color: white;
+            padding: 5px 10px;
+            width: fit-content;
+        }
+
+        .looks-block.active-run {
+            animation: pulse-purple 0.6s infinite alternate;
+        }
+
+        @keyframes pulse-purple {
+            0% { box-shadow: 0 0 2px #9966ff; }
+            100% { box-shadow: 0 0 12px #9966ff; transform: scale(1.03); }
+        }
+
+        .val-tag {
+            background: #fff;
+            color: #575757;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 11px;
+        }
+
+        /* 状态指示灯 */
+        .status-indicator {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .status-indicator.pass {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: white;
+            animation: pop 0.3s ease;
+        }
+
+        .status-indicator.fail {
+            display: inline-block;
+            background-color: var(--fail-color);
+            color: white;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        /* 舞台区 */
+        .stage {
+            height: 130px;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px;
+            transition: all 0.3s;
+        }
+
+        .stage.flash {
+            border-color: var(--looks-color);
+            box-shadow: 0 0 10px rgba(153, 102, 255, 0.5);
+        }
+
+        .stage-title {
+            font-size: 11px;
+            color: #888;
+            font-weight: bold;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 2px;
+        }
+
+        .stage-canvas {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 舞台角色 */
+        .sprite-container {
+            position: absolute;
+            bottom: 5px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sprite-svg {
+            width: 45px;
+            height: 45px;
+        }
+
+        .speech-bubble {
+            background: white;
+            border: 2px solid #575757;
+            border-radius: 10px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            display: none;
+            max-width: 120px;
+            word-break: break-all;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 12px;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: white transparent;
+            display: block;
+            width: 0;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 11px;
+            border-width: 9px 9px 0;
+            border-style: solid;
+            border-color: #575757 transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* 舞台输出数据流 */
+        .output-stream {
+            position: absolute;
+            right: 5px;
+            top: 20px;
+            bottom: 5px;
+            width: 120px;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .output-stream-title {
+            font-size: 9px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 2px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .output-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: 1px solid #cbdcfd;
+            border-radius: 4px;
+            padding: 1px 4px;
+            text-align: center;
+            font-weight: bold;
+            animation: slide-in 0.2s ease-out;
+        }
+
+        @keyframes slide-in {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* 底部信息与探究区 */
+        .bottom-bar {
+            background: #eef2f7;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .log-panel {
+            flex: 1;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            height: 55px;
+            font-size: 12px;
+            overflow-y: auto;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            border-bottom: 1px dashed #eee;
+            padding: 2px 0;
+        }
+
+        .log-entry.highlight {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .inquiry-btn {
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .inquiry-btn:hover {
+            background: #2c3e50;
+        }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            animation: pop 0.3s ease;
+        }
+
+        .modal-header {
+            background: #34495e;
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .modal-body h3 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+        }
+
+        .modal-body ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .modal-body li {
+            margin-bottom: 4px;
+        }
+
+        .highlight-text {
+            color: #e67e22;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 头部标题 -->
+    <div class="header">
+        <h1>🔍 控制结构调试器：并列 vs 嵌套</h1>
+        <span class="badge">小学信息技术 · 五年级</span>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="selector-group">
+            <span class="selector-label">选择测试数字:</span>
+            <button class="num-btn active" data-val="15">15</button>
+            <button class="num-btn" data-val="6">6</button>
+            <button class="num-btn" data-val="10">10</button>
+            <button class="num-btn" data-val="30">30</button>
+            <button class="num-btn" data-val="7">7</button>
+            <div class="custom-input-wrapper">
+                <input type="number" id="custom-num" class="custom-input" min="1" max="99" placeholder="自定义">
+                <button class="num-btn" id="custom-apply" style="padding: 5px 8px; font-size: 12px;">确定</button>
+            </div>
+        </div>
+        <div class="action-group">
+            <button class="btn btn-primary" id="btn-step">▶ 单步调试</button>
+            <button class="btn btn-secondary" id="btn-batch">⚡ 批量过滤 (1-30)</button>
+            <button class="btn btn-danger" id="btn-reset">🔄 重置</button>
+        </div>
+    </div>
+
+    <!-- 主工作区 -->
+    <div class="workspace">
+        <!-- 左栏：并列结构 -->
+        <div class="column">
+            <div class="column-title">
+                <span>并列的“如果...那么”</span>
+                <span class="tag tag-parallel">独立判断</span>
+            </div>
+            <div class="code-area" id="parallel-code">
+                <!-- 积木 1 -->
+                <div class="scratch-block control-block" id="p-block-1">
+                    <div class="header-line">
+                        如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 3 余 0</span> 那么
+                        <span class="status-indicator" id="p-status-1"></span>
+                    </div>
+                    <div class="scratch-body">
+                        <div class="scratch-block looks-block" id="p-action-1">
+                            说出 <span class="val-tag">N</span>
+                        </div>
+                    </div>
+                    <div class="footer-line"></div>
+                </div>
+                <!-- 积木 2 -->
+                <div class="scratch-block control-block" id="p-block-2">
+                    <div class="header-line">
+                        如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 5 余 0</span> 那么
+                        <span class="status-indicator" id="p-status-2"></span>
+                    </div>
+                    <div class="scratch-body">
+                        <div class="scratch-block looks-block" id="p-action-2">
+                            说出 <span class="val-tag">N</span>
+                        </div>
+                    </div>
+                    <div class="footer-line"></div>
+                </div>
+                <!-- 积木 3 -->
+                <div class="scratch-block control-block" id="p-block-3">
+                    <div class="header-line">
+                        如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 2 余 0</span> 那么
+                        <span class="status-indicator" id="p-status-3"></span>
+                    </div>
+                    <div class="scratch-body">
+                        <div class="scratch-block looks-block" id="p-action-3">
+                            说出 <span class="val-tag">N</span>
+                        </div>
+                    </div>
+                    <div class="footer-line"></div>
+                </div>
+            </div>
+            <!-- 舞台 1 -->
+            <div class="stage" id="p-stage">
+                <div class="stage-title">🎬 舞台（并列结构运行效果）</div>
+                <div class="stage-canvas">
+                    <div class="sprite-container">
+                        <!-- 简易SVG机器人 -->
+                        <svg class="sprite-svg" viewBox="0 0 64 64">
+                            <rect x="16" y="16" width="32" height="24" rx="6" fill="#e67e22" stroke="#d35400" stroke-width="2"/>
+                            <circle cx="26" cy="26" r="3" fill="#fff"/><circle cx="26" cy="26" r="1.5" fill="#000"/>
+                            <circle cx="38" cy="26" r="3" fill="#fff"/><circle cx="38" cy="26" r="1.5" fill="#000"/>
+                            <rect x="26" y="32" width="12" height="2" fill="#fff"/>
+                            <line x1="32" y1="16" x2="32" y2="8" stroke="#d35400" stroke-width="2"/>
+                            <circle cx="32" cy="6" r="3" fill="#ffab19"/>
+                            <rect x="20" y="42" width="24" height="18" rx="4" fill="#e67e22" stroke="#d35400" stroke-width="2"/>
+                        </svg>
+                        <div class="speech-bubble" id="p-bubble">说出...</div>
+                    </div>
+                    <div class="output-stream" id="p-stream">
+                        <div class="output-stream-title">角色说出的历史记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右栏：嵌套结构 -->
+        <div class="column">
+            <div class="column-title">
+                <span>嵌套的“如果...那么”</span>
+                <span class="tag tag-nested">层层筛选</span>
+            </div>
+            <div class="code-area" id="nested-code">
+                <!-- 嵌套积木 1 -->
+                <div class="scratch-block control-block" id="n-block-1">
+                    <div class="header-line">
+                        如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 3 余 0</span> 那么
+                        <span class="status-indicator" id="n-status-1"></span>
+                    </div>
+                    <div class="scratch-body">
+                        <!-- 嵌套积木 2 -->
+                        <div class="scratch-block control-block" id="n-block-2">
+                            <div class="header-line">
+                                如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 5 余 0</span> 那么
+                                <span class="status-indicator" id="n-status-2"></span>
+                            </div>
+                            <div class="scratch-body">
+                                <!-- 嵌套积木 3 -->
+                                <div class="scratch-block control-block" id="n-block-3">
+                                    <div class="header-line">
+                                        如果 <span class="cond-tag">数字 <span class="val-tag">N</span> 除以 2 余 0</span> 那么
+                                        <span class="status-indicator" id="n-status-3"></span>
+                                    </div>
+                                    <div class="scratch-body">
+                                        <div class="scratch-block looks-block" id="n-action">
+                                            说出 <span class="val-tag">N</span>
+                                        </div>
+                                    </div>
+                                    <div class="footer-line"></div>
+                                </div>
+                            </div>
+                            <div class="footer-line"></div>
+                        </div>
+                    </div>
+                    <div class="footer-line"></div>
+                </div>
+            </div>
+            <!-- 舞台 2 -->
+            <div class="stage" id="n-stage">
+                <div class="stage-title">🎬 舞台（嵌套结构运行效果）</div>
+                <div class="stage-canvas">
+                    <div class="sprite-container">
+                        <!-- 简易SVG机器人 -->
+                        <svg class="sprite-svg" viewBox="0 0 64 64">
+                            <rect x="16" y="16" width="32" height="24" rx="6" fill="#9b59b6" stroke="#8e44ad" stroke-width="2"/>
+                            <circle cx="26" cy="26" r="3" fill="#fff"/><circle cx="26" cy="26" r="1.5" fill="#000"/>
+                            <circle cx="38" cy="26" r="3" fill="#fff"/><circle cx="38" cy="26" r="1.5" fill="#000"/>
+                            <rect x="26" y="32" width="12" height="2" fill="#fff"/>
+                            <line x1="32" y1="16" x2="32" y2="8" stroke="#8e44ad" stroke-width="2"/>
+                            <circle cx="32" cy="6" r="3" fill="#ffab19"/>
+                            <rect x="20" y="42" width="24" height="18" rx="4" fill="#9b59b6" stroke="#8e44ad" stroke-width="2"/>
+                        </svg>
+                        <div class="speech-bubble" id="n-bubble">说出...</div>
+                    </div>
+                    <div class="output-stream" id="n-stream">
+                        <div class="output-stream-title">角色说出的历史记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息栏 -->
+    <div class="bottom-bar">
+        <div class="log-panel" id="log-panel">
+            <div class="log-entry">💡 准备就绪。请选择一个测试数字，然后点击“单步调试”或“批量过滤”开始观察。</div>
+        </div>
+        <button class="inquiry-btn" id="btn-inquiry">🤔 思考与探究</button>
+    </div>
+</div>
+
+<!-- 探究弹窗 -->
+<div class="modal

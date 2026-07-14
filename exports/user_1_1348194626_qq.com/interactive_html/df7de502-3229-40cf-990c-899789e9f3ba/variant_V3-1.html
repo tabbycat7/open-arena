@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>智能穿衣助手算法对比</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            user-select: none;
+        }
+        .container {
+            width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .slider-box { margin: 20px 0; text-align: center; }
+        .stage { display: flex; justify-content: space-around; margin-top: 20px; }
+        .algo-panel {
+            width: 350px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .character { font-size: 60px; margin: 20px 0; height: 80px; }
+        .status { font-weight: bold; height: 30px; }
+        .error { color: #e74c3c; }
+        .success { color: #27ae60; }
+        button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>智能穿衣助手算法对比</h2>
+        <p>拖动滑块改变当前气温，观察两个算法的表现：</p>
+    </div>
+
+    <div class="slider-box">
+        <input type="range" id="tempSlider" min="0" max="1" step="1" value="0" style="width: 300px;">
+        <div id="tempLabel">当前季节：冬季 (0°C)</div>
+    </div>
+
+    <div class="stage">
+        <div class="algo-panel" id="algoA">
+            <h3>算法 A (1步)</h3>
+            <div class="character" id="charA">🧥</div>
+            <div class="status" id="statusA">推荐：羽绒服</div>
+        </div>
+        <div class="algo-panel" id="algoB">
+            <h3>算法 B (4步)</h3>
+            <div class="character" id="charB">🧥</div>
+            <div class="status" id="statusB">推荐：羽绒服</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button id="testBtn">运行测试</button>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('tempSlider');
+    const tempLabel = document.getElementById('tempLabel');
+    const charA = document.getElementById('charA');
+    const charB = document.getElementById('charB');
+    const statusA = document.getElementById('statusA');
+    const statusB = document.getElementById('statusB');
+    const testBtn = document.getElementById('testBtn');
+
+    function updateUI() {
+        const isSummer = slider.value == 1;
+        tempLabel.innerText = isSummer ? "当前季节：夏季 (30°C)" : "当前季节：冬季 (0°C)";
+        
+        // 重置状态
+        charA.innerText = "🧥";
+        charB.innerText = "🧥";
+        statusA.innerText = "推荐：羽绒服";
+        statusB.innerText = "推荐：羽绒服";
+        statusA.className = "status";
+        statusB.className = "status";
+    }
+
+    function runTest() {
+        const isSummer = slider.value == 1;
+
+        // 算法A逻辑：永远推荐羽绒服
+        if (isSummer) {
+            charA.innerText = "🥵";
+            statusA.innerText = "错误：夏季穿羽绒服！";
+            statusA.className = "status error";
+        } else {
+            charA.innerText = "🧥";
+            statusA.innerText = "推荐：羽绒服 (合适)";
+            statusA.className = "status success";
+        }
+
+        // 算法B逻辑：根据温度判断
+        if (isSummer) {
+            charB.innerText = "👕";
+            statusB.innerText = "推荐：短袖 (合适)";
+            statusB.className = "status success";
+        } else {
+            charB.innerText = "🧥";
+            statusB.innerText = "推荐：羽绒服 (合适)";
+            statusB.className = "status success";
+        }
+    }
+
+    slider.addEventListener('input', updateUI);
+    testBtn.addEventListener('click', runTest);
+</script>
+
+</body>
+</html>

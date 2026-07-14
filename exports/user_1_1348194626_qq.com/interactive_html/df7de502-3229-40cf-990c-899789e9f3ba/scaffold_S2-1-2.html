@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的灵活性：看清是几号桌</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { margin: 10px 0; color: #2c3e50; }
+        .controls { margin: 20px 0; display: flex; gap: 10px; }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            transition: 0.3s;
+        }
+        button:hover { background: #2980b9; }
+        #canvas-area { flex-grow: 1; width: 100%; position: relative; }
+        #hint {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #e67e22;
+            height: 30px;
+        }
+        .step-box {
+            border: 2px solid #3498db;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.5s;
+        }
+        .highlight { background-color: #f1c40f; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>算法乙：看清是几号桌</h2>
+    <div class="controls">
+        <button id="btn3">去 3 号桌</button>
+        <button id="btn5">去 5 号桌</button>
+    </div>
+    
+    <div id="canvas-area">
+        <svg width="100%" height="100%" viewBox="0 0 400 200">
+            <!-- 机器人 -->
+            <g id="robot" transform="translate(50, 100)">
+                <rect x="-20" y="-40" width="40" height="40" fill="#7f8c8d" rx="5"/>
+                <rect id="screen" x="-15" y="-35" width="30" height="15" fill="#2c3e50"/>
+                <text id="screen-text" x="0" y="-23" text-anchor="middle" fill="white" font-size="12">?</text>
+            </g>
+            <!-- 桌子 -->
+            <circle id="table3" cx="250" cy="50" r="30" fill="#bdc3c7" />
+            <text x="250" y="55" text-anchor="middle">3号</text>
+            <circle id="table5" cx="250" cy="150" r="30" fill="#bdc3c7" />
+            <text x="250" y="155" text-anchor="middle">5号</text>
+        </svg>
+    </div>
+
+    <div id="steps">
+        <div id="step1" class="step-box">第一步：看清是几号桌</div>
+        <div class="step-box">第二步：走向对应桌号</div>
+    </div>
+
+    <div id="hint"></div>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const screenText = document.getElementById('screen-text');
+    const step1 = document.getElementById('step1');
+    const hint = document.getElementById('hint');
+
+    function moveRobot(targetY, tableNum) {
+        // 重置状态
+        step1.classList.remove('highlight');
+        hint.innerText = "";
+        
+        // 动画逻辑
+        setTimeout(() => {
+            step1.classList.add('highlight');
+            screenText.innerText = tableNum;
+            hint.innerText = "正在识别...";
+        }, 200);
+
+        setTimeout(() => {
+            robot.style.transition = "transform 1s ease-in-out";
+            robot.setAttribute('transform', `translate(250, ${targetY})`);
+            hint.innerText = "这一步让机器人学会了“听指挥，变方向”";
+        }, 1000);
+    }
+
+    document.getElementById('btn3').addEventListener('click', () => {
+        robot.style.transition = "none";
+        robot.setAttribute('transform', 'translate(50, 100)');
+        moveRobot(50, "3");
+    });
+
+    document.getElementById('btn5').addEventListener('click', () => {
+        robot.style.transition = "none";
+        robot.setAttribute('transform', 'translate(50, 100)');
+        moveRobot(150, "5");
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生活语言翻译器 - 韩信点兵</title>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --primary-dark: #357ABD;
+            --success-color: #2ECC71;
+            --accent-color: #E67E22;
+            --bg-color: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-main: #2C3E50;
+            --text-muted: #7F8C8D;
+            --border-color: #E0E6ED;
+            --slot-empty: #F8FAFC;
+            --code-bg: #1E1E1E;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #D0D7DE;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            color: var(--text-main);
+        }
+
+        /* 4:3 比例自适应容器 */
+        .app-container {
+            width: 1024px;
+            height: 768px;
+            background: var(--bg-color);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header-title p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* 主体内容区 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100% - 160px);
+        }
+
+        /* 左侧：生活情境与积木 */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .card-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .scenario-card {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+        }
+
+        .scenario-card.active-hover {
+            border-color: var(--primary-color);
+            background: #EBF3FC;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #EBF3FC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .card-info h3 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-main);
+        }
+
+        .card-info p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 积木库 */
+        .block-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .block-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-content: center;
+            flex: 1;
+            padding: 10px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        /* 可拖拽积木 */
+        .math-block {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FF9F43, #FF793F);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(255, 121, 63, 0.3);
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .math-block:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .math-block.selected {
+            outline: 3px solid var(--primary-color);
+            box-shadow: 0 0 12px var(--primary-color);
+        }
+
+        .math-block[data-type="range"] {
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
+        }
+
+        /* 右侧：数学模型与代码 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .formula-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .formula-editor {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            font-size: 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+
+        .formula-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            line-height: 40px;
+        }
+
+        .formula-label {
+            color: var(--text-muted);
+            font-family: sans-serif;
+            font-size: 14px;
+            background: #E2E8F0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+
+        /* 放置槽 */
+        .drop-slot {
+            width: 70px;
+            height: 38px;
+            border: 2px dashed #CBD5E1;
+            border-radius: 6px;
+            background: var(--slot-empty);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            vertical-align: middle;
+        }
+
+        .drop-slot.drag-over {
+            background: #EBF3FC;
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .drop-slot.correct {
+            border-color: var(--success-color);
+            background: #E8F8F5;
+            border-style: solid;
+        }
+
+        .drop-slot.incorrect {
+            border-color: #E74C3C;
+            background: #FDEDEC;
+            border-style: solid;
+            animation: shake 0.4s ease;
+        }
+
+        .drop-slot .math-block {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            box-shadow: none;
+            font-size: 15px;
+        }
+
+        /* 关联高亮样式 */
+        .highlight-target {
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+            border-color: var(--primary-color) !important;
+            background: #F0F7FF !important;
+        }
+
+        /* 代码翻译面板 */
+        .code-container {
+            background: var(--code-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .code-title {
+            color: #A9B7C6;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #FF5F56; }
+        .dot-yellow { background: #FFBD2E; }
+        .dot-green { background: #27C93F; }
+
+        .code-body {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #A9B7C6;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .keyword { color: #CC7832; font-weight: bold; }
+        .number { color: #6897BB; }
+        .comment { color: #808080; font-style: italic; }
+        .string { color: #6A8759; }
+        .variable { color: #9876AA; }
+
+        /* 锁定遮罩 */
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            gap: 12px;
+            transition: opacity 0.3s ease, pointer-events 0.3s ease;
+            z-index: 5;
+        }
+
+        .lock-overlay.unlocked {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lock-icon {
+            width: 48px;
+            height: 48px;
+            fill: #7F8C8D;
+            animation: pulse 2s infinite;
+        }
+
+        /* 底部控制区 */
+        .footer {
+            height: 80px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            background-color: #BDC3C7;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #ECF0F1;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #BDC3C7;
+        }
+
+        .status-message {
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-success {
+            color: var(--success-color);
+        }
+
+        /* 动画效果 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* 运行演示弹窗 */
+        .terminal-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 500px;
+            background: #1E1E1E;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .terminal-modal.active {
+            display: flex;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .terminal-header {
+            background: #2D2D2D;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #CCC;
+            font-size: 13px;
+        }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: 'Consolas', monospace;
+            color: #2ECC71;
+            font-size: 14px;
+            height: 250px;
+            overflow-y: auto;
+            background: #151515;
+        }
+
+        .terminal-line {
+            margin-bottom: 6px;
+            opacity: 0;
+            transform: translateY(5px);
+            animation: fadeInUp 0.2s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 90;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-title">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #FFF;"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+            <div>
+                <h1>生活语言翻译器</h1>
+                <p>信息技术 · 五年级 · 算法与程序设计准备步骤</p>
+            </div>
+        </div>
+        <div class="badge">知识点：建立数学模型</div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 左侧：情境与积木 -->
+        <div class="left-panel">
+            <div>
+                <h2 class="panel-title">第一步：阅读生活情境</h2>
+                <div class="card-container">
+                    <div class="scenario-card" data-target="range">
+                        <div class="card-icon">⚔️</div>
+                        <div class="card-info">
+                            <h3>战死400-500人 (总兵力1500)</h3>
+                            <p>对应数学中的【取值范围】</p>
+                        </div>
+                    </div>
+                    <div class="scenario-card" data-target="mod3">
+                        <div class="card-icon">👥</div>
+                        <div class="card-info">
+                            <h3>3人一排多2人</h3>
+                            <p>对应数学中的【除以3余2】</p>
+                        </div>
+                    </div>
+                    <div class="scenario-card" data-target="mod5">
+                        <div class="card-icon">👥</div>
+                        <div class="card-info">
+                            <h3>5人一排多3人</h3>
+                            <p>对应数学中的【除以5余3】</p>
+                        </div>
+                    </div>
+                    <div class="scenario-card" data-target="mod7">
+                        <div class="card-icon">👥</div>
+                        <div class="card-info">
+                            <h3>7人一排多2人</h3>
+                            <p>对应数学中的【除以7余2】</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <h2 class="panel-title">第二步：选择数学积木（拖拽或点击）</h2>
+                <div class="block-container">
+                    <div class="block-pool" id="blockPool">
+                        <div class="math-block" draggable="true" id="b-1000" data-val="1000" data-type="range">1000</div>
+                        <div class="math-block" draggable="true" id="b-1100" data-val="1100" data-type="range">1100</div>
+                        <div class="math-block" draggable="true" id="b-r3" data-val="2">2</div>
+                        <div class="math-block" draggable="true" id="b-r5" data-val="3">3</div>
+                        <div class="math-block" draggable="true" id="b-r7" data-val="2">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：数学模型与代码 -->
+        <div class="right-panel">
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <h2 class="panel-title">第三步：构建数学模型</h2>
+                <div class="formula-container">
+                    <div class="formula-editor">
+                        <div class="formula-row" id="row-range">
+                            <span class="formula-label">范围</span>
+                            <span>x ∈ [</span>
+                            <div class="drop-slot" id="slot-min" data-expected="1000"></div>
+                            <span>,</span>
+                            <div class="drop-slot" id="slot-max" data-expected="1100"></div>
+                            <span>]</span>
+                        </div>
+                        <div class="formula-row" id="row-mod3">
+                            <span class="formula-label">条件1</span>
+                            <span>x mod 3 =</span>
+                            <div class="drop-slot" id="slot-mod3" data-expected="2"></div>
+                        </div>
+                        <div class="formula-row" id="row-mod5">
+                            <span class="formula-label">条件2</span>
+                            <span>x mod 5 =</span>
+                            <div class="drop-slot" id="slot-mod5" data-expected="3"></div>
+                        </div>
+                        <div class="formula-row" id="row-mod7">
+                            <span class="formula-label">条件3</span>
+                            <span>x mod 7 =</span>
+                            <div class="drop-slot" id="slot-mod7" data-expected="2"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-muted); text-align: center;">
+                        💡 提示：将左侧橙/绿色数值积木拖入对应的虚线框中。
+                    </div>
+                </div>
+            </div>
+
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <h2 class="panel-title">第四步：翻译为计算机逻辑</h2>
+                <div class="code-container">
+                    <div class="lock-overlay" id="codeLock">
+                        <svg class="lock-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke="currentColor" stroke-width="2"></path>
+                        </svg>
+                        <span>请先在上方完成数学模型构建</span>
+                    </div>
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                        </div>
+                        <div class="code-title">hanxin_solver.py</div>
+                    </div>
+                    <pre class="code-body"><code><span class="comment"># 遍历所有可能的士兵人数</span>
+<span class="keyword">for</span> <span class="variable">x</span> <span class="keyword">in</span> <span class="variable">range</span>(<span class="number" id="code-min">1000</span>, <span class="number" id="code-max">1101</span>):
+    <span class="comment"># 同时满足三个排队余数条件</span>
+    <span class="keyword">if</span> <span class="variable">x</span> % <span class="number">3</span> == <span class="number" id="code-r3">?</span> <span class="keyword">and</span> <span class="variable">x</span> % <span class="number">5</span> == <span class="number" id="code-r5">?</span> <span class="keyword">and</span> <span class="variable">x</span> % <span class="number">7</span> == <span class="number" id="code-r7">?</span>:
+        <span class="variable">print</span>(<span class="string">"士兵人数可能是:"</span>, <span class="variable">x</span>)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="footer">
+        <div class="status-message" id="statusMsg">
+            <span>请开始将左侧的积木填入右侧公式中...</span>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" id="btnReset">重置模型</button>
+            <button class="btn btn-primary" id="btnRun" disabled>运行代码寻找答案</button>
+        </div>
+    </div>
+</div>
+
+<!-- 模拟终端弹窗 -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="terminal-modal" id="terminalModal">
+    <div class="terminal-header">
+        <span>Python 运行终端</span>
+        <span style="cursor: pointer;" id="btnCloseTerminal">✕</span>
+    </div>
+    <div class="terminal-body" id="terminalBody"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const blocks = document.querySelectorAll('.math-block');
+        const slots = document.querySelectorAll('.drop-slot');
+        const cards = document.querySelectorAll('.scenario-card');
+        const blockPool = document.getElementById('blockPool');
+        const codeLock = document.getElementById('codeLock');
+        const btnReset = document.getElementById('btnReset');
+        const btnRun = document.getElementById('btnRun');
+        const statusMsg = document.getElementById('statusMsg');
+        const terminalModal = document.getElementById('terminalModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const terminalBody = document.getElementById('terminalBody');
+        const btnCloseTerminal = document.getElementById('btnCloseTerminal');
+
+        let selectedBlock = null;
+
+        // --- 交互：悬停情境卡片高亮对应的公式行 ---
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const targetId = card.getAttribute('data-target');
+                if (targetId === 'range') {
+                    document.getElementById('slot-min').classList.add('highlight-target');
+                    document.getElementById('slot-max').classList.add('highlight-target');
+                } else {
+                    document.getElementById(`slot-${targetId}`).classList.add('highlight-target');
+                }
+                card.classList.add('active-hover');
+            });
+
+            card.addEventListener('mouseleave', () => {
+                slots.forEach(slot => slot.classList.remove('highlight-target'));
+                card.classList.remove('active-hover');
+            });
+        });
+
+        // --- 拖拽与点击选择逻辑 ---
+        blocks.forEach(block => {
+            // 拖拽开始
+            block.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', block.id);
+                block.classList.add('selected');
+            });
+
+            block.addEventListener('dragend', () => {
+                block.classList.remove('selected');
+            });
+
+            // 点击选择（适配移动端/触屏）
+            block.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (selectedBlock) {
+                    selectedBlock.classList.remove('selected');
+                }
+                if (selectedBlock === block) {
+                    selectedBlock = null;
+                } else {
+                    selectedBlock = block;
+                    block.classList.add('selected');
+                }
+            });
+        });
+
+        slots.forEach(slot => {
+            // 拖拽悬停
+            slot.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                slot.classList.add('drag-over');
+            });
+
+            slot.addEventListener('dragleave', () => {
+                slot.classList.remove('drag-over');
+            });
+
+            // 拖拽释放
+            slot.addEventListener('drop', (e) => {
+                e.preventDefault();
+                slot.classList.remove('drag-over');
+                const blockId = e.dataTransfer.getData('text/plain');
+                const block = document.getElementById(blockId);
+                if (block) {
+                    handlePlacement(block, slot);
+                }
+            });
+
+            // 点击槽位放入或取出
+            slot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (selectedBlock) {
+                    // 放入
+                    handlePlacement(selectedBlock, slot);
+                    selectedBlock.classList.remove('selected');
+                    selectedBlock = null;
+                } else if (slot.children.length > 0) {
+                    // 取出
+                    const block = slot.firstElementChild;
+                    returnBlockToPool(block);
+                    checkStatus();
+                }
+            });
+        });
+
+        // 点击空白处取消选择
+        document.addEventListener('click', () => {
+            if (selectedBlock) {
+                selectedBlock.classList.remove('selected');
+                selectedBlock = null;
+            }
+        });
+
+        // 处理放置逻辑
+        function handlePlacement(block, slot) {
+            // 如果槽内已有积木，先退回
+            if (slot.children.length > 0) {
+                returnBlockToPool(slot.firstElementChild);
+            }
+            
+            slot.appendChild(block);
+            validateSlot(slot);
+            checkStatus();
+        }
+
+        // 退回积木到池中
+        function returnBlockToPool(block) {
+            blockPool.appendChild(block);
+            const parentSlot = block.parentElement;
+            if (parentSlot && parentSlot.classList.contains('drop-slot')) {
+                parentSlot.classList.remove('correct', 'incorrect');
+            }
+        }
+
+        // 验证单个槽位
+        function validateSlot(slot) {
+            if (slot.children.length === 0) {
+                slot.classList.remove('correct', 'incorrect');
+                return;
+            }
+            const blockVal = slot.firstElementChild.getAttribute('data-val');
+            const expectedVal = slot.getAttribute('data-expected');
+
+            if (blockVal === expectedVal) {
+                slot.classList.remove('incorrect');
+                slot.classList.add('correct');
+            } else {
+                slot.classList.remove('correct');
+                slot.classList.add('incorrect');
+            }
+        }
+
+        // 检查整体状态
+        function checkStatus() {
+            let allCorrect = true;
+            let filledCount = 0;
+
+            slots.forEach(slot => {
+                validateSlot(slot);
+                if (slot.children.length > 0) {
+                    filledCount++;
+                    if (!slot.classList.contains('correct')) {
+                        allCorrect = false;
+                    }
+                } else {
+                    allCorrect = false;
+                }
+            });
+
+            // 更新代码预览中的数值
+            updateCodePreview();
+
+            if (allCorrect) {
+                codeLock.classList.add('unlocked');
+                btnRun.removeAttribute('disabled');
+                statusMsg.innerHTML = `<span class="status-success">🎉 翻译成功！数学模型已成功转化为计算机逻辑！</span>`;
+            } else {
+                codeLock.classList.remove('unlocked');
+                btnRun.setAttribute('disabled', 'true');
+                if (filledCount === slots.length) {
+                    statusMsg.innerHTML = `<span style="color: #E74C3C;">❌ 模型中存在不匹配的数值，请重新检查。</span>`;
+                } else {
+                    statusMsg.innerHTML = `<span>已填入 ${filledCount}/${slots.length} 个条件...</span>`;
+                }
+            }
+        }
+
+        // 动态更新代码块中的数值
+        function updateCodePreview() {
+            const minVal = getSlotVal('slot-min');
+            const maxVal = getSlotVal('slot-max');
+            const r3Val = getSlotVal('slot-mod3');
+            const r5Val = getSlotVal('slot-mod5');
+            const r7Val = getSlotVal('slot-mod7');
+
+            document.getElementById('code-min').innerText = minVal ? minVal : '1000';
+            document.getElementById('code-max').innerText = maxVal ? (parseInt(maxVal) + 1) : '1101';
+            document.getElementById('code-r3').innerText = r3Val ? r3Val : '?';
+            document.getElementById('code-r5').innerText = r5Val ? r5Val : '?';
+            document.getElementById('code-r7').innerText = r7Val ? r7Val : '?';
+        }
+
+        function getSlotVal(slotId) {
+            const slot = document.getElementById(slotId);
+            return slot.children.length > 0 ? slot.firstElementChild.getAttribute('data-val') : null;
+        }
+
+        // 重置按钮
+        btnReset.addEventListener('click', () => {
+            slots.forEach(slot => {
+                if (slot.children.length > 0) {
+                    returnBlockToPool(slot.firstElementChild);
+                }
+                slot.classList.remove('correct', 'incorrect');
+            });
+            checkStatus();
+        });
+
+        // --- 模拟终端运行动画 ---
+        btnRun.addEventListener('click', () => {
+            terminalBody.innerHTML = '';
+            modalOverlay.classList.add('active');
+            terminalModal.classList.add('active');
+
+            const lines = [
+                { text: '>>> python hanxin_solver.py', delay: 200 },
+                { text: '正在初始化搜索范围: [1000, 1100]...', delay: 600 },
+                { text: '开始逐个验证士兵人数 x ...', delay: 1000 },
+                { text: 'x = 1000: 不满足条件', delay: 1200, fast: true },
+                { text: 'x = 1001: 不满足条件', delay: 1250, fast: true },
+                { text: 'x = 1010: 不满足条件', delay: 1300, fast: true },
+                { text: 'x = 1030: 不满足条件', delay: 1350, fast: true },
+                { text: 'x = 1050: 不满足条件', delay: 1400, fast: true },
+                { text: '...', delay: 1500 },
+                { text: '✨ 找到满足所有条件的数值！', delay: 1800, color: '#F1C40F' },
+                { text: 'x = 1073 满足：', delay: 2000, color: '#2ECC71' },
+                { text: '  - 1073 在 [1000, 1100] 范围内', delay: 2200, color: '#2ECC71' },
+                { text: '  - 1073 % 3 == 2', delay: 2400, color: '#2ECC71' },
+                { text: '  - 1073 % 5 == 3', delay: 2600, color: '#2ECC71' },
+                { text: '  - 1073 % 7 == 2', delay: 2800, color: '#2ECC71' },
+                { text: '👉 最终计算结果：韩信军队中共有 1073 名士兵。', delay: 3200, color: '#00E6FF', bold: true }
+            ];
+
+            lines.forEach(line => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 'terminal-line';
+                    div.innerText = line.text;
+                    if (line.color) div.style.color = line.color;
+                    if (line.bold) div.style.fontWeight = 'bold';
+                    terminalBody.appendChild(div);
+                    terminalBody.scrollTop = terminalBody.scrollHeight;
+                }, line.delay);
+            });
+        });
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            terminalModal.classList.remove('active');
+        }
+
+        btnCloseTerminal.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+    });
+</script>
+
+</body>
+</html>

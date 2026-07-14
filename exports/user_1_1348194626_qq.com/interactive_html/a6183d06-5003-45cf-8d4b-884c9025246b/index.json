@@ -1,0 +1,302 @@
+{
+  "task_id": "a6183d06-5003-45cf-8d4b-884c9025246b",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "看教材里这个采棉机方程组，从x+y=6和2x+y=8出发，教材是怎样得到一元方程2x+(6-x)=8的？这里为什么可以把y换成6-x？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "回到例1，如果用代入法来解这个方程组，整个过程按规范应该怎么走，才能从方程组一直写到最后的解？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "同样是代入法，像例1、例2这样的方程组，先表示哪个未知数会更省事，你通常看哪里来判断？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "如果方程里没有系数是1或-1的未知数，像例3这样，代入法还怎么选一条比较简便的路来解？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "回到快递员报酬这个实际问题，如果先不急着算，你能从题目里的两天数据中找到哪两个等量关系，列出方程组，再想想列出以后怎样用代入法继续解下去吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "我们刚才解了采棉机、例1、例2、例3和快递员报酬这些题，回头看代入那一步，原来有几个未知数，代入以后还剩几个未知数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "把情境换成买练习本和笔：x+y=10，3x+y=18。教材那种“先把一个字母换掉”的想法在这里还能用吗？你会怎样说明y为什么能换成10-x？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有同学看到x+y=6后说“既然x=6-y，那第二个方程2x+y=8里也能把2x直接换成6-y”。这种换法和把y换成6-x相比，哪一步出了问题？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "有人解方程组时只写到“代入后得一元方程，解得x=3”就停了。你觉得这个过程还缺哪一步最关键，为什么最后不能只写一个未知数的值？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "同样解一个方程组，有同学先把x=2直接和原方程组并列写成“所以解是x=2，y=5”。你觉得这种写法为什么不规范？代入法的完整过程应该体现出哪条顺序线？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "看方程组x+3y=11和4x-2y=6，如果都能表示，你会先表示谁？别只说答案，想想换成另一种表示后，哪一步开始明显变麻烦了。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果一个方程组里没有系数1，但一个未知数的系数是2，另一个是5，你会更倾向先表示哪一个？你判断时主要盯住的是哪种“省事”信号？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "看方程组3x+5y=17和4x-7y=1，两个方程里都没有系数1或-1。你会先表示x还是y？如果换另一种表示，麻烦主要会出现在什么地方？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "同样是没有系数1的方程组，有同学说“只要一表示出分数，就说明这条路选错了”。你同意吗？代入法在这类题里真正容易错的，是选路本身还是后面的运算处理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "把背景换成校园义卖：两天卖出两种文具，总收入已知，每种文具单价固定但未知。面对这样的题，你最先该盯住题目里的哪两类信息，才能顺利列出方程组？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "如果题目信息不是一段话，而是用“两天完成量—总报酬”的表格给出，你怎么从表格里一眼找到那两个等量关系，并判断后面代入时先表示谁更合适？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "把“x+y=6，2x+y=8”和“2x+(6-x)=8”放在一起看，你觉得真正发生变化的只是写法，还是问题的复杂程度也变了？你会怎样用自己的话概括这种变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "有同学总结代入法时说：“就是把y消掉了。”这句话听起来对，但又不够完整。你觉得“消掉”到底是指哪个层面的变化，为什么最后并不是永远不管这个未知数了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "在x+y=6里，把y写成6-x时，你其实是把哪个未知数先单独表示出来了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "把一个未知数表示出来以后，这个式子要放到另一个方程里的哪里，才能把两个字母变成一个字母？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "代入之后，方程里还有几个字母？解出这个字母后，我们还要做什么才能得到完整的答案？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "看例1时，你先盯住的是哪个地方来决定表示谁：是未知数的位置，还是它前面的系数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果要在例1里表示y，你需要先把哪个数移到等号另一边？这比表示x多了一步还是少了一步？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "要是一个未知数前面的系数正好是1或-1，把它单独表示出来，通常会省在哪儿？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "要是一个方程组里，两个未知数前面的系数都不是1，也不是-1，你刚才那个最方便的判断办法还能直接用吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果没有1或-1，你再看两个未知数前面的数，哪一种数通常更值得先留意：绝对值大的，还是绝对值小的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "先表示系数绝对值较小的那个未知数，写出来的式子一般会更长一些，还是更短一些？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "看快递员报酬这道题，题里有两个一直不变的量，你觉得它们分别可以设成什么未知数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "星期一的数据和总报酬放在一起，能组成一个什么样的相等关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "方程组列出来以后，它和前面解的哪一类题样子很像？接下来你准备先看什么，来决定怎么解？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "看你刚才列出的方程组，在代入之前，每个方程里一共出现了几个未知数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "把一个未知数代进去以后，式子里还剩几个未知数？和代入前比，少掉了哪一个？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3",
+      "question_type": "scaffold",
+      "content": "这么一‘代’，原来要同时找两个数的问题，变成了先专心找哪一个数的问题？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

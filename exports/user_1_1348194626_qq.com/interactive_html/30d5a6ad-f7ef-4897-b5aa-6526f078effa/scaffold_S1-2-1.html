@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S1-2-1 用户协议放大镜</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; --warning: #f1c40f; }
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #container { width: 80vh; height: 60vh; background: white; border: 2px solid #ccc; position: relative; overflow: hidden; cursor: crosshair; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .header { padding: 10px; background: #eee; text-align: center; font-weight: bold; color: var(--primary); }
+        #text-layer { padding: 20px; line-height: 1.6; color: #999; font-size: 12px; user-select: none; }
+        .highlight-text { color: var(--accent); font-weight: bold; }
+        #magnifier { position: absolute; width: 150px; height: 150px; border: 3px solid #333; border-radius: 50%; background: white; pointer-events: none; overflow: hidden; box-shadow: 0 0 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; transform: translate(-50%, -50%); }
+        #mag-content { position: absolute; width: 400px; padding: 20px; color: #333; font-size: 24px; line-height: 1.2; }
+        #alert-box { position: absolute; top: 10px; right: 10px; background: var(--warning); padding: 10px; border-radius: 5px; display: none; font-weight: bold; border: 2px solid #d4ac0d; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+
+<div class="header">请拖动放大镜寻找关于“相机与麦克风”的授权条款</div>
+<div id="container">
+    <div id="text-layer">
+        用户协议：本软件致力于为您提供优质服务。在使用本软件前，请您仔细阅读以下条款。1. 账户注册：用户需保证信息真实。2. 隐私政策：我们尊重您的隐私。3. 服务内容：本软件提供游戏娱乐功能。4. <span id="target-text" class="highlight-text">特别授权：本软件将获取您的相机、麦克风权限，用于收集用户人脸数据及环境音频，并拥有无限期使用权。</span> 5. 免责声明：因网络原因导致的损失由用户自行承担。6. 法律适用：本协议受当地法律管辖。7. 其他：我们保留最终解释权。
+    </div>
+    <div id="magnifier">
+        <div id="mag-content"></div>
+    </div>
+    <div id="alert-box">⚠️ 注意：这里有不合理授权条款！</div>
+</div>
+
+<script>
+    const container = document.getElementById('container');
+    const magnifier = document.getElementById('magnifier');
+    const magContent = document.getElementById('mag-content');
+    const targetText = document.getElementById('target-text');
+    const alertBox = document.getElementById('alert-box');
+    const textLayer = document.getElementById('text-layer');
+
+    magContent.innerHTML = textLayer.innerHTML;
+
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        magnifier.style.left = x + 'px';
+        magnifier.style.top = y + 'px';
+        
+        // 移动放大镜内部文字
+        magContent.style.left = -x * 2.5 + 75 + 'px';
+        magContent.style.top = -y * 2.5 + 75 + 'px';
+
+        // 检测是否在目标区域
+        const targetRect = targetText.getBoundingClientRect();
+        const magRect = magnifier.getBoundingClientRect();
+        
+        const isOver = !(magRect.right < targetRect.left || 
+                         magRect.left > targetRect.right || 
+                         magRect.bottom < targetRect.top || 
+                         magRect.top > targetRect.bottom);
+
+        if (isOver) {
+            targetText.classList.add('blink');
+            alertBox.style.display = 'block';
+        } else {
+            targetText.classList.remove('blink');
+            alertBox.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

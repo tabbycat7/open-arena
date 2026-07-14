@@ -1,0 +1,230 @@
+{
+  "task_id": "199380d9-05ba-4472-a36b-f8f17bbabb3e",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看课本第一段，国家把税款用在了科学、教育、国防、环保等这么多领域。结合你的日常生活想一想，我们平时免费使用或享受的哪些公共服务，其实背后都有税收在默默“买单”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "请仔细读课本第二段对这两个词的定义。如果让你用数学的眼光区分“应纳税额”和“税率”，它们一个后面跟的是具体金额，一个带的是“%”，在含义和表示的意义上有什么本质的不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看例题3，已知企业10月份的应纳税销售额是30万元，税率是3%。你能直接列出计算这家企业应缴增值税的算式吗？并说说算式里的30万、3%和最后算出的结果，分别对应课本里的哪个数学概念？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "看“做一做”李阿姨交个税的题目，题干特意强调了“应纳税的部分为2500元”。如果面对真实的工资条，你该怎样抓住这个限定条件准确找出计算基数，而不会误用总收入直接去乘3%？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "结合我们刚算出的李阿姨的具体税额，再回看课本开头提到的税收用途。如果让你用“应纳税额”“税率”这些术语，向家人或同学解释“为什么这笔算出来的钱必须依法缴纳”，你会怎么组织语言？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "换个生活场景对比：收费游乐场和免费体育馆同样能玩，为什么后者能免费开放？这背后的“隐形账单”到底是谁在支付？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "假设新建免费图书馆不靠税收统一筹集，改让常去的人自己分摊，可能会出现什么不公平现象？这说明了税收统筹起什么作用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "某商家海报错写成“税率15元”，这句话违背了哪个数学概念的本质？如果让你纠正，应该把“元”换成什么符号并说明理由？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "对比小票上的“税金12元”和“税率13%”，不用计算，你能直接指出哪个是“最终交的钱”，哪个是“国家定的比例标准”吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "如果不用数字，改用线段图表示营业额，图上被单独标出5%的那一小截对应什么概念？请说出整体、标准、部分分别叫什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "同样适用5%的税率，A店和B店算出的税额却差了好几倍，这说明“应纳税额”的大小到底是由哪个关键条件决定的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "面对“直接给应纳税额”和“给总收入加免税额”两种题目，列乘法算式时“×”号前面的数为什么不能一样？关键差别在哪？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "工资条上同时出现“免税津贴”和“应税基本工资”，计算个税时你凭什么只挑其中一个数当“单位1”？请说出筛选依据。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "有人觉得“我算出来才几块钱税，少交没人发现”，请用“税率”和“公共服务”这两个词，说明为什么这几块钱绝对不能省？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "假如突然取消个税税率，原本汇聚成“应纳税额”的这笔资金流向会发生什么变化？这对我们日常享受的公共设施意味着什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "刚才大家提到了公园、红绿灯这些具体设施。如果我们要知道建它们到底花了多少钱，最后拿到手的会是一个带‘元’或‘万元’的具体数字，还是一个带‘%’的比例呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "大家去商店买文具打过折，比如打八折。这里的‘八折’是个固定的规矩，而最后少付的钱是具体数额。看看课本第二段，‘税率’更像打折时的‘几折’，还是最后算出来的‘具体钱数’？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "请用手指轻轻点着课本第二段，找一找哪句话里出现了‘是……的百分之几’这个句式？这句话是在解释具体交多少钱，还是在解释按什么规矩交钱？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "以前我们学过，求‘60的三分之一是多少’，是用什么运算？那如果换成求‘60的3%是多少’，运算方法变了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "看例3里的‘30万元’和‘3%’。结合刚才的定义，哪个数代表‘要按标准交钱的那个基数’，哪个数代表‘国家规定的百分比标准’？试着把这两个数对号入座。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "读一读‘做一做’的题目，用笔轻轻圈出‘应纳税’这三个字。题目里直接告诉了我们这个具体需要交税的数额是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果题目给的是月总收入6000元，但规定5000元以下不交税。这6000元里，哪一部分是真正需要拿去乘税率的？是全部，还是超过5000的那一小截？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "所以，在列算式之前，我们需要先做一个‘减法’动作。你能用一句话告诉我，到底该拿哪个数去乘3%吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "我们帮李阿姨算出的这笔个税，虽然是从她个人工资里扣出来的，但汇到国家的大池子里后，它最终变成了我们课本第一段里提到的哪些东西？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果让你跟家人解释为什么必须交这笔钱，你可以试着把‘算出的具体税额’和‘国家规定的税率’这两个词串进一句话里，你会先说哪个词，再联系什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

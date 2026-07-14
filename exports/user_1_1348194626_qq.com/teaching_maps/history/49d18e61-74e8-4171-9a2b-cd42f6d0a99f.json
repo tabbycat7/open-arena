@@ -1,0 +1,348 @@
+{
+  "id": "49d18e61-74e8-4171-9a2b-cd42f6d0a99f",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1、经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”，会用“鸽巢原理”解决简单的实际问题。2、通过操作发展学生的类推能力，形成比较抽象的数学思维。3、通过“鸽巢原理”的灵活应用感受数学的魅力。\r\n",
+  "student_profile": "学习者分析为了更准确的了解学情，我做了课前问卷调查，设计的问题是：你知道什么是鸽巢原理吗？若知道，请举例说明。调查人数 41人，41.4%学生能正确举例。34.5%学生理解模糊，24.1%学生完全不知道。也就是说很多同学课前接触过鸽巢问题，基本都可以用平均分的方法解决问题，但知其然，不知其所以然。基于以上调查，我认为六年级的学生对于总结规律的方法研究比较少，尤其对于“数学证明”。因此，教学过程中教师要耐心细致的引导，重在让学生经历知识的发生、发展过程，而不是生搬硬套，只求结论，要让学生知其然，更要知其所以然。",
+  "difficulty_analysis": "四、教学重难点分析及解决措施重点：使学生经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”。新课标提倡“做数学”。学生只有亲历知识形成的过程，才能真正理解知识，灵活运用知识。本节课主要采用了游戏激趣法、活动体验法、讲授法、实践操作法。通过猜测、验证、观察、分析等活动，建立数学模型，渗透数学思想。激发学生参与学习的积极性，让学生在求知的学习状态中展示个性。促进学生思考，引导学生自己进行探索，丰富数学活动经验。难点：“对鸽巢原理的认识，尤其是对“总有”“至少”的意义，和“至少数=商数十1”的理解”。学生通过动手实践、自主探索、合作交流等活动，体验知识的形成过程，掌握基本知识和技能，建立数学模型，发展数学思考和解决问题的能力，形成良好的情感、态度和价值观。",
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，这里有4支铅笔和3个笔筒。请大家动手摆一摆，看能不能找到一种放法，让每个笔筒里的铅笔都少于2支？试完后说说你们的发现。\", \"question_type\": \"main\", \"commentary\": \"本环节通过“逆向设问”制造认知冲突。学生动手操作后会发现“做不到”，从而反向理解“总有一个笔筒至少有2支”的必然性，初步建立对鸽巢原理的直观感知，达成“理解”层次的认知目标。\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"通过“4支笔放入3个笔筒”的经典情境，要求学生对“总有一个笔筒至少有2支笔”这一论断进行评判与证明。旨在激活学生的直观经验，引发对“必然性”的思考，初步感知鸽巢原理的存在，并辨析“总有”与“至少”的含义。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"刚才大家发现不管怎么放，总有一个笔筒至少有2支。如果换成100支笔放进30个笔筒，还要一支支摆吗？有没有一种像魔法一样的计算方法，能直接算出那个“至少数”？\", \"question_type\": \"main\", \"commentary\": \"当数据变大时，枚举法失效，迫使学生寻求通法。用“魔法”一词激发好奇心，引导学生从具体操作转向抽象计算，为后续建模搭建脚手架，自然过渡到规律探究环节。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"引导学生从具体的操作数据中跳脱出来，观察“物体数”、“鸽巢数”与“至少数”之间的数量关系。通过归纳推理，初步构建“物体数÷鸽巢数=商……余数，至少数=商+1”的数学模型。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"请大家算一算：把7支笔放3个筒，10支笔放4个筒。观察算式中的商、余数和结果，你们发现“至少数”是怎么来的？能总结出一个公式吗？\", \"question_type\": \"main\", \"commentary\": \"提供多组数据，让学生在计算中对比观察。学生通过归纳推理，能初步发现“物体数÷鸽巢数=商……余数”且“至少数=商+1”的规律，完成从算式到模型的初步构建，培养归纳能力。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"在M2提出计算需求后，通过具体数据的计算与观察，让学生自主发现商、余数与至少数的关系，为后续M4的算理辨析提供归纳基础，填补认知缺口。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"大家发现了“商+1”的规律。但如果8支铅笔放进4个笔筒，商是2没有余数，还要加1吗？请运用“平均分”的道理来解释，这时候到底该怎么放才最合理？\", \"question_type\": \"main\", \"commentary\": \"利用整除情况制造认知冲突。学生通过讨论会发现，当正好分完时，至少数就是商，不需要加1。通过辨析，纠正“商+1”的机械记忆，深化对原理本质的理解，达成“应用”层次的目标。\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"聚焦教学难点，通过对比“有余数”和“无余数（整除）”的情况，利用“平均分”的逻辑解释“商+1”的必然性。旨在帮助学生从机械记忆公式转向理解原理本质，完成从形象思维到逻辑推理的跨越。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"一副牌去掉大小王剩52张，随便抽5张，我敢打赌至少有2张同花色。你们信吗？请用鸽巢原理解释，这里谁是“鸽子”，谁是“鸽巢”？\", \"question_type\": \"main\", \"commentary\": \"将数学原理回归生活。通过扑克牌游戏，剥离“笔筒”的非本质属性，让学生识别“鸽子”与“鸽巢”，在解释生活现象中体会数学模型的价值，感受数学的魅力。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.85, \"design_intent\": \"提供非标准化的实际问题（如扑克牌花色、生日问题等），隐去显性的“笔筒”形象，要求学生透过现象看本质，准确识别“鸽子”与“鸽巢”，构建对应关系并解决问题，感受数学的应用价值。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果有4只鸽子飞进3个鸽笼，会不会出现每个鸽笼都少于2只鸽子的情况？动手画一画，看你能发现什么秘密。\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将铅笔替换为鸽子，保持数量关系不变，帮助学生剥离具体情境，从不同载体中感知鸽巢原理的普遍性。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"对比一下：5支笔放3个筒和放4个筒，结论都是“至少有2支”吗？动脑想想，笔筒变多了，为什么“至少数”可能不变？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.62, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过对比不同鸽巢数量下的结果，引导学生辨析“鸽巢数”对结论的影响，打破单一情境的思维定势，深化对原理本质的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"试试你的“魔法公式”：7支笔放2个筒，15支笔放4个筒，结果分别是多少？算完对比一下，你的公式灵验吗？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过不同数据的快速演练，强化学生对计算模型的应用能力，验证“商+1”规律在不同数据下的普适性。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"有同学说：“算出商2余1，结果就是商2，因为剩下的1支不够再分。”你同意吗？请用“平均分”的道理反驳他。\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.78, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"针对“余数处理”这一易错点，通过反例辩驳，迫使学生深入思考余数的去向，深化对“至少数=商+1”算理的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"换个角度想：如果有2个笔筒，要保证“总有一个笔筒至少有3支”，至少需要准备几支铅笔？你是怎么推算的？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.82, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"从已知结论反推条件，打破常规的正向思维模式，帮助学生构建双向可逆的数学模型，提升思维灵活性。\", \"design_rationale\": \"\"}, {\"id\": \"S1-3\", \"content\": \"如果想让每个笔筒都少于2支，最多能放几支笔？这和我们的4支笔比，说明了什么？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"通过反向极限思考，帮助学生理解“总有”的必然性，突破抽象思维障碍。\", \"design_intent\": \"针对学困生难以理解“必然性”的痛点，利用反例构建认知冲突，深化对原理本质的感悟。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"4÷3的结果是多少？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"将直观的操作结果转化为抽象的算式，建立动作与符号的联系。\", \"design_intent\": \"引导学生从动手操作自然过渡到数学计算，为寻找规律做铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"平均分后，每个笔筒先放（ ）支，剩下的（ ）支无论放进哪个笔筒，都会让那个笔筒至少有（ ）支。\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"通过填空式引导，解释“至少数”产生的具体操作过程，外化思维路径。\", \"design_intent\": \"利用平均分的直观模型，帮助学生理解“商+余数”的算理，突破抽象思维障碍。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"面对这么大的数，怎么分能最快帮我们找到那个“至少数”？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"启发学生从具体计算转向思考“平均分”这一核心策略。\", \"design_intent\": \"避免程序化步骤引导，聚焦核心策略，激发学生寻找通法的欲望。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"算算7÷3和8÷4，对比商和余数，看看“至少数”有什么不同？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"通过对比观察，为后续辨析“有余数”和“无余数”的情况搭建脚手架。\", \"design_intent\": \"引导学生关注算式特征，自主发现整除情况的特殊性，为M4的算理辨析做准备。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"S1-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-3\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-04 11:12:49",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，这里有4支铅笔和3个笔筒。请大家动手摆一摆，看能不能找到一种放法，让每个笔筒里的铅笔都少于2支？试完后说说你们的发现。",
+        "question_type": "main",
+        "commentary": "本环节通过“逆向设问”制造认知冲突。学生动手操作后会发现“做不到”，从而反向理解“总有一个笔筒至少有2支”的必然性，初步建立对鸽巢原理的直观感知，达成“理解”层次的认知目标。",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "通过“4支笔放入3个笔筒”的经典情境，要求学生对“总有一个笔筒至少有2支笔”这一论断进行评判与证明。旨在激活学生的直观经验，引发对“必然性”的思考，初步感知鸽巢原理的存在，并辨析“总有”与“至少”的含义。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "刚才大家发现不管怎么放，总有一个笔筒至少有2支。如果换成100支笔放进30个笔筒，还要一支支摆吗？有没有一种像魔法一样的计算方法，能直接算出那个“至少数”？",
+        "question_type": "main",
+        "commentary": "当数据变大时，枚举法失效，迫使学生寻求通法。用“魔法”一词激发好奇心，引导学生从具体操作转向抽象计算，为后续建模搭建脚手架，自然过渡到规律探究环节。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "引导学生从具体的操作数据中跳脱出来，观察“物体数”、“鸽巢数”与“至少数”之间的数量关系。通过归纳推理，初步构建“物体数÷鸽巢数=商……余数，至少数=商+1”的数学模型。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "请大家算一算：把7支笔放3个筒，10支笔放4个筒。观察算式中的商、余数和结果，你们发现“至少数”是怎么来的？能总结出一个公式吗？",
+        "question_type": "main",
+        "commentary": "提供多组数据，让学生在计算中对比观察。学生通过归纳推理，能初步发现“物体数÷鸽巢数=商……余数”且“至少数=商+1”的规律，完成从算式到模型的初步构建，培养归纳能力。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "在M2提出计算需求后，通过具体数据的计算与观察，让学生自主发现商、余数与至少数的关系，为后续M4的算理辨析提供归纳基础，填补认知缺口。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "大家发现了“商+1”的规律。但如果8支铅笔放进4个笔筒，商是2没有余数，还要加1吗？请运用“平均分”的道理来解释，这时候到底该怎么放才最合理？",
+        "question_type": "main",
+        "commentary": "利用整除情况制造认知冲突。学生通过讨论会发现，当正好分完时，至少数就是商，不需要加1。通过辨析，纠正“商+1”的机械记忆，深化对原理本质的理解，达成“应用”层次的目标。",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "聚焦教学难点，通过对比“有余数”和“无余数（整除）”的情况，利用“平均分”的逻辑解释“商+1”的必然性。旨在帮助学生从机械记忆公式转向理解原理本质，完成从形象思维到逻辑推理的跨越。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "一副牌去掉大小王剩52张，随便抽5张，我敢打赌至少有2张同花色。你们信吗？请用鸽巢原理解释，这里谁是“鸽子”，谁是“鸽巢”？",
+        "question_type": "main",
+        "commentary": "将数学原理回归生活。通过扑克牌游戏，剥离“笔筒”的非本质属性，让学生识别“鸽子”与“鸽巢”，在解释生活现象中体会数学模型的价值，感受数学的魅力。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.85,
+        "design_intent": "提供非标准化的实际问题（如扑克牌花色、生日问题等），隐去显性的“笔筒”形象，要求学生透过现象看本质，准确识别“鸽子”与“鸽巢”，构建对应关系并解决问题，感受数学的应用价值。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果有4只鸽子飞进3个鸽笼，会不会出现每个鸽笼都少于2只鸽子的情况？动手画一画，看你能发现什么秘密。",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将铅笔替换为鸽子，保持数量关系不变，帮助学生剥离具体情境，从不同载体中感知鸽巢原理的普遍性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "对比一下：5支笔放3个筒和放4个筒，结论都是“至少有2支”吗？动脑想想，笔筒变多了，为什么“至少数”可能不变？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.62,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过对比不同鸽巢数量下的结果，引导学生辨析“鸽巢数”对结论的影响，打破单一情境的思维定势，深化对原理本质的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "试试你的“魔法公式”：7支笔放2个筒，15支笔放4个筒，结果分别是多少？算完对比一下，你的公式灵验吗？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过不同数据的快速演练，强化学生对计算模型的应用能力，验证“商+1”规律在不同数据下的普适性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "有同学说：“算出商2余1，结果就是商2，因为剩下的1支不够再分。”你同意吗？请用“平均分”的道理反驳他。",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.78,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "针对“余数处理”这一易错点，通过反例辩驳，迫使学生深入思考余数的去向，深化对“至少数=商+1”算理的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "换个角度想：如果有2个笔筒，要保证“总有一个笔筒至少有3支”，至少需要准备几支铅笔？你是怎么推算的？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.82,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "从已知结论反推条件，打破常规的正向思维模式，帮助学生构建双向可逆的数学模型，提升思维灵活性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-3",
+        "content": "如果想让每个笔筒都少于2支，最多能放几支笔？这和我们的4支笔比，说明了什么？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "通过反向极限思考，帮助学生理解“总有”的必然性，突破抽象思维障碍。",
+        "design_intent": "针对学困生难以理解“必然性”的痛点，利用反例构建认知冲突，深化对原理本质的感悟。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "4÷3的结果是多少？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "将直观的操作结果转化为抽象的算式，建立动作与符号的联系。",
+        "design_intent": "引导学生从动手操作自然过渡到数学计算，为寻找规律做铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "平均分后，每个笔筒先放（ ）支，剩下的（ ）支无论放进哪个笔筒，都会让那个笔筒至少有（ ）支。",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "通过填空式引导，解释“至少数”产生的具体操作过程，外化思维路径。",
+        "design_intent": "利用平均分的直观模型，帮助学生理解“商+余数”的算理，突破抽象思维障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "面对这么大的数，怎么分能最快帮我们找到那个“至少数”？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "启发学生从具体计算转向思考“平均分”这一核心策略。",
+        "design_intent": "避免程序化步骤引导，聚焦核心策略，激发学生寻找通法的欲望。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "算算7÷3和8÷4，对比商和余数，看看“至少数”有什么不同？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "通过对比观察，为后续辨析“有余数”和“无余数”的情况搭建脚手架。",
+        "design_intent": "引导学生关注算式特征，自主发现整除情况的特殊性，为M4的算理辨析做准备。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "S1-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-3",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

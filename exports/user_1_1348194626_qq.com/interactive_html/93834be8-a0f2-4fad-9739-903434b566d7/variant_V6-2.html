@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>闰年搜索算法优化演示</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --leap-color: #10b981;
+            --not-leap-color: #f43f5e;
+            --skipped-bg: #e2e8f0;
+            --skipped-text: #94a3b8;
+            --active-border: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            overflow: hidden;
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            background-color: #f1f5f9;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 单选按钮组样式 */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .radio-label:hover {
+            background-color: #f8fafc;
+        }
+
+        .radio-label.active {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* 统计数据 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-val.highlight {
+            color: var(--leap-color);
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 按钮 */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* 右侧网格区域 */
+        .grid-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* 剪刀剪裁提示条 */
+        .prune-banner {
+            background-color: #fef3c7;
+            border: 1px dashed #f59e0b;
+            color: #b45309;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+
+        .prune-banner.show {
+            height: auto;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 年份网格 */
+        .year-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 4px;
+            background-color: #f1f5f9;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .year-cell {
+            background-color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            position: relative;
+            transition: all 0.2s;
+            user-select: none;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 单元格状态 */
+        .year-cell.checking {
+            background-color: #fef08a;
+            border-color: var(--active-border);
+            color: #854d0e;
+            transform: scale(1.08);
+            z-index: 10;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+
+        .year-cell.checking::after {
+            content: '🔍';
+            position: absolute;
+            font-size: 10px;
+            right: -2px;
+            top: -4px;
+        }
+
+        .year-cell.leap {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .year-cell.not-leap {
+            background-color: #fee2e2;
+            border-color: #f87171;
+            color: #991b1b;
+        }
+
+        .year-cell.skipped {
+            background-color: var(--skipped-bg);
+            border-color: #cbd5e1;
+            color: var(--skipped-text);
+            opacity: 0.4;
+        }
+
+        .year-cell.skipped::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background-color: #94a3b8;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        /* 底部图例 */
+        .legend {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            padding-top: 4px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* 速度控制条 */
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speed-slider {
+            width: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>闰年搜索算法优化演示</h1>
+        <span class="header-tag">五年级 · 信息技术</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <!-- 策略选择 -->
+            <div class="panel-section">
+                <div class="panel-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    选择检索策略
+                </div>
+                <div class="radio-group">
+                    <label class="radio-label active" id="label-step1">
+                        <input type="radio" name="strategy" id="strat-step1" checked style="display: none;">
+                        <span>逐年排查 (起点2000, 步长1)</span>
+                    </label>
+                    <label class="radio-label" id="label-step4">
+                        <input type="radio" name="strategy" id="strat-step4" style="display: none;">
+                        <span>优化：跨越排查 (起点2000, 步长4)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 运行统计 -->
+            <div class="panel-section">
+                <div class="panel-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    实时运行统计
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-loops">0</div>
+                        <div class="stat-lbl">循环次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val highlight" id="stat-leaps">0</div>
+                        <div class="stat-lbl">已找到闰年</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 速度控制 -->
+            <div class="panel-section speed-control">
+                <div class="panel-title" style="margin-bottom: 4px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    演示速度
+                </div>
+                <input type="range" id="speed-slider" class="speed-slider" min="10" max="300" value="100" step="10">
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                    <span>慢速</span>
+                    <span>极速</span>
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btn-start">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    开始检索
+                </button>
+                <button class="btn btn-secondary" id="btn-reset">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    重置
+                </button>
+            </div>
+        </div>
+
+        <!-- 右侧网格区域 -->
+        <div class="grid-area">
+            <div class="grid-header">
+                <div class="grid-title" id="grid-title-text">公元 2000 年 ~ 2100 年检索网格 (共101年)</div>
+            </div>
+
+            <!-- 剪刀剪裁提示条 -->
+            <div class="prune-banner" id="prune-banner">
+                <span>✂️</span>
+                <span><strong>算法优化成功：</strong>已自动剪除 75% 的非4倍数年份（灰色锁定），计算机将直接跳过它们！</span>
+            </div>
+
+            <!-- 年份网格 -->
+            <div class="year-grid" id="year-grid">
+                <!-- 由 JS 动态生成 -->
+            </div>
+
+            <!-- 图例说明 -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: white;"></div>
+                    <span>未检查</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #fef08a; border-color: var(--active-border);"></div>
+                    <span>正在检查</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #d1fae5; border-color: #10b981;"></div>
+                    <span>是闰年</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #fee2e2; border-color: #f87171;"></div>
+                    <span>非闰年</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--skipped-bg); border-color: #cbd5e1;"></div>
+                    <span>已剪除(跳过)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 常量与状态
+    const START_YEAR = 2000;
+    const END_YEAR = 2100;
+    const TOTAL_YEARS = END_YEAR - START_YEAR + 1;
+
+    let currentStrategy = 1; // 1 或 4
+    let isRunning = false;
+    let timer = null;
+    let currentYearPointer = START_YEAR;
+    let loopCount = 0;
+    let leapCount = 0;
+    let checkedStates = {}; // 记录每个年份的检查状态: 'none', 'checking', 'leap', 'not-leap', 'skipped'
+
+    // DOM 元素
+    const yearGrid = document.getElementById('year-grid');
+    const btnStart = document.getElementById('btn-start');
+    const btnReset = document.getElementById('btn-reset');
+    const stratStep1 = document.getElementById('strat-step1');
+    const stratStep4 = document.getElementById('strat-step4');
+    const labelStep1 = document.getElementById('label-step1');
+    const labelStep4 = document.getElementById('label-step4');
+    const statLoops = document.getElementById('stat-loops');
+    const statLeaps = document.getElementById('stat-leaps');
+    const pruneBanner = document.getElementById('prune-banner');
+    const speedSlider = document.getElementById('speed-slider');
+
+    // 初始化网格
+    function initGrid() {
+        yearGrid.innerHTML = '';
+        checkedStates = {};
+        for (let y = START_YEAR; y <= END_YEAR; y++) {
+            const cell = document.createElement('div');
+            cell.className = 'year-cell';
+            cell.id = `year-${y}`;
+            cell.textContent = y;
+            yearGrid.appendChild(cell);
+            
+            // 初始状态
+            if (currentStrategy === 4 && (y - START_YEAR) % 4 !== 0) {
+                checkedStates[y] = 'skipped';
+                cell.classList.add('skipped');
+            } else {
+                checkedStates[y] = 'none';
+            }
+        }
+    }
+
+    // 判断是否为闰年 (标准算法)
+    function isLeapYear(year) {
+        // 能被4整除但不能被100整除，或者能被400整除
+        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    }
+
+    // 更新单选按钮视觉效果
+    function updateStrategyUI(strategy) {
+        currentStrategy = strategy;
+        if (strategy === 1) {
+            labelStep1.classList.add('active');
+            labelStep4.classList.remove('active');
+            stratStep1.checked = true;
+            pruneBanner.classList.remove('show');
+        } else {
+            labelStep4.classList.add('active');
+            labelStep1.classList.remove('active');
+            stratStep4.checked = true;
+            pruneBanner.classList.add('show');
+        }
+        resetSimulation();
+    }
+
+    // 重置模拟
+    function resetSimulation() {
+        stopSimulation();
+        currentYearPointer = START_YEAR;
+        loopCount = 0;
+        leapCount = 0;
+        statLoops.textContent = '0';
+        statLeaps.textContent = '0';
+        btnStart.disabled = false;
+        btnStart.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> 开始检索`;
+        initGrid();
+    }
+
+    // 停止模拟
+    function stopSimulation() {
+        isRunning = false;
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+    }
+
+    // 单步执行
+    function stepForward() {
+        if (!isRunning) return;
+
+        // 如果指针超出范围，结束
+        if (currentYearPointer > END_YEAR) {
+            stopSimulation();
+            btnStart.disabled = true;
+            btnStart.innerHTML = `检索完成`;
+            return;
+        }
+
+        // 清除上一个正在检查的样式
+        const prevChecking = document.querySelector('.year-cell.checking');
+        if (prevChecking) {
+            prevChecking.classList.remove('checking');
+        }
+
+        // 获取当前单元格
+        const cell = document.getElementById(`year-${currentYearPointer}`);
+        if (cell) {
+            cell.classList.add('checking');
+            
+            // 增加循环计数
+            loopCount++;
+            statLoops.textContent = loopCount;
+
+            // 延迟判定结果，让学生看清“正在检查”的过程
+            const delay = Math.max(20, 320 - speedSlider.value);
+            
+            setTimeout(() => {
+                if (!isRunning) return;
+                
+                cell.classList.remove('checking');
+                if (isLeapYear(currentYearPointer)) {
+                    cell.classList.add('leap');
+                    leapCount++;
+                    statLeaps.textContent = leapCount;
+                } else {
+                    cell.classList.add('not-leap');
+                }
+
+                // 移动指针到下一个需要检查的年份
+                currentYearPointer += currentStrategy;
+                
+                // 递归下一步
+                timer = setTimeout(stepForward, delay / 2);
+            }, delay / 2);
+        } else {
+            // 如果因为某种原因没找到单元格，直接跳过
+            currentYearPointer += currentStrategy;
+            stepForward();
+        }
+    }
+
+    // 开始/暂停
+    function togglePlay() {
+        if (isRunning) {
+            stopSimulation();
+            btnStart.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> 继续检索`;
+        } else {
+            isRunning = true;
+            btnStart.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 暂停`;
+            stepForward();
+        }
+    }
+
+    // 事件监听
+    labelStep1.addEventListener('click', () => {
+        if (!isRunning) updateStrategyUI(1);
+    });
+
+    labelStep4.addEventListener('click', () => {
+        if (!isRunning) updateStrategyUI(4);
+    });
+
+    btnStart.addEventListener('click', togglePlay);
+    btnReset.addEventListener('click', resetSimulation);
+
+    // 初始化
+    updateStrategyUI(1);
+</script>
+
+</body>
+</html>

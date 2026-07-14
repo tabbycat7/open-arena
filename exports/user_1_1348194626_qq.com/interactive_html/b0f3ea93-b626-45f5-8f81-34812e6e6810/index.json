@@ -1,0 +1,266 @@
+{
+  "task_id": "b0f3ea93-b626-45f5-8f81-34812e6e6810",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请翻开课本，看看开头这段话——'税收是国家财政收入的主要来源之一'。结合咱们每天上学走的马路、教室里亮的灯、图书馆里的书，你觉得如果国家没有这些钱，我们的生活会有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "请同学们看教材里这句话：'应纳税额与各种收入中应纳税部分的比率叫作税率'。大家圈出'比率'这个词，然后想一想——税率是说具体要交多少钱，还是说一个百分比？如果有人说'税率是0.9万元'，这话对不对？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看教材例3，这家小规模纳税企业10月份的应纳税销售额是30万元，要按3%缴纳增值税。这个问题和我们以前学过的'求一个数的百分之几是多少'有什么联系？具体应该怎么列式？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "请同学们对比教材例3的企业纳税和'做一做'里李阿姨的个人所得税，虽然都是用3%计算，但这两个3%分别是针对什么钱来计算的？这两种税有什么不一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "假如李阿姨的月工资单上写着'全部收入8000元，扣除费用5000元，应纳税部分3000元'，这时候该用哪个数字去乘3%？为什么不能用8000元直接计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "我们刚才算出李阿姨每月要交90元个人所得税，如果咱们班40个同学的家长都交这么多，一年能积累多少钱？这些钱按照教材开头说的，可以用来建设什么？现在你怎么看待'每个公民都有依法纳税的义务'这句话？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "想想你家附近的社区医院、马路上的红绿灯、地铁站的电梯——如果国家没有税收收入，这些设施会变成什么样？试着用'如果没有……就会……'的句式跟同桌说一说。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有人说：'政府缺钱可以直接印钞票啊，何必向我们收税？'你觉得这种想法有什么问题？印出来的钱和税收收入有什么本质不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "判断对错并说明理由：'甲企业说税率是0.2万元，乙企业说税率是20%。'这两种说法都正确吗？哪个才符合数学定义？为什么不能带单位？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "看这条线段表示企业收入100万元，如果税率是3%，你能标出哪一段表示要交的税，哪一段表示税后剩余吗？试着用分数或百分数标注各部分。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "还是这家企业，如果税率调整为5%，应纳税额是多少？对比刚才的3%，你发现了什么规律？无论税率怎么变，计算时哪个步骤永远不变？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "某企业按3%的税率交了1.5万元增值税，你能倒推出它的应纳税销售额是多少吗？试着用'因为……所以……'解释你的思考过程。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "小王白天上班拿工资，晚上开网店卖手工。他既要交个人所得税又要交增值税。这两种税的'3%'分别对着哪部分钱计算？能不能都用总收入的3%来算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "企业10万元营业额和个人10万元年终奖，都用3%计算吗？如果不一样，差别在哪里？关键要看这笔钱是'经营赚来的'还是'劳动换来的'？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "张叔叔月工资12000元，扣除费用6000元，税率3%。如果他用12000×3%计算，会多交多少钱？正确的计税基数应该是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "李阿姨看到工资单上写着'应发工资8000元，实发7760元'，她直接用8000×3%=240元验算，发现不对。错误出在哪里？'扣除费用5000元'这五个字为什么至关重要？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "如果每位家长每月交税100元，我们班40位家长一年能贡献多少？这笔钱足够给学校图书馆买多少本书？现在你觉得'人人纳税'意味着什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "如果某人收入低于5000元不用交税，但他也享受马路、公园、学校，这公平吗？结合今天学的税收知识，你怎么理解'能力越大，责任越大'这句话？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "国家收税，是每个人交的钱都一样多，还是根据每个人或企业赚的钱的多少，按一定的比例来交？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "请翻到课本定义部分，用手指着圈出'比率'这个词。我们学过，比率通常用什么符号表示？这意味着税率是一个像'3%'这样的百分数，还是一个像'90元'这样的具体钱数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "请指着你刚才圈出的'比率'这个词。回忆一下，上学期我们学过，求一个数的百分之几是多少，应该用什么运算方法？请说出这个运算的名称。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "看例题中的'按3%缴纳增值税'。请把'3%'用方框框起来，把'30万元'用波浪线画出来。要在横线上写出求30万元的3%的算式，你会怎么列？请写出来：________",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "请回忆刚才的例题，我们是用30万元去乘3%算出税款。在这个乘法算式中，30万元叫做什么？请从课本中找出这个词。（计税基数/应纳税销售额）",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "现在看'做一做'李阿姨的部分。请用荧光笔标出'工资中应纳税的部分是3000元'这句话。这里的3000元，对应刚才例题中的哪个数字？（30万元）它们都是用来乘税率的什么数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "请看着工资单信息，用手指着找出'应纳税部分'这五个字，用圆圈把它圈出来，然后准确读出它后面跟着的数字是多少。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "课本里说，个人所得税是对'工资中应纳税的部分'征税。那么，我们应该用哪个数字去乘3%？为什么？请把正确的数字填在横线上：_____ × 3% = 应纳税额",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "如果误用了8000元去乘3%，算出的税额会比实际应缴的更多还是更少？请算出多了多少元。这提醒我们一定要看准课本里的哪五个关键词才不会出错？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "请看着刚才的计算，说出李阿姨每月要交的个人所得税是多少元？（90元）请在草稿纸上写下这个数字。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "看课本第一页，找到'国家用税收发展...教育...'这句话，把'教育'圈出来。假如咱们班40个同学的家长每月都交90元，请算一算一年12个月能积累多少钱？你觉得这些钱可以用来给我们学校或者你上学的马路做什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

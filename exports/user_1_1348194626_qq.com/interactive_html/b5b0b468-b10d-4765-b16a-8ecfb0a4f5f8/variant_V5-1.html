@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表征转换器：从决策树到分段函数</title>
+    <style>
+        /* 基础样式与大屏适配 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        /* 4:3 比例容器 */
+        .container {
+            width: 100%;
+            max-width: 1024px;
+            height: 100%;
+            max-height: 768px;
+            aspect-ratio: 4 / 3;
+            background-color: #252538;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            border: 2px solid #45475a;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部区域 */
+        header {
+            padding: 20px 25px 10px 25px;
+            border-bottom: 1px solid #45475a;
+        }
+        .title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            font-size: 22px;
+            color: #89b4fa;
+            font-weight: 600;
+        }
+        .badge {
+            background-color: #fab387;
+            color: #11111b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .question-text {
+            margin-top: 10px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #a6adc8;
+        }
+        .highlight-math {
+            color: #f9e2af;
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+
+        /* 主交互区 */
+        .workspace {
+            flex: 1;
+            display: flex;
+            position: relative;
+            padding: 15px;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        /* SVG 连线层 */
+        #svg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 左侧：决策树 */
+        .panel-left {
+            flex: 1.1;
+            background-color: #181825;
+            border-radius: 12px;
+            border: 1px solid #313244;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+        }
+        .panel-title {
+            font-size: 14px;
+            color: #cba6f7;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+        }
+        .panel-title::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #cba6f7;
+            border-radius: 50%;
+        }
+
+        /* 决策树图形结构 */
+        .tree-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            position: relative;
+        }
+        .tree-node {
+            background-color: #313244;
+            border: 2px solid #45475a;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 14px;
+            text-align: center;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .tree-node.root {
+            border-color: #89b4fa;
+            color: #89b4fa;
+            font-weight: bold;
+        }
+        .tree-branches {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            position: relative;
+        }
+        .tree-branch-line {
+            position: absolute;
+            top: -30px;
+            height: 30px;
+            border-left: 2px dashed #45475a;
+            z-index: 1;
+        }
+        .leaf-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            width: 30%;
+        }
+        .leaf-title {
+            font-size: 11px;
+            color: #a6adc8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 可拖拽的锚点 */
+        .drag-anchor {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #1e1e2e;
+            border: 2px dashed #585b70;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 5;
+        }
+        .drag-anchor:hover {
+            border-color: #f9e2af;
+            background-color: #252538;
+            transform: translateY(-2px);
+        }
+        .drag-anchor:active {
+            cursor: grabbing;
+        }
+        .drag-anchor.connected {
+            border-style: solid;
+            border-color: #a6e3a1;
+            background-color: rgba(166, 227, 161, 0.1);
+            cursor: not-allowed;
+        }
+        .drag-anchor .math-text {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .drag-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #f9e2af;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(249, 226, 175, 0.6);
+        }
+        .connected .drag-dot {
+            background-color: #a6e3a1;
+            box-shadow: 0 0 8px rgba(166, 227, 161, 0.6);
+        }
+
+        /* 右侧：分段函数 */
+        .panel-right {
+            flex: 0.9;
+            background-color: #181825;
+            border-radius: 12px;
+            border: 1px solid #313244;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+        }
+        .formula-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        /* 数学公式排版 */
+        .math-layout {
+            display: flex;
+            align-items: center;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 24px;
+        }
+        .func-name {
+            font-weight: bold;
+            font-style: italic;
+            color: #89b4fa;
+            margin-right: 8px;
+        }
+        .brace {
+            font-size: 110px;
+            font-weight: 100;
+            color: #cdd6f4;
+            margin-right: 15px;
+            line-height: 1;
+            transform: scaleY(1.1);
+        }
+        .cases-list {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+        .case-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 45px;
+        }
+
+        /* 目标槽位 */
+        .drop-slot {
+            width: 110px;
+            height: 40px;
+            border: 2px dashed #585b70;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #11111b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .drop-slot.hover {
+            border-color: #f9e2af;
+            background-color: rgba(249, 226, 175, 0.05);
+            transform: scale(1.05);
+        }
+        .drop-slot.filled {
+            border-style: solid;
+            border-color: #a6e3a1;
+            background-color: rgba(166, 227, 161, 0.05);
+        }
+        .slot-placeholder {
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+            color: #585b70;
+        }
+        .slot-content {
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #a6e3a1;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .drop-slot.filled .slot-placeholder {
+            display: none;
+        }
+        .drop-slot.filled .slot-content {
+            display: block;
+        }
+        .case-comma {
+            color: #a6adc8;
+            font-size: 18px;
+        }
+
+        /* 底部控制栏 */
+        footer {
+            padding: 15px 25px;
+            border-top: 1px solid #45475a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #11111b;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+        .status-text {
+            font-size: 14px;
+            color: #a6adc8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #f38ba8;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.success {
+            background-color: #a6e3a1;
+            box-shadow: 0 0 8px #a6e3a1;
+        }
+        .btn-reset {
+            background-color: #313244;
+            color: #cdd6f4;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn-reset:hover {
+            background-color: #45475a;
+        }
+
+        /* 动画效果 */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 拖拽时的临时连线样式 */
+        .temp-line {
+            stroke: #f9e2af;
+            stroke-width: 2;
+            stroke-dasharray: 4 4;
+        }
+        .solid-line {
+            stroke: #a6e3a1;
+            stroke-width: 2;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <header>
+            <div class="title-bar">
+                <h1>从“决策树”到“分段函数”的表征转换</h1>
+                <span class="badge">数学 · 高一</span>
+            </div>
+            <p class="question-text">
+                我们已经通过分类讨论构建了方程 <span class="highlight-math">|x-1|+|x+1| = a</span> 解的个数决策树。
+                请将左侧决策树的<b>边界条件</b>与对应的<b>解的个数</b>，拖拽连线到右侧分段函数 <span class="highlight-math">g(a)</span> 的相应位置。
+            </p>
+        </header>
+
+        <!-- 主交互区 -->
+        <div class="workspace" id="workspace">
+            <!-- SVG 连线画布 -->
+            <svg id="svg-canvas"></svg>
+
+            <!-- 左侧：决策树 -->
+            <div class="panel-left">
+                <div class="panel-title">分类讨论决策树 (M5)</div>
+                <div class="tree-container">
+                    <!-- 根节点 -->
+                    <div class="tree-node root">
+                        方程：|x-1|+|x+1| = a
+                    </div>
+
+                    <!-- 分支 1：a < 2 -->
+                    <div class="tree-branches">
+                        <!-- 左分支叶子组 -->
+                        <div class="leaf-group">
+                            <div class="leaf-title">分支一</div>
+                            <div class="drag-anchor" id="drag-cond-1" data-type="cond" data-value="a < 2">
+                                <span class="math-text">a < 2</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                            <div class="drag-anchor" id="drag-val-1" data-type="val" data-value="0">
+                                <span class="math-text">0 个解</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                        </div>
+
+                        <!-- 中分支叶子组 -->
+                        <div class="leaf-group">
+                            <div class="leaf-title">分支二</div>
+                            <div class="drag-anchor" id="drag-cond-2" data-type="cond" data-value="a = 2">
+                                <span class="math-text">a = 2</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                            <div class="drag-anchor" id="drag-val-2" data-type="val" data-value="无数个">
+                                <span class="math-text">无数个解</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                        </div>
+
+                        <!-- 右分支叶子组 -->
+                        <div class="leaf-group">
+                            <div class="leaf-title">分支三</div>
+                            <div class="drag-anchor" id="drag-cond-3" data-type="cond" data-value="a > 2">
+                                <span class="math-text">a > 2</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                            <div class="drag-anchor" id="drag-val-3" data-type="val" data-value="2">
+                                <span class="math-text">2 个解</span>
+                                <div class="drag-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：分段函数 -->
+            <div class="panel-right">
+                <div class="panel-title">严谨代数表达 (分段函数)</div>
+                <div class="formula-container">
+                    <div class="math-layout">
+                        <div class="func-name">g(a)</div>
+                        <div class="func-name" style="margin-right: 0;">=</div>
+                        <div class="brace">{</div>
+                        <div class="cases-list">
+                            <!-- 第一行 -->
+                            <div class="case-row">
+                                <div class="drop-slot" id="slot-val-1" data-type="val" data-expected="0">
+                                    <span class="slot-placeholder">拖入解的个数</span>
+                                    <span class="slot-content">0</span>
+                                </div>
+                                <span class="case-comma">,</span>
+                                <div class="drop-slot" id="slot-cond-1" data-type="cond" data-expected="a < 2">
+                                    <span class="slot-placeholder">拖入对应条件</span>
+                                    <span class="slot-content">a &lt; 2</span>
+                                </div>
+                            </div>
+                            <!-- 第二行 -->
+                            <div class="case-row">
+                                <div class="drop-slot" id="slot-val-2" data-type="val" data-expected="无数个">
+                                    <span class="slot-placeholder">拖入解的个数</span>
+                                    <span class="slot-content">无数个</span>
+                                </div>
+                                <span class="case-comma">,</span>
+                                <div class="drop-slot" id="slot-cond-2" data-type="cond" data-expected="a = 2">
+                                    <span class="slot-placeholder">拖入对应条件</span>
+                                    <span class="slot-content">a = 2</span>
+                                </div>
+                            </div>
+                            <!-- 第三行 -->
+                            <div class="case-row">
+                                <div class="drop-slot" id="slot-val-3" data-type="val" data-expected="2">
+                                    <span class="slot-placeholder">拖入解的个数</span>
+                                    <span class="slot-content">2</span>
+                                </div>
+                                <span class="case-comma">,</span>
+                                <div class="drop-slot" id="slot-cond-3" data-type="cond" data-expected="a > 2">
+                                    <span class="slot-placeholder">拖入对应条件</span>
+                                    <span class="slot-content">a &gt; 2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部控制栏 -->
+        <footer>
+            <div class="status-text">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-info">请拖拽左侧的黄色圆点，连接到右侧对应的虚线框中。</span>
+            </div>
+            <button class="btn-reset" id="btn-reset">重置转换器</button>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const workspace = document.getElementById('workspace');
+            const svgCanvas = document.getElementById('svg-canvas');
+            const dragAnchors = document.querySelectorAll('.drag-anchor');
+            const dropSlots = document.querySelectorAll('.drop-slot');
+            const statusDot = document.getElementById('status-dot');
+            const statusInfo = document.getElementById('status-info');
+            const btnReset = document.getElementById('btn-reset');
+
+            let activeAnchor = null;
+            let tempLine = null;
+            const connections = []; // 存储已建立的连接关系 { anchorId, slotId, lineElement }
+
+            // 初始化 SVG 尺寸
+            function resizeCanvas() {
+                const rect = workspace.getBoundingClientRect();
+                svgCanvas.setAttribute('width', rect.width);
+                svgCanvas.setAttribute('height', rect.height);
+                redrawConnections();
+            }
+            window.addEventListener('resize', resizeCanvas);
+            setTimeout(resizeCanvas, 100);
+
+            // 拖拽逻辑
+            dragAnchors.forEach(anchor => {
+                anchor.addEventListener('mousedown', startDrag);
+                anchor.addEventListener('touchstart', startDrag, { passive: false });
+            });
+
+            function startDrag(e) {
+                const anchor = e.currentTarget;
+                if (anchor.classList.contains('connected')) return;
+
+                e.preventDefault();
+                activeAnchor = anchor;
+
+                const touch = e.type === 'touchstart' ? e.touches[0] : e;
+                const rect = workspace.getBoundingClientRect();
+                const startX = touch.clientX - rect.left;
+                const startY = touch.clientY - rect.top;
+
+                // 创建临时虚线
+                tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tempLine.setAttribute('class', 'temp-line');
+                tempLine.setAttribute('x1', startX);
+                tempLine.setAttribute('y1', startY);
+                tempLine.setAttribute('x2', startX);
+                tempLine.setAttribute('y2', startY);
+                svgCanvas.appendChild(tempLine);
+
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('touchmove', dragMove, { passive: false });
+                document.addEventListener('mouseup', endDrag);
+                document.addEventListener('touchend', endDrag);
+            }
+
+            function dragMove(e) {
+                if (!activeAnchor || !tempLine) return;
+                e.preventDefault();
+
+                const touch = e.type === 'touchmove' ? e.touches[0] : e;
+                const rect = workspace.getBoundingClientRect();
+                const currentX = touch.clientX - rect.left;
+                const currentY = touch.clientY - rect.top;
+
+                // 获取起点（锚点圆心位置）
+                const dot = activeAnchor.querySelector('.drag-dot');
+                const dotRect = dot.getBoundingClientRect();
+                const startX = (dotRect.left + dotRect.width / 2) - rect.left;
+                const startY = (dotRect.top + dotRect.height / 2) - rect.top;
+
+                tempLine.setAttribute('x1', startX);
+                tempLine.setAttribute('y1', startY);
+                tempLine.setAttribute('x2', currentX);
+                tempLine.setAttribute('y2', currentY);
+
+                // 碰撞检测：高亮悬停的槽位
+                const targetSlot = getHoveredSlot(touch.clientX, touch.clientY);
+                dropSlots.forEach(slot => {
+                    if (slot === targetSlot && canConnect(activeAnchor, slot)) {
+                        slot.classList.add('hover');
+                    } else {
+                        slot.classList.remove('hover');
+                    }
+                });
+            }
+
+            function endDrag(e) {
+                if (!activeAnchor) return;
+
+                document.removeEventListener('mousemove', dragMove);
+                document.removeEventListener('touchmove', dragMove);
+                document.removeEventListener('mouseup', endDrag);
+                document.removeEventListener('touchend', endDrag);
+
+                const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
+                const targetSlot = getHoveredSlot(touch.clientX, touch.clientY);
+
+                if (targetSlot && canConnect(activeAnchor, targetSlot)) {
+                    // 成功连接
+                    connectAnchorToSlot(activeAnchor, targetSlot);
+                }
+
+                if (tempLine) {
+                    tempLine.remove();
+                    tempLine = null;
+                }
+                
+                dropSlots.forEach(slot => slot.classList.remove('hover'));
+                activeAnchor = null;
+                checkCompletion();
+            }
+
+            // 辅助检测
+            function getHoveredSlot(clientX, clientY) {
+                let hovered = null;
+                dropSlots.forEach(slot => {
+                    const rect = slot.getBoundingClientRect();
+                    if (clientX >= rect.left && clientX <= rect.right &&
+                        clientY >= rect.top && clientY <= rect.bottom) {
+                        hovered = slot;
+                    }
+                });
+                return hovered;
+            }
+
+            function canConnect(anchor, slot) {
+                // 类型必须匹配 (cond 匹配 cond, val 匹配 val)
+                if (anchor.dataset.type !== slot.dataset.type) return false;
+                // 槽位必须未被占用
+                if (slot.classList.contains('filled')) return false;
+                // 值必须正确对应
+                return anchor.dataset.value === slot.dataset.expected;
+            }
+
+            function connectAnchorToSlot(anchor, slot) {
+                anchor.classList.add('connected');
+                slot.classList.add('filled');
+
+                // 创建永久实线
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('class', 'solid-line');
+                svgCanvas.appendChild(line);
+
+                connections.push({
+                    anchorId: anchor.id,
+                    slotId: slot.id,
+                    lineElement: line
+                });
+
+                drawConnectionLine(anchor, slot, line);
+            }
+
+            function drawConnectionLine(anchor, slot, line) {
+                const rect = workspace.getBoundingClientRect();
+                const dot = anchor.querySelector('.drag-dot');
+                const dotRect = dot.getBoundingClientRect();
+                const slotRect = slot.getBoundingClientRect();
+
+                const x1 = (dotRect.left + dotRect.width / 2) - rect.left;
+                const y1 = (dotRect.top + dotRect.height / 2) - rect.top;
+                const x2 = slotRect.left - rect.left; // 连线到槽位左侧边缘
+                const y2 = (slotRect.top + slotRect.height / 2) - rect.top;
+
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+            }
+
+            function redrawConnections() {
+                connections.forEach(conn => {
+                    const anchor = document.getElementById(conn.anchorId);
+                    const slot = document.getElementById(conn.slotId);
+                    if (anchor && slot && conn.lineElement) {
+                        drawConnectionLine(anchor, slot, conn.lineElement);
+                    }
+                });
+            }
+
+            function checkCompletion() {
+                const filledCount = document.querySelectorAll('.drop-slot.filled').length;
+                if (filledCount === dropSlots.length) {
+                    statusDot.classList.add('success');
+                    statusInfo.textContent = "太棒了！你已成功将决策树的分类逻辑，严谨地映射为代数分段函数！";
+                    statusInfo.style.color = "#a6e3a1";
+                } else {
+                    statusDot.classList.remove('success');
+                    statusInfo.textContent = `已成功配对 ${filledCount} / ${dropSlots.length} 个要素。继续加油！`;
+                    statusInfo.style.color = "#a6adc8";
+                }
+            }
+
+            // 重置功能
+            btnReset.addEventListener('click', () => {
+                connections.forEach(conn => {
+                    if (conn.lineElement) conn.lineElement.remove();
+                });
+                connections.length = 0;
+
+                dragAnchors.forEach(anchor => {
+                    anchor.classList.remove('connected');
+                });
+
+                dropSlots.forEach(slot => {
+                    slot.classList.remove('filled', 'hover');
+                });
+
+                statusDot.classList.remove('success');
+                statusInfo.textContent = "请拖拽左侧的黄色圆点，连接到右侧对应的虚线框中。";
+                statusInfo.style.color = "#a6adc8";
+            });
+        });
+    </script>
+</body>
+</html>

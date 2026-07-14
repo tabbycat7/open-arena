@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法与清单的区别</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { width: 90%; max-width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .panels { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+        .panel { flex: 1; border: 2px solid #e2e8f0; padding: 15px; border-radius: 8px; }
+        h3 { margin-top: 0; color: #1e293b; text-align: center; }
+        .item { padding: 8px; margin: 5px 0; background: #f1f5f9; border-radius: 4px; transition: 0.3s; }
+        .active { background: #dbeafe; border-left: 4px solid var(--primary); }
+        #control-btn { display: block; width: 200px; margin: 0 auto; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        #message { text-align: center; margin-top: 15px; height: 24px; font-weight: bold; color: #ef4444; }
+        .anim-area { height: 60px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .icon { font-size: 24px; opacity: 0; transition: 0.5s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>算法 vs 清单：为什么不一样？</h3>
+    <div class="panels">
+        <div class="panel" id="list-panel">
+            <h3>购物清单</h3>
+            <div class="item">1. 苹果</div>
+            <div class="item">2. 牙膏</div>
+            <div class="item">3. 面包</div>
+        </div>
+        <div class="panel" id="algo-panel">
+            <h3>结账指南</h3>
+            <div class="item step">1. 扫描条码</div>
+            <div class="item step">2. 出示付款码</div>
+            <div class="item step">3. 打印小票</div>
+        </div>
+    </div>
+
+    <button id="control-btn">开始模拟执行</button>
+    <div id="message"></div>
+
+    <div class="anim-area">
+        <span id="icon-scan" class="icon">🛒</span>
+        <span id="icon-pay" class="icon">💳</span>
+        <span id="icon-receipt" class="icon">🧾</span>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('control-btn');
+    const steps = document.querySelectorAll('.step');
+    const msg = document.getElementById('message');
+    const icons = [document.getElementById('icon-scan'), document.getElementById('icon-pay'), document.getElementById('icon-receipt')];
+    let running = false;
+
+    btn.addEventListener('click', () => {
+        if (running) return;
+        running = true;
+        msg.textContent = "";
+        steps.forEach(s => s.classList.remove('active'));
+        icons.forEach(i => i.style.opacity = '0');
+
+        // 模拟清单侧反馈
+        setTimeout(() => {
+            msg.textContent = "清单：各项无顺序，机器无法自动执行！";
+        }, 500);
+
+        // 模拟算法侧执行
+        let i = 0;
+        const timer = setInterval(() => {
+            if (i < steps.length) {
+                steps[i].classList.add('active');
+                icons[i].style.opacity = '1';
+                i++;
+            } else {
+                clearInterval(timer);
+                msg.textContent = "结账完成！算法是有序的执行过程。";
+                running = false;
+            }
+        }, 1000);
+    });
+</script>
+
+</body>
+</html>

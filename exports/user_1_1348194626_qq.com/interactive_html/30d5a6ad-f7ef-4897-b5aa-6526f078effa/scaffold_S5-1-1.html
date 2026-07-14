@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S5-1-1 跑步测试可视化</title>
+    <style>
+        :root { --bg: #f0f4f8; --primary: #2c3e50; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: relative; padding: 20px; box-sizing: border-box; }
+        h2 { text-align: center; color: var(--primary); margin-top: 0; }
+        #canvas-container { width: 100%; height: 350px; border: 2px dashed #ccc; position: relative; overflow: hidden; background: #fafafa; }
+        .character { position: absolute; bottom: 50px; transition: left 2s linear; }
+        #runner { left: 0; font-size: 40px; }
+        #me { left: 500px; font-size: 40px; }
+        .bench { position: absolute; bottom: 20px; left: 480px; width: 100px; height: 30px; background: #8b4513; border-radius: 5px; }
+        .stats { margin-top: 20px; display: none; }
+        .bar-container { width: 100%; height: 20px; background: #eee; margin: 10px 0; border-radius: 10px; overflow: hidden; }
+        .bar { height: 100%; width: 0%; transition: width 1s ease-out; }
+        #btn-check { display: block; margin: 20px auto; padding: 10px 20px; font-size: 18px; cursor: pointer; background: #3498db; color: white; border: none; border-radius: 5px; }
+        #message { text-align: center; font-weight: bold; color: #e74c3c; margin-top: 10px; opacity: 0; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>跑步测试：代跑 vs 本人</h2>
+    <div id="canvas-container">
+        <div id="runner" class="character">🏃高手</div>
+        <div class="bench"></div>
+        <div id="me" class="character">👤你</div>
+        <div style="position:absolute; top:10px; right:10px; font-size:24px; font-weight:bold;">满分！</div>
+    </div>
+
+    <button id="btn-check">查看体能指标</button>
+
+    <div id="stats" class="stats">
+        <div>高手体能：<div class="bar-container"><div id="bar-runner" class="bar" style="background:#27ae60;"></div></div></div>
+        <div>你的体能：<div class="bar-container"><div id="bar-me" class="bar" style="background:#e74c3c;"></div></div></div>
+    </div>
+
+    <div id="message">别人代劳，变强的只有别人。AI代写作业，变聪明的只有AI。</div>
+</div>
+
+<script>
+    const runner = document.getElementById('runner');
+    const stats = document.getElementById('stats');
+    const barRunner = document.getElementById('bar-runner');
+    const barMe = document.getElementById('bar-me');
+    const btn = document.getElementById('btn-check');
+    const msg = document.getElementById('message');
+
+    // 动画初始化
+    runner.style.left = '600px';
+
+    btn.addEventListener('click', function() {
+        stats.style.display = 'block';
+        btn.style.display = 'none';
+        
+        // 模拟体能变化
+        setTimeout(() => {
+            barRunner.style.width = '95%';
+            barMe.style.width = '10%';
+            msg.style.opacity = '1';
+        }, 100);
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多重“与”逻辑积木组装台</title>
+  <style>
+    /* 全局样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .container {
+      width: 100%;
+      max-width: 1024px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* 头部区域 */
+    .header {
+      background: linear-gradient(135deg, #4a90e2, #357abd);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #286090;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+    .badge {
+      background-color: #f39c12;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* 主体布局 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 左侧控制面板 */
+    .sidebar {
+      width: 35%;
+      background-color: #f8f9fa;
+      border-right: 2px solid #e9ecef;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      border-left: 4px solid #4a90e2;
+      padding-left: 8px;
+    }
+
+    /* 输入框与预设按钮 */
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-label {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .number-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      border: 2px solid #ccd1d9;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+      font-weight: bold;
+    }
+    .number-input:focus {
+      border-color: #4a90e2;
+    }
+
+    .preset-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .btn-preset {
+      background-color: #e6f2ff;
+      color: #4a90e2;
+      border: 1px solid #b3d7ff;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .btn-preset:hover {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    /* 控制按钮 */
+    .control-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background-color: #2ecc71;
+      color: white;
+      box-shadow: 0 4px 0 #27ae60;
+    }
+    .btn-primary:hover {
+      background-color: #27ae60;
+    }
+    .btn-primary:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #27ae60;
+    }
+    .btn-secondary {
+      background-color: #3498db;
+      color: white;
+      box-shadow: 0 4px 0 #2980b9;
+    }
+    .btn-secondary:hover {
+      background-color: #2980b9;
+    }
+    .btn-secondary:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #2980b9;
+    }
+    .btn-danger {
+      background-color: #e74c3c;
+      color: white;
+      box-shadow: 0 4px 0 #c0392b;
+    }
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+    .btn-danger:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #c0392b;
+    }
+
+    /* 步骤说明面板 */
+    .explanation-panel {
+      background-color: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      flex-grow: 1;
+      margin-top: 20px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .step-indicator {
+      display: inline-block;
+      padding: 2px 6px;
+      background-color: #e2e8f0;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    /* 右侧可视化工作区 */
+    .workspace {
+      width: 65%;
+      background-color: #1e1e24;
+      background-image: radial-gradient(#333344 1px, transparent 1px);
+      background-size: 20px 20px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* SVG 积木样式 */
+    svg {
+      width: 100%;
+      height: auto;
+      max-height: 90%;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    /* 积木基础过渡动画 */
+    .block-bg {
+      transition: fill 0.4s, stroke 0.4s, filter 0.4s;
+      stroke-width: 3;
+    }
+
+    /* 积木状态颜色定义 */
+    .block-default {
+      fill: #59C059;
+      stroke: #419141;
+    }
+    .block-nested-default {
+      fill: #46a346;
+      stroke: #327532;
+    }
+    .block-cond-default {
+      fill: #338033;
+      stroke: #225422;
+    }
+
+    /* 激活状态 */
+    .block-true {
+      fill: #26C485 !important;
+      stroke: #1b8d5f !important;
+      filter: drop-shadow(0 0 12px rgba(38, 196, 133, 0.8));
+    }
+    .block-false {
+      fill: #FF5B5B !important;
+      stroke: #c93b3b !important;
+      filter: drop-shadow(0 0 12px rgba(255, 91, 91, 0.8));
+    }
+    .block-gold {
+      fill: url(#goldGradient) !important;
+      stroke: #f39c12 !important;
+      filter: drop-shadow(0 0 25px rgba(241, 196, 15, 0.9));
+    }
+
+    /* 文本样式 */
+    text {
+      font-family: 'Courier New', Courier, monospace, sans-serif;
+      font-weight: bold;
+      user-select: none;
+    }
+    .text-title {
+      fill: #ffffff;
+      font-size: 18px;
+    }
+    .text-calc {
+      fill: #ffeb3b;
+      font-size: 14px;
+    }
+    .text-result {
+      fill: #ffffff;
+      font-size: 15px;
+    }
+    .text-operator {
+      fill: #ffffff;
+      font-size: 20px;
+      font-family: system-ui, sans-serif;
+    }
+
+    /* 粒子画布 */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 浮动结果横幅 */
+    .result-banner {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      opacity: 0;
+      background-color: rgba(46, 204, 113, 0.95);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .result-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .result-banner.fail {
+      background-color: rgba(231, 76, 60, 0.95);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 头部 -->
+  <div class="header">
+    <div>
+      <h1>多重“与”逻辑积木组装台</h1>
+      <p>探索 [条件1] 与 [ [条件2] 与 [条件3] ] 的嵌套判断规则</p>
+    </div>
+    <div class="badge">五年级 · 信息技术</div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-content">
+    <!-- 左侧控制面板 -->
+    <div class="sidebar">
+      <div>
+        <div class="section-title">输入测试数值</div>
+        <div class="input-group">
+          <label class="input-label" for="input-i">请输入变量 i 的值：</label>
+          <input type="number" id="input-i" class="number-input" placeholder="输入一个整数" value="1003">
+          
+          <div class="preset-container">
+            <button class="btn-preset" data-val="1003">无匹配 (1003)</button>
+            <button class="btn-preset" data-val="1004">部分匹配 (1004)</button>
+            <button class="btn-preset" data-val="1028">部分匹配 (1028)</button>
+            <button class="btn-preset" data-val="1049">完全匹配 (1049)</button>
+          </div>
+        </div>
+
+        <div class="section-title">控制台</div>
+        <div class="control-buttons">
+          <button id="btn-step" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            单步验证
+          </button>
+          <button id="btn-auto" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 3l14 9-14 9V3z"></path></svg>
+            自动播放
+          </button>
+          <button id="btn-reset" class="btn btn-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+            重置
+          </button>
+        </div>
+      </div>
+
+      <!-- 动态说明面板 -->
+      <div class="explanation-panel" id="explanation">
+        <span class="step-indicator" id="step-badge">准备就绪</span>
+        <div id="step-text">请输入或选择一个数值，然后点击“单步验证”或“自动播放”来观察计算机是如何进行多重“与”逻辑判断的。</div>
+      </div>
+    </div>
+
+    <!-- 右侧可视化工作区 -->
+    <div class="workspace">
+      <canvas id="confetti-canvas"></canvas>
+      
+      <!-- 积木 SVG -->
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- 渐变金色，用于完全匹配时的特效 -->
+          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f1c40f" />
+            <stop offset="50%" stop-color="#f39c12" />
+            <stop offset="100%" stop-color="#d35400" />
+          </linearGradient>
+        </defs>
+
+        <!-- 最外层大积木 [条件1] 与 [ [条件2] 与 [条件3] ] -->
+        <path id="block-outer" class="block-bg block-default" d="M 30,30 L 850,30 L 870,160 L 850,290 L 30,290 L 10,160 Z" />
+        
+        <!-- 条件1 子积木 [ i % 3 == 2 ] -->
+        <g id="group-cond1">
+          <path id="block-cond1" class="block-bg block-cond-default" d="M 50,70 L 250,70 L 265,160 L 250,250 L 50,250 L 35,160 Z" />
+          <text x="150" y="125" class="text-title" text-anchor="middle">i % 3 == 2</text>
+          <text id="calc-cond1" x="150" y="165" class="text-calc" text-anchor="middle">等待输入...</text>
+          <text id="res-cond1" x="150" y="205" class="text-result" text-anchor="middle">?</text>
+        </g>
+
+        <!-- 外层“与”连接符 -->
+        <text x="292" y="168" class="text-operator" text-anchor="middle">与</text>
+
+        <!-- 嵌套的内层大积木 [ [条件2] 与 [条件3] ] -->
+        <path id="block-inner" class="block-bg block-nested-default" d="M 330,50 L 815,50 L 830,160 L 815,270 L 330,270 L 315,160 Z" />
+
+        <!-- 条件2 子积木 [ i % 5 == 4 ] -->
+        <g id="group-cond2">
+          <path id="block-cond2" class="block-bg block-cond-default" d="M 350,80 L 520,80 L 535,160 L 520,240 L 350,240 L 335,160 Z" />
+          <text x="435" y="125" class="text-title" text-anchor="middle">i % 5 == 4</text>
+          <text id="calc-cond2" x="435" y="165" class="text-calc" text-anchor="middle">等待输入...</text>
+          <text id="res-cond2" x="435" y="205" class="text-result" text-anchor="middle">?</text>
+        </g>
+
+        <!-- 内层“与”连接符 -->
+        <text x="565" y="168" class="text-operator" text-anchor="middle">与</text>
+
+        <!-- 条件3 子积木 [ i % 7 == 6 ] -->
+        <g id="group-cond3">
+          <path id="block-cond3" class="block-bg block-cond-default" d="M 610,80 L 780,80 L 795,160 L 780,240 L 610,240 L 595,160 Z" />
+          <text x="695" y="125" class="text-title" text-anchor="middle">i % 7 == 6</text>
+          <text id="calc-cond3" x="695" y="165" class="text-calc" text-anchor="middle">等待输入...</text>
+          <text id="res-cond3" x="695" y="205" class="text-result" text-anchor="middle">?</text>
+        </g>
+      </svg>
+
+      <!-- 结果横幅 -->
+      <div id="banner" class="result-banner">
+        <span id="banner-icon">🎉</span>
+        <span id="banner-text">完全匹配！整块积木通过！</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 获取 DOM 元素
+  const inputI = document.getElementById('input-i');
+  const btnStep = document.getElementById('btn-step');
+  const btnAuto = document.getElementById('btn-auto');
+  const btnReset = document.getElementById('btn-reset');
+  const presetBtns = document.querySelectorAll('.btn-preset');
+  const explanationText = document.getElementById('step-text');
+  const stepBadge = document.getElementById('step-badge');
+  const banner = document.getElementById('banner');
+  const bannerText = document.getElementById('banner-text');
+  const bannerIcon = document.getElementById('banner-icon');
+
+  // SVG 积木元素
+  const blockOuter = document.getElementById('block-outer');
+  const blockInner = document.getElementById('block-inner');
+  const blockCond1 = document.getElementById('block-cond1');
+  const blockCond2 = document.getElementById('block-cond2');
+  const blockCond3 = document.getElementById('block-cond3');
+
+  // SVG 文本元素
+  const calcCond1 = document.getElementById('calc-cond1');
+  const calcCond2 = document.getElementById('calc-cond2');
+  const calcCond3 = document.getElementById('calc-cond3');
+  const resCond1 = document.getElementById('res-cond1');
+  const resCond2 = document.getElementById('res-cond2');
+  const resCond3 = document.getElementById('res-cond3');
+
+  // 粒子画布
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // 状态变量
+  let currentStep = 0;
+  let autoPlayInterval = null;
+  let particles = [];
+  let animationFrameId = null;
+
+  // Web Audio API 声音合成器
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playSound(type) {
+    try {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'step') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } else if (type === 'success') {
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 组成的和弦
+        notes.forEach((freq, index) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(freq, now + index * 0.08);
+          g.gain.setValueAtTime(0.1, now + index * 0.08);
+          g.gain.exponentialRampToValueAtTime(0.01, now + index * 0.08 + 0.4);
+          o.start(now + index * 0.08);
+          o.stop(now + index * 0.08 + 0.4);
+        });
+      } else if (type === 'fail') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      }
+    } catch (e) {
+      console.log('Audio error:', e);
+    }
+  }
+
+  // 粒子效果
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = canvas.width / 2;
+      this.y = canvas.height / 2;
+      this.size = Math.random() * 8 + 4;
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 8 + 4;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed - 2;
+      this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+      this.gravity = 0.2;
+      this.alpha = 1;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += this.gravity;
+      this.alpha -= 0.015;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.alpha > 0);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    if (particles.length > 0) {
+      animationFrameId = requestAnimationFrame(animateParticles);
+    }
+  }
+
+  function triggerConfetti() {
+    cancelAnimationFrame(animationFrameId);
+    particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle());
+    }
+    animateParticles();
+  }
+
+  // 核心逻辑计算
+  function getValues() {
+    const i = parseInt(inputI.value) || 0;
+    const cond1 = (i % 3 === 2);
+    const cond2 = (i % 5 === 4);
+    const cond3 = (i % 7 === 6);
+    const inner = cond2 && cond3;
+    const outer = cond1 && inner;
+
+    return {
+      i,
+      cond1,
+      cond2,
+      cond3,
+      inner,
+      outer,
+      calc1: `${i} % 3 = ${i % 3}`,
+      calc2: `${i} % 5 = ${i % 5}`,
+      calc3: `${i} % 7 = ${i % 7}`
+    };
+  }
+
+  // 重置状态
+  function reset() {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    currentStep = 0;
+    btnStep.disabled = false;
+    btnAuto.disabled = false;
+    btnAuto.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 3l14 9-14 9V3z"></path></svg> 自动播放`;
+
+    // 恢复积木默认样式
+    blockOuter.className.baseVal = "block-bg block-default";
+    blockInner.className.baseVal = "block-bg block-nested-default";
+    blockCond1.className.baseVal = "block-bg block-cond-default";
+    blockCond2.className.baseVal = "block-bg block-cond-default";
+    blockCond3.className.baseVal = "block-bg block-cond-default";
+
+    // 清空文本
+    calcCond1.textContent = "等待输入...";
+    calcCond2.textContent = "等待输入...";
+    calcCond3.textContent = "等待输入...";
+    resCond1.textContent = "?";
+    resCond2.textContent = "?";
+    resCond3.textContent = "?";
+
+    // 隐藏横幅
+    banner.className = "result-banner";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    stepBadge.textContent = "准备就绪";
+    stepBadge.style.backgroundColor = "#e2e8f0";
+    stepBadge.style.color = "#333";
+    explanationText.textContent = "请输入或选择一个数值，然后点击“单步验证”或“自动播放”来观察计算机是如何进行多重“与”逻辑判断的。";
+  }
+
+  // 执行单步
+  function nextStep() {
+    const data = getValues();
+    currentStep++;
+    playSound('step');
+
+    if (currentStep === 1) {
+      // 第一步：计算三个基础条件
+      stepBadge.textContent = "步骤 1 / 3";
+      stepBadge.style.backgroundColor = "#3498db";
+      stepBadge.style.color = "white";
+      explanationText.innerHTML = `<strong>首先，计算机同时计算三个基础条件：</strong><br>
+        • 条件1：${data.calc1} ${data.cond1 ? ' (等于 2, 成立 ✔)' : ' (不等于 2, 不成立 ✘)'}<br>
+        • 条件2：${data.calc2} ${data.cond2 ? ' (等于 4, 成立 ✔)' : ' (不等于 4, 不成立 ✘)'}<br>
+        • 条件3：${data.calc3} ${data.cond3 ? ' (等于 6, 成立 ✔)' : ' (不等于 6, 不成立 ✘)'}`;
+
+      // 更新子积木状态
+      calcCond1.textContent = data.calc1;
+      calcCond2.textContent = data.calc2;
+      calcCond3.textContent = data.calc3;
+
+      resCond1.textContent = data.cond1 ? "成立 ✔" : "不成立 ✘";
+      resCond2.textContent = data.cond2 ? "成立 ✔" : "不成立 ✘";
+      resCond3.textContent = data.cond3 ? "成立 ✔" : "不成立 ✘";
+
+      blockCond1.className.baseVal = "block-bg " + (data.cond1 ? "block-true" : "block-false");
+      blockCond2.className.baseVal = "block-bg " + (data.cond2 ? "block-true" : "block-false");
+      blockCond3.className.baseVal = "block-bg " + (data.cond3 ? "block-true" : "block-false");
+
+    } else if (currentStep === 2) {
+      // 第二步：计算内层嵌套 [条件2 与 条件3]
+      stepBadge.textContent = "步骤 2 / 3";
+      explanationText.innerHTML = `<strong>接着，计算机计算右侧嵌套的 [条件2 与 条件3]：</strong><br>
+        • 条件2 (${data.cond2 ? '成立' : '不成立'}) <strong>与</strong> 条件3 (${data.cond3 ? '成立' : '不成立'})<br>
+        • 只有当这两个条件<strong>同时成立</strong>时，内层大积木才能通过。<br>
+        • 结果：<strong>${data.inner ? '通过 ✔' : '未通过 ✘'}</strong>`;
+
+      blockInner.className.baseVal = "block-bg " + (data.inner ? "block-true" : "block-false");
+
+    } else if (currentStep === 3) {
+      // 第三步：计算最外层 [条件1 与 内层结果]
+      stepBadge.textContent = "步骤 3 / 3";
+      explanationText.innerHTML = `<strong>最后，计算整块大积木的最终结果：</strong><br>
+        • 条件1 (${data.cond1 ? '成立' : '不成立'}) <strong>与</strong> 右侧嵌套结果 (${data.inner ? '通过' : '未通过'})<br>
+        • 同样，必须两边<strong>同时为真</strong>，整块大积木才算通过！<br>
+        • 结果：<strong>${data.outer ? '完全匹配！' : '未完全匹配。'}</strong>`;
+
+      if (data.outer) {
+        blockOuter.className.baseVal = "block-bg block-gold";
+        bannerText.textContent = "完全匹配！整块大积木发出金色光芒！";
+        bannerIcon.textContent = "🎉";
+        banner.className = "result-banner show";
+        playSound('success');
+        triggerConfetti();
+      } else {
+        blockOuter.className.baseVal = "block-bg block-false";
+        bannerText.textContent = "未完全匹配，整块积木未通过。";
+        bannerIcon.textContent = "⚠️";
+        banner.className = "result-banner show fail";
+        playSound('fail');
+      }
+
+      btnStep.disabled = true;
+      btnAuto.disabled = true;
+    }
+  }
+
+  // 自动播放
+  function autoPlay() {
+    if (autoPlayInterval) {
+      clearInterval(autoPlayInterval);
+      autoPlayInterval = null;
+      btnAuto.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 3l14 9-14 9V3z"></path></svg> 自动播放`;
+    } else {
+      if (currentStep >= 3) reset();
+      btnAuto.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> 暂停`;
+      nextStep();
+      autoPlayInterval = setInterval(() => {
+        if (currentStep < 3) {
+          nextStep();
+        } else {
+          clearInterval(autoPlayInterval);
+          autoPlayInterval = null;
+          btnAuto.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 3l14 9-14 9V3z"></path></svg> 自动播放`;
+          btnAuto.disabled = true;
+        }
+      }, 1500);
+    }
+  }
+
+  // 绑定事件监听器
+  btnStep.addEventListener('click', () => {
+    if (currentStep >= 3) reset();
+    nextStep();
+  });
+  btnAuto.addEventListener('click', autoPlay);
+  btnReset.addEventListener('click', reset);
+
+  // 预设按钮点击事件
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      inputI.value = e.target.getAttribute('data-val');
+      reset();
+    });
+  });
+
+  // 输入框改变时自动重置
+  inputI.addEventListener('input', reset);
+
+  // 初始化
+  reset();
+</script>
+
+</body>
+</html>

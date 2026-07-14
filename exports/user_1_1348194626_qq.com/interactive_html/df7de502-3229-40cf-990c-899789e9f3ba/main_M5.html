@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法优化工作台 - 送餐机器人</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; height: 100vh; box-sizing: border-box; }
+        .container { display: flex; gap: 20px; width: 100%; max-width: 900px; height: 80%; }
+        .panel { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; display: flex; flex-direction: column; }
+        .instruction-list { list-style: none; padding: 0; }
+        .card { background: #e2e8f0; margin: 8px 0; padding: 10px; border-radius: 6px; cursor: grab; display: flex; justify-content: space-between; align-items: center; border: 2px solid #cbd5e1; }
+        .card.dragging { opacity: 0.5; }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        #canvas-area { position: relative; background: #f1f5f9; border-radius: 8px; overflow: hidden; }
+        .stats { margin-top: 10px; font-weight: bold; color: #475569; }
+        .trash { cursor: pointer; color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2 style="margin:0 0 10px 0;">算法优化工作台：让机器人更高效</h2>
+    
+    <div class="container">
+        <div class="panel">
+            <h3>指令序列 (拖拽排序/删除)</h3>
+            <ul id="sortable-list" class="instruction-list">
+                <li class="card" draggable="true" data-id="1">送餐到桌位 <span class="trash">×</span></li>
+                <li class="card" draggable="true" data-id="2">原地转圈 <span class="trash">×</span></li>
+                <li class="card" draggable="true" data-id="3">空手返回起点 <span class="trash">×</span></li>
+                <li class="card" draggable="true" data-id="4">前往桌位收盘 <span class="trash">×</span></li>
+            </ul>
+            <button id="run-btn" class="btn">测试优化效果</button>
+            <div id="result" class="stats"></div>
+        </div>
+
+        <div class="panel" id="canvas-area">
+            <svg id="map" width="100%" height="100%" viewBox="0 0 300 200">
+                <rect x="20" y="90" width="40" height="20" fill="#cbd5e1"/> <!-- 起点 -->
+                <rect x="240" y="90" width="40" height="20" fill="#cbd5e1"/> <!-- 桌位 -->
+                <path id="path-line" d="M 60 100 L 240 100" stroke="#94a3b8" stroke-width="4" fill="none" stroke-dasharray="5,5"/>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const list = document.getElementById('sortable-list');
+        const runBtn = document.getElementById('run-btn');
+        const result = document.getElementById('result');
+        let draggedItem = null;
+
+        // 拖拽逻辑
+        list.addEventListener('dragstart', e => { draggedItem = e.target; e.target.classList.add('dragging'); });
+        list.addEventListener('dragend', e => { e.target.classList.remove('dragging'); });
+        list.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = [...list.querySelectorAll('.card:not(.dragging)')].find(child => e.clientY < child.getBoundingClientRect().top + child.offsetHeight / 2);
+            if (afterElement) list.insertBefore(draggedItem, afterElement);
+            else list.appendChild(draggedItem);
+        });
+
+        // 删除逻辑
+        list.addEventListener('click', e => {
+            if (e.target.classList.contains('trash')) e.target.parentElement.remove();
+        });
+
+        // 运行逻辑
+        runBtn.addEventListener('click', () => {
+            const items = [...list.querySelectorAll('.card')].map(c => c.innerText.replace('×', '').trim());
+            const hasCircle = items.includes('原地转圈');
+            const hasReturn = items.includes('空手返回起点');
+            
+            if (!hasCircle && items.length <= 2) {
+                result.innerHTML = '<span style="color:green">效率提升30%！路径最优！</span>';
+                document.getElementById('path-line').setAttribute('stroke', '#22c55e');
+            } else {
+                result.innerHTML = '当前路径冗余，请尝试删除多余指令并合并动作。';
+                document.getElementById('path-line').setAttribute('stroke', '#ef4444');
+            }
+        });
+    </script>
+</body>
+</html>

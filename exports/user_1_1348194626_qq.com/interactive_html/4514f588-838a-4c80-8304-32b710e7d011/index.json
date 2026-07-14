@@ -1,0 +1,185 @@
+{
+  "task_id": "4514f588-838a-4c80-8304-32b710e7d011",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "水往低处流、苹果掉落，这个让所有东西都向下掉的‘幕后推手’是谁？它推的方向有什么共同特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "空间站里笔能飘在空中，这和我们的经验完全不同。这让你对重力的‘方向’和它存在的地方，有了什么新想法或疑问？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "地球对这本书和这支笔都有吸引力。你觉得它吸引它们的‘力道’大小会一样吗？重力大小最可能跟物体本身的哪个特点有关？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "动手验证一下！用弹簧测力计测不同钩码的重力。请把质量和对应的重力记录在表格里。当钩码质量翻倍时，重力的读数是怎么变的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "各组数据都显示重力跟着质量变，但算出来的比值却不太一样。如果我们想用一个统一的标准来算重力，该怎么做？有同学说‘我的重力是50kg’，这说法对吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "假如一个包裹在地球上重9.8N，送到月球上，那里的重力系数g变小了。你认为它在月球上称出的‘重力’会变吗？它本身的质量会变吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "常说‘物体都有重量’，但你把文具盒从桌上轻轻推向空中，它好像一瞬间‘没重量’了。这短暂的‘没重量’说明，真正持续作用的那个‘推手’是谁？它到底让物体往哪去？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "游泳圈总浮在水面，我们说是水有‘浮力’。但在泳池里，你觉得重力是把游泳圈往哪个方向‘拉’的？当重力存在时，浮力才会显现，这让你怎么理解重力‘方向’的普遍性？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "一个篮球和一个乒乓球静止在地面。篮球压扁地面更明显，是因为地球对它的‘吸引力’更大吗？如果要公平地比较地球吸引它们的‘力道’，我们应该关注这两个球本身的哪个相同或不同的特征？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "小实验家小明测了几个不同大小苹果的重力。他发现苹果越重（质量越大），测力计拉伸就越长。如果他手头有两个一模一样的苹果，把它们并在一起测，你觉得拉伸长度会是单个苹果时的几倍？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "小刚根据数据得出结论：‘在地球上，物体的重力就是它质量的9.8倍’。所以他说‘我的重力是50kg的9.8倍’。你觉得他的表述和计算过程清晰、准确吗？我们该如何更严谨地表达这种关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "火星的g值约为地球的0.38倍。新闻报道常说‘祝融号在火星上变轻了’。你觉得这里说的‘轻’，主要是指它哪个物理量变了？你能用我们刚学的G=mg关系式，解释为什么这个量会变吗？而在从地球飞往火星的旅程中，祝融号本身的哪个属性（比如‘东西的多少’）是始终保持不变的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "苹果掉落的‘下’，是朝着哪里的方向呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果地面不是平的，‘下’还是同一个方向吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "弹簧测力计测的是什么力？用它测重力时，钩码要怎么挂？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "要比较‘力道’和物体本身特点的关系，我们得同时知道哪两个信息？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "算算每个钩码的重力与质量的比值，它们接近吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果用一个数代表这个比值，你觉得多少比较合适？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "‘我的重力是50kg’这句话，哪里说得不对？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "公式G=mg中，去月球的话，哪个字母会变？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

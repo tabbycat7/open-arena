@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学：探究税率的奥秘</title>
+  <style>
+    /* 全局重置与变量定义 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-color: #2b5c8f;
+      --primary-light: #eef5fc;
+      --accent-color: #ff9800;
+      --accent-light: #fff3e0;
+      --success-color: #4caf50;
+      --success-light: #e8f5e9;
+      --text-color: #333333;
+      --text-muted: #666666;
+      --border-color: #dcdfe6;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      background-color: #f0f2f5;
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部标题与问题引导 */
+    header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    h1::before {
+      content: "📊";
+      font-size: 26px;
+    }
+
+    .question-prompt {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      background-color: var(--primary-light);
+      padding: 10px 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+      text-align: left;
+    }
+
+    /* 主体对比区域 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 12px 0;
+      gap: 16px;
+    }
+
+    /* 交互表格样式 */
+    .table-wrapper {
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: #ffffff;
+      font-weight: 500;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .shop-name {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    /* 动态计算单元格 */
+    .calc-cell {
+      position: relative;
+      min-width: 240px;
+    }
+
+    .placeholder-q {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      border-radius: 50%;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      font-weight: bold;
+      font-size: 18px;
+      animation: pulse 2s infinite;
+    }
+
+    .formula-process {
+      display: none;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .result-badge {
+      display: none;
+      background-color: var(--success-light);
+      color: var(--success-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      border: 2px dashed var(--success-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .result-badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .result-badge.highlight-pulse {
+      animation: pulse-gold 1.5s infinite;
+    }
+
+    /* 比例条形图可视化 */
+    .chart-container {
+      background-color: #fafafa;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px dashed var(--border-color);
+    }
+
+    .chart-title {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .bar-wrapper {
+      margin-bottom: 12px;
+    }
+
+    .bar-wrapper:last-child {
+      margin-bottom: 0;
+    }
+
+    .bar-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .bar-outer {
+      width: 100%;
+      height: 24px;
+      background-color: #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-inner-turnover {
+      height: 100%;
+      background-color: #b0bec5;
+      width: 0%; /* 动态控制 */
+      transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+      position: relative;
+      border-radius: 12px;
+    }
+
+    .bar-inner-tax {
+      height: 100%;
+      background-color: var(--accent-color);
+      width: 0%; /* 动态控制，占总营业额的5% */
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 12px 0 0 12px;
+      transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) 0.5s;
+    }
+
+    .bar-label {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: #ffffff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* 控制与解释区域 */
+    .control-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(43, 92, 143, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #1e436b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(43, 92, 143, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      background-color: #a0c0e0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 概念弹出解释框 */
+    .concept-card {
+      width: 100%;
+      background-color: var(--accent-light);
+      border: 2px solid var(--accent-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: none;
+      animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    }
+
+    .concept-title {
+      color: #e65100;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .concept-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #5d4037;
+    }
+
+    .concept-formula {
+      font-family: "Cambria", "Georgia", serif;
+      font-style: italic;
+      font-weight: bold;
+      background-color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #ffe0b2;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    /* 动画定义 */
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+    }
+
+    @keyframes pulse-gold {
+      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 辅助提示 */
+    .click-hint {
+      font-size: 12px;
+      color: var(--success-color);
+      margin-top: 4px;
+      display: none;
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部引导 -->
+    <header>
+      <h1>探究：应纳税额与营业额的关系</h1>
+      <div class="question-prompt">
+        观察下面两家店铺的账单。为什么营业额多的餐馆要交1500元，而营业额少的小超市只要交600元？它们交税的多少和营业额之间，藏着一个怎样相同的百分比关系呢？
+      </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+      <!-- 对比表格 -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th width="20%">店铺名称</th>
+              <th width="25%">营业额 (元)</th>
+              <th width="25%">应纳税额 (元)</th>
+              <th width="30%">纳税额占营业额的百分比</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row-restaurant">
+              <td class="shop-name">美味餐馆</td>
+              <td>30,000</td>
+              <td>1,500</td>
+              <td class="calc-cell">
+                <span class="placeholder-q">?</span>
+                <span class="formula-process" id="formula-res">1500 ÷ 30000 = 0.05 = </span>
+                <span class="result-badge" id="badge-res">5%</span>
+              </td>
+            </tr>
+            <tr id="row-supermarket">
+              <td class="shop-name">阳光超市</td>
+              <td>12,000</td>
+              <td>600</td>
+              <td class="calc-cell">
+                <span class="placeholder-q">?</span>
+                <span class="formula-process" id="formula-sup">600 ÷ 12000 = 0.05 = </span>
+                <span class="result-badge" id="badge-sup">5%</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 比例条形图可视化 -->
+      <div class="chart-container">
+        <div class="chart-title">
+          <span>📊 营业额与纳税额空间占比直观图</span>
+          <span style="color: var(--accent-color); font-size: 12px;">■ 橙色部分代表应纳税额</span>
+        </div>
+        
+        <!-- 餐馆比例条 -->
+        <div class="bar-wrapper">
+          <div class="bar-info">
+            <span>美味餐馆 (营业额: 30000元)</span>
+            <span id="bar-val-res" style="font-weight: bold; color: var(--text-muted);">等待计算...</span>
+          </div>
+          <div class="bar-outer">
+            <div class="bar-inner-turnover" id="turnover-bar-res">
+              <div class="bar-inner-tax" id="tax-bar-res"></div>
+              <span class="bar-label">营业额 30000元</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 超市比例条 -->
+        <div class="bar-wrapper">
+          <div class="bar-info">
+            <span>阳光超市 (营业额: 12000元)</span>
+            <span id="bar-val-sup" style="font-weight: bold; color: var(--text-muted);">等待计算...</span>
+          </div>
+          <div class="bar-outer">
+            <!-- 12000 占最大 30000 的 40% 长度 -->
+            <div class="bar-inner-turnover" id="turnover-bar-sup">
+              <div class="bar-inner-tax" id="tax-bar-sup"></div>
+              <span class="bar-label">营业额 12000元</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 控制与解释区 -->
+    <div class="control-area">
+      <button class="btn-primary" id="btn-calc">开始计算百分比关系</button>
+      <div class="click-hint" id="click-hint">💡 试着点击表格中的 “5%” 看看！</div>
+
+      <!-- 概念卡片 -->
+      <div class="concept-card" id="concept-card">
+        <div class="concept-title">💡 发现数学概念：税率</div>
+        <div class="concept-desc">
+          像这样，<strong>应纳税额</strong>与<strong>营业额</strong>（销售额、营业收入等）的比率，在数学上叫做<strong style="color: #e65100; font-size: 16px;">税率</strong>。
+          <br>
+          本题中，两家店铺虽然营业额不同，但它们都是按照 <strong style="color: var(--success-color);">5%</strong> 的税率来纳税的。
+          <div style="margin-top: 6px;">
+            <span class="concept-formula">税率 = 应纳税额 ÷ 营业额 × 100%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnCalc = document.getElementById('btn-calc');
+      const placeholders = document.querySelectorAll('.placeholder-q');
+      const formulas = document.querySelectorAll('.formula-process');
+      const badges = document.querySelectorAll('.result-badge');
+      const clickHint = document.getElementById('click-hint');
+      const conceptCard = document.getElementById('concept-card');
+
+      // 柱状图元素
+      const turnoverBarRes = document.getElementById('turnover-bar-res');
+      const taxBarRes = document.getElementById('tax-bar-res');
+      const barValRes = document.getElementById('bar-val-res');
+
+      const turnoverBarSup = document.getElementById('turnover-bar-sup');
+      const taxBarSup = document.getElementById('tax-bar-sup');
+      const barValSup = document.getElementById('bar-val-sup');
+
+      let isCalculated = false;
+
+      // 点击“开始计算”
+      btnCalc.addEventListener('click', () => {
+        if (isCalculated) return;
+        isCalculated = true;
+        btnCalc.disabled = true;
+        btnCalc.textContent = "计算完成";
+
+        // 1. 隐藏问号
+        placeholders.forEach(p => p.style.display = 'none');
+
+        // 2. 渐显计算过程
+        formulas.forEach(f => f.style.display = 'inline');
+
+        // 3. 延迟显示最终百分比结果，增强教学演示节奏感
+        setTimeout(() => {
+          badges.forEach(b => b.style.display = 'inline-block');
+          clickHint.style.display = 'block';
+          
+          // 给百分比徽章加上呼吸高亮效果，引导学生点击
+          badges.forEach(b => b.classList.add('highlight-pulse'));
+        }, 1000);
+
+        // 4. 驱动直观条形图动画
+        // 美味餐馆：营业额占满(100%)，税额占其5%
+        turnoverBarRes.style.width = '100%';
+        taxBarRes.style.width = '5%';
+        barValRes.textContent = "应纳税额 1500元 (占5%)";
+        barValRes.style.color = "var(--accent-color)";
+
+        // 阳光超市：营业额按比例占40% (12000/30000)，税额占其5%
+        turnoverBarSup.style.width = '40%';
+        taxBarSup.style.width = '5%'; // 在父级40%宽度下，子级5%依然代表整体的5%比例关系
+        barValSup.textContent = "应纳税额 600元 (占5%)";
+        barValSup.style.color = "var(--accent-color)";
+      });
+
+      // 点击百分比徽章，弹出“税率”概念解释
+      badges.forEach(badge => {
+        badge.addEventListener('click', () => {
+          // 移除呼吸动画，表示已被探索
+          badges.forEach(b => b.classList.remove('highlight-pulse'));
+          clickHint.style.display = 'none';
+          
+          // 显示概念卡片
+          conceptCard.style.display = 'block';
+          
+          // 滚动微调，确保投影屏幕能看清
+          conceptCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

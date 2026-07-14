@@ -1,0 +1,104 @@
+{
+  "task_id": "69edd332-4dca-4bb9-ba3a-b3bda8b69dde",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，如果把100元钱存入银行，年利率5%，复利计算，x年后本息和y是多少？如果服用一片药，体内药量每小时衰减一半，x小时后剩余药量y又该怎么表示？你觉得这两个变化过程和一次函数、二次函数一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "我们把刚才的两个式子写成更一般的形式 y = k * b^x。抛开前面的系数k，只关心 b^x 这一部分。如果b取1，或者取-2，它还能反映‘稳定增长’或‘持续衰减’的变化规律吗？试着取x=1/2, -1这些值具体算一算，你发现了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们聚焦研究最纯粹的形式 y=2^x 和 y=(1/2)^x。请大家拿出坐标纸，用描点法亲手画一画它们的图像，看谁画得又准又快。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "大家把自己画的 y=2^x 和 y=(1/2)^x 的图像对比着看看。它们俩有没有什么‘血缘关系’，比如都经过某个固定的点？再比比看，它们走势上最大的不同在哪？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "根据图像，当底数a大于1时，y值随x增大怎么变？当底数a在0到1之间呢？你能试着不依赖图像，用一句像数学定理一样严谨的话，把这两种情况下的变化规律都说清楚吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "掌握了单调性规律，咱们来用用它。不画图，怎么判断 2^1.5 和 2^1.7 谁大谁小？那如果换成底数是1/2，已知 (1/2)^x > (1/2)^2，你觉得 x 和 2 又该是什么关系呢？这里要小心什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "100元存1年、2年、3年后，本息一共是多少？能试着用一个含x的式子表示吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "2的多少次方等于8？这个‘多少次方’就是我们要求的什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "在y=2x+1里，x和y的角色能交换吗？交换后，x怎么用y表示？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "log_2(x)要有意义，x必须满足什么条件？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果log_2 5 = a，那么2^a等于多少？2^(a+1)呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数轴上两点间的距离 - 课堂交互可视化</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #e1e8ed;
+        }
+        /* 头部标题与问题引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .question-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #3b82f6;
+            padding: 12px 16px;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #334155;
+        }
+        .question-box em {
+            font-style: normal;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* 可视化核心区域 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 动态公式显示区 */
+        .formula-container {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        .formula-title {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .formula-line {
+            font-size: 20px;
+            font-family: "Cambria", "Georgia", serif;
+            color: #1e293b;
+        }
+        .formula-line span {
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .p-val { background-color: #dbeafe; color: #1d4ed8; }
+        .q-val { background-color: #dcfce7; color: #15803d; }
+        .dist-val { background-color: #fef3c7; color: #b45309; }
+        .algebraic-expr { 
+            color: #e11d48; 
+            border-bottom: 2px solid #e11d48;
+            font-weight: bold;
+        }
+
+        /* SVG 数轴样式 */
+        .axis-svg {
+            width: 100%;
+            height: 150px;
+            overflow: visible;
+        }
+        .axis-line {
+            stroke: #64748b;
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+        .tick-line {
+            stroke: #94a3b8;
+            stroke-width: 2;
+        }
+        .tick-text {
+            font-size: 12px;
+            fill: #64748b;
+            text-anchor: middle;
+            font-family: sans-serif;
+        }
+        /* 拖拽点样式 */
+        .draggable-point {
+            cursor: grab;
+            transition: transform 0.1s ease;
+        }
+        .draggable-point:active {
+            cursor: grabbing;
+        }
+        .point-p { fill: #3b82f6; }
+        .point-q { fill: #22c55e; }
+        .point-label {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: "Cambria", "Georgia", serif;
+            text-anchor: middle;
+        }
+        .label-p { fill: #1d4ed8; }
+        .label-q { fill: #15803d; }
+        
+        /* 距离指示线 */
+        .distance-bracket {
+            stroke: #f59e0b;
+            stroke-width: 3;
+            fill: none;
+        }
+        .distance-text {
+            fill: #d97706;
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+
+        /* 底部控制与提示 */
+        .footer-tips {
+            background-color: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 8px;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 15px;
+            color: #be123c;
+            font-weight: bold;
+        }
+        
+        /* 预设场景按钮 */
+        .preset-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+        .btn-active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .btn-active:hover {
+            background-color: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部：问题引导 -->
+    <div class="header">
+        <h1>数轴上两点间的距离</h1>
+        <div class="question-box">
+            已知数轴上两点 <em>p</em> 和 <em>q</em>，且满足 <strong>p < q</strong>（即 p 在 q 的左侧）。<br>
+            请拖动下方的点，观察数值变化，思考：<strong>这两个点之间的距离，应该如何用含有 p 和 q 的代数式来表示？</strong>
+        </div>
+    </div>
+
+    <!-- 核心可视化区域 -->
+    <div class="visualization-area">
+        <!-- 动态公式 -->
+        <div class="formula-container">
+            <div class="formula-title">几何关系与数值计算</div>
+            <div class="formula-line">
+                两点间距离 = 右边坐标 - 左边坐标 = 
+                <span class="q-val" id="formula-q">1.0</span> - 
+                <span class="p-val" id="formula-p">-1.0</span> = 
+                <span class="dist-val" id="formula-dist">2.0</span>
+            </div>
+        </div>
+
+        <!-- 预设快速切换 -->
+        <div class="preset-container">
+            <button class="btn" id="btn-preset-1">经典: p = -1, q = 1</button>
+            <button class="btn" id="btn-preset-2">全为正: p = 1.5, q = 4.5</button>
+            <button class="btn" id="btn-preset-3">全为负: p = -4.5, q = -1.5</button>
+            <button class="btn" id="btn-preset-4">跨原点: p = -3, q = 2</button>
+        </div>
+
+        <!-- 数轴 SVG -->
+        <svg class="axis-svg" id="axisSvg" viewBox="0 0 700 150">
+            <!-- 定义箭头 -->
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+                </marker>
+            </defs>
+
+            <!-- 数轴主线 -->
+            <line x1="50" y1="80" x2="650" y2="80" class="axis-line" marker-end="url(#arrow)" />
+            <text x="655" y="100" font-size="14" fill="#64748b" font-weight="bold">x</text>
+
+            <!-- 刻度线与数字 (范围 -5 到 5) -->
+            <!-- JS 动态生成刻度，此处占位 -->
+            <g id="ticks-group"></g>
+
+            <!-- 距离指示线/括号 -->
+            <path id="distance-bracket" class="distance-bracket" d="M 200,60 L 200,50 L 400,50 L 400,60" />
+            <text id="distance-text" class="distance-text" x="300" y="42">距离 = 2.00</text>
+
+            <!-- 可拖动点 p (蓝色) -->
+            <g id="grp-p" class="draggable-point">
+                <circle cx="200" cy="80" r="10" class="point-p" />
+                <circle cx="200" cy="80" r="18" fill="transparent" /> <!-- 扩大热区 -->
+                <text id="lbl-p" class="point-label label-p" x="200" y="112">p</text>
+            </g>
+
+            <!-- 可拖动点 q (绿色) -->
+            <g id="grp-q" class="draggable-point">
+                <circle cx="400" cy="80" r="10" class="point-q" />
+                <circle cx="400" cy="80" r="18" fill="transparent" /> <!-- 扩大热区 -->
+                <text id="lbl-q" class="point-label label-q" x="400" y="112">q</text>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 底部总结提示 -->
+    <div class="footer-tips">
+        💡 观察发现：无论 p 和 q 怎么移动，两点间的距离永远是右边的值减去左边的值，即代数式 <span class="algebraic-expr">q - p</span> ！
+    </div>
+</div>
+
+<script>
+    // 常量定义
+    const SVG_WIDTH = 700;
+    const AXIS_LEFT = 80;
+    const AXIS_RIGHT = 620;
+    const AXIS_Y = 80;
+    const VAL_MIN = -5;
+    const VAL_MAX = 5;
+    const MIN_DISTANCE = 0.5; // 限制 p 和 q 的最小间距，防止重合
+
+    // 状态变量 (初始值 p = -1, q = 1)
+    let valP = -1.0;
+    let valQ = 1.0;
+
+    // 获取 DOM 元素
+    const svg = document.getElementById('axisSvg');
+    const ticksGroup = document.getElementById('ticks-group');
+    const grpP = document.getElementById('grp-p');
+    const grpQ = document.getElementById('grp-q');
+    const lblP = document.getElementById('lbl-p');
+    const lblQ = document.getElementById('lbl-q');
+    const distBracket = document.getElementById('distance-bracket');
+    const distText = document.getElementById('distance-text');
+    
+    const formulaP = document.getElementById('formula-p');
+    const formulaQ = document.getElementById('formula-q');
+    const formulaDist = document.getElementById('formula-dist');
+
+    // 预设按钮
+    const btn1 = document.getElementById('btn-preset-1');
+    const btn2 = document.getElementById('btn-preset-2');
+    const btn3 = document.getElementById('btn-preset-3');
+    const btn4 = document.getElementById('btn-preset-4');
+
+    // 坐标转换：数值 -> SVG X 坐标
+    function valToX(val) {
+        const ratio = (val - VAL_MIN) / (VAL_MAX - VAL_MIN);
+        return AXIS_LEFT + ratio * (AXIS_RIGHT - AXIS_LEFT);
+    }
+
+    // 坐标转换：SVG X 坐标 -> 数值
+    function xToVal(x) {
+        const ratio = (x - AXIS_LEFT) / (AXIS_RIGHT - AXIS_LEFT);
+        const val = VAL_MIN + ratio * (VAL_MAX - VAL_MIN);
+        return Math.max(VAL_MIN, Math.min(VAL_MAX, val));
+    }
+
+    // 初始化数轴刻度
+    function drawTicks() {
+        ticksGroup.innerHTML = '';
+        for (let v = VAL_MIN; v <= VAL_MAX; v += 1) {
+            const x = valToX(v);
+            // 刻度线
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x);
+            line.setAttribute('y1', AXIS_Y - 5);
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', AXIS_Y + 5);
+            line.setAttribute('class', 'tick-line');
+            
+            // 刻度值
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', AXIS_Y + 22);
+            text.setAttribute('class', 'tick-text');
+            text.textContent = v;
+
+            ticksGroup.appendChild(line);
+            ticksGroup.appendChild(text);
+        }
+    }
+
+    // 更新视图
+    function updateView() {
+        const xP = valToX(valP);
+        const xQ = valToX(valQ);
+
+        // 更新点 p 位置与标签
+        grpP.setAttribute('transform', `translate(${xP - 200}, 0)`); // 基于初始200偏移
+        lblP.textContent = `p (${valP.toFixed(1)})`;
+
+        // 更新点 q 位置与标签
+        grpQ.setAttribute('transform', `translate(${xQ - 400}, 0)`); // 基于初始400偏移
+        lblQ.textContent = `q (${valQ.toFixed(1)})`;
+
+        // 更新距离括号与文本
+        const bracketY = 50;
+        const bracketHeight = 10;
+        distBracket.setAttribute('d', `M ${xP},${bracketY + bracketHeight} L ${xP},${bracketY} L ${xQ},${bracketY} L ${xQ},${bracketY + bracketHeight}`);
+        
+        const midX = (xP + xQ) / 2;
+        distText.setAttribute('x', midX);
+        const distance = valQ - valP;
+        distText.textContent = `距离 = ${distance.toFixed(1)}`;
+
+        // 更新公式面板
+        formulaP.textContent = valP.toFixed(1);
+        formulaQ.textContent = valQ.toFixed(1);
+        formulaDist.textContent = distance.toFixed(1);
+
+        // 激活对应的预设高亮
+        updatePresetButtonHighlight();
+    }
+
+    // 拖拽交互逻辑
+    let activeDragNode = null;
+
+    function getEventX(e) {
+        if (e.touches && e.touches.length) {
+            return e.touches[0].clientX;
+        }
+        return e.clientX;
+    }
+
+    function handleStart(node, e) {
+        activeDragNode = node;
+        e.preventDefault();
+    }
+
+    function handleMove(e) {
+        if (!activeDragNode) return;
+
+        const rect = svg.getBoundingClientRect();
+        const clientX = getEventX(e);
+        // 转换为 SVG 内部坐标系
+        const svgX = ((clientX - rect.left) / rect.width) * SVG_WIDTH;
+        let val = xToVal(svgX);
+
+        // 精度保留一位小数，使拖拽更平滑且数值整洁
+        val = Math.round(val * 10) / 10;
+
+        if (activeDragNode === 'p') {
+            // p 不能超过 q - 最小间距
+            if (val > valQ - MIN_DISTANCE) {
+                val = valQ - MIN_DISTANCE;
+            }
+            valP = val;
+        } else if (activeDragNode === 'q') {
+            // q 不能小于 p + 最小间距
+            if (val < valP + MIN_DISTANCE) {
+                val = valP + MIN_DISTANCE;
+            }
+            valQ = val;
+        }
+
+        updateView();
+    }
+
+    function handleEnd() {
+        activeDragNode = null;
+    }
+
+    // 绑定拖拽事件
+    grpP.addEventListener('mousedown', (e) => handleStart('p', e));
+    grpP.addEventListener('touchstart', (e) => handleStart('p', e));
+
+    grpQ.addEventListener('mousedown', (e) => handleStart('q', e));
+    grpQ.addEventListener('touchstart', (e) => handleStart('q', e));
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('touchmove', handleMove, { passive: false });
+
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchend', handleEnd);
+
+    // 预设切换逻辑
+    function setPreset(p, q) {
+        valP = p;
+        valQ = q;
+        updateView();
+    }
+
+    function updatePresetButtonHighlight() {
+        btn1.classList.remove('btn-active');
+        btn2.classList.remove('btn-active');
+        btn3.classList.remove('btn-active');
+        btn4.classList.remove('btn-active');
+
+        if (valP === -1.0 && valQ === 1.0) btn1.classList.add('btn-active');
+        else if (valP === 1.5 && valQ === 4.5) btn2.classList.add('btn-active');
+        else if (valP === -4.5 && valQ === -1.5) btn3.classList.add('btn-active');
+        else if (valP === -3.0 && valQ === 2.0) btn4.classList.add('btn-active');
+    }
+
+    btn1.addEventListener('click', () => setPreset(-1.0, 1.0));
+    btn2.addEventListener('click', () => setPreset(1.5, 4.5));
+    btn3.addEventListener('click', () => setPreset(-4.5, -1.5));
+    btn4.addEventListener('click', () => setPreset(-3.0, 2.0));
+
+    // 初始化运行
+    drawTicks();
+    setPreset(-1.0, 1.0); // 默认经典场景
+</script>
+
+</body>
+</html>

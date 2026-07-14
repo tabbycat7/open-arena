@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S1-2-2 协议背后的代价</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #2c3e50;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h2 { margin-bottom: 10px; }
+        .balance-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+        }
+        svg { width: 100%; height: 100%; }
+        .card {
+            fill: white;
+            stroke: #bdc3c7;
+            stroke-width: 2;
+            rx: 10;
+        }
+        .text-label { font-size: 14px; font-weight: bold; pointer-events: none; }
+        .hidden-text { opacity: 0; transition: opacity 0.5s; }
+        .visible { opacity: 1; }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #357abd; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>协议背后的代价：天平的秘密</h2>
+    <div class="balance-container">
+        <svg viewBox="0 0 600 300">
+            <!-- 天平支架 -->
+            <line x1="300" y1="250" x2="300" y2="50" stroke="#7f8c8d" stroke-width="8" />
+            <line x1="100" y1="150" x2="500" y2="150" stroke="#7f8c8d" stroke-width="6" transform="rotate(-15 300 150)" id="beam" />
+            
+            <!-- 左盘 -->
+            <rect x="80" y="150" width="120" height="80" class="card" id="left-card" />
+            <text x="140" y="195" text-anchor="middle" class="text-label">免费换脸游戏</text>
+            <text x="140" y="215" text-anchor="middle" class="text-label hidden-text" id="left-desc">(类比：免费玩玩具)</text>
+            
+            <!-- 右盘 -->
+            <rect x="400" y="150" width="120" height="80" class="card" id="right-card" />
+            <text x="460" y="195" text-anchor="middle" class="text-label">人脸照片所有权</text>
+            <text x="460" y="215" text-anchor="middle" class="text-label hidden-text" id="right-desc">(类比：永久送出玩具)</text>
+        </svg>
+    </div>
+    <button id="reveal-btn">查看本质</button>
+</div>
+
+<script>
+    const btn = document.getElementById('reveal-btn');
+    const beam = document.getElementById('beam');
+    const leftDesc = document.getElementById('left-desc');
+    const rightDesc = document.getElementById('right-desc');
+    let revealed = false;
+
+    btn.addEventListener('click', function() {
+        if (!revealed) {
+            // 动画效果：天平回正
+            beam.style.transition = "transform 1s ease-out";
+            beam.style.transform = "rotate(0deg)";
+            
+            // 显示隐藏文字
+            leftDesc.classList.add('visible');
+            rightDesc.classList.add('visible');
+            
+            btn.textContent = "重置观察";
+            revealed = true;
+        } else {
+            // 重置
+            beam.style.transform = "rotate(-15deg)";
+            leftDesc.classList.remove('visible');
+            rightDesc.classList.remove('visible');
+            
+            btn.textContent = "查看本质";
+            revealed = false;
+        }
+    });
+</script>
+
+</body>
+</html>

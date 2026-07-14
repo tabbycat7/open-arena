@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S3-2-1 模糊的“一会儿”</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            position: relative;
+        }
+        h2 { color: #333; margin: 20px 0; }
+        #clock-box { position: relative; width: 200px; height: 200px; }
+        .student { position: absolute; width: 80px; text-align: center; font-size: 14px; }
+        .bubble {
+            background: #ffeb3b;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: bold;
+            border: 2px solid #fbc02d;
+        }
+        #btn-start {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #btn-start:hover { background: #1976d2; }
+        #result-text {
+            font-size: 24px;
+            color: #d32f2f;
+            font-weight: bold;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>“一会儿”到底是多久？</h2>
+    
+    <div id="clock-box">
+        <svg viewBox="0 0 100 100" width="200" height="200">
+            <circle cx="50" cy="50" r="45" fill="#eee" stroke="#333" stroke-width="2"/>
+            <line id="hand" x1="50" y1="50" x2="50" y2="20" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+    </div>
+
+    <div id="students">
+        <div class="student" style="top: 20%; left: 10%;">
+            <div id="b1" class="bubble">30秒！</div>
+            <div>小明</div>
+        </div>
+        <div class="student" style="top: 20%; right: 10%;">
+            <div id="b2" class="bubble">5分钟！</div>
+            <div>小红</div>
+        </div>
+        <div class="student" style="bottom: 10%; left: 40%;">
+            <div id="b3" class="bubble">半小时！</div>
+            <div>小刚</div>
+        </div>
+    </div>
+
+    <button id="btn-start">点击：休息一会儿</button>
+    <div id="result-text"></div>
+</div>
+
+<script>
+    const btn = document.getElementById('btn-start');
+    const hand = document.getElementById('hand');
+    const bubbles = [document.getElementById('b1'), document.getElementById('b2'), document.getElementById('b3')];
+    const result = document.getElementById('result-text');
+    let angle = 0;
+    let spinning = false;
+
+    function rotateClock() {
+        if (!spinning) return;
+        angle += 20;
+        hand.setAttribute('transform', `rotate(${angle} 50 50)`);
+        requestAnimationFrame(rotateClock);
+    }
+
+    btn.addEventListener('click', () => {
+        if (spinning) return;
+        
+        // 重置
+        spinning = true;
+        result.innerText = "";
+        bubbles.forEach(b => b.style.opacity = 0);
+        
+        // 动画
+        rotateClock();
+        
+        setTimeout(() => {
+            spinning = false;
+            bubbles.forEach(b => b.style.opacity = 1);
+            result.innerText = "每个人理解都不同，“一会儿”是一个模糊的词！";
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>

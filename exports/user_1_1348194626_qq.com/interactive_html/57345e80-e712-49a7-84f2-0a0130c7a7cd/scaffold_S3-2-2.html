@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>指令明确化教学工具</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --bg: #f8fafc;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #instruction-box {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 3px dashed #cbd5e1;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .control-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 24px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #e2e8f0;
+        }
+        #confirm-btn {
+            background: var(--primary);
+            color: white;
+            margin-top: 20px;
+        }
+        #timer {
+            margin-top: 20px;
+            font-size: 48px;
+            font-family: monospace;
+            color: var(--success);
+            display: none;
+        }
+        #message {
+            margin-top: 15px;
+            color: var(--success);
+            font-weight: bold;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="instruction-box">休息一会儿</div>
+    
+    <div class="control-panel">
+        <span>休息</span>
+        <button id="minus">-</button>
+        <span id="num">3</span>
+        <button id="plus">+</button>
+        <span>分钟</span>
+    </div>
+    
+    <button id="confirm-btn">确定转换</button>
+    
+    <div id="timer">03:00</div>
+    <div id="message">用具体的数字代替模糊词，指令就变得非常明确啦！</div>
+</div>
+
+<script>
+    const instructionBox = document.getElementById('instruction-box');
+    const numDisplay = document.getElementById('num');
+    const minusBtn = document.getElementById('minus');
+    const plusBtn = document.getElementById('plus');
+    const confirmBtn = document.getElementById('confirm-btn');
+    const timerDisplay = document.getElementById('timer');
+    const message = document.getElementById('message');
+
+    let minutes = 3;
+    let timerInterval = null;
+
+    minusBtn.addEventListener('click', () => {
+        if (minutes > 1) {
+            minutes--;
+            numDisplay.textContent = minutes;
+        }
+    });
+
+    plusBtn.addEventListener('click', () => {
+        if (minutes < 60) {
+            minutes++;
+            numDisplay.textContent = minutes;
+        }
+    });
+
+    confirmBtn.addEventListener('click', () => {
+        // 更新指令样式
+        instructionBox.textContent = `休息 ${minutes} 分钟`;
+        instructionBox.style.borderColor = '#16a34a';
+        instructionBox.style.color = '#16a34a';
+        instructionBox.style.backgroundColor = '#f0fdf4';
+        
+        // 显示提示和计时器
+        message.style.opacity = '1';
+        timerDisplay.style.display = 'block';
+        
+        // 简单的倒计时逻辑
+        clearInterval(timerInterval);
+        let totalSeconds = minutes * 60;
+        
+        timerInterval = setInterval(() => {
+            totalSeconds--;
+            let m = Math.floor(totalSeconds / 60);
+            let s = totalSeconds % 60;
+            timerDisplay.textContent = 
+                (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+            
+            if (totalSeconds <= 0) clearInterval(timerInterval);
+        }, 1000);
+    });
+</script>
+
+</body>
+</html>

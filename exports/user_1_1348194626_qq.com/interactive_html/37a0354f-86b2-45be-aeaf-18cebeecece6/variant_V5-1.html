@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个税起征点边界辨析可视化教学</title>
+    <style>
+        /* 基础样式与4:3比例容器 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .classroom-container {
+            width: 800px;
+            height: 600px;
+            background-color: #ffffff;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #e1e8ed;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #1a365d;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #627d98;
+        }
+
+        /* 主可视化区域 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* SVG 样式 */
+        svg {
+            width: 100%;
+            height: 260px;
+            user-select: none;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #334e68;
+            width: 150px;
+        }
+
+        .salary-slider {
+            flex-grow: 1;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #cbd5e1;
+            cursor: pointer;
+        }
+
+        .salary-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: background 0.1s;
+        }
+
+        .salary-slider::-webkit-slider-thumb:hover {
+            background: #1d4ed8;
+        }
+
+        /* 预设按钮 */
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            background-color: #e2e8f0;
+            color: #334e68;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .btn-active {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .btn-active:hover {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        /* 教学反馈与公式对比区 */
+        .feedback-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .card {
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-formula {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .card-correct {
+            background-color: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .highlight-num {
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* 动画效果 */
+        .flow-active {
+            stroke-dasharray: 8;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -16;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="classroom-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>个税起征点边界辨析</h1>
+        <p>探究：当工资在起征点临界值（5000元）上下变化时，个税公式如何适用？</p>
+    </div>
+
+    <!-- 可视化数轴与闸门 -->
+    <div class="visualization-area">
+        <svg id="visual-svg" viewBox="0 0 760 260">
+            <!-- 背景网格与数轴 -->
+            <line x1="50" y1="150" x2="710" y2="150" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+            
+            <!-- 刻度线与标签 (0 到 8000) -->
+            <!-- 0 -->
+            <line x1="50" y1="150" x2="50" y2="160" stroke="#94a3b8" stroke-width="2" />
+            <text x="50" y="180" font-size="12" fill="#64748b" text-anchor="middle">0元</text>
+            
+            <!-- 3000 -->
+            <line x1="297.5" y1="150" x2="297.5" y2="158" stroke="#cbd5e1" stroke-width="2" />
+            <text x="297.5" y="175" font-size="11" fill="#94a3b8" text-anchor="middle">3000</text>
+
+            <!-- 4000 -->
+            <line x1="380" y1="150" x2="380" y2="158" stroke="#cbd5e1" stroke-width="2" />
+            <text x="380" y="175" font-size="11" fill="#94a3b8" text-anchor="middle">4000</text>
+
+            <!-- 5000 起征点 -->
+            <line x1="462.5" y1="140" x2="462.5" y2="165" stroke="#ef4444" stroke-width="3" />
+            <text x="462.5" y="185" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">5000元 (起征点)</text>
+
+            <!-- 6000 -->
+            <line x1="545" y1="150" x2="545" y2="158" stroke="#cbd5e1" stroke-width="2" />
+            <text x="545" y="175" font-size="11" fill="#94a3b8" text-anchor="middle">6000</text>
+
+            <!-- 7000 -->
+            <line x1="627.5" y1="150" x2="627.5" y2="158" stroke="#cbd5e1" stroke-width="2" />
+            <text x="627.5" y="175" font-size="11" fill="#94a3b8" text-anchor="middle">7000</text>
+
+            <!-- 8000 -->
+            <line x1="710" y1="150" x2="710" y2="160" stroke="#94a3b8" stroke-width="2" />
+            <text x="710" y="180" font-size="12" fill="#64748b" text-anchor="middle">8000元</text>
+
+            <!-- 区间填充：免税区 (0 - 5000) -->
+            <rect x="50" y="142" width="412.5" height="16" fill="#34d399" fill-opacity="0.15" rx="3" />
+            <text x="256" y="135" font-size="12" fill="#059669" text-anchor="middle">免税区间 (不计税)</text>
+
+            <!-- 动态填充：应纳税所得额区间 (5000 - 当前工资) -->
+            <rect id="taxable-bar" x="462.5" y="142" width="0" height="16" fill="#f97316" fill-opacity="0.3" rx="3" />
+            <text id="taxable-bar-text" x="586" y="135" font-size="12" font-weight="bold" fill="#ea580c" text-anchor="middle" display="none">应纳税部分</text>
+
+            <!-- 闸门图形 (在5000元处) -->
+            <g id="gate-group" transform="translate(462.5, 150)">
+                <!-- 闸门立柱 -->
+                <circle cx="0" cy="0" r="6" fill="#475569" />
+                <!-- 闸门杆 -->
+                <line id="gate-bar" x1="0" y1="0" x2="0" y2="-60" stroke="#ef4444" stroke-width="6" stroke-linecap="round" transform="rotate(0)" style="transition: transform 0.5s ease;" />
+                <!-- 闸门状态文字 -->
+                <text id="gate-status" x="15" y="-45" font-size="12" font-weight="bold" fill="#ef4444">闸门紧闭 (不纳税)</text>
+            </g>
+
+            <!-- 动态工资指针 -->
+            <g id="pointer-group" transform="translate(446, 150)">
+                <!-- 指针线 -->
+                <line x1="0" y1="-10" x2="0" y2="40" stroke="#2563eb" stroke-width="3" stroke-dasharray="2 2" />
+                <!-- 指针滑块外观 -->
+                <polygon points="0,0 -10,-15 10,-15" fill="#2563eb" />
+                <rect x="-55" y="-42" width="110" height="24" rx="4" fill="#2563eb" />
+                <text id="pointer-text" x="0" y="-26" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">工资: 4800元</text>
+            </g>
+
+            <!-- 右侧纳税流向示意 -->
+            <g id="tax-flow-group" transform="translate(600, 40)" display="none">
+                <rect x="0" y="0" width="120" height="50" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+                <text x="60" y="22" font-size="12" font-weight="bold" fill="#b45309" text-anchor="middle">税源流向</text>
+                <text id="tax-flow-calc" x="60" y="40" font-size="11" fill="#b45309" text-anchor="middle">超额部分 × 3%</text>
+                <!-- 连接线 -->
+                <path id="flow-line" d="M -50,110 Q 10,110 60,55" fill="none" stroke="#f97316" stroke-width="3" class="flow-active" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span class="slider-label">拖动调整月工资:</span>
+            <input type="range" id="salary-range" class="salary-slider" min="3000" max="8000" step="100" value="4800">
+            <span class="highlight-num" id="salary-display" style="color: #2563eb; font-size: 20px; width: 80px; text-align: right;">4800元</span>
+        </div>
+        
+        <div class="preset-buttons">
+            <button class="btn btn-active" id="btn-4800">情境 A：4800元 (低于起征点)</button>
+            <button class="btn" id="btn-5000">情境 B：5000元 (刚好起征点)</button>
+            <button class="btn" id="btn-6500">情境 C：6500元 (高于起征点)</button>
+        </div>
+    </div>
+
+    <!-- 教学反馈与公式对比 -->
+    <div class="feedback-panel">
+        <!-- 错误套用公式情况 -->
+        <div class="card card-formula">
+            <div class="card-title">
+                ❌ 机械套用公式 (工资 - 5000) × 3%
+            </div>
+            <div id="wrong-calc-text">
+                当工资为 4800 元时：<br>
+                (4800 - 5000) × 3% = <span class="highlight-num">-6 元</span><br>
+                <strong>思考：</strong> 难道国家还要倒贴给你 6 元吗？这显然不符合实际！
+            </div>
+        </div>
+
+        <!-- 正确的个税逻辑 -->
+        <div class="card card-correct">
+            <div class="card-title">
+                ✅ 正确的个税起征点逻辑
+            </div>
+            <div id="correct-calc-text">
+                起征点是<strong>纳税的门槛</strong>。<br>
+                • 只有<strong>超过</strong> 5000 元的部分才需要纳税。<br>
+                • 未超过 5000 元，计税基数直接为 <span class="highlight-num">0 元</span>。<br>
+                <strong>实际应纳税额：</strong> <span class="highlight-num" style="font-size: 18px;">0 元</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const salaryRange = document.getElementById('salary-range');
+    const salaryDisplay = document.getElementById('salary-display');
+    const pointerGroup = document.getElementById('pointer-group');
+    const pointerText = document.getElementById('pointer-text');
+    const taxableBar = document.getElementById('taxable-bar');
+    const taxableBarText = document.getElementById('taxable-bar-text');
+    const gateBar = document.getElementById('gate-bar');
+    const gateStatus = document.getElementById('gate-status');
+    const taxFlowGroup = document.getElementById('tax-flow-group');
+    const flowLine = document.getElementById('flow-line');
+    
+    const wrongCalcText = document.getElementById('wrong-calc-text');
+    const correctCalcText = document.getElementById('correct-calc-text');
+
+    const btn4800 = document.getElementById('btn-4800');
+    const btn5000 = document.getElementById('btn-5000');
+    const btn6500 = document.getElementById('btn-6500');
+
+    // 数轴物理参数
+    // 0元对应 X=50, 8000元对应 X=710. 
+    // 比例尺: 1元 = 660 / 8000 = 0.0825 像素
+    const xMin = 50;
+    const xMax = 710;
+    const valMin = 0;
+    const valMax = 8000;
+    const threshold = 5000;
+    const xThreshold = 462.5; // 50 + 5000 * 0.0825
+
+    function valToX(val) {
+        return xMin + (val / valMax) * (xMax - xMin);
+    }
+
+    // 更新可视化状态
+    function updateVisualization(salary) {
+        // 1. 更新滑块和数值显示
+        salaryRange.value = salary;
+        salaryDisplay.textContent = salary + '元';
+
+        // 2. 更新数轴指针位置
+        const xPos = valToX(salary);
+        pointerGroup.setAttribute('transform', `translate(${xPos}, 150)`);
+        pointerText.textContent = `工资: ${salary}元`;
+
+        // 3. 根据是否超过起征点更新闸门和计算逻辑
+        if (salary <= threshold) {
+            // 闸门关闭
+            gateBar.setAttribute('transform', 'rotate(0)');
+            gateBar.setAttribute('stroke', '#ef4444');
+            gateStatus.textContent = '闸门紧闭 (不纳税)';
+            gateStatus.setAttribute('fill', '#ef4444');
+
+            // 隐藏超额橙色条和流向动画
+            taxableBar.setAttribute('width', '0');
+            taxableBarText.setAttribute('display', 'none');
+            taxFlowGroup.setAttribute('display', 'none');
+
+            // 计算对比
+            const wrongResult = ((salary - threshold) * 0.03).toFixed(2);
+            wrongCalcText.innerHTML = `
+                当工资为 <span class="highlight-num">${salary}</span> 元时：<br>
+                公式：(${salary} - 5000) × 3% = <span class="highlight-num" style="color:#ef4444;">${wrongResult} 元</span><br>
+                <strong style="color:#b91c1c;">逻辑漏洞：</strong> 算出了负数税款！在数学公式中，减法可能产生负数，但现实中纳税额最低为 0。
+            `;
+
+            correctCalcText.innerHTML = `
+                起征点是<strong>纳税的门槛</strong>。<br>
+                • 当前工资 <span class="highlight-num">${salary}元</span> ≤ 起征点 5000元。<br>
+                • 计税基数（应纳税所得额）直接归零，即 <span class="highlight-num">0 元</span>。<br>
+                <strong>实际应纳税额：</strong> <span class="highlight-num" style="font-size: 18px; color:#15803d;">0 元</span>
+            `;
+        } else {
+            // 闸门开启
+            gateBar.setAttribute('transform', 'rotate(-60)');
+            gateBar.setAttribute('stroke', '#10b981');
+            gateStatus.textContent = '闸门开启 (超额纳税)';
+            gateStatus.setAttribute('fill', '#10b981');
+
+            // 显示超额橙色条
+            const taxableWidth = xPos - xThreshold;
+            taxableBar.setAttribute('width', taxableWidth);
+            taxableBarText.setAttribute('display', 'block');
+            taxableBarText.setAttribute('x', xThreshold + taxableWidth / 2);
+            taxableBarText.textContent = `超出部分: ${salary - threshold}元`;
+
+            // 显示流向动画
+            taxFlowGroup.setAttribute('display', 'block');
+            // 动态调整流向线的起点
+            flowLine.setAttribute('d', `M ${xThreshold + taxableWidth/2 - 600},110 Q -50,110 60,55`);
+
+            // 计算对比
+            const wrongResult = ((salary - threshold) * 0.03).toFixed(2);
+            const correctTaxable = salary - threshold;
+            const correctTax = (correctTaxable * 0.03).toFixed(2);
+
+            wrongCalcText.innerHTML = `
+                当工资为 <span class="highlight-num">${salary}</span> 元时：<br>
+                公式：(${salary} - 5000) × 3% = <span class="highlight-num">${wrongResult} 元</span><br>
+                <strong>情况：</strong> 此时因为工资超过了起征点，直接套用公式在数值上是“碰巧正确”的。
+            `;
+
+            correctCalcText.innerHTML = `
+                起征点是<strong>纳税的门槛</strong>。<br>
+                • 只有超出 5000 元的部分才纳税：<br>
+                &nbsp;&nbsp;<span class="highlight-num">${salary} - 5000 = ${correctTaxable}元</span><br>
+                • 纳税额 = 超出部分 × 3%：<br>
+                &nbsp;&nbsp;<span class="highlight-num">${correctTaxable} × 3% = ${correctTax} 元</span><br>
+                <strong>实际应纳税额：</strong> <span class="highlight-num" style="font-size: 18px; color:#15803d;">${correctTax} 元</span>
+            `;
+        }
+    }
+
+    // 切换激活按钮样式
+    function setActiveButton(activeBtn) {
+        [btn4800, btn5000, btn6500].forEach(btn => {
+            btn.classList.remove('btn-active');
+        });
+        if (activeBtn) {
+            activeBtn.classList.add('btn-active');
+        }
+    }
+
+    // 绑定事件监听器
+    salaryRange.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        updateVisualization(val);
+        
+        // 取消按钮的高亮（如果不在预设值上）
+        if (val === 4800) {
+            setActiveButton(btn4800);
+        } else if (val === 5000) {
+            setActiveButton(btn5000);
+        } else if (val === 6500) {
+            setActiveButton(btn6500);
+        } else {
+            setActiveButton(null);
+        }
+    });
+
+    btn4800.addEventListener('click', () => {
+        updateVisualization(4800);
+        setActiveButton(btn4800);
+    });
+
+    btn5000.addEventListener('click', () => {
+        updateVisualization(5000);
+        setActiveButton(btn5000);
+    });
+
+    btn6500.addEventListener('click', () => {
+        updateVisualization(6500);
+        setActiveButton(btn6500);
+    });
+
+    // 初始化
+    updateVisualization(4800);
+</script>
+
+</body>
+</html>

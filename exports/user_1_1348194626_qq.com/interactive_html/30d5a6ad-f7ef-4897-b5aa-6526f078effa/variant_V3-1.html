@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>言行惯性模拟器</title>
+    <style>
+        :root { --bg: #f0f2f5; --panel: #ffffff; --danger: #ff4d4f; --safe: #52c41a; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: var(--panel); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .main { display: flex; flex: 1; gap: 20px; }
+        .box { flex: 1; border: 2px solid #ddd; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; align-items: center; position: relative; }
+        #canvas-container { width: 100%; height: 300px; background: #fafafa; position: relative; overflow: hidden; }
+        .btn { padding: 10px 20px; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn:hover { opacity: 0.8; }
+        .gauge { width: 200px; height: 100px; border-bottom: 5px solid #333; border-radius: 100px 100px 0 0; position: relative; margin-top: 40px; }
+        #pointer { width: 4px; height: 80px; background: #333; position: absolute; bottom: 0; left: 50%; transform-origin: bottom; transition: transform 0.5s ease; }
+        .label { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="header">
+        <h3>言行惯性模拟器：单机游戏中的“自由”？</h3>
+        <p style="font-size: 14px; color: #666;">点击下方按钮，观察你的行为如何影响“自我”</p>
+    </div>
+    <div class="main">
+        <div class="box">
+            <div id="canvas-container">
+                <svg id="svg-area" width="100%" height="100%"></svg>
+            </div>
+            <button id="act-btn" class="btn">输入恶意语言</button>
+            <p class="label">单机AI交互窗口</p>
+        </div>
+        <div class="box">
+            <div class="gauge">
+                <div id="pointer" style="transform: rotate(-90deg);"></div>
+            </div>
+            <div style="display:flex; justify-content: space-between; width: 200px; margin-top: 10px;">
+                <span style="color:var(--safe)">文明</span>
+                <span style="color:var(--danger)">暴躁</span>
+            </div>
+            <p class="label">现实社交文明度</p>
+            <p id="msg" style="font-size: 13px; color: #555; margin-top: 20px; text-align: center;"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const svg = document.getElementById('svg-area');
+    const btn = document.getElementById('act-btn');
+    const pointer = document.getElementById('pointer');
+    const msg = document.getElementById('msg');
+    let corruptionLevel = 0;
+
+    // 绘制虚拟人偶
+    const person = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    person.setAttribute("cx", "50%");
+    person.setAttribute("cy", "70%");
+    person.setAttribute("r", "40");
+    person.setAttribute("fill", "#1890ff");
+    svg.appendChild(person);
+
+    btn.addEventListener('click', () => {
+        if (corruptionLevel < 90) {
+            corruptionLevel += 10;
+            createParticle();
+            updateUI();
+        }
+    });
+
+    function createParticle() {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        p.setAttribute("r", "5");
+        p.setAttribute("fill", "red");
+        p.setAttribute("cx", Math.random() * 300);
+        p.setAttribute("cy", "0");
+        svg.appendChild(p);
+
+        // 动画：粒子落向人偶
+        let start = null;
+        function animate(timestamp) {
+            if (!start) start = timestamp;
+            let progress = (timestamp - start) / 1000;
+            p.setAttribute("cy", progress * 200);
+            if (progress < 1) requestAnimationFrame(animate);
+            else {
+                person.setAttribute("fill", `rgb(${100 + corruptionLevel * 1.5}, 144, 255)`);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function updateUI() {
+        // 指针旋转：-90度是左（文明），90度是右（暴躁）
+        const angle = -90 + (corruptionLevel * 1.8);
+        pointer.style.transform = `rotate(${angle}deg)`;
+        
+        if (corruptionLevel > 60) {
+            msg.innerText = "警告：负面情绪已开始固化，你的语言习惯正在被重塑。";
+        } else {
+            msg.innerText = "虽然未联网，但负面粒子正在侵蚀你的心理防线。";
+        }
+    }
+</script>
+
+</body>
+</html>

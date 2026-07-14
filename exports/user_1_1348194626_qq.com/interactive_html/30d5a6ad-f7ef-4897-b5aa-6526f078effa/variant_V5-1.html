@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>创作含金量分析仪</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .chart-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            margin: 30px 0;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+        }
+        .bar {
+            width: 80px;
+            height: 0;
+            transition: height 0.8s ease, background-color 0.5s;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            color: white;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+        .btn-container { text-align: center; }
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+        .label { margin-top: 10px; font-weight: bold; }
+        .desc { font-size: 14px; color: #666; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>创作含金量分析仪</h2>
+    <div class="chart-area">
+        <div class="bar-group">
+            <div id="bar-ming" class="bar" style="background-color: #bdc3c7;">0%</div>
+            <div class="label">小明 (辅助)</div>
+            <div class="desc">构思+润色</div>
+        </div>
+        <div class="bar-group">
+            <div id="bar-hong" class="bar" style="background-color: #bdc3c7;">0%</div>
+            <div class="label">小红 (替代)</div>
+            <div class="desc">AI生成</div>
+        </div>
+    </div>
+    <div class="btn-container">
+        <button id="analyzeBtn">拆解脑力劳动占比</button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('analyzeBtn');
+    const barMing = document.getElementById('bar-ming');
+    const barHong = document.getElementById('bar-hong');
+    let analyzed = false;
+
+    btn.addEventListener('click', function() {
+        if (!analyzed) {
+            // 小明：80% 个人劳动
+            barMing.style.height = '200px';
+            barMing.style.backgroundColor = '#3498db';
+            barMing.textContent = '80%';
+            
+            // 小红：5% 个人劳动
+            barHong.style.height = '12.5px';
+            barHong.style.backgroundColor = '#e74c3c';
+            barHong.textContent = '5%';
+            
+            btn.textContent = '重置分析';
+            analyzed = true;
+        } else {
+            barMing.style.height = '0';
+            barMing.style.backgroundColor = '#bdc3c7';
+            barMing.textContent = '0%';
+            
+            barHong.style.height = '0';
+            barHong.style.backgroundColor = '#bdc3c7';
+            barHong.textContent = '0%';
+            
+            btn.textContent = '拆解脑力劳动占比';
+            analyzed = false;
+        }
+    });
+</script>
+
+</body>
+</html>

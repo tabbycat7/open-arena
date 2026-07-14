@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>深夜淡季场景模拟</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --text-color: #e0e0e0;
+            --accent-color: #4ecca3;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: "Microsoft YaHei", sans-serif;
+            color: var(--text-color);
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            border: 2px solid #444;
+            position: relative;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        h2 { margin-bottom: 10px; }
+        .hint { font-size: 1.2rem; color: var(--accent-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>深夜淡季：场景模拟</h2>
+    <div id="canvas-container">
+        <svg id="scene" width="100%" height="100%" viewBox="0 0 800 600">
+            <!-- 月亮 -->
+            <circle cx="700" cy="100" r="40" fill="#fdfd96" />
+            <circle cx="720" cy="80" r="40" fill="#0f2027" />
+            
+            <!-- 餐厅地面 -->
+            <rect x="0" y="450" width="800" height="150" fill="#333" />
+            
+            <!-- 客人桌子 -->
+            <rect x="350" y="400" width="100" height="50" fill="#8b4513" />
+            <circle cx="400" cy="425" r="15" fill="#fff" />
+            
+            <!-- 机器人 -->
+            <g id="robot">
+                <rect x="100" y="400" width="40" height="60" rx="5" fill="#555" />
+                <circle cx="120" cy="390" r="15" fill="#777" />
+                <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="10s" repeatCount="indefinite" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="controls">
+        <p class="hint" id="status-text">深夜淡季，时间压力消失</p>
+        <button id="toggle-btn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">观察机器人状态</button>
+    </div>
+
+    <script>
+        const robot = document.getElementById('robot');
+        const btn = document.getElementById('toggle-btn');
+        const status = document.getElementById('status-text');
+
+        btn.addEventListener('click', () => {
+            // 切换动画速度，模拟“慢悠悠”
+            const currentDur = robot.querySelector('animateTransform').getAttribute('dur');
+            if (currentDur === '10s') {
+                robot.querySelector('animateTransform').setAttribute('dur', '20s');
+                status.textContent = "机器人正在慢悠悠地移动...";
+            } else {
+                robot.querySelector('animateTransform').setAttribute('dur', '10s');
+                status.textContent = "深夜淡季，时间压力消失";
+            }
+        });
+    </script>
+</body>
+</html>

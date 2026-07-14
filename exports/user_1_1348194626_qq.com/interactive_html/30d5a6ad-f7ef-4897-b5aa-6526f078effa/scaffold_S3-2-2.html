@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>信息真伪过滤器</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; --safe: #27ae60; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; overflow: hidden; }
+        #container { width: 800px; height: 600px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        h2 { text-align: center; color: var(--primary); margin-top: 20px; }
+        #news-card { width: 200px; height: 120px; background: #fff; border: 2px solid #3498db; border-radius: 8px; position: absolute; left: 50px; top: 250px; cursor: grab; display: flex; align-items: center; justify-content: center; padding: 10px; text-align: center; font-size: 14px; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s; }
+        #filter-zone { width: 200px; height: 400px; border: 4px dashed #bdc3c7; position: absolute; right: 150px; top: 100px; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 10px; }
+        .media-tag { padding: 8px 15px; background: #ecf0f1; border-radius: 20px; font-weight: bold; color: #7f8c8d; }
+        #status-light { width: 50px; height: 50px; border-radius: 50%; background: #bdc3c7; margin-top: 20px; }
+        #result-msg { position: absolute; bottom: 50px; width: 100%; text-align: center; font-weight: bold; color: var(--accent); opacity: 0; }
+        .dragging { cursor: grabbing !important; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>信息真伪过滤器：拖动新闻进行验证</h2>
+    
+    <div id="news-card">AI新闻：某地发现恐龙蛋化石并孵化！</div>
+    
+    <div id="filter-zone">
+        <div class="media-tag">新华网</div>
+        <div class="media-tag">人民网</div>
+        <div class="media-tag">央视新闻</div>
+        <div id="status-light"></div>
+        <p style="font-size: 12px; color: #95a5a6;">官方媒体检索网</p>
+    </div>
+
+    <div id="result-msg">多源验证失败：此消息为AI虚构，请勿传播！</div>
+</div>
+
+<script>
+    const card = document.getElementById('news-card');
+    const filter = document.getElementById('filter-zone');
+    const light = document.getElementById('status-light');
+    const msg = document.getElementById('result-msg');
+    
+    let isDragging = false;
+
+    card.addEventListener('mousedown', () => { isDragging = true; card.classList.add('dragging'); });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        card.style.left = (e.clientX - 450) + 'px';
+        card.style.top = (e.clientY - 300) + 'px';
+
+        const rect = card.getBoundingClientRect();
+        const filterRect = filter.getBoundingClientRect();
+
+        if (rect.left > filterRect.left - 50) {
+            light.style.background = '#e74c3c';
+            msg.style.opacity = '1';
+            card.style.transform = 'scale(0.5) rotate(20deg)';
+            card.style.opacity = '0.3';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        card.classList.remove('dragging');
+    });
+</script>
+
+</body>
+</html>

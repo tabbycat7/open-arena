@@ -1,0 +1,383 @@
+{
+  "task_id": "93834be8-a0f2-4fad-9739-903434b566d7",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看课本第3页的韩信点兵故事，如果现在不给你们任何工具，只能用纸和笔，我们要怎样在1000到1100人之间，一个不漏、也绝不重复地找出那个符合“除以3余2、除以5余4、除以7余6”的士兵人数呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才大家手动找数都觉得太累了，但课本第2页有一句话：“当前，计算机强大的算力使枚举算法变得简单可行。”为什么在我们人类看来最笨、最麻烦的“一个一个试”的办法，到了计算机面前，反而成了最简单、最合适的好方法呢？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "main_M2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "既然我们要请计算机帮忙，就得用它听得懂的数学语言。根据课本上“1500人，战死400到500人”以及“3人一排多2人、5人一排多4人、7人一排多6人”的描述，我们应该怎样把这些故事，写成计算机能直接计算的“数字范围”和“数学关系式”呢？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "main_M3.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "有了数学公式，我们要在动笔写代码前先画好设计图。请大家观察屏幕上的流程图，如果我们要让计算机从1000开始，一个一个数往下试，一直试到1100，并且在每次拿出一个数时都去判断那三个余数条件，这个“循环”和“分支判断”应该怎么在流程图中完美组合起来呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M4.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "现在我们进入编程软件。我们在写代码时，怎样组合那些绿色的“与”和“等于”积木，才能让计算机“同时”判断这三个余数条件，而不是只要满足其中一个就输出答案呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "main_M5.html",
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "我们的程序成功跑出了1049，但计算机其实在后台默默试了101次。如果我们利用“除以7余6”这个特征，把每次找数的“起点”和“跨步大小（步长）”改一改，怎样才能让计算机少干点活，用最少的运算次数找到答案呢？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "main_M6.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "学校图书馆的科幻书架上有一排书，索书号在300到310之间。老师让你找出其中一本“出版年份能被4整除，且价格尾数是8”的特定书籍。如果我们不用脑子乱猜，而是要设计一个“万无一失”的手动寻找计划，我们应该按照什么顺序来翻阅这些书？如果这排书有1000本，你的计划会遇到什么困难？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "variant_V1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "在1000到1010的数字区间中，如果韩信点兵的条件变成了“除以3余2，且除以6余1”，我们在依次检测完这11个数字后，会发现什么结果？这说明枚举算法在执行完毕后，除了能找到答案，还能帮我们确定什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "妈妈把手机的4位数字密码忘了（范围是0000-9999）。如果让你用手一个一个去试，和让电脑程序去自动“暴力尝试”，两者会有什么本质区别？在这个场景中，“密码位数增加”对人脑和电脑的挑战分别是什么？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "variant_V2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "既然计算机的算力这么强大，那为什么在“在一张合影中找出哪个是小明”或者“判断一幅画美不美”这样的任务中，我们通常不直接使用简单的“逐个枚举试错”算法，而是更依赖人脑的直觉？这说明枚举算法最适合解决什么样的问题？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "韩信点兵故事中，如果条件改为：“原有一支1500人的队伍，战斗中损失了500到600人，现在3人一排多1人，5人一排多2人”。请问如何将这个新情境转化为计算机能懂的“枚举范围”和“逻辑条件”？请写出具体的区间和数学表达式。",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "variant_V3-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果在程序中，我们将判断条件写成“x mod 3 = 2 或者是 x mod 5 = 4 或者是 x mod 7 = 6”（把“且”换成了“或”），这在数学模型上意味着什么？这会导致我们筛选出的士兵人数比真实人数多还是少？为什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V3-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "在算法流程图中，如果我们把“余数条件判断框”移到“循环条件判断框”的外面（即在整个循环结束之后再进行判断），这个流程图还能正确找出士兵人数吗？此时程序会发生什么可怕的后果？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V4-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "如果我们要设计一个“自动浇花系统”的流程图：从早上8点到晚上20点，每隔2个小时检测一次土壤湿度，若湿度低于30%就浇水。在这个流程图中，“循环变量的初始值”、“终值”、“步长”以及“分支判断条件”分别应该是什么？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V4-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "小明在图形化编程时，误将三个余数条件并列放入了三个独立的“如果...那么”积木中（没有嵌套，也没有使用“与”算子）。运行程序后，舞台上的角色疯狂说出了一大堆数字。请你帮他分析，为什么并列的“如果”无法起到“同时满足”的筛选作用？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V5-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "在图形化编程中，“在‘如果...那么’中嵌套另一个‘如果...那么’”这种结构，与“使用一个‘...且...’积木连接两个条件”在程序的实际执行逻辑上有什么异同？它们最终筛选出来的结果是一样的吗？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "variant_V5-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "在优化韩信点兵算法时，我们有三个余数规律可用：①除以3余2，②除以5余4，③除以7余6。为了让计算机运行效率最高（循环次数最少），我们应该选择哪一个规律来作为“步长”？为什么选择它比选择其他两个更好？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "variant_V6-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "假设我们要编写程序找出公元2000年到2100年之间的所有闰年（通常能被4整除的年份是闰年）。如果采用最基础的枚举，我们需要循环101次。请你设计一个优化方案，改变循环的“起点”和“步长”，让计算机只需要循环大约25次就能完成任务。",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "variant_V6-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-1",
+      "question_type": "scaffold",
+      "content": "刚才我们在11个数字（1000~1010）里手动找，已经觉得挺麻烦了。如果要把寻找范围扩大到1000到2000，我们手动检验一共要算多少个数字？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1-2",
+      "question_type": "scaffold",
+      "content": "如果人脑心算一个数需要5秒，算完这1000个数字要不吃不休算一个多小时。这种“规则完全一样、需要拼命重复”的工作，谁最拿手？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "scaffold_S1-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2-1",
+      "question_type": "scaffold",
+      "content": "仔细想想，我们刚才手动检验1001、1002这些数字时，做的事情是不是一模一样的？每一次我们都是在算哪三道除法题？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S1-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2-2",
+      "question_type": "scaffold",
+      "content": "既然每次检验的规则都完全固定，不需要任何“灵感”，只需要死记硬背和拼命计算，这种工作为什么简直是为计算机“量身定制”的？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S1-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-1",
+      "question_type": "scaffold",
+      "content": "故事里说总兵力原本是1500人，后来战死了400到500人。我们怎么通过减法，算出剩下的士兵可能在什么范围之间？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1-2",
+      "question_type": "scaffold",
+      "content": "如果用字母 `x` 代表剩下的士兵人数，我们怎么用数学符号（大于、小于、等于）来表示 `x` 既不能少于1000，也不能多于1100？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2-1",
+      "question_type": "scaffold",
+      "content": "“3人一排多2人”，如果我们把所有士兵每3个人分成一组，最后分不完、多出来的这2个人，在数学上叫什么数？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S2-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2-2",
+      "question_type": "scaffold",
+      "content": "在编程中，我们用 `%` 符号表示求余数。如果 `x` 是人数，`x % 3` 就表示 `x` 除以 3 的余数。那么“除以 3 余 2”应该怎么用等式表示？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "scaffold_S2-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3-1",
+      "question_type": "scaffold",
+      "content": "韩信点兵的人数，是只要满足“除以3余2”就行，还是必须把“除以3余2”、“除以5余4”、“除以7余6”这三个条件全部满足？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S2-3-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3-2",
+      "question_type": "scaffold",
+      "content": "在逻辑语言中，表示几个条件必须“同时成立”，我们会用“且（and）”来连接它们。那么，怎么把这三个余数等式用“且”连成一句话？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "scaffold_S2-3-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1-1",
+      "question_type": "scaffold",
+      "content": "我们要让计算机在 [1000, 1100] 范围内一个一个地检查。如果第一个检查的是 1000，下一个应该检查谁？再下一个呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1-2",
+      "question_type": "scaffold",
+      "content": "这种“从1000开始，每次加1，一直到1100”的重复过程，在流程图中，我们需要规定它的“起点”、“终点”和“每次加几”。谁能指一指这些信息应该填在流程图的哪里？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2-1",
+      "question_type": "scaffold",
+      "content": "在实际执行时，我们是“先拿出一个具体的数字，再判断它符不符合余数条件”，还是“先判断条件，再决定检查哪个数”？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S3-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2-2",
+      "question_type": "scaffold",
+      "content": "既然是先取数、后判断，那么在流程图中，那个菱形的“余数条件判断框”，应该放在循环箭头的“大肚子里面”，还是放在循环的“外面”？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S3-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1-1",
+      "question_type": "scaffold",
+      "content": "流程图里的“i = 1000”是给变量设初始值，“i = i + 1”是让变量自己增加1。在图形化编程中，我们会用到哪种颜色的“变量”积木来实现它们？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1-2",
+      "question_type": "scaffold",
+      "content": "流程图中的菱形判断框有“是”和“否”两条路。在图形化编程中，我们要用哪一个控制积木来代表这个菱形判断框？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2-1",
+      "question_type": "scaffold",
+      "content": "图形化编程里的“与（and）”积木只有左、右两个六角形空位。但我们现在有三个余数条件要同时满足，这可怎么办呢？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2-2",
+      "question_type": "scaffold",
+      "content": "看看这个组合：`[条件1] 与 [ [条件2] 与 [条件3] ]`。这样拼起来之后，计算机在判断时，是不是必须这三个条件全都亮起绿灯，整个大积木才算通过？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S4-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1-1",
+      "question_type": "scaffold",
+      "content": "在刚才成功的程序中，我们从1000到1100逐一检查，计算机一共执行了多少次循环？而在这一百多次里，我们找到了几个符合条件的答案？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "scaffold_S5-1-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1-2",
+      "question_type": "scaffold",
+      "content": "算101次才找到1个答案，意味着有100次都是在做无用功。我们能不能想个办法，让计算机不用每个数都看，而是“跳着”去检查？",
+      "visual_aid_type": "illustration",
+      "has_html": true,
+      "html_file": "scaffold_S5-1-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2-1",
+      "question_type": "scaffold",
+      "content": "在1000到1100之间，满足“除以7余6”的最小数字是 1007。那么，下一个同样满足“除以7余6”的数是多少？它们之间相差几？",
+      "visual_aid_type": "formula",
+      "has_html": true,
+      "html_file": "scaffold_S5-2-1.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2-2",
+      "question_type": "scaffold",
+      "content": "如果我们把检查的起点直接设为 1007，并且每次增加 7（也就是步长设为7）。这样我们检查出来的数，是不是天生就全部满足了“除以7余6”？",
+      "visual_aid_type": "diagram",
+      "has_html": true,
+      "html_file": "scaffold_S5-2-2.html",
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3-1",
+      "question_type": "scaffold",
+      "content": "如果我们的起点是1007，每次增加7。在1000到1100之间，我们一共只需要检查多少个数字？（我们可以试着数一数：1007, 1014, 1021... 一直到1098）",
+      "visual_aid_type": "none",
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3-2",
+      "question_type": "scaffold",
+      "content": "从原来的 101 次检查，减少到现在的 15 次检查。我们只是在代码里改了两个数字（起点和步长），计算机的工作量减少了百分之多少？",
+      "visual_aid_type": "chart",
+      "has_html": true,
+      "html_file": "scaffold_S5-3-2.html",
+      "image_files": []
+    }
+  ]
+}

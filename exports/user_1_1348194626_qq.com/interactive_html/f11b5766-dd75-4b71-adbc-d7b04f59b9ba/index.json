@@ -1,0 +1,158 @@
+{
+  "task_id": "f11b5766-dd75-4b71-adbc-d7b04f59b9ba",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "如果你有100元，一种方式是按年利率100%复利计息，另一种是每年固定获得100元单利。你觉得三年后，哪种方式你的钱会更多？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "观察刚刚复利计算中，本金100元乘上的系数是2^x。如果本金不是100，而是其他常数a，你能用一个式子，统一描述这种“底数不变，指数变化”的增长关系吗？试着画几个不同a值的图像看看。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "按照y=a^x这个式子，如果我们让a=1或者a=-2，它还是指数函数吗？看看你画的图像，当a在0和1之间时，它描述的还是一种‘增长’吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "如果一种细菌每1小时数量翻倍，我们从2个细菌开始培养。现在观察到培养皿里有了1024个细菌，你能倒推出我们培养了多少小时吗？现有的数学工具好像不够用了，这该怎么办？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "某细菌每20分钟分裂一次，数量翻倍。若一开始有10个细菌，而另一种生物每20分钟固定增加10个。你觉得3小时后，哪种方式的数量会更多？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有人说，每年翻倍增长（指数）和每年固定增加与本金相等的金额（线性），从第二年开始每年的‘增加额’，指数增长就会永远超过线性增长。你同意吗？试着用具体数字比较第5年看看。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "观察函数y=2^(x-1)的图像，它和你熟悉的y=2^x的图像有什么位置关系？你能猜出y=2^(x+2)的图像又会如何移动吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "小张认为y=(-2)^x也是‘底数不变，指数变化’，所以是指数函数。你同意吗？试着算几个x值（比如x=1,2,3），看看发生了什么奇怪的现象？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "某商品价格每年‘衰减’10%，有人说3年后价格是原价乘以0.9的三次方，即(0.9)^3。这个计算过程和我们的指数函数模型一致吗？这里的‘底数’0.9反映了增长还是衰减？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "物理中放射性元素的衰变公式常写成N=N₀e^(-λt)，指数部分可以是负数。这与我们强调的指数函数y=a^x中a>0矛盾吗？e^(-λt)可以看成哪个底数的指数函数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "声音的强度每增加10倍，分贝值增加10。如果一场音乐会的声音强度是普通谈话的1000倍，那么它的分贝值比谈话高多少？这背后隐藏着什么运算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "解方程2^x=8，你用了什么运算？解方程log₂x=3呢？比较这两个方程的解和求解过程，你有什么发现？能说清楚指数运算和对数运算的关系吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "能帮小明整理下吗？在这个复利问题里，‘本金’、‘年数’和最后‘乘上的系数’，分别像我们数学里学过的哪些量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "回想一下，我们一般讨论的指数函数y=a^x，对底数a有什么要求？(A) a>0 (B) a≠1 (C) a>0且a≠1",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "试着在同一坐标系里，轻轻画出y=(0.5)^x和y=(1.5)^x的草图。比较一下，它们的“走势”有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "细菌从2个开始，每过1小时数量翻倍。如果我们看到现在有8个细菌，你能猜出过了多久吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "观察函数y=2^x的表格：x=1时y=2，x=2时y=4，x=3时y=8…如果反过来，我们问“y=8时，x是几？”，这个过程给你什么感觉？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值函数图象与交点个数讨论</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 头部标题与问题引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .highlight-text {
+            color: #e63946;
+            font-weight: bold;
+        }
+
+        /* 主体对比区域 */
+        .visual-area {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            min-height: 0; /* 允许子元素缩放 */
+        }
+
+        .chart-box {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            position: relative;
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            min-height: 0;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+
+        .slider-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #cbd5e1;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .value-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2563eb;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        /* 实时结论对比表 */
+        .results-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .result-item {
+            padding: 6px;
+            border-radius: 4px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 15px;
+        }
+
+        .result-item.active {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+        }
+        .badge-red { background-color: #ef4444; }
+        .badge-purple { background-color: #8b5cf6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部引导 -->
+    <div class="header">
+        <h1>探索绝对值函数图象的“槽谷”与“阶梯”</h1>
+        <p>拖动下方滑块改变水平线 <span style="color:#2563eb; font-weight:bold;">y = a</span> 的值，观察它与两个函数图象的交点个数变化，思考分类讨论的差异。</p>
+    </div>
+
+    <!-- 主体可视化区域 -->
+    <div class="visual-area">
+        <!-- 左侧：原函数 y = |x-1| + |x+1| -->
+        <div class="chart-box">
+            <div class="chart-title" style="color: #ef4444;">
+                原题：y = |x-1| + |x+1| <span class="badge badge-red">“槽谷”型</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-left"></canvas>
+            </div>
+        </div>
+
+        <!-- 右侧：新函数 y = |x-1| - |x+1| -->
+        <div class="chart-box">
+            <div class="chart-title" style="color: #8b5cf6;">
+                新题：y = |x-1| - |x+1| <span class="badge badge-purple">“阶梯”型</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-right"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制与实时反馈面板 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span class="slider-label">调节参数 a：</span>
+            <div class="slider-wrapper">
+                <input type="range" id="a-slider" min="-4" max="4" step="0.05" value="1.5">
+            </div>
+            <span class="value-display" id="a-val">a = 1.50</span>
+        </div>
+
+        <!-- 实时交点状态对比 -->
+        <div class="results-table">
+            <div class="result-item" id="result-left">
+                <span>当前交点个数：</span>
+                <span id="count-left" style="color: #ef4444; font-weight: bold;">-</span>
+            </div>
+            <div class="result-item" id="result-right">
+                <span>当前交点个数：</span>
+                <span id="count-right" style="color: #8b5cf6; font-weight: bold;">-</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('a-slider');
+    const aValDisplay = document.getElementById('a-val');
+    const canvasLeft = document.getElementById('canvas-left');
+    const canvasRight = document.getElementById('canvas-right');
+    const ctxLeft = canvasLeft.getContext('2d');
+    const ctxRight = canvasRight.getContext('2d');
+
+    const countLeftText = document.getElementById('count-left');
+    const countRightText = document.getElementById('count-right');
+    const resultLeftBox = document.getElementById('result-left');
+    const resultRightBox = document.getElementById('result-right');
+
+    // 坐标系配置
+    const config = {
+        minX: -4,
+        maxX: 4,
+        minY: -4,
+        maxY: 4,
+        gridStep: 1
+    };
+
+    // 响应式画布大小初始化
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        [canvasLeft, canvasRight].forEach(canvas => {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+        });
+        draw();
+    }
+
+    // 坐标转换辅助函数
+    function getCoordsConverter(canvas) {
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // 留出边距
+        const padding = 25;
+        const plotWidth = width - 2 * padding;
+        const plotHeight = height - 2 * padding;
+
+        const toScreenX = (x) => {
+            return padding + ((x - config.minX) / (config.maxX - config.minX)) * plotWidth;
+        };
+
+        const toScreenY = (y) => {
+            // 屏幕坐标y轴向下，数学坐标y轴向上
+            return padding + plotHeight - ((y - config.minY) / (config.maxY - config.minY)) * plotHeight;
+        };
+
+        return { toScreenX, toScreenY, width, height };
+    }
+
+    // 绘制网格与坐标轴
+    function drawGrid(ctx, converter) {
+        const { toScreenX, toScreenY, width, height } = converter;
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        ctx.font = '11px sans-serif';
+        ctx.fillStyle = '#64748b';
+
+        // 绘制网格线与刻度
+        for (let x = config.minX; x <= config.maxX; x += config.gridStep) {
+            const sx = toScreenX(x);
+            ctx.beginPath();
+            ctx.moveTo(sx, toScreenY(config.minY));
+            ctx.lineTo(sx, toScreenY(config.maxY));
+            ctx.stroke();
+
+            // X轴刻度文字
+            if (x !== 0) {
+                ctx.fillText(x, sx - 4, toScreenY(0) + 15);
+            }
+        }
+
+        for (let y = config.minY; y <= config.maxY; y += config.gridStep) {
+            const sy = toScreenY(y);
+            ctx.beginPath();
+            ctx.moveTo(toScreenX(config.minX), sy);
+            ctx.lineTo(toScreenX(config.maxX), sy);
+            ctx.stroke();
+
+            // Y轴刻度文字
+            if (y !== 0) {
+                ctx.fillText(y, toScreenX(0) - 18, sy + 4);
+            }
+        }
+
+        // 绘制主坐标轴
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        
+        // X轴
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(config.minX), toScreenY(0));
+        ctx.lineTo(toScreenX(config.maxX), toScreenY(0));
+        ctx.stroke();
+
+        // Y轴
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(0), toScreenY(config.minY));
+        ctx.lineTo(toScreenX(0), toScreenY(config.maxY));
+        ctx.stroke();
+
+        // 原点 O
+        ctx.fillText('O', toScreenX(0) + 5, toScreenY(0) + 15);
+    }
+
+    // 函数1：y = |x-1| + |x+1|
+    function f1(x) {
+        return Math.abs(x - 1) + Math.abs(x + 1);
+    }
+
+    // 函数2：y = |x-1| - |x+1|
+    function f2(x) {
+        return Math.abs(x - 1) - Math.abs(x + 1);
+    }
+
+    // 绘制主逻辑
+    function draw() {
+        const a = parseFloat(slider.value);
+        aValDisplay.textContent = `a = ${a.toFixed(2)}`;
+
+        // 1. 绘制左图 (y = |x-1| + |x+1|)
+        const convL = getCoordsConverter(canvasLeft);
+        ctxLeft.clearRect(0, 0, convL.width, convL.height);
+        drawGrid(ctxLeft, convL);
+        drawFunctionCurve(ctxLeft, convL, f1, '#ef4444');
+        drawHorizontalLine(ctxLeft, convL, a);
+        const intersectionsL = drawIntersectionsL(ctxLeft, convL, a);
+        updateStatus(resultLeftBox, countLeftText, intersectionsL);
+
+        // 2. 绘制右图 (y = |x-1| - |x+1|)
+        const convR = getCoordsConverter(canvasRight);
+        ctxRight.clearRect(0, 0, convR.width, convR.height);
+        drawGrid(ctxRight, convR);
+        drawFunctionCurve(ctxRight, convR, f2, '#8b5cf6');
+        drawHorizontalLine(ctxRight, convR, a);
+        const intersectionsR = drawIntersectionsR(ctxRight, convR, a);
+        updateStatus(resultRightBox, countRightText, intersectionsR);
+    }
+
+    // 绘制函数曲线
+    function drawFunctionCurve(ctx, conv, func, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3.5;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+
+        const step = 0.05;
+        let first = true;
+        for (let x = config.minX; x <= config.maxX; x += step) {
+            const y = func(x);
+            const sx = conv.toScreenX(x);
+            const sy = conv.toScreenY(y);
+            if (first) {
+                ctx.moveTo(sx, sy);
+                first = false;
+            } else {
+                ctx.lineTo(sx, sy);
+            }
+        }
+        ctx.stroke();
+    }
+
+    // 绘制水平线 y = a
+    function drawHorizontalLine(ctx, conv, a) {
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(conv.toScreenX(config.minX), conv.toScreenY(a));
+        ctx.lineTo(conv.toScreenX(config.maxX), conv.toScreenY(a));
+        ctx.stroke();
+        ctx.setLineDash([]); // 恢复实线
+
+        // 绘制 y = a 标签
+        ctx.fillStyle = '#2563eb';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(`y = ${a.toFixed(2)}`, conv.toScreenX(config.maxX) - 60, conv.toScreenY(a) - 6);
+    }
+
+    // 绘制交点并计算左图交点数
+    function drawIntersectionsL(ctx, conv, a) {
+        let points = [];
+        const eps = 0.001;
+        
+        if (a > 2 + eps) {
+            // 两个交点：x = a/2 和 x = -a/2
+            points.push({x: a/2, y: a});
+            points.push({x: -a/2, y: a});
+        } else if (Math.abs(a - 2) <= eps) {
+            // 无数个交点 (区间 [-1, 1] 上的水平段)
+            return { type: 'infinite', pts: [] };
+        } else {
+            // 无交点
+            return { type: 'none', pts: [] };
+        }
+
+        // 绘制交点圆圈
+        points.forEach(pt => {
+            drawPoint(ctx, conv.toScreenX(pt.x), conv.toScreenY(pt.y), '#ef4444');
+        });
+
+        return { type: 'points', pts: points };
+    }
+
+    // 绘制交点并计算右图交点数
+    function drawIntersectionsR(ctx, conv, a) {
+        let points = [];
+        const eps = 0.001;
+
+        if (a > 2 + eps || a < -2 - eps) {
+            // 无交点
+            return { type: 'none', pts: [] };
+        } else if (Math.abs(a - 2) <= eps) {
+            // 无数个交点 (x <= -1 的水平段)
+            return { type: 'infinite', pts: [] };
+        } else if (Math.abs(a - (-2)) <= eps) {
+            // 无数个交点 (x >= 1 的水平段)
+            return { type: 'infinite', pts: [] };
+        } else {
+            // 恰好一个交点：x = -a/2
+            points.push({x: -a/2, y: a});
+        }
+
+        // 绘制交点圆圈
+        points.forEach(pt => {
+            drawPoint(ctx, conv.toScreenX(pt.x), conv.toScreenY(pt.y), '#8b5cf6');
+        });
+
+        return { type: 'points', pts: points };
+    }
+
+    // 绘制高亮交点圆圈
+    function drawPoint(ctx, sx, sy, color) {
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // 更新底部状态栏
+    function updateStatus(box, textEl, result) {
+        box.classList.remove('active');
+        if (result.type === 'none') {
+            textEl.textContent = '0 个交点';
+            textEl.style.color = '#64748b';
+        } else if (result.type === 'infinite') {
+            textEl.textContent = '无数个交点';
+            textEl.style.color = '#d97706';
+            box.classList.add('active');
+        } else {
+            const count = result.pts.length;
+            textEl.textContent = `${count} 个交点`;
+            textEl.style.color = count === 2 ? '#ef4444' : '#8b5cf6';
+            box.classList.add('active');
+        }
+    }
+
+    // 监听交互
+    slider.addEventListener('input', draw);
+    window.addEventListener('resize', resizeCanvas);
+
+    // 初始化
+    resizeCanvas();
+</script>
+
+</body>
+</html>

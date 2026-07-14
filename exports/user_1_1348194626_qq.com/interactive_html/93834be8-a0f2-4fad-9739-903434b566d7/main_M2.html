@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人机算力大PK - 算法的威力</title>
+    <style>
+        :root {
+            --primary-color: #0984e3;
+            --human-color: #e17055;
+            --computer-color: #00b894;
+            --bg-color: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-color: #2d3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2d3436;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: #636e72;
+        }
+
+        /* PK 主战场 */
+        .pk-arena {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            min-height: 0; /* 允许子元素在flex中缩放 */
+        }
+
+        .pk-card {
+            flex: 1;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid #dfe6e9;
+        }
+
+        .pk-card.active-human {
+            border-color: var(--human-color);
+            background-color: rgba(225, 112, 85, 0.02);
+        }
+
+        .pk-card.active-computer {
+            border-color: var(--computer-color);
+            background-color: rgba(0, 184, 148, 0.02);
+        }
+
+        .avatar-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            background: #f1f2f6;
+        }
+
+        .human-avatar {
+            background-color: rgba(225, 112, 85, 0.1);
+            color: var(--human-color);
+        }
+
+        .computer-avatar {
+            background-color: rgba(0, 184, 148, 0.1);
+            color: var(--computer-color);
+        }
+
+        .role-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: #636e72;
+            margin-bottom: 16px;
+            text-align: center;
+            background: #f1f2f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* 实时数据展示 */
+        .live-stats {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .stat-row {
+            width: 100%;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #636e72;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 14px;
+            background-color: #dfe6e9;
+            border-radius: 7px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 7px;
+            transition: width 0.1s linear;
+        }
+
+        .human-fill {
+            background-color: var(--human-color);
+        }
+
+        .computer-fill {
+            background-color: var(--computer-color);
+        }
+
+        .counter-display {
+            font-size: 24px;
+            font-weight: bold;
+            font-family: monospace;
+            text-align: center;
+            margin: 8px 0;
+            min-height: 32px;
+        }
+
+        .human-counter {
+            color: var(--human-color);
+        }
+
+        .computer-counter {
+            color: var(--computer-color);
+        }
+
+        .status-badge {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            min-height: 28px;
+        }
+
+        /* 控制与图表区 */
+        .control-chart-section {
+            margin-top: 16px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border-top: 1px solid #dfe6e9;
+            padding-top: 16px;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 180px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-start {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+        }
+
+        .btn-start:hover {
+            background-color: #0773c5;
+            transform: translateY(-1px);
+        }
+
+        .btn-start:active {
+            transform: translateY(1px);
+        }
+
+        .btn-reset {
+            background-color: #b2bec3;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #95a5a6;
+        }
+
+        /* 柱状图区域 */
+        .chart-container {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tab-btn {
+            padding: 2px 8px;
+            font-size: 11px;
+            border: 1px solid #dfe6e9;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .chart-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-height: 80px;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-label {
+            width: 50px;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            height: 16px;
+            background: #dfe6e9;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 8px;
+            transition: width 0.5s ease-out;
+        }
+
+        .chart-value {
+            width: 100px;
+            font-size: 12px;
+            color: #636e72;
+            padding-left: 6px;
+        }
+
+        /* 悬浮提示 */
+        .conflict-tip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(45, 52, 54, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 10;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 80%;
+        }
+
+        .conflict-tip.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .conflict-tip h3 {
+            color: #ffeaa7;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .conflict-tip p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>⚔️ 人机算力大PK ⚔️</h1>
+        <p>寻找 1 到 1,000,000 之间所有的完美数（枚举算法体验）</p>
+    </div>
+
+    <!-- PK 区域 -->
+    <div class="pk-arena">
+        <!-- 人脑卡片 -->
+        <div class="pk-card" id="humanCard">
+            <div class="avatar-box human-avatar">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
+                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
+                </svg>
+            </div>
+            <div class="role-title">普通人脑</div>
+            <div class="task-desc">心算/笔算枚举</div>
+
+            <div class="live-stats">
+                <!-- 进度 -->
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <span>计算进度</span>
+                        <span id="humanProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill human-fill" id="humanProgress"></div>
+                    </div>
+                </div>
+                <!-- 疲劳值 -->
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <span>脑力疲劳值</span>
+                        <span id="humanFatigueText">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="humanFatigue" style="background-color: #d63031;"></div>
+                    </div>
+                </div>
+                <!-- 计数器 -->
+                <div class="counter-display human-counter" id="humanCounter">0</div>
+                <!-- 状态 -->
+                <div class="status-badge" id="humanStatus" style="color: var(--human-color);">准备就绪</div>
+            </div>
+        </div>
+
+        <!-- 计算机卡片 -->
+        <div class="pk-card" id="computerCard">
+            <div class="avatar-box computer-avatar">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+            </div>
+            <div class="role-title">单核计算机</div>
+            <div class="task-desc">执行枚举算法</div>
+
+            <div class="live-stats">
+                <!-- 进度 -->
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <span>计算进度</span>
+                        <span id="computerProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill computer-fill" id="computerProgress"></div>
+                    </div>
+                </div>
+                <!-- 算力负载 -->
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <span>CPU 占用率</span>
+                        <span id="computerLoadText">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="computerLoad" style="background-color: #00cec9;"></div>
+                    </div>
+                </div>
+                <!-- 计数器 -->
+                <div class="counter-display computer-counter" id="computerCounter">0</div>
+                <!-- 状态 -->
+                <div class="status-badge" id="computerStatus" style="color: var(--computer-color);">准备就绪</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制与图表区 -->
+    <div class="control-chart-section">
+        <!-- 控制按钮 -->
+        <div class="control-panel">
+            <button class="btn btn-start" id="btnStart">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                开始 PK
+            </button>
+            <button class="btn btn-reset" id="btnReset">重置</button>
+        </div>
+
+        <!-- 柱状图 -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <span class="chart-title">📊 算力对比：不同数据规模所需时间</span>
+                <div class="chart-tabs">
+                    <button class="tab-btn active" data-scale="small">10个数据</button>
+                    <button class="tab-btn" data-scale="medium">1万个数据</button>
+                    <button class="tab-btn" data-scale="large">100万个数据</button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <!-- 人脑行 -->
+                <div class="chart-row">
+                    <div class="chart-label">人脑</div>
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar" id="barHuman" style="background-color: var(--human-color);"></div>
+                    </div>
+                    <div class="chart-value" id="valHuman">5秒</div>
+                </div>
+                <!-- 电脑行 -->
+                <div class="chart-row">
+                    <div class="chart-label">计算机</div>
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar" id="barComputer" style="background-color: var(--computer-color);"></div>
+                    </div>
+                    <div class="chart-value" id="valComputer">0.00001秒</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 认知冲突弹窗 -->
+    <div class="conflict-tip" id="conflictTip">
+        <h3>🤯 算力大冲击！</h3>
+        <p>当数据量达到 100 万时，计算机只需 <b>0.001 秒</b>，而人类不吃不喝也需要 <b>11.5 天</b>！<br>这就是计算机支持下，<b>枚举算法</b>的恐怖威力！想知道计算机是怎么做到的吗？</p>
+    </div>
+</div>
+
+<script>
+    // DOM 元素获取
+    const btnStart = document.getElementById('btnStart');
+    const btnReset = document.getElementById('btnReset');
+    const humanCard = document.getElementById('humanCard');
+    const computerCard = document.getElementById('computerCard');
+
+    const humanProgress = document.getElementById('humanProgress');
+    const humanProgressText = document.getElementById('humanProgressText');
+    const humanFatigue = document.getElementById('humanFatigue');
+    const humanFatigueText = document.getElementById('humanFatigueText');
+    const humanCounter = document.getElementById('humanCounter');
+    const humanStatus = document.getElementById('humanStatus');
+
+    const computerProgress = document.getElementById('computerProgress');
+    const computerProgressText = document.getElementById('computerProgressText');
+    const computerLoad = document.getElementById('computerLoad');
+    const computerLoadText = document.getElementById('computerLoadText');
+    const computerCounter = document.getElementById('computerCounter');
+    const computerStatus = document.getElementById('computerStatus');
+
+    const conflictTip = document.getElementById('conflictTip');
+
+    // 图表元素
+    const barHuman = document.getElementById('barHuman');
+    const barComputer = document.getElementById('barComputer');
+    const valHuman = document.getElementById('valHuman');
+    const valComputer = document.getElementById('valComputer');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    // 状态变量
+    let pkInterval = null;
+    let isRunning = false;
+
+    // 图表数据定义
+    const chartData = {
+        small: {
+            humanWidth: '100%',
+            computerWidth: '1%',
+            humanTime: '约 5 秒',
+            computerTime: '0.00001 秒'
+        },
+        medium: {
+            humanWidth: '100%',
+            computerWidth: '0.1%',
+            humanTime: '约 2.7 小时',
+            computerTime: '0.0001 秒'
+        },
+        large: {
+            humanWidth: '100%',
+            computerWidth: '0.001%',
+            humanTime: '约 11.5 天 (不眠不休)',
+            computerTime: '0.001 秒'
+        }
+    };
+
+    // 初始化图表
+    function updateChart(scale) {
+        const data = chartData[scale];
+        // 采用对比显示：人脑总是100%（因为太慢），电脑条极短，突出反差
+        barHuman.style.width = data.humanWidth;
+        barComputer.style.width = data.computerWidth;
+        valHuman.textContent = data.humanTime;
+        valComputer.textContent = data.computerTime;
+    }
+
+    // 绑定图表Tab切换
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateChart(btn.dataset.scale);
+        });
+    });
+
+    // 初始化默认图表
+    updateChart('small');
+
+    // 重置函数
+    function resetPK() {
+        clearInterval(pkInterval);
+        isRunning = false;
+        btnStart.disabled = false;
+        btnStart.style.opacity = '1';
+
+        // 重置人脑
+        humanProgress.style.width = '0%';
+        humanProgressText.textContent = '0%';
+        humanFatigue.style.width = '0%';
+        humanFatigueText.textContent = '0%';
+        humanCounter.textContent = '0';
+        humanStatus.textContent = '准备就绪';
+        humanStatus.style.color = 'var(--human-color)';
+        humanCard.classList.remove('active-human');
+
+        // 重置电脑
+        computerProgress.style.width = '0%';
+        computerProgressText.textContent = '0%';
+        computerLoad.style.width = '0%';
+        computerLoadText.textContent = '0%';
+        computerCounter.textContent = '0';
+        computerStatus.textContent = '准备就绪';
+        computerStatus.style.color = 'var(--computer-color)';
+        computerCard.classList.remove('active-computer');
+
+        // 隐藏提示
+        conflictTip.classList.remove('show');
+    }
+
+    // 开始PK
+    function startPK() {
+        if (isRunning) return;
+        isRunning = true;
+        btnStart.disabled = true;
+        btnStart.style.opacity = '0.5';
+
+        humanCard.classList.add('active-human');
+        computerCard.classList.add('active-computer');
+
+        // --- 计算机瞬间拉满逻辑 ---
+        computerLoad.style.width = '100%';
+        computerLoadText.textContent = '100%';
+        computerStatus.textContent = '高速计算中...';
+
+        let compCount = 0;
+        const compTarget = 1000000;
+        const startTime = performance.now();
+
+        // 快速滚动数字动画
+        const compAnimate = () => {
+            compCount += 83451; // 模拟极快速度
+            if (compCount >= compTarget) {
+                computerCounter.textContent = compTarget.toLocaleString();
+                computerProgress.style.width = '100%';
+                computerProgressText.textContent = '100%';
+                computerStatus.textContent = '完成！用时 0.001 秒';
+                computerLoad.style.width = '0%';
+                computerLoadText.textContent = '0%';
+            } else {
+                computerCounter.textContent = Math.floor(compCount).toLocaleString();
+                computerProgress.style.width = (compCount / compTarget * 100) + '%';
+                computerProgressText.textContent = Math.floor(compCount / compTarget * 100) + '%';
+                requestAnimationFrame(compAnimate);
+            }
+        };
+        requestAnimationFrame(compAnimate);
+
+        // --- 人脑极慢且疲劳逻辑 ---
+        let humanCount = 0;
+        let humanTimeSec = 0;
+        humanStatus.textContent = '正在拼命心算...';
+
+        pkInterval = setInterval(() => {
+            humanTimeSec += 0.1;
+            
+            if (humanTimeSec < 1.5) {
+                // 阶段1：正常心算
+                humanCount = Math.floor(humanTimeSec * 1.5);
+                humanCounter.textContent = humanCount;
+                humanProgress.style.width = '0.001%';
+                humanProgressText.textContent = '0.001%';
+                humanFatigue.style.width = Math.floor(humanTimeSec * 20) + '%';
+                humanFatigueText.textContent = Math.floor(humanTimeSec * 20) + '%';
+            } else if (humanTimeSec < 3.5) {
+                // 阶段2：开始吃力
+                humanCount = 2;
+                humanCounter.textContent = humanCount;
+                humanStatus.textContent = '数太大了，头晕...';
+                humanStatus.style.color = '#d63031';
+                humanFatigue.style.width = Math.min(90, Math.floor(humanTimeSec * 25)) + '%';
+                humanFatigueText.textContent = Math.min(90, Math.floor(humanTimeSec * 25)) + '%';
+            } else {
+                // 阶段3：罢工
+                clearInterval(pkInterval);
+                humanStatus.textContent = '🤯 脑力过载，罢工了！';
+                humanFatigue.style.width = '100%';
+                humanFatigueText.textContent = '100% (极限)';
+                
+                // 弹出认知冲突
+                setTimeout(() => {
+                    conflictTip.classList.add('show');
+                    // 自动切换到大规模对比图表
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabBtns[2].classList.add('active');
+                    updateChart('large');
+                }, 500);
+            }
+        }, 100);
+    }
+
+    // 事件监听
+    btnStart.addEventListener('click', startPK);
+    btnReset.addEventListener('click', resetPK);
+</script>
+
+</body>
+</html>

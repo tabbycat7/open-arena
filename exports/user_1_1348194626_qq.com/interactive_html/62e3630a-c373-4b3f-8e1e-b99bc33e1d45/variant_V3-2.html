@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>工资税收计算可视化</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .control-group { margin: 20px 0; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        .label-text { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; display: block; }
+        svg { width: 100%; height: 150px; margin-top: 20px; }
+        .tax-free { fill: #2ecc71; }
+        .taxable { fill: #e74c3c; }
+        .text-label { font-size: 14px; font-weight: bold; fill: #fff; }
+        .info-box { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>工资税收计算模型</h2>
+    <div class="control-group">
+        <label class="label-text">调整你的工资总额：<span id="salaryVal">8000</span> 元</label>
+        <input type="range" id="salaryRange" min="3000" max="12000" step="100" value="8000">
+    </div>
+
+    <svg id="viz" viewBox="0 0 500 120">
+        <!-- 背景条 -->
+        <rect x="0" y="40" width="500" height="40" fill="#bdc3c7" rx="5" />
+        <!-- 免税区 -->
+        <rect id="rectFree" x="0" y="40" width="208" height="40" class="tax-free" rx="5" />
+        <!-- 计税区 -->
+        <rect id="rectTax" x="208" y="40" width="125" height="40" class="taxable" rx="5" />
+        
+        <text id="textFree" x="10" y="65" class="text-label">免税: 5000</text>
+        <text id="textTax" x="215" y="65" class="text-label">计税: 3000</text>
+    </svg>
+
+    <div class="info-box">
+        <p><strong>计算逻辑：</strong></p>
+        <p>应纳税所得额 = 工资总额 - 起征点(5000元)</p>
+        <p>当工资 ≤ 5000 时，计税区为 0。</p>
+    </div>
+</div>
+
+<script>
+    const salaryRange = document.getElementById('salaryRange');
+    const salaryVal = document.getElementById('salaryVal');
+    const rectFree = document.getElementById('rectFree');
+    const rectTax = document.getElementById('rectTax');
+    const textFree = document.getElementById('textFree');
+    const textTax = document.getElementById('textTax');
+
+    const THRESHOLD = 5000;
+    const MAX_WIDTH = 500;
+    const MAX_SALARY = 12000;
+
+    function updateViz() {
+        const salary = parseInt(salaryRange.value);
+        salaryVal.textContent = salary;
+
+        // 计算比例
+        const freePart = Math.min(salary, THRESHOLD);
+        const taxablePart = Math.max(0, salary - THRESHOLD);
+
+        const freeWidth = (freePart / MAX_SALARY) * MAX_WIDTH;
+        const taxWidth = (taxablePart / MAX_SALARY) * MAX_WIDTH;
+
+        // 更新矩形
+        rectFree.setAttribute('width', freeWidth);
+        rectTax.setAttribute('x', freeWidth);
+        rectTax.setAttribute('width', taxWidth);
+
+        // 更新文字
+        textFree.textContent = "免税: " + freePart;
+        textTax.setAttribute('x', freeWidth + 5);
+        textTax.textContent = taxablePart > 0 ? "计税: " + taxablePart : "";
+        
+        // 隐藏过小的文字
+        textFree.style.display = freeWidth < 60 ? 'none' : 'block';
+    }
+
+    salaryRange.addEventListener('input', updateViz);
+    
+    // 初始化
+    updateViz();
+</script>
+
+</body>
+</html>

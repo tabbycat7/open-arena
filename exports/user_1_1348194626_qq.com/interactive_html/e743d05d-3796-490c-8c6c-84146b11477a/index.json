@@ -1,0 +1,131 @@
+{
+  "task_id": "e743d05d-3796-490c-8c6c-84146b11477a",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "细胞分裂数量是翻倍增长，放射性物质质量是对半衰减。这一增一减的两个过程，变化的“节奏感”有什么惊人的相似？这会是我们初中认识的哪位函数朋友吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "我们把这个统一的数学模型写成 y=a^x。可是，如果我们偷偷让 a=-2，你觉得当x取1/2时，这个算式会告诉我们一个怎样的结果？这合理吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2.5",
+      "question_type": "main",
+      "content": "既然底数a只能在大于0且不等于1的广阔天地里取值，为了看清整个指数函数家族的“相貌”，你觉得我们应该先重点研究哪几个最有代表性的a？选它们的理由是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "假设现在情报有限，只允许你们为y=2^x选择三个x的值来计算并描点。你们小组敢选哪三个？说说看，为什么这三个点就足以让我们猜出它图像的大致模样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3.5",
+      "question_type": "main",
+      "content": "现在，面对亲手画出的y=2^x和y=(1/2)^x两幅图像，如果用一句话向别人介绍它们最显著的不同，你会怎么说？你能试着把这种直观的“上升”“下降”，翻译成更准确的数学语言吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "有同学说，因为(0.3)^(-0.5)的指数更大，所以它一定大于(0.3)^0.2。这个推理过程看起来挺顺，但里面藏着一个关键的漏洞，你们发现了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果一条爆炸性新闻在班级群里裂变传播，每人看到后都立刻转发给2个新同学。这轮复一轮的传播，其人数增长的“节奏感”，和我们讨论的细胞分裂惊人相似吗？关键相似点是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "y=1^x 也长成 y=a^x 的样子。有人说它是指数函数，也有人说它不是。你觉得呢？它的图像会告诉我们什么秘密，这又和 a≠1 这条限制有何关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "假设现在只给你三个点来画 y=3^x：当x=0，1，2。根据这三点连出的线，你能完整“猜”出它图像的全貌吗？对比标准图像，你觉得这样画最可能“误导”我们错过哪个关键特征？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "不计算具体值，仅用单调性快速判断：① 1.7^0.3 与 1.7^0.4 谁大？② 0.4^0.3 与 0.4^0.4 谁大？仔细观察你两次推理的过程，核心步骤有什么相同与不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "细胞分裂时，从第0代到第1代，数量变成了几倍？那从第1代到第2代呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "不查表，你能算出 2^(-1) 和 2^(1/2) 大概是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果想画 y=2^x 的图，你觉得至少要算出哪几个x对应的y值，点才够用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "在y=2^x上升的曲线上，如果x的值变大，它对应的点会沿着曲线往哪个方向走？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

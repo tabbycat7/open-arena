@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的通用性探索</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --gold: #f5a623;
+            --bg: #f8f9fa;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--bg);
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            position: relative;
+        }
+        h2 { color: #333; margin: 10px 0; }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            align-items: center;
+        }
+        .card {
+            width: 120px;
+            height: 120px;
+            background: #eee;
+            border: 2px dashed #999;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+        #target-badge {
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            border: 4px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.5s;
+        }
+        .locked-text { color: var(--gold); font-size: 1.2em; }
+        .unlocked-text { display: none; color: #d0021b; font-size: 1.5em; font-weight: 900; text-align: center; }
+        .dragging { opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <h2>哪种算法更省心？请将“通用算法”拖入徽章</h2>
+
+    <div class="container">
+        <div class="stage">
+            <div class="card" id="card-special">特例算法<br>(仅1号桌)</div>
+            
+            <div id="target-badge">
+                <div class="locked-text" id="badge-content">算法<br>新维度</div>
+                <div class="unlocked-text" id="result-content">通用性<br>解决一类问题！</div>
+            </div>
+
+            <div class="card" id="card-general" draggable="true">通用算法<br>(所有桌)</div>
+        </div>
+        <p id="hint" style="color: #666;">提示：拖动右侧卡片到金色徽章上</p>
+    </div>
+
+    <script>
+        const card = document.getElementById('card-general');
+        const badge = document.getElementById('target-badge');
+        const badgeContent = document.getElementById('badge-content');
+        const resultContent = document.getElementById('result-content');
+        const hint = document.getElementById('hint');
+
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', 'general');
+            card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+        });
+
+        badge.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        badge.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const data = e.dataTransfer.getData('text/plain');
+            if (data === 'general') {
+                // 解锁动画
+                badge.style.transform = 'scale(1.2)';
+                badge.style.backgroundColor = '#fff9e6';
+                badgeContent.style.display = 'none';
+                resultContent.style.display = 'block';
+                card.style.visibility = 'hidden';
+                hint.innerText = "恭喜！你发现了算法的核心奥秘：通用性。";
+                hint.style.color = "#d0021b";
+            }
+        });
+
+        // 兼容移动端触摸（简单模拟）
+        let isDragging = false;
+        card.addEventListener('touchstart', (e) => { isDragging = true; });
+        document.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            const touch = e.changedTouches[0];
+            const rect = badge.getBoundingClientRect();
+            if (touch.clientX > rect.left && touch.clientX < rect.right && 
+                touch.clientY > rect.top && touch.clientY < rect.bottom) {
+                badge.style.transform = 'scale(1.2)';
+                badgeContent.style.display = 'none';
+                resultContent.style.display = 'block';
+                card.style.visibility = 'hidden';
+            }
+            isDragging = false;
+        });
+    </script>
+</body>
+</html>

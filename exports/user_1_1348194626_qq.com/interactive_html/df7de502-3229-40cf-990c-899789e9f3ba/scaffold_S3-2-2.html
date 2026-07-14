@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S3-2-2 决策天平</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        h2 { color: #333; margin-top: 20px; }
+        .controls { margin-top: 20px; display: flex; gap: 20px; }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        #btn-fast { background: #ff4d4f; color: white; }
+        #btn-slow { background: #52c41a; color: white; }
+        button:hover { transform: scale(1.05); }
+        
+        #svg-canvas { width: 600px; height: 350px; margin-top: 20px; }
+        
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1890ff;
+            height: 30px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>深夜机器人运行模式决策</h2>
+    
+    <svg id="svg-canvas" viewBox="0 0 600 350">
+        <!-- 天平支架 -->
+        <line x1="300" y1="50" x2="300" y2="250" stroke="#333" stroke-width="8" />
+        <polygon points="280,250 320,250 300,220" fill="#333" />
+        <!-- 天平横杆 -->
+        <line id="beam" x1="100" y1="100" x2="500" y2="100" stroke="#333" stroke-width="6" transform-origin="300 100" />
+        
+        <!-- 左盘：极速 -->
+        <g id="left-pan">
+            <line x1="100" y1="100" x2="100" y2="200" stroke="#666" stroke-width="4" />
+            <circle cx="100" cy="210" r="40" fill="#ffccc7" stroke="#ff4d4f" stroke-width="3" />
+            <text id="left-text" x="100" y="215" text-anchor="middle" font-size="14">极速模式</text>
+            <text id="left-alert" x="100" y="280" text-anchor="middle" font-size="16" fill="red" class="hidden">赤字警告！</text>
+        </g>
+        
+        <!-- 右盘：省电 -->
+        <g id="right-pan">
+            <line x1="500" y1="100" x2="500" y2="200" stroke="#666" stroke-width="4" />
+            <circle cx="500" cy="210" r="40" fill="#d9f7be" stroke="#52c41a" stroke-width="3" />
+            <text id="right-text" x="500" y="215" text-anchor="middle" font-size="14">省电模式</text>
+            <text id="right-medal" x="500" y="280" text-anchor="middle" font-size="16" fill="#52c41a" class="hidden">省钱勋章！</text>
+        </g>
+    </svg>
+
+    <div class="controls">
+        <button id="btn-fast">极速费电模式</button>
+        <button id="btn-slow">慢速省电模式</button>
+    </div>
+    <div id="message"></div>
+</div>
+
+<script>
+    const beam = document.getElementById('beam');
+    const leftAlert = document.getElementById('left-alert');
+    const rightMedal = document.getElementById('right-medal');
+    const message = document.getElementById('message');
+
+    document.getElementById('btn-fast').addEventListener('click', () => {
+        beam.style.transform = 'rotate(15deg)';
+        leftAlert.classList.remove('hidden');
+        rightMedal.classList.add('hidden');
+        message.innerText = "深夜还在极速运行？电费账单要爆表啦！";
+        message.style.color = "red";
+    });
+
+    document.getElementById('btn-slow').addEventListener('click', () => {
+        beam.style.transform = 'rotate(-15deg)';
+        leftAlert.classList.add('hidden');
+        rightMedal.classList.remove('hidden');
+        message.innerText = "深夜省钱才是硬道理！决策正确！";
+        message.style.color = "#52c41a";
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学-纳税公式推导教学互动</title>
+  <style>
+    /* 全局样式重置与课堂大屏适配 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    body {
+      background-color: #f0f4f8;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      overflow: hidden;
+    }
+
+    /* 顶部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #1a365d;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 18px;
+      color: #4a5568;
+      line-height: 1.5;
+    }
+
+    .highlight-text {
+      color: #dd6b20;
+      font-weight: bold;
+    }
+
+    /* 核心交互区 */
+    .interactive-area {
+      position: relative;
+      flex-grow: 1;
+      width: 100%;
+      background: #f7fafc;
+      border: 2px dashed #cbd5e0;
+      border-radius: 12px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    /* 提示导引 */
+    .guide-tip {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(235, 248, 250, 0.9);
+      border: 1px solid #319795;
+      color: #2c7a7b;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 10;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    /* 公式卡片基础样式 */
+    .formula-card {
+      position: absolute;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      top: 160px; /* 统一高度 */
+    }
+
+    /* 静态卡片 */
+    .card-static {
+      background: #ebf8ff;
+      color: #2b6cb0;
+      border: 2px solid #bee3f8;
+      width: 150px;
+    }
+
+    .card-equal {
+      background: transparent;
+      color: #4a5568;
+      box-shadow: none;
+      font-size: 36px;
+      width: 60px;
+      border: none;
+    }
+
+    .card-rate {
+      background: #faf5ff;
+      color: #6b46c1;
+      border: 2px solid #e9d8fd;
+      width: 120px;
+    }
+
+    /* 动态可拖拽卡片 */
+    .card-draggable {
+      background: #fffaf0;
+      color: #dd6b20;
+      border: 3px solid #fbd38d;
+      width: 180px;
+      cursor: grab;
+      z-index: 100;
+      touch-action: none; /* 阻止移动端默认滚动 */
+    }
+
+    .card-draggable:active {
+      cursor: grabbing;
+      transform: scale(1.08);
+      box-shadow: 0 12px 24px rgba(221, 107, 32, 0.2);
+    }
+
+    /* 拖拽过等号后的高亮状态 */
+    .card-draggable.transformed {
+      background: #f0fff4;
+      color: #38a169;
+      border-color: #9ae6b4;
+      box-shadow: 0 0 15px rgba(56, 161, 105, 0.4);
+    }
+
+    /* 底部控制与思考区 */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    .question-box {
+      background: #fffaf0;
+      border-left: 4px solid #dd6b20;
+      padding: 10px 15px;
+      border-radius: 0 8px 8px 0;
+      font-size: 16px;
+      color: #7b341e;
+      max-width: 70%;
+    }
+
+    .btn-reset {
+      background: #3182ce;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: #2b6cb0;
+      transform: translateY(-2px);
+    }
+
+    .btn-reset:active {
+      transform: translateY(0);
+    }
+
+    /* 特效画布 */
+    #effect-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container" id="app">
+    <!-- 顶部标题 -->
+    <div class="header">
+      <h1>探索：如何求“应纳税额”？</h1>
+      <p>根据公式 <span class="highlight-text">应纳税额 ÷ 计税收入 = 税率</span>，试着把公式进行变形。</p>
+    </div>
+
+    <!-- 交互区域 -->
+    <div class="interactive-area" id="interactive-zone">
+      <div class="guide-tip" id="guide-text">👈 拖动橙色卡片，跨过等号到右边</div>
+      
+      <!-- 公式卡片 -->
+      <div class="formula-card card-static" id="card-tax">应纳税额</div>
+      <div class="formula-card card-equal" id="card-eq">=</div>
+      <div class="formula-card card-rate" id="card-rate">税率</div>
+      
+      <!-- 可拖拽卡片 -->
+      <div class="formula-card card-draggable" id="drag-card">÷ 计税收入</div>
+
+      <!-- 特效层 -->
+      <canvas id="effect-canvas"></canvas>
+    </div>
+
+    <!-- 底部控制与思考 -->
+    <div class="footer">
+      <div class="question-box">
+        <strong>思考：</strong>当“÷ 计税收入”移到等号右边时，运算符号发生了什么变化？你能写出最后的文字公式吗？
+      </div>
+      <button class="btn-reset" id="btn-reset">重置公式</button>
+    </div>
+  </div>
+
+  <script>
+    // 课堂投屏自适应缩放
+    function autoScale() {
+      const designWidth = 800;
+      const designHeight = 600;
+      const container = document.getElementById('app');
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      
+      const scaleX = windowWidth / designWidth;
+      const scaleY = windowHeight / designHeight;
+      const scale = Math.min(scaleX, scaleY, 1.5); // 限制最大放大倍数
+      
+      container.style.transform = `scale(${scale})`;
+      container.style.transformOrigin = 'center center';
+    }
+    
+    window.addEventListener('resize', autoScale);
+    autoScale();
+
+    // Web Audio API 音效合成器
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'drag') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      } else if (type === 'success') {
+        // 欢快的双音节
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'bounce') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+      }
+    }
+
+    // 粒子特效系统
+    const canvas = document.getElementById('effect-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('load', resizeCanvas);
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 6 + 4;
+        this.speedX = (Math.random() - 0.5) * 8;
+        this.speedY = (Math.random() - 0.5) * 8 - 3;
+        this.color = `hsl(${Math.random() * 120 + 80}, 80%, 60%)`;
+        this.alpha = 1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += 0.1; // 重力
+        this.alpha -= 0.02;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function createExplosion(x, y) {
+      for (let i = 0; i < 30; i++) {
+        particles.push(new Particle(x, y));
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(p => p.alpha > 0);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // 布局与拖拽逻辑
+    const zone = document.getElementById('interactive-zone');
+    const dragCard = document.getElementById('drag-card');
+    const cardTax = document.getElementById('card-tax');
+    const cardEq = document.getElementById('card-eq');
+    const cardRate = document.getElementById('card-rate');
+    const guideText = document.getElementById('guide-text');
+    const btnReset = document.getElementById('btn-reset');
+
+    // 状态定义
+    // 'division' (初始除法) | 'multiplication' (变形为乘法)
+    let formulaState = 'division'; 
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let cardStartX = 0;
+    let cardStartY = 0;
+
+    // 关键坐标配置 (基于 800x600 容器内部坐标)
+    const positions = {
+      division: {
+        tax: 80,
+        drag: 250,
+        eq: 450,
+        rate: 530
+      },
+      multiplication: {
+        tax: 80,
+        eq: 250,
+        rate: 330,
+        drag: 470
+      }
+    };
+
+    // 临界判定线 (等号的位置动态变化，取其中间值作为判定阈值)
+    const thresholdX = 380; 
+
+    // 初始化卡片位置
+    function updateLayout(state, animate = true) {
+      const pos = positions[state];
+      const duration = animate ? '0.4s' : '0s';
+
+      [cardTax, cardEq, cardRate].forEach(card => {
+        card.style.transition = `left ${duration} cubic-bezier(0.25, 0.8, 0.25, 1)`;
+      });
+
+      cardTax.style.left = `${pos.tax}px`;
+      cardEq.style.left = `${pos.eq}px`;
+      cardRate.style.left = `${pos.rate}px`;
+
+      if (!isDragging) {
+        dragCard.style.transition = `all ${duration} cubic-bezier(0.25, 0.8, 0.25, 1)`;
+        dragCard.style.left = `${pos.drag}px`;
+        dragCard.style.top = `160px`;
+        
+        if (state === 'division') {
+          dragCard.textContent = '÷ 计税收入';
+          dragCard.classList.remove('transformed');
+          guideText.textContent = '👈 拖动橙色卡片，跨过等号到右边';
+          guideText.style.borderColor = '#319795';
+          guideText.style.color = '#2c7a7b';
+          guideText.style.background = 'rgba(235, 248, 250, 0.9)';
+        } else {
+          dragCard.textContent = '× 计税收入';
+          dragCard.classList.add('transformed');
+          guideText.textContent = '🎉 变形成功！除法移到等号右边变成了乘法！';
+          guideText.style.borderColor = '#38a169';
+          guideText.style.color = '#276749';
+          guideText.style.background = 'rgba(240, 253, 244, 0.9)';
+        }
+      }
+    }
+
+    // 拖拽事件处理
+    dragCard.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      dragCard.style.transition = 'none';
+      
+      // 记录初始指针位置
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      // 记录卡片当前相对父容器的坐标
+      cardStartX = dragCard.offsetLeft;
+      cardStartY = dragCard.offsetTop;
+      
+      dragCard.setPointerCapture(e.pointerId);
+      playSound('drag');
+    });
+
+    dragCard.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      // 计算缩放比例后的实际位移
+      const rect = zone.getBoundingClientRect();
+      const scaleX = rect.width / zone.offsetWidth;
+      const scaleY = rect.height / zone.offsetHeight;
+
+      const dx = (e.clientX - startX) / scaleX;
+      const dy = (e.clientY - startY) / scaleY;
+
+      let newLeft = cardStartX + dx;
+      let newTop = cardStartY + dy;
+
+      // 限制拖拽边界
+      newLeft = Math.max(20, Math.min(zone.offsetWidth - dragCard.offsetWidth - 20, newLeft));
+      newTop = Math.max(50, Math.min(zone.offsetHeight - dragCard.offsetHeight - 50, newTop));
+
+      dragCard.style.left = `${newLeft}px`;
+      dragCard.style.top = `${newTop}px`;
+
+      // 实时碰撞/跨越检测
+      const cardCenterX = newLeft + dragCard.offsetWidth / 2;
+      
+      if (cardCenterX > thresholdX) {
+        // 预备变为乘法状态
+        dragCard.textContent = '× 计税收入';
+        dragCard.classList.add('transformed');
+        // 预先让其他卡片让位
+        updateLayout('multiplication', true);
+      } else {
+        // 预备恢复除法状态
+        dragCard.textContent = '÷ 计税收入';
+        dragCard.classList.remove('transformed');
+        updateLayout('division', true);
+      }
+    });
+
+    dragCard.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      dragCard.releasePointerCapture(e.pointerId);
+
+      const cardCenterX = dragCard.offsetLeft + dragCard.offsetWidth / 2;
+
+      if (cardCenterX > thresholdX) {
+        // 成功移到右侧
+        if (formulaState !== 'multiplication') {
+          formulaState = 'multiplication';
+          playSound('success');
+          // 在卡片中心释放烟花
+          const rect = dragCard.getBoundingClientRect();
+          const zoneRect = zone.getBoundingClientRect();
+          createExplosion(
+            (rect.left - zoneRect.left) + rect.width / 2,
+            (rect.top - zoneRect.top) + rect.height / 2
+          );
+        }
+      } else {
+        // 弹回左侧
+        if (formulaState !== 'division') {
+          formulaState = 'division';
+          playSound('bounce');
+        } else {
+          playSound('bounce'); // 即使没变状态，松开也播放弹回音
+        }
+      }
+      
+      updateLayout(formulaState, true);
+    });
+
+    // 重置按钮
+    btnReset.addEventListener('click', () => {
+      formulaState = 'division';
+      playSound('bounce');
+      updateLayout('division', true);
+    });
+
+    // 初始化布局
+    updateLayout('division', false);
+    resizeCanvas();
+  </script>
+</body>
+</html>

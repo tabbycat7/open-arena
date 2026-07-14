@@ -1,0 +1,302 @@
+{
+  "task_id": "30ae0481-abde-428e-943a-9e37eba3f911",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "看教材开头这段话，国家收上来的税，最后都用到哪些地方去了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "教材里这句话说“应缴纳的税款叫作应纳税额”，又说“……的比率叫作税率”，这里的“应纳税额”和“税率”各表示什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看这两个材料，一个是“应纳税销售额是30万元”，一个是“工资中应纳税的部分为2500元”，这里真正用来算税的那个量，你会选哪一个？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "例题里为什么用“30×3%”就能算出应纳税额？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "如果让你完整解答这道纳税题，你会怎样把过程写清楚，让别人一看就明白你算的是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "同样都是按3%纳税，企业按销售额的一部分算，李阿姨按工资中应纳税的部分算，这两题变了什么，又没变什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M1-1",
+      "question_type": "variant",
+      "content": "如果从你每天看得见的地方想一想，像学校、医院、公园、马路这些公共设施，哪些可能和税收的使用有关？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M1-2",
+      "question_type": "variant",
+      "content": "把“修建地铁”和“给某一个人买玩具”放在一起比一比，你觉得哪一类更像税收会支持的方向？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M2-1",
+      "question_type": "variant",
+      "content": "有一项收入中，拿来计算税的部分是1000元，应缴税30元。这里30元表示什么，3%又表示什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M2-2",
+      "question_type": "variant",
+      "content": "有人说“税率就是最后要交的钱数”，你同意吗？你会用“哪个是钱数，哪个是比率”来说明吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M3-1",
+      "question_type": "variant",
+      "content": "题目里同时出现“本月收入5000元”和“其中应纳税部分是1800元”，你觉得算税时该盯住哪个量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M3-2",
+      "question_type": "variant",
+      "content": "如果题目不直接说“应纳税销售额”，而说“销售总额中需要纳税的部分是12万元”，你会拿哪个量来算税？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M4-1",
+      "question_type": "variant",
+      "content": "如果应纳税的部分是2000元，税率是5%，为什么也可以用“2000×5%”来求应缴的税款？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M4-2",
+      "question_type": "variant",
+      "content": "有同学看到30万元和3%，列成了“30÷3%”。你觉得他错在哪儿，为什么这里应该用乘法？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M5-1",
+      "question_type": "variant",
+      "content": "如果有人只写“30×3%=0.9”，你觉得这份解答哪里还不够清楚，应该补出哪些关键信息？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M5-2",
+      "question_type": "variant",
+      "content": "两位同学都算对了结果，一位只写数字，一位把“算的是什么税、用了哪个量、单位是什么”都写清了，你更认可哪一种？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M6-1",
+      "question_type": "variant",
+      "content": "把“营业收入中应纳税的部分”和“工资中应纳税的部分”放在一起看，它们说法不同，但算税时共同要先找准什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V-M6-2",
+      "question_type": "variant",
+      "content": "如果题目里不再出现“企业”或“李阿姨”这些人物名称，只告诉你“某项收入中应纳税部分”和“税率”，你的解题方法会变吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "读这段话时，和“纳税”最直接有关系的，是“税用到哪里去”这件事，还是“要交多少钱”这件事？你从文中能指出相关的词吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果把“要交多少钱”换成数学课上更简洁的说法，你觉得它更像是在说“交的这笔税款”，还是“交税的原因”？说说你的判断。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "像题里常见的“3%”，你觉得它更像是在表示“要交的税有多少”，还是在表示“交的税占要纳税那部分的几分之几”？选一个，并说说你是怎么想的。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "题目里如果同时出现“税款”和“收入的一部分”，真正还没算出来、要我们去求的，通常是哪一个量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "读题时，哪些词会提醒我们“不是所有的钱都拿来算税”，而是只看其中一部分？你能从题目里找出这样的词吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "看到“销售额是30万元”或“工资中应纳税的部分是2500元”这样的句子时，我们算税更该盯住“全部收入”，还是“应纳税的那部分”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "如果已知一个量是30，要求它的3%是多少，这类题在以前百分数学习里，一般会用加法、减法，还是乘法来表示？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "在“30×3%”里，30表示的是哪一部分钱，3%表示的是这部分钱和税款之间的什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "试着用我们熟悉的百分数说法来说，这道题其实就是在求“30万元的什么是多少”？把这句话补完整。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "把“30×3%”写进解答时，怎样说才能让别人一眼看出你是在求“30万元的3%”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "除了写算式，还可以加上一句什么话，来说明30表示应纳税的那部分钱，3%表示税率？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "结果写成0.9还不够时，后面还要补清哪两样信息，才能让人明白这是多少税、单位是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "不看题目说的是企业还是个人，一道纳税题的解答里，通常都离不开哪几个关键信息：哪部分钱、税率，还是别的什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "一道题说销售额，一道题说工资，这两个词不一样；那它们都是不是在提醒我们先找“拿来算税的那部分钱”呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3",
+      "question_type": "scaffold",
+      "content": "虽然一道题说销售额，一道题说工资，但两道题在“找要拿来算税的钱”这一步，做法是不是一样的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

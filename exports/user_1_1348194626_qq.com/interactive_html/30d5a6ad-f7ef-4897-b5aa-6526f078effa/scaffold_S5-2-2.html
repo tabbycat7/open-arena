@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>班级AI自律公约·隐私篇</title>
+    <style>
+        :root {
+            --paper-color: #fdf6e3;
+            --border-color: #d3af71;
+            --text-color: #5d4037;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .options-area {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: grab;
+            width: 250px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+        .drop-zone {
+            width: 500px;
+            height: 200px;
+            background: var(--paper-color);
+            border: 4px dashed var(--border-color);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.5s ease;
+            padding: 20px;
+        }
+        .drop-zone.success {
+            border-style: solid;
+            box-shadow: 0 0 30px #ffd700;
+            background: #fffdf0;
+        }
+        #stamp {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            color: #c62828;
+            border: 3px solid #c62828;
+            padding: 5px;
+            transform: rotate(-15deg);
+            display: none;
+            font-weight: bold;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: var(--text-color);
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>班级AI自律公约·隐私篇</h2>
+    <p>请将最具体、可执行的规则拖入下方空白处：</p>
+
+    <div class="options-area">
+        <div class="card" draggable="true" id="opt1">选项1：我们要保护大家的隐私。</div>
+        <div class="card" draggable="true" id="opt2">选项2：不经同学同意，我不随意用AI处理、传播同学的照片和声音。</div>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+        <p id="placeholder">请将卡片拖入此处</p>
+        <div id="stamp">通过</div>
+    </div>
+
+    <div class="message" id="msg"></div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.card');
+    const dropZone = document.getElementById('dropZone');
+    const msg = document.getElementById('msg');
+    const stamp = document.getElementById('stamp');
+    const placeholder = document.getElementById('placeholder');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        });
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const draggedElement = document.getElementById(id);
+
+        if (id === 'opt2') {
+            dropZone.classList.add('success');
+            placeholder.innerText = draggedElement.innerText;
+            msg.innerText = "太棒了！这是一条非常具体、可执行的班级规则，全班签署成功！";
+            msg.style.color = "#d35400";
+            stamp.style.display = 'block';
+        } else {
+            dropZone.classList.remove('success');
+            placeholder.innerText = "请再试一次，这条规则还可以更具体哦！";
+            msg.innerText = "提示：想想看，怎么做才算保护隐私？";
+            stamp.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人所得税起征点教学可视化</title>
+  <style>
+    :root {
+      --primary-color: #2b6cb0;
+      --primary-light: #ebf8ff;
+      --success-color: #2f855a;
+      --success-light: #f0fff4;
+      --warning-color: #dd6b20;
+      --warning-light: #fffaf0;
+      --danger-color: #c53030;
+      --danger-light: #fff5f5;
+      --gray-dark: #2d3748;
+      --gray-light: #f7fafc;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      background-color: #edf2f7;
+      color: var(--gray-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 100%;
+      max-width: 1000px;
+      aspect-ratio: 4 / 3;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    /* 头部标题 */
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .header .badge {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    /* 主体布局 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 左侧：可视化区域 */
+    .visualizer-panel {
+      flex: 1.1;
+      background-color: var(--gray-light);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* 右侧：控制与解析区域 */
+    .control-panel {
+      flex: 0.9;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    /* 问题卡片 */
+    .question-card {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary-color);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 15px;
+    }
+
+    .question-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #2c5282;
+    }
+
+    /* 交互控制区 */
+    .interactive-section {
+      margin-bottom: 15px;
+    }
+
+    .slider-container {
+      margin: 15px 0;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .salary-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .custom-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: #cbd5e0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .custom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* 预设按钮 */
+    .preset-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      background-color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* 动态计算结果 */
+    .result-card {
+      background-color: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: auto;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 15px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+      padding-top: 10px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* 辨析提示框 */
+    .analysis-box {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: all 0.3s ease;
+    }
+
+    .analysis-box.wrong {
+      background-color: var(--danger-light);
+      border: 1px solid var(--danger-color);
+      color: var(--danger-color);
+    }
+
+    .analysis-box.correct {
+      background-color: var(--success-light);
+      border: 1px solid var(--success-color);
+      color: var(--success-color);
+    }
+
+    /* SVG 样式 */
+    .gauge-svg {
+      width: 100%;
+      height: 100%;
+      max-height: 420px;
+    }
+
+    .axis-label {
+      font-size: 12px;
+      fill: #718096;
+      dominant-baseline: middle;
+    }
+
+    .gate-label {
+      font-size: 14px;
+      font-weight: bold;
+      fill: var(--danger-color);
+    }
+
+    .water-label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>个人所得税“起征点”直观演示</h1>
+      <span class="badge">六年级 · 百分数应用</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+      <!-- 左侧：SVG 动画交互区 -->
+      <div class="visualizer-panel">
+        <svg class="gauge-svg" viewBox="0 0 400 450">
+          <!-- 背景网格与刻度线 -->
+          <g id="grid">
+            <!-- 刻度线 (0 到 8000，每1000一格) -->
+            <!-- Y 轴映射：0元 -> Y=400, 8000元 -> Y=80 -->
+            <line x1="80" y1="400" x2="280" y2="400" stroke="#cbd5e0" stroke-width="1" />
+            <text x="50" y="400" class="axis-label">0元</text>
+
+            <line x1="80" y1="360" x2="280" y2="360" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="360" class="axis-label">1000元</text>
+
+            <line x1="80" y1="320" x2="280" y2="320" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="320" class="axis-label">2000元</text>
+
+            <line x1="80" y1="280" x2="280" y2="280" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="280" class="axis-label">3000元</text>
+
+            <line x1="80" y1="240" x2="280" y2="240" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="240" class="axis-label">4000元</text>
+
+            <line x1="80" y1="160" x2="280" y2="160" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="160" class="axis-label">6000元</text>
+
+            <line x1="80" y1="120" x2="280" y2="120" stroke="#e2e8f0" stroke-width="1" />
+            <text x="50" y="120" class="axis-label">7000元</text>
+
+            <line x1="80" y1="80" x2="280" y2="80" stroke="#cbd5e0" stroke-width="1" />
+            <text x="50" y="80" class="axis-label">8000元</text>
+          </g>
+
+          <!-- 柱状容器外框 -->
+          <rect x="120" y="70" width="120" height="340" fill="none" stroke="#718096" stroke-width="3" rx="5" />
+
+          <!-- 免税部分水柱 (蓝色) -->
+          <rect id="free-water" x="122" y="400" width="116" height="0" fill="#3182ce" opacity="0.85" />
+
+          <!-- 纳税部分水柱 (橙色) -->
+          <rect id="tax-water" x="122" y="200" width="116" height="0" fill="#dd6b20" opacity="0.9" />
+
+          <!-- 5000元起征点安全闸门 (红色) -->
+          <g id="gate-group">
+            <!-- 闸门挡板线 -->
+            <line x1="100" y1="200" x2="260" y2="200" stroke="#e53e3e" stroke-width="4" />
+            <!-- 闸门左侧固定端 -->
+            <rect x="95" y="192" width="10" height="16" fill="#e53e3e" rx="2" />
+            <!-- 闸门右侧固定端 -->
+            <rect x="255" y="192" width="10" height="16" fill="#e53e3e" rx="2" />
+            <!-- 起征点文字标签 -->
+            <text x="270" y="204" class="gate-label">起征点 5000元</text>
+            <!-- 闸门下方的安全免税区标识 -->
+            <rect x="125" y="205" width="110" height="25" fill="#f0fff4" rx="4" opacity="0.8"/>
+            <text x="180" y="222" fill="#2f855a" font-size="11" font-weight="bold" text-anchor="middle">5000元以下免税区</text>
+          </g>
+
+          <!-- 动态高度指示线与文本 -->
+          <g id="height-indicator">
+            <line id="indicator-line" x1="110" y1="400" x2="250" y2="400" stroke="#2d3748" stroke-width="1.5" stroke-dasharray="4,4" />
+            <rect id="indicator-bg" x="140" y="385" width="80" height="22" fill="#2d3748" rx="3" />
+            <text id="indicator-text" x="180" y="401" fill="white" font-size="12" font-weight="bold" text-anchor="middle">0元</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 右侧：控制与解析 -->
+      <div class="control-panel">
+        <!-- 问题重现 -->
+        <div class="question-card">
+          <p><strong>思考题：</strong>陈阿姨每月工资 <strong>4800元</strong>。如果个人所得税起征点是 <strong>5000元</strong>，税率是 3%。陈阿姨每个月应交多少元个税？</p>
+          <p style="margin-top: 8px; font-size: 14px; color: #742a2a;">
+            ❌ 有同学列式为：<code>4800 × 3% = 144元</code>。你觉得对吗？请拖动左侧或下方滑块验证。
+          </p>
+        </div>
+
+        <!-- 交互控制 -->
+        <div class="interactive-section">
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>调整陈阿姨的工资：</span>
+              <span style="color: var(--primary-color);" id="salary-display">4800 元</span>
+            </div>
+            <div class="salary-input-wrapper">
+              <input type="range" id="salary-slider" class="custom-slider" min="0" max="8000" step="100" value="4800">
+            </div>
+          </div>
+
+          <!-- 快捷预设 -->
+          <div class="preset-container">
+            <button class="btn active" id="btn-4800">陈阿姨 (4800元)</button>
+            <button class="btn" id="btn-5000">起征点 (5000元)</button>
+            <button class="btn" id="btn-6500">假设 (6500元)</button>
+          </div>
+        </div>
+
+        <!-- 辨析与结论 -->
+        <div id="analysis-output" class="analysis-box wrong">
+          <!-- 动态载入辨析内容 -->
+        </div>
+
+        <!-- 动态计算卡片 -->
+        <div class="result-card">
+          <div class="result-row">
+            <span>每月总工资：</span>
+            <span id="res-total">4800 元</span>
+          </div>
+          <div class="result-row">
+            <span>免税额度（起征点）：</span>
+            <span style="color: var(--success-color);">5000 元</span>
+          </div>
+          <div class="result-row">
+            <span>超出起征点（应纳税额）：</span>
+            <span id="res-taxable" style="font-weight: bold;">0 元</span>
+          </div>
+          <div class="result-row" style="color: var(--danger-color);">
+            <span>应交个人所得税：</span>
+            <span id="res-tax">0 元</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('salary-slider');
+    const salaryDisplay = document.getElementById('salary-display');
+    const freeWater = document.getElementById('free-water');
+    const taxWater = document.getElementById('tax-water');
+    const indicatorLine = document.getElementById('indicator-line');
+    const indicatorBg = document.getElementById('indicator-bg');
+    const indicatorText = document.getElementById('indicator-text');
+
+    const resTotal = document.getElementById('res-total');
+    const resTaxable = document.getElementById('res-taxable');
+    const resTax = document.getElementById('res-tax');
+    const analysisOutput = document.getElementById('analysis-output');
+
+    const btn4800 = document.getElementById('btn-4800');
+    const btn5000 = document.getElementById('btn-5000');
+    const btn6500 = document.getElementById('btn-6500');
+
+    const THRESHOLD = 5000;
+    const TAX_RATE = 0.03;
+
+    // Y轴映射关系：0元 -> Y=400, 8000元 -> Y=80 (总高度320px)
+    function getScaleY(value) {
+      const minY = 400;
+      const maxY = 80;
+      const maxVal = 8000;
+      return minY - (value / maxVal) * (minY - maxY);
+    }
+
+    function updateVisualization(salary) {
+      // 1. 更新数值显示
+      salaryDisplay.textContent = salary + ' 元';
+      resTotal.textContent = salary + ' 元';
+
+      const yZero = getScaleY(0);
+      const yThreshold = getScaleY(THRESHOLD); // Y = 200
+      const ySalary = getScaleY(salary);
+
+      // 2. 计算纳税逻辑
+      let taxableIncome = 0;
+      let tax = 0;
+
+      if (salary <= THRESHOLD) {
+        // 未超起征点：全部高度为蓝色，无橙色
+        const height = yZero - ySalary;
+        freeWater.setAttribute('y', ySalary);
+        freeWater.setAttribute('height', height);
+        
+        taxWater.setAttribute('height', 0);
+        taxWater.setAttribute('y', yThreshold);
+
+        taxableIncome = 0;
+        tax = 0;
+
+        // 更新辨析框
+        analysisOutput.className = 'analysis-box correct';
+        analysisOutput.innerHTML = `
+          <strong>💡 课堂辨析：</strong><br>
+          陈阿姨的工资 <strong>${salary}元</strong> 没有超过起征点 <strong>5000元</strong>。<br>
+          所以，陈阿姨<strong>不需要缴纳</strong>个人所得税！<br>
+          <span style="font-weight:bold; color:var(--success-color);">同学的列式 4800 × 3% 是错误的。</span>
+        `;
+      } else {
+        // 超过起征点：5000以下为蓝色，5000以上为橙色
+        freeWater.setAttribute('y', yThreshold);
+        freeWater.setAttribute('height', yZero - yThreshold); // 刚好填满免税区
+
+        const taxHeight = yThreshold - ySalary;
+        taxWater.setAttribute('y', ySalary);
+        taxWater.setAttribute('height', taxHeight);
+
+        taxableIncome = salary - THRESHOLD;
+        tax = taxableIncome * TAX_RATE;
+
+        // 更新辨析框
+        analysisOutput.className = 'analysis-box wrong';
+        analysisOutput.innerHTML = `
+          <strong>💡 课堂辨析：</strong><br>
+          工资 <strong>${salary}元</strong> 已越过安全闸门！<br>
+          只有超出起征点的部分 <strong>${taxableIncome}元</strong> 才需要按 3% 纳税。<br>
+          正确列式：<code>(${salary} - 5000) × 3% = ${tax.toFixed(1)}元</code>
+        `;
+      }
+
+      // 3. 更新计算卡片
+      resTaxable.textContent = taxableIncome + ' 元';
+      resTax.textContent = tax.toFixed(2) + ' 元';
+
+      // 4. 更新动态指示线
+      indicatorLine.setAttribute('y1', ySalary);
+      indicatorLine.setAttribute('y2', ySalary);
+      indicatorBg.setAttribute('y', ySalary - 11);
+      indicatorText.setAttribute('y', ySalary + 5);
+      indicatorText.textContent = salary + '元';
+    }
+
+    // 滑块事件监听
+    slider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      updateVisualization(val);
+      updateActiveButton(val);
+    });
+
+    // 按钮高亮切换
+    function updateActiveButton(val) {
+      btn4800.classList.remove('active');
+      btn5000.classList.remove('active');
+      btn6500.classList.remove('active');
+
+      if (val === 4800) btn4800.classList.add('active');
+      else if (val === 5000) btn5000.classList.add('active');
+      else if (val === 6500) btn6500.classList.add('active');
+    }
+
+    // 快捷按钮事件
+    btn4800.addEventListener('click', () => {
+      slider.value = 4800;
+      updateVisualization(4800);
+      updateActiveButton(4800);
+    });
+
+    btn5000.addEventListener('click', () => {
+      slider.value = 5000;
+      updateVisualization(5000);
+      updateActiveButton(5000);
+    });
+
+    btn6500.addEventListener('click', () => {
+      slider.value = 6500;
+      updateVisualization(6500);
+      updateActiveButton(6500);
+    });
+
+    // 初始化
+    updateVisualization(4800);
+  </script>
+</body>
+</html>

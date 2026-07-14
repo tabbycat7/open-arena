@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值的几何意义互动教学课件</title>
+    <style>
+        /* 课堂投屏优化：大字号、高对比度、清爽配色 */
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #2563eb; /* 动点 x 蓝色 */
+            --point-a: #ea580c; /* 定点 A 橙色 */
+            --point-b: #16a34a; /* 定点 B 绿色 */
+            --dist-a: #f97316;  /* 距离 |x - (-1)| */
+            --dist-b: #22c55e;  /* 距离 |x - 1| */
+            --highlight: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            height: 71.25vw; /* 4:3 */
+            max-width: 1000px;
+            max-height: 750px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* 头部标题与问题引导 */
+        .header {
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .title-badge {
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* 主可视化区域 */
+        .visualization-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 实时公式显示 */
+        .formula-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .formula-text {
+            font-size: 1.8rem;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .formula-text span.val-x { color: var(--primary); }
+        .formula-text span.val-da { color: var(--dist-a); }
+        .formula-text span.val-db { color: var(--dist-b); }
+        .formula-text span.val-sum { color: #7c3aed; background: #f3e8ff; padding: 2px 8px; border-radius: 6px; }
+
+        /* 提示信息 */
+        .status-tip {
+            margin-top: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            height: 24px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+        .status-tip.min-reached {
+            color: #7c3aed;
+            transform: scale(1.05);
+        }
+
+        /* SVG 数轴区域 */
+        .svg-container {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            user-select: none;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 交互控制面板 */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .slider-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #cbd5e1;
+            outline: none;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #eff6ff;
+        }
+
+        /* 底部思考引导 */
+        .footer-guide {
+            margin-top: 12px;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 1rem;
+            color: #b45309;
+        }
+
+        /* 拖拽目标热区 */
+        .draggable-point {
+            cursor: grab;
+        }
+        .draggable-point:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+        <span class="title-badge">高一数学 · 绝对值的几何意义</span>
+        <h1 class="question-text">
+            用“距离”来翻译代数式 <span style="color: #7c3aed;">|x - 1| + |x + 1|</span> 的几何含义。拖动点 x，观察距离之和何时取得最小值？
+        </h1>
+    </div>
+
+    <!-- 主可视化区域 -->
+    <div class="visualization-area">
+        <!-- 实时公式 -->
+        <div class="formula-container">
+            <div class="formula-text">
+                | <span class="val-x">x</span> - 1 | + | <span class="val-x">x</span> - (-1) | 
+                = <span class="val-db">d₁</span> + <span class="val-da">d₂</span> 
+                = <span class="val-sum">2.00</span>
+            </div>
+            <div id="statusTip" class="status-tip">拖动下方蓝色动点 x 观察变化</div>
+        </div>
+
+        <!-- 数轴 SVG -->
+        <div class="svg-container" id="svgWrapper">
+            <svg id="mathSvg" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
+                <!-- 刻度线与网格背景 -->
+                <g opacity="0.15">
+                    <line x1="100" y1="100" x2="700" y2="100" stroke="#000" stroke-width="1" />
+                    <!-- 辅助网格 -->
+                    <path d="M 100,80 L 100,120 M 200,80 L 200,120 M 300,80 L 300,120 M 400,80 L 400,120 M 500,80 L 500,120 M 600,80 L 600,120 M 700,80 L 700,120" stroke="#000" stroke-width="1" />
+                </g>
+
+                <!-- 数轴主干 -->
+                <line x1="50" y1="100" x2="750" y2="100" stroke="#1e293b" stroke-width="3" marker-end="url(#arrow)" />
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#1e293b" />
+                    </marker>
+                </defs>
+
+                <!-- 刻度与标注 -->
+                <!-- -2 -->
+                <line x1="200" y1="90" x2="200" y2="110" stroke="#1e293b" stroke-width="2" />
+                <text x="200" y="135" font-size="16" font-weight="bold" text-anchor="middle" fill="#64748b">-2</text>
+
+                <!-- A (-1) -->
+                <line x1="300" y1="90" x2="300" y2="110" stroke="#1e293b" stroke-width="2" />
+                <circle cx="300" cy="100" r="6" fill="var(--point-a)" />
+                <text x="300" y="135" font-size="18" font-weight="bold" text-anchor="middle" fill="var(--point-a)">A (-1)</text>
+
+                <!-- 0 -->
+                <line x1="400" y1="90" x2="400" y2="110" stroke="#1e293b" stroke-width="2" />
+                <text x="400" y="135" font-size="16" font-weight="bold" text-anchor="middle" fill="#64748b">0</text>
+
+                <!-- B (1) -->
+                <line x1="500" y1="90" x2="500" y2="110" stroke="#1e293b" stroke-width="2" />
+                <circle cx="500" cy="100" r="6" fill="var(--point-b)" />
+                <text x="500" y="135" font-size="18" font-weight="bold" text-anchor="middle" fill="var(--point-b)">B (1)</text>
+
+                <!-- 2 -->
+                <line x1="600" y1="90" x2="600" y2="110" stroke="#1e293b" stroke-width="2" />
+                <text x="600" y="135" font-size="16" font-weight="bold" text-anchor="middle" fill="#64748b">2</text>
+
+                <!-- 动态距离线段 (上方拱形或平行线段，避免重叠) -->
+                <!-- d1: x 到 B(1) 的距离 -->
+                <path id="pathToB" d="M 300,100 Q 300,100 300,100" fill="none" stroke="var(--dist-b)" stroke-width="4" stroke-dasharray="4 2" />
+                <text id="labelToB" x="0" y="55" font-size="14" font-weight="bold" fill="var(--dist-b)" text-anchor="middle">|x - 1|</text>
+
+                <!-- d2: x 到 A(-1) 的距离 -->
+                <path id="pathToA" d="M 500,100 Q 500,100 500,100" fill="none" stroke="var(--dist-a)" stroke-width="4" stroke-dasharray="4 2" />
+                <text id="labelToA" x="0" y="35" font-size="14" font-weight="bold" fill="var(--dist-a)" text-anchor="middle">|x - (-1)|</text>
+
+                <!-- 可拖动的动点 x -->
+                <g id="dragGroup" class="draggable-point">
+                    <!-- 增大热区 -->
+                    <circle id="hotspot" cx="400" cy="100" r="24" fill="transparent" />
+                    <!-- 视觉圆点 -->
+                    <circle id="pointX" cx="400" cy="100" r="10" fill="var(--primary)" stroke="#fff" stroke-width="3" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.3))" />
+                    <!-- 动点标签 -->
+                    <text id="labelX" x="400" y="75" font-size="20" font-weight="bold" fill="var(--primary)" text-anchor="middle">x</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="slider-group">
+                <span class="slider-label">拖动定位 x:</span>
+                <input type="range" id="xSlider" class="custom-slider" min="-2.5" max="2.5" step="0.01" value="0">
+            </div>
+            <div class="btn-group">
+                <button class="preset-btn" data-val="-1.8">x = -1.8</button>
+                <button class="preset-btn" data-val="-0.4">x = -0.4</button>
+                <button class="preset-btn" data-val="1.5">x = 1.5</button>
+            </div>
+        </div>
+
+        <!-- 思考引导 -->
+        <div class="footer-guide">
+            <strong>思考：</strong>当动点 $x$ 在什么区间运动时，红绿两条线段会“首尾相接”？此时它们的长度之和有什么奇妙的变化？
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('xSlider');
+    const dragGroup = document.getElementById('dragGroup');
+    const pointX = document.getElementById('pointX');
+    const labelX = document.getElementById('labelX');
+    const hotspot = document.getElementById('hotspot');
+    const pathToA = document.getElementById('pathToA');
+    const pathToB = document.getElementById('pathToB');
+    const labelToA = document.getElementById('labelToA');
+    const labelToB = document.getElementById('labelToB');
+    const statusTip = document.getElementById('statusTip');
+    const svg = document.getElementById('mathSvg');
+
+    // 公式数值元素
+    const valXSpans = document.querySelectorAll('.val-x');
+    const valDa = document.querySelector('.val-da');
+    const valDb = document.querySelector('.val-db');
+    const valSum = document.querySelector('.val-sum');
+
+    // 数轴物理映射：[-3, 3] 映射到 [100, 700] 像素区间
+    // 比例尺：1单位 = 100像素。原点 0 在 400px 处。
+    const scale = 100;
+    const originX = 400;
+
+    function valToPx(val) {
+        return originX + val * scale;
+    }
+
+    function pxToVal(px) {
+        return (px - originX) / scale;
+    }
+
+    // 更新视图
+    function update(xVal) {
+        // 限制范围
+        xVal = Math.max(-2.8, Math.min(2.8, xVal));
+        
+        // 更新滑块
+        slider.value = xVal;
+
+        // 计算物理坐标
+        const cx = valToPx(xVal);
+        const cy = 100;
+
+        // 移动动点 x
+        pointX.setAttribute('cx', cx);
+        labelX.setAttribute('x', cx);
+        hotspot.setAttribute('cx', cx);
+
+        // 计算距离
+        const distA = Math.abs(xVal - (-1));
+        const distB = Math.abs(xVal - 1);
+        const sum = distA + distB;
+
+        // 渲染距离线段 (用二次贝塞尔曲线做成不同高度的拱桥，避免重叠)
+        const pxA = valToPx(-1);
+        const pxB = valToPx(1);
+
+        // d2: x 到 A(-1) 的线段 (橙色)
+        // 弧度高度随距离拉伸
+        const hA = 100 - Math.min(40, distA * 15);
+        pathToA.setAttribute('d', `M ${pxA},100 Q ${(pxA + cx)/2},${hA} ${cx},100`);
+        labelToA.setAttribute('x', (pxA + cx)/2);
+        labelToA.setAttribute('y', hA - 8);
+        labelToA.textContent = `|x - (-1)| = ${distA.toFixed(2)}`;
+
+        // d1: x 到 B(1) 的线段 (绿色)
+        const hB = 100 - Math.min(40, distB * 15) - 15; // 稍微错开高度
+        pathToB.setAttribute('d', `M ${pxB},100 Q ${(pxB + cx)/2},${hB} ${cx},100`);
+        labelToB.setAttribute('x', (pxB + cx)/2);
+        labelToB.setAttribute('y', hB - 8);
+        labelToB.textContent = `|x - 1| = ${distB.toFixed(2)}`;
+
+        // 更新公式数值
+        valXSpans.forEach(span => span.textContent = xVal.toFixed(2));
+        valDa.textContent = distA.toFixed(2);
+        valDb.textContent = distB.toFixed(2);
+        valSum.textContent = sum.toFixed(2);
+
+        // 状态提示与高亮
+        if (xVal >= -1 && xVal <= 1) {
+            statusTip.textContent = "★ 此时 x 在 [-1, 1] 之间，距离之和取得最小值 2！";
+            statusTip.className = "status-tip min-reached";
+            valSum.style.background = "#22c55e";
+            valSum.style.color = "#fff";
+        } else {
+            statusTip.textContent = "拖动点 x 进入 [-1, 1] 区间看看会发生什么？";
+            statusTip.className = "status-tip";
+            valSum.style.background = "#f3e8ff";
+            valSum.style.color = "#7c3aed";
+        }
+    }
+
+    // 滑块事件
+    slider.addEventListener('input', (e) => {
+        update(parseFloat(e.target.value));
+    });
+
+    // 预设按钮事件
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = parseFloat(btn.getAttribute('data-val'));
+            // 平滑过渡效果
+            let current = parseFloat(slider.value);
+            const step = (val - current) / 10;
+            let count = 0;
+            function animate() {
+                if (count < 10) {
+                    current += step;
+                    update(current);
+                    count++;
+                    requestAnimationFrame(animate);
+                } else {
+                    update(val);
+                }
+            }
+            animate();
+        });
+    });
+
+    // SVG 拖拽交互实现
+    let isDragging = false;
+
+    function getMouseX(e) {
+        const rect = svg.getBoundingClientRect();
+        // 考虑 SVG viewBox 的缩放
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        return (clientX - rect.left) * (800 / rect.width);
+    }
+
+    dragGroup.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        document.body.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const mouseX = getMouseX(e);
+        const xVal = pxToVal(mouseX);
+        update(xVal);
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+        }
+    });
+
+    // 移动端触摸支持
+    dragGroup.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        e.preventDefault();
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const mouseX = getMouseX(e);
+        const xVal = pxToVal(mouseX);
+        update(xVal);
+    });
+
+    window.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    // 初始化
+    update(0);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+{
+  "id": "b848c6e0-cad3-42f1-9759-4fd2f98b31d4",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "1.理解利率、利息的含义，掌握利息的计算公式：利息=本金×利率×存期。2.能够根据存款利率表计算不同存期的利息，并进行比较。",
+  "student_profile": "六年级学生已经掌握了百分数的基本概念、百分数与分数、小数的互化，能够进行简单的百分数计算。他们在日常生活中也接触过“利率”“存款”“利息”等词汇，具备一定的生活经验。然而，学生对银行利率的实际含义、不同理财方式的区别、利率变化的原因等缺乏系统认识，计算能力虽已具备，但在实际情境中灵活运用仍显不足。此外，六年级学生正处于抽象思维发展的关键期，能够通过具体情境理解数学概念，但仍需借助直观材料和实际操作来加深理解。因此，本课将采用任务驱动、探究学习、合作交流等多种教学方式，帮助学生在真实情境中建构知识。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"过年后把压岁钱存进银行，一年后取出来发现钱变多了。银行多给的这部分钱，是白送的吗？你觉得，它应该叫什么名字？多给多少，可能跟哪些因素有关呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"通过‘压岁钱存银行一年后变多’这一熟悉情境，激活学生对‘利息’的感性认知。抛出‘为什么银行会多给钱？多给的部分叫什么？多给多少由什么决定？’等问题，引导学生在生活经验与数学概念（利率、利息）间建立连接，并引发对决定因素的初步思考。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"小明把1000元压岁钱存一年，年利率是3%，到期时银行应该多给他多少钱？请你先试着算一算。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"提供一个本金、利率、存期明确的最简计算实例，引导学生运用百分数知识计算一年的利息。这为学生后续从多个计算结果中发现规律、抽象公式提供了第一个清晰的数据锚点。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"小红算了笔账：5000元，年利率2.5%，存6个月，她用刚才的方法算得利息750元。可是银行却说125元才对。为什么她算的金额会不对？我们一步步想想，问题出在哪？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"design_intent\": \"呈现一个单位不匹配的错例，制造强烈认知冲突。引导学生通过初步验证（发现750元远大于一年的利息125元）发现矛盾，从而驱动他们深入辨析‘年利率’与‘月存期’的单位不匹配问题，深刻理解公式应用中‘时间单位必须一致’的原则。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"（出示利率表）妈妈准备将2万元存三年定期。你能先找到需要的利率，再帮她算出到期利息是多少吗？说说你的完整思路。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.68, \"design_intent\": \"提供简化的银行存款利率表，创设一个贴近真实的任务情境。要求学生整合‘识表-提取数据-单位确认-计算’的完整流程，将经过M3纠错后规范化的公式理解应用于新情境，实现程序性知识的巩固。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"假如你有一万元压岁钱，利率表上一年期和三年期的利率不同。你会选择存一年还是存三年？说说你这样选择的理由。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.75, \"design_intent\": \"创设一个开放性的决策任务。引导学生在比较不同存期预期利息的基础上，整合考量收益、流动性等非数学因素进行评价与选择，实现知识的跨情境迁移和初步的金融素养培养。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"小华把数学竞赛获得的奖学金，放入了余额宝里。一个月后，他发现余额宝里多了一点点钱。这笔收益，是银行白送的吗？我们该叫它“利息”吗？这笔多出来的钱，是谁发给他的呢？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.58, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将情境从“银行压岁钱”迁移至“余额宝奖学金”，引导学生在新的金融场景（货币基金）中，识别并讨论收益的本质与来源，巩固‘利息’概念并拓宽其应用认知边界。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"小刚存入银行一笔钱，一年后得到了60元利息。他记得当初存了2000元。我们能不能算出当时的年利率是多少呢？利息公式‘利息=本金×利率×时间’，可以怎么变形成帮助我们求利率的算式？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.67, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"在主问题正向计算利息后，反方向设置已知利息、本金、时间求利率的问题，引导学生对公式进行变形和逆向应用，深化对利息计算公式中数量关系的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"爸爸说有一种存款月利率是0.2%。小强想存2年，他直接列式计算：5000×0.2%×2=20元。你觉得这样计算2年的利息，结果可靠吗？算式里的‘时间’和‘利率’单位一致吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"将M3中的“年利率+月存期”单位错配陷阱，变换为“月利率+年存期”，再次检验学生对于利率与存期时间单位必须一致的认知，强化对公式适用条件的辨析能力。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"（出示A银行和B银行不同的利率表）爸爸想把5万元在A银行存两年定期。请你先对比一下，然后从利率表中找到正确的利率，帮他算出到期能得到多少利息。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.66, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过变换利率表（不同银行）和本金数额，创设一个新的“咨询建议”情境，要求学生重复“识表-选数-计算”的规范流程，巩固在真实信息中提取数据并准确计算利息的技能。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"你这笔钱计划三年后用，但又担心万一明年有急事要用。面对一年期和三年期两种选择，一年一年存（每年到期后连本带利再存一年）和直接存三年定期，哪种方式的利息可能更多或更有灵活性？说说你的权衡。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"增加‘未来用钱时间不确定’这一约束，引导学生在计算静态利息的基础上，进一步对比分析‘短期滚动存’的灵活性与‘长期锁定’的高收益潜力之间的冲突，进行更复杂的财务决策思考。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"小明用年利率3%算了6个月的利息。你觉得这里有什么地方需要特别注意吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"通过具体例子对比，温和地提示学生关注利率（年）与存期（月）的单位差异，为理解M3中单位不匹配的错例做铺垫。\", \"design_intent\": \"针对学困生‘公式应用僵化’的障碍，通过具体实例提问，引导学生主动思考利率与存期的时间单位匹配问题，建立‘单位一致’的初步警觉。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"利率2.5%是百分数，计算利息时，你觉得需要先把它变成什么样子的数？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"引导学生思考百分数在乘法运算中的意义及形式转换的必要性，为M3中利率数据的正确处理扫清机械性障碍。\", \"design_intent\": \"将技能操作（转化）背后的原理（为何及如何转化）作为提问点，帮助学困生理解百分数参与运算的逻辑，而不仅仅是记忆步骤。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"从利率表中，你能找到定期一年的利率吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"帮助学困生熟悉利率表识读，准确提取关键数据，为M4中根据存期查找利率扫清信息提取障碍。\", \"design_intent\": \"在展示利率表后，不立即连接M4任务，而是先问几个指向性问题：‘找一找，定期一年的利率是多少？定期三年的利率是多少？’确保所有学生，特别是学困生，能准确找到信息，为后续计算扫清数据提取障碍。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"要帮妈妈算利息，你觉得需要先弄清楚哪几件事？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"引导学生从混乱的任务情境中，自主梳理出计算利息所需的核心要素（本金、存期、利率），构建清晰的思维框架，以应对M4的综合计算任务。\", \"design_intent\": \"引导学生口头或简单列出计算前的准备步骤（找数据、确认单位、转化利率），通过自发的规划来内化程序，而非提供填空模板。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-21 17:20:05",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "过年后把压岁钱存进银行，一年后取出来发现钱变多了。银行多给的这部分钱，是白送的吗？你觉得，它应该叫什么名字？多给多少，可能跟哪些因素有关呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "通过‘压岁钱存银行一年后变多’这一熟悉情境，激活学生对‘利息’的感性认知。抛出‘为什么银行会多给钱？多给的部分叫什么？多给多少由什么决定？’等问题，引导学生在生活经验与数学概念（利率、利息）间建立连接，并引发对决定因素的初步思考。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "小明把1000元压岁钱存一年，年利率是3%，到期时银行应该多给他多少钱？请你先试着算一算。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "提供一个本金、利率、存期明确的最简计算实例，引导学生运用百分数知识计算一年的利息。这为学生后续从多个计算结果中发现规律、抽象公式提供了第一个清晰的数据锚点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "小红算了笔账：5000元，年利率2.5%，存6个月，她用刚才的方法算得利息750元。可是银行却说125元才对。为什么她算的金额会不对？我们一步步想想，问题出在哪？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "design_intent": "呈现一个单位不匹配的错例，制造强烈认知冲突。引导学生通过初步验证（发现750元远大于一年的利息125元）发现矛盾，从而驱动他们深入辨析‘年利率’与‘月存期’的单位不匹配问题，深刻理解公式应用中‘时间单位必须一致’的原则。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "（出示利率表）妈妈准备将2万元存三年定期。你能先找到需要的利率，再帮她算出到期利息是多少吗？说说你的完整思路。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.68,
+        "design_intent": "提供简化的银行存款利率表，创设一个贴近真实的任务情境。要求学生整合‘识表-提取数据-单位确认-计算’的完整流程，将经过M3纠错后规范化的公式理解应用于新情境，实现程序性知识的巩固。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "假如你有一万元压岁钱，利率表上一年期和三年期的利率不同。你会选择存一年还是存三年？说说你这样选择的理由。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.75,
+        "design_intent": "创设一个开放性的决策任务。引导学生在比较不同存期预期利息的基础上，整合考量收益、流动性等非数学因素进行评价与选择，实现知识的跨情境迁移和初步的金融素养培养。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "小华把数学竞赛获得的奖学金，放入了余额宝里。一个月后，他发现余额宝里多了一点点钱。这笔收益，是银行白送的吗？我们该叫它“利息”吗？这笔多出来的钱，是谁发给他的呢？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.58,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将情境从“银行压岁钱”迁移至“余额宝奖学金”，引导学生在新的金融场景（货币基金）中，识别并讨论收益的本质与来源，巩固‘利息’概念并拓宽其应用认知边界。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "小刚存入银行一笔钱，一年后得到了60元利息。他记得当初存了2000元。我们能不能算出当时的年利率是多少呢？利息公式‘利息=本金×利率×时间’，可以怎么变形成帮助我们求利率的算式？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.67,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "在主问题正向计算利息后，反方向设置已知利息、本金、时间求利率的问题，引导学生对公式进行变形和逆向应用，深化对利息计算公式中数量关系的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "爸爸说有一种存款月利率是0.2%。小强想存2年，他直接列式计算：5000×0.2%×2=20元。你觉得这样计算2年的利息，结果可靠吗？算式里的‘时间’和‘利率’单位一致吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "将M3中的“年利率+月存期”单位错配陷阱，变换为“月利率+年存期”，再次检验学生对于利率与存期时间单位必须一致的认知，强化对公式适用条件的辨析能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "（出示A银行和B银行不同的利率表）爸爸想把5万元在A银行存两年定期。请你先对比一下，然后从利率表中找到正确的利率，帮他算出到期能得到多少利息。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.66,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过变换利率表（不同银行）和本金数额，创设一个新的“咨询建议”情境，要求学生重复“识表-选数-计算”的规范流程，巩固在真实信息中提取数据并准确计算利息的技能。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "你这笔钱计划三年后用，但又担心万一明年有急事要用。面对一年期和三年期两种选择，一年一年存（每年到期后连本带利再存一年）和直接存三年定期，哪种方式的利息可能更多或更有灵活性？说说你的权衡。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "增加‘未来用钱时间不确定’这一约束，引导学生在计算静态利息的基础上，进一步对比分析‘短期滚动存’的灵活性与‘长期锁定’的高收益潜力之间的冲突，进行更复杂的财务决策思考。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "小明用年利率3%算了6个月的利息。你觉得这里有什么地方需要特别注意吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "通过具体例子对比，温和地提示学生关注利率（年）与存期（月）的单位差异，为理解M3中单位不匹配的错例做铺垫。",
+        "design_intent": "针对学困生‘公式应用僵化’的障碍，通过具体实例提问，引导学生主动思考利率与存期的时间单位匹配问题，建立‘单位一致’的初步警觉。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "利率2.5%是百分数，计算利息时，你觉得需要先把它变成什么样子的数？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "引导学生思考百分数在乘法运算中的意义及形式转换的必要性，为M3中利率数据的正确处理扫清机械性障碍。",
+        "design_intent": "将技能操作（转化）背后的原理（为何及如何转化）作为提问点，帮助学困生理解百分数参与运算的逻辑，而不仅仅是记忆步骤。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "从利率表中，你能找到定期一年的利率吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "帮助学困生熟悉利率表识读，准确提取关键数据，为M4中根据存期查找利率扫清信息提取障碍。",
+        "design_intent": "在展示利率表后，不立即连接M4任务，而是先问几个指向性问题：‘找一找，定期一年的利率是多少？定期三年的利率是多少？’确保所有学生，特别是学困生，能准确找到信息，为后续计算扫清数据提取障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "要帮妈妈算利息，你觉得需要先弄清楚哪几件事？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "引导学生从混乱的任务情境中，自主梳理出计算利息所需的核心要素（本金、存期、利率），构建清晰的思维框架，以应对M4的综合计算任务。",
+        "design_intent": "引导学生口头或简单列出计算前的准备步骤（找数据、确认单位、转化利率），通过自发的规划来内化程序，而非提供填空模板。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

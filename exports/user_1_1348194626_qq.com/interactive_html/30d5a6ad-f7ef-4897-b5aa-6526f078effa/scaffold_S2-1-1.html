@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>鹦鹉学舌与AI学习</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 600px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 10px; }
+        #canvas-area { flex-grow: 1; width: 100%; position: relative; }
+        .controls { display: flex; gap: 20px; margin-top: 20px; }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        #btn-good { background-color: #2ecc71; }
+        #btn-bad { background-color: #e74c3c; }
+        #hint { margin-top: 20px; font-size: 16px; color: #555; font-weight: bold; }
+        
+        .bubble { font-size: 20px; font-weight: bold; opacity: 0; transition: opacity 0.3s; }
+        .note { font-size: 24px; opacity: 0; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>鹦鹉学舌实验</h2>
+    <div id="canvas-area">
+        <svg viewBox="0 0 400 300" width="100%" height="100%">
+            <!-- 鹦鹉身体 -->
+            <g id="parrot">
+                <circle id="body" cx="200" cy="200" r="40" fill="#2ecc71" />
+                <circle id="eye" cx="215" cy="185" r="5" fill="black" />
+                <path id="beak" d="M225 195 L240 205 L225 215 Z" fill="#f1c40f" />
+            </g>
+            <!-- 对话框 -->
+            <rect id="bubble-rect" x="250" y="120" width="100" height="40" rx="10" fill="white" stroke="#333" opacity="0" />
+            <text id="bubble-text" x="300" y="145" text-anchor="middle" font-size="16" opacity="0">你好！</text>
+            <!-- 音符 -->
+            <text id="note" x="200" y="150" opacity="0">♪</text>
+        </svg>
+    </div>
+    
+    <div class="controls">
+        <button id="btn-good">教它说“谢谢”</button>
+        <button id="btn-bad">教它说“讨厌”</button>
+    </div>
+    
+    <div id="hint">AI和鹦鹉一样，你教它什么，它就学会什么。</div>
+</div>
+
+<script>
+    const parrotBody = document.getElementById('body');
+    const bubbleRect = document.getElementById('bubble-rect');
+    const bubbleText = document.getElementById('bubble-text');
+    const note = document.getElementById('note');
+    const btnGood = document.getElementById('btn-good');
+    const btnBad = document.getElementById('btn-bad');
+
+    function showResponse(text, color, isHappy) {
+        // 重置状态
+        parrotBody.style.fill = isHappy ? '#2ecc71' : '#95a5a6';
+        bubbleRect.setAttribute('stroke', color);
+        bubbleText.textContent = text;
+        
+        // 动画效果
+        bubbleRect.style.opacity = '1';
+        bubbleText.style.opacity = '1';
+        note.style.opacity = '1';
+        
+        setTimeout(() => {
+            bubbleRect.style.opacity = '0';
+            bubbleText.style.opacity = '0';
+            note.style.opacity = '0';
+        }, 2000);
+    }
+
+    btnGood.addEventListener('click', () => {
+        showResponse('谢谢！', '#2ecc71', true);
+    });
+
+    btnBad.addEventListener('click', () => {
+        showResponse('讨厌！', '#e74c3c', false);
+    });
+</script>
+
+</body>
+</html>

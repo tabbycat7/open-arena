@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人泡茶算法设计</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --success: #f1c40f; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f7f6; color: var(--primary); }
+        #app { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; display: flex; flex-direction: column; align-items: center; }
+        .stage { width: 100%; text-align: center; margin-bottom: 20px; }
+        #instruction-box { padding: 20px; border: 2px dashed #bdc3c7; border-radius: 8px; font-size: 1.2em; font-weight: bold; min-height: 50px; transition: all 0.3s; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; width: 100%; margin: 20px 0; }
+        .control-item { display: flex; flex-direction: column; align-items: center; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        button { padding: 10px 25px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 10px; }
+        #robot-area { width: 200px; height: 200px; position: relative; margin-top: 20px; }
+        .medal { position: absolute; top: 0; right: 0; font-size: 3em; opacity: 0; transition: opacity 0.5s; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="stage">
+        <h3>当前步骤：</h3>
+        <div id="instruction-box">“用热水泡一会儿，茶香了即可”</div>
+    </div>
+
+    <div class="controls">
+        <div class="control-item">
+            <label>水温: <span id="val-temp">80</span>℃</label>
+            <input type="range" id="range-temp" min="60" max="100" value="80">
+        </div>
+        <div class="control-item">
+            <label>时间: <span id="val-time">2</span>分钟</label>
+            <input type="range" id="range-time" min="1" max="10" value="2">
+        </div>
+        <div class="control-item">
+            <label>水量: <span id="val-water">150</span>毫升</label>
+            <input type="range" id="range-water" min="100" max="500" step="50" value="150">
+        </div>
+    </div>
+
+    <button id="btn-convert">转换为算法</button>
+
+    <div id="robot-area">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <circle cx="50" cy="50" r="40" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>
+            <rect x="35" y="30" width="30" height="40" rx="5" fill="#95a5a6"/>
+            <circle id="eye-l" cx="42" cy="40" r="3" fill="#2c3e50"/>
+            <circle id="eye-r" cx="58" cy="40" r="3" fill="#2c3e50"/>
+            <path id="mouth" d="M 40 60 Q 50 65 60 60" stroke="#2c3e50" fill="none" stroke-width="2"/>
+        </svg>
+        <div id="medal" class="medal">🏆</div>
+    </div>
+</div>
+
+<script>
+    const rangeTemp = document.getElementById('range-temp');
+    const rangeTime = document.getElementById('range-time');
+    const rangeWater = document.getElementById('range-water');
+    const valTemp = document.getElementById('val-temp');
+    const valTime = document.getElementById('val-time');
+    const valWater = document.getElementById('val-water');
+    const instructionBox = document.getElementById('instruction-box');
+    const btnConvert = document.getElementById('btn-convert');
+    const medal = document.getElementById('medal');
+
+    const updateLabels = () => {
+        valTemp.textContent = rangeTemp.value;
+        valTime.textContent = rangeTime.value;
+        valWater.textContent = rangeWater.value;
+    };
+
+    rangeTemp.addEventListener('input', updateLabels);
+    rangeTime.addEventListener('input', updateLabels);
+    rangeWater.addEventListener('input', updateLabels);
+
+    btnConvert.addEventListener('click', () => {
+        const t = rangeTemp.value;
+        const m = rangeTime.value;
+        const w = rangeWater.value;
+        
+        instructionBox.style.borderColor = "#27ae60";
+        instructionBox.style.color = "#27ae60";
+        instructionBox.textContent = `倒入${w}毫升${t}℃的热水，静置${m}分钟。`;
+        
+        medal.style.opacity = "1";
+        document.getElementById('mouth').setAttribute('d', 'M 40 55 Q 50 50 60 55');
+    });
+</script>
+
+</body>
+</html>

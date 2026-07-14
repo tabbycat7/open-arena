@@ -1,0 +1,315 @@
+{
+  "id": "e743d05d-3796-490c-8c6c-84146b11477a",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性\r\n\r\n",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"细胞分裂数量是翻倍增长，放射性物质质量是对半衰减。这一增一减的两个过程，变化的“节奏感”有什么惊人的相似？这会是我们初中认识的哪位函数朋友吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.6, \"design_intent\": \"提供细胞分裂（数量倍增）和放射性物质衰减（质量减半）两个一增一减的熟悉情境，让学生对比其数量变化规律的异同。期待激活学生对‘恒定比例变化’这一指数函数核心特征的直观感知，并引发‘如何用统一数学模型描述这两种看似相反的现象’的认知挑战。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"我们把这个统一的数学模型写成 y=a^x。可是，如果我们偷偷让 a=-2，你觉得当x取1/2时，这个算式会告诉我们一个怎样的结果？这合理吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"在给出指数函数标准形式 y=a^x 后，不直接告知底数限制，而是抛出‘为什么 a 不能等于1？为什么 a 要大于0？如果 a=-2，函数 y=(-2)^x 会怎样？’等系列追问。期待激活学生的批判性思维，通过计算和讨论反例（如a=1时函数退化为常函数，a=-2时x取1/2无实数解），在认知冲突中深刻建构对定义限制条件的理解，而非机械记忆。\", \"design_rationale\": \"\"}, {\"id\": \"M2.5\", \"content\": \"既然底数a只能在大于0且不等于1的广阔天地里取值，为了看清整个指数函数家族的“相貌”，你觉得我们应该先重点研究哪几个最有代表性的a？选它们的理由是什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.7, \"design_intent\": \"在明确定义限制后，引导学生思考研究策略。期待学生能意识到选择典型代表（如a>1和0<a<1各一个）的必要性，并能基于定义初步预测这两类函数图像增减趋势的不同，为后续作图活动提供明确目的和方向。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"假设现在情报有限，只允许你们为y=2^x选择三个x的值来计算并描点。你们小组敢选哪三个？说说看，为什么这三个点就足以让我们猜出它图像的大致模样？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"design_intent\": \"将焦点从“如何画图”转向“如何智慧地取点”。通过限制点数和开放讨论，引导学生深入思考描点法的关键：选取能揭示函数特征（如定点、趋势、渐近线）的点。期待在辩论中深化对图像特征的理解，并暴露取点不当可能导致的问题。\", \"design_rationale\": \"\"}, {\"id\": \"M3.5\", \"content\": \"现在，面对亲手画出的y=2^x和y=(1/2)^x两幅图像，如果用一句话向别人介绍它们最显著的不同，你会怎么说？你能试着把这种直观的“上升”“下降”，翻译成更准确的数学语言吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"引导学生从图像观察中自主归纳指数函数的单调性。第一步鼓励学生用自己的话描述直观差异；第二步挑战他们将其转化为“当x增大时，y如何变化”的精准数学表述。这是从图形感知到性质抽象的关键一步，为后续应用奠定基础。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"有同学说，因为(0.3)^(-0.5)的指数更大，所以它一定大于(0.3)^0.2。这个推理过程看起来挺顺，但里面藏着一个关键的漏洞，你们发现了吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"提供一个需要综合运用单调性的问题链：1) 比较 (0.3)^(-0.5) 与 (0.3)^0.2 的大小；2) 解不等式 a^x > a^3 （a为常数，但未指明范围）。期待学生在解决问题1时，能完整书写基于单调性的推理过程；在解决问题2时，能暴露出‘忽略讨论底数a范围’这一典型错误，从而驱动他们主动整合之前所学（底数分类），形成严谨的解题步骤：‘先判底数，再定方向’。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果一条爆炸性新闻在班级群里裂变传播，每人看到后都立刻转发给2个新同学。这轮复一轮的传播，其人数增长的“节奏感”，和我们讨论的细胞分裂惊人相似吗？关键相似点是什么？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.62, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将生物学背景替换为更贴近学生生活的网络情境，检验学生能否在不同背景下识别出“指数增长”模型的核心特征（每轮新增人数与当前总人数成固定比例）。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"y=1^x 也长成 y=a^x 的样子。有人说它是指数函数，也有人说它不是。你觉得呢？它的图像会告诉我们什么秘密，这又和 a≠1 这条限制有何关系？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.7, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"深化对 a≠1 的理解。让学生通过特例发现，当a=1时函数失去“变化”的特性，从而理解将其排除在指数函数外是为了保证研究的是有变化规律的一类函数。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"假设现在只给你三个点来画 y=3^x：当x=0，1，2。根据这三点连出的线，你能完整“猜”出它图像的全貌吗？对比标准图像，你觉得这样画最可能“误导”我们错过哪个关键特征？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP3\", \"KP4\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.72, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"故意设置取点不足的条件，让学生亲身体验并评价由此导致的图像失真，从而深刻理解描点法中“取点要具有代表性（需包含负数）”的重要性，针对性纠正易错点。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"不计算具体值，仅用单调性快速判断：① 1.7^0.3 与 1.7^0.4 谁大？② 0.4^0.3 与 0.4^0.4 谁大？仔细观察你两次推理的过程，核心步骤有什么相同与不同？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.78, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过对比底数大于1和小于1的两种情况，强化“应用单调性必须先判断底数范围”的步骤。让学生分析两种情况下推理的逻辑一致性（都是利用单调性）和结论的差异性（增减性不同导致大小关系相反）。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"细胞分裂时，从第0代到第1代，数量变成了几倍？那从第1代到第2代呢？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生从M1的具体实例中，剥离出“每期数量是前一期固定倍数”的递推关系，为M2中抽象出y=a^x形式做具体准备。\", \"design_intent\": \"通过重复询问相邻两代间的倍数关系，强化学生对“恒定比例变化”的感知，并将其固化为一个具体的数字（2倍），为下一步将其作为底数a打下基础。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"不查表，你能算出 2^(-1) 和 2^(1/2) 大概是多少吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.35, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"复习关键的指数运算法则，确保学生在M3进行列表计算时，不会因为对负指数、分数指数运算不熟而停滞，保障作图活动的流畅性。\", \"design_intent\": \"以最简形式回顾负指数和分数指数的意义（倒数与根式），通过心算估算降低学生对复杂符号的畏惧感，为精确计算做心理和知识预热。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"如果想画 y=2^x 的图，你觉得至少要算出哪几个x对应的y值，点才够用？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"将描点法的程序性知识转化为一个策略性问题，引导学生思考取点的目的（反映趋势、关键点），自然衔接M2对函数的理解与M3中“智慧取点”的深层讨论。\", \"design_intent\": \"避开步骤罗列，以目标导向的提问，激发学生思考作图的前提是“算哪些值”，从而在行动前建立对函数图像范围（定义域内）和特征点（如过定点）的初步预期。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"在y=2^x上升的曲线上，如果x的值变大，它对应的点会沿着曲线往哪个方向走？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"利用M3中已画出的具体图像，引导学生用动态的、几何的语言描述“单调递增”，为M4中将其转化为“f(x1)与f(x2)比大小”的符号语言做直观铺垫。\", \"design_intent\": \"\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M2.5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2.5\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M3.5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3.5\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-21 15:40:54",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "细胞分裂数量是翻倍增长，放射性物质质量是对半衰减。这一增一减的两个过程，变化的“节奏感”有什么惊人的相似？这会是我们初中认识的哪位函数朋友吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.6,
+        "design_intent": "提供细胞分裂（数量倍增）和放射性物质衰减（质量减半）两个一增一减的熟悉情境，让学生对比其数量变化规律的异同。期待激活学生对‘恒定比例变化’这一指数函数核心特征的直观感知，并引发‘如何用统一数学模型描述这两种看似相反的现象’的认知挑战。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "我们把这个统一的数学模型写成 y=a^x。可是，如果我们偷偷让 a=-2，你觉得当x取1/2时，这个算式会告诉我们一个怎样的结果？这合理吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "在给出指数函数标准形式 y=a^x 后，不直接告知底数限制，而是抛出‘为什么 a 不能等于1？为什么 a 要大于0？如果 a=-2，函数 y=(-2)^x 会怎样？’等系列追问。期待激活学生的批判性思维，通过计算和讨论反例（如a=1时函数退化为常函数，a=-2时x取1/2无实数解），在认知冲突中深刻建构对定义限制条件的理解，而非机械记忆。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2.5",
+        "content": "既然底数a只能在大于0且不等于1的广阔天地里取值，为了看清整个指数函数家族的“相貌”，你觉得我们应该先重点研究哪几个最有代表性的a？选它们的理由是什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.7,
+        "design_intent": "在明确定义限制后，引导学生思考研究策略。期待学生能意识到选择典型代表（如a>1和0<a<1各一个）的必要性，并能基于定义初步预测这两类函数图像增减趋势的不同，为后续作图活动提供明确目的和方向。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "假设现在情报有限，只允许你们为y=2^x选择三个x的值来计算并描点。你们小组敢选哪三个？说说看，为什么这三个点就足以让我们猜出它图像的大致模样？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "design_intent": "将焦点从“如何画图”转向“如何智慧地取点”。通过限制点数和开放讨论，引导学生深入思考描点法的关键：选取能揭示函数特征（如定点、趋势、渐近线）的点。期待在辩论中深化对图像特征的理解，并暴露取点不当可能导致的问题。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3.5",
+        "content": "现在，面对亲手画出的y=2^x和y=(1/2)^x两幅图像，如果用一句话向别人介绍它们最显著的不同，你会怎么说？你能试着把这种直观的“上升”“下降”，翻译成更准确的数学语言吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "引导学生从图像观察中自主归纳指数函数的单调性。第一步鼓励学生用自己的话描述直观差异；第二步挑战他们将其转化为“当x增大时，y如何变化”的精准数学表述。这是从图形感知到性质抽象的关键一步，为后续应用奠定基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "有同学说，因为(0.3)^(-0.5)的指数更大，所以它一定大于(0.3)^0.2。这个推理过程看起来挺顺，但里面藏着一个关键的漏洞，你们发现了吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "提供一个需要综合运用单调性的问题链：1) 比较 (0.3)^(-0.5) 与 (0.3)^0.2 的大小；2) 解不等式 a^x > a^3 （a为常数，但未指明范围）。期待学生在解决问题1时，能完整书写基于单调性的推理过程；在解决问题2时，能暴露出‘忽略讨论底数a范围’这一典型错误，从而驱动他们主动整合之前所学（底数分类），形成严谨的解题步骤：‘先判底数，再定方向’。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果一条爆炸性新闻在班级群里裂变传播，每人看到后都立刻转发给2个新同学。这轮复一轮的传播，其人数增长的“节奏感”，和我们讨论的细胞分裂惊人相似吗？关键相似点是什么？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.62,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将生物学背景替换为更贴近学生生活的网络情境，检验学生能否在不同背景下识别出“指数增长”模型的核心特征（每轮新增人数与当前总人数成固定比例）。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "y=1^x 也长成 y=a^x 的样子。有人说它是指数函数，也有人说它不是。你觉得呢？它的图像会告诉我们什么秘密，这又和 a≠1 这条限制有何关系？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.7,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "深化对 a≠1 的理解。让学生通过特例发现，当a=1时函数失去“变化”的特性，从而理解将其排除在指数函数外是为了保证研究的是有变化规律的一类函数。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "假设现在只给你三个点来画 y=3^x：当x=0，1，2。根据这三点连出的线，你能完整“猜”出它图像的全貌吗？对比标准图像，你觉得这样画最可能“误导”我们错过哪个关键特征？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.72,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "故意设置取点不足的条件，让学生亲身体验并评价由此导致的图像失真，从而深刻理解描点法中“取点要具有代表性（需包含负数）”的重要性，针对性纠正易错点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "不计算具体值，仅用单调性快速判断：① 1.7^0.3 与 1.7^0.4 谁大？② 0.4^0.3 与 0.4^0.4 谁大？仔细观察你两次推理的过程，核心步骤有什么相同与不同？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.78,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过对比底数大于1和小于1的两种情况，强化“应用单调性必须先判断底数范围”的步骤。让学生分析两种情况下推理的逻辑一致性（都是利用单调性）和结论的差异性（增减性不同导致大小关系相反）。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "细胞分裂时，从第0代到第1代，数量变成了几倍？那从第1代到第2代呢？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生从M1的具体实例中，剥离出“每期数量是前一期固定倍数”的递推关系，为M2中抽象出y=a^x形式做具体准备。",
+        "design_intent": "通过重复询问相邻两代间的倍数关系，强化学生对“恒定比例变化”的感知，并将其固化为一个具体的数字（2倍），为下一步将其作为底数a打下基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "不查表，你能算出 2^(-1) 和 2^(1/2) 大概是多少吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.35,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "复习关键的指数运算法则，确保学生在M3进行列表计算时，不会因为对负指数、分数指数运算不熟而停滞，保障作图活动的流畅性。",
+        "design_intent": "以最简形式回顾负指数和分数指数的意义（倒数与根式），通过心算估算降低学生对复杂符号的畏惧感，为精确计算做心理和知识预热。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "如果想画 y=2^x 的图，你觉得至少要算出哪几个x对应的y值，点才够用？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "将描点法的程序性知识转化为一个策略性问题，引导学生思考取点的目的（反映趋势、关键点），自然衔接M2对函数的理解与M3中“智慧取点”的深层讨论。",
+        "design_intent": "避开步骤罗列，以目标导向的提问，激发学生思考作图的前提是“算哪些值”，从而在行动前建立对函数图像范围（定义域内）和特征点（如过定点）的初步预期。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "在y=2^x上升的曲线上，如果x的值变大，它对应的点会沿着曲线往哪个方向走？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "利用M3中已画出的具体图像，引导学生用动态的、几何的语言描述“单调递增”，为M4中将其转化为“f(x1)与f(x2)比大小”的符号语言做直观铺垫。",
+        "design_intent": "",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M2.5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2.5",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M3.5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3.5",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

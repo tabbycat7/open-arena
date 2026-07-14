@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的有穷性演示</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        #container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls { margin-bottom: 20px; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        button:hover { background: #0056b3; }
+        #status { font-weight: bold; margin-top: 10px; height: 30px; }
+        svg { width: 100%; height: 100%; }
+        .node { fill: #e1f5fe; stroke: #0277bd; stroke-width: 2; }
+        .text { font-size: 14px; pointer-events: none; }
+        .arrow { stroke: #333; stroke-width: 2; fill: none; }
+        #dot { fill: red; transition: all 0.3s linear; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div class="controls">
+        <button id="btnStart">开始执行</button>
+        <button id="btnModify">修改算法</button>
+        <button id="btnReset">重置</button>
+    </div>
+    <div id="status"></div>
+    <svg id="flowchart" viewBox="0 0 600 300">
+        <!-- 基础节点 -->
+        <rect id="n1" x="50" y="50" width="100" height="50" rx="10" class="node" />
+        <text x="100" y="80" text-anchor="middle" class="text">看桌子</text>
+        
+        <rect id="n2" x="250" y="50" width="120" height="50" rx="5" class="node" />
+        <text x="310" y="80" text-anchor="middle" class="text">钥匙在桌上吗？</text>
+
+        <!-- 连线 -->
+        <path id="line1" d="M 150 75 L 250 75" class="arrow" marker-end="url(#arrowhead)" />
+        <path id="line2" d="M 310 100 L 310 150 L 50 150 L 50 100" class="arrow" marker-end="url(#arrowhead)" />
+        
+        <!-- 修改后的节点 -->
+        <g id="extra" class="hidden">
+            <rect x="250" y="180" width="120" height="50" rx="5" class="node" />
+            <text x="310" y="210" text-anchor="middle" class="text">次数 > 3次？</text>
+            <rect x="450" y="180" width="100" height="50" rx="10" class="node" />
+            <text x="500" y="210" text-anchor="middle" class="text">报错并退出</text>
+            <path d="M 370 205 L 450 205" class="arrow" />
+        </g>
+
+        <circle id="dot" cx="100" cy="75" r="8" />
+        
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" />
+            </marker>
+        </defs>
+    </svg>
+</div>
+
+<script>
+    const dot = document.getElementById('dot');
+    const status = document.getElementById('status');
+    const extra = document.getElementById('extra');
+    let isModified = false;
+    let timer = null;
+    let step = 0;
+
+    function moveDot() {
+        if (!isModified) {
+            if (step % 2 === 0) { dot.setAttribute('cx', 310); dot.setAttribute('cy', 75); }
+            else { dot.setAttribute('cx', 50); dot.setAttribute('cy', 75); }
+            step++;
+            if (step > 6) {
+                status.innerText = "警告：陷入死循环！";
+                status.style.color = "red";
+            }
+        } else {
+            if (step === 0) { dot.setAttribute('cx', 310); dot.setAttribute('cy', 75); }
+            else if (step === 1) { dot.setAttribute('cx', 310); dot.setAttribute('cy', 205); }
+            else { 
+                dot.setAttribute('cx', 500); dot.setAttribute('cy', 205);
+                status.innerText = "有穷性达标！";
+                status.style.color = "green";
+                clearInterval(timer);
+                return;
+            }
+            step++;
+        }
+    }
+
+    document.getElementById('btnStart').addEventListener('click', () => {
+        clearInterval(timer);
+        step = 0;
+        status.innerText = "执行中...";
+        status.style.color = "black";
+        timer = setInterval(moveDot, 800);
+    });
+
+    document.getElementById('btnModify').addEventListener('click', () => {
+        isModified = true;
+        extra.classList.remove('hidden');
+        document.getElementById('line2').setAttribute('d', 'M 310 100 L 310 180');
+    });
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+        clearInterval(timer);
+        step = 0;
+        dot.setAttribute('cx', 100); dot.setAttribute('cy', 75);
+        status.innerText = "";
+    });
+</script>
+</body>
+</html>

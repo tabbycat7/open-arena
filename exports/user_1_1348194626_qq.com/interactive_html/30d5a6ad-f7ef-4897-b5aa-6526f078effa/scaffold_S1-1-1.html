@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>信息技术：拍照背后的数据流向</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 90%; max-width: 800px; text-align: center; }
+        .controls { margin-bottom: 20px; }
+        button { padding: 12px 24px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; background: #e2e8f0; margin: 0 10px; transition: 0.3s; }
+        button.active { background: var(--primary); color: white; }
+        #canvas-area { width: 100%; height: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .info-box { margin-top: 20px; font-size: 1.2rem; height: 3em; color: #64748b; }
+        svg { width: 100%; height: 100%; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>拍照时，数据去了哪里？</h2>
+    <div class="controls">
+        <button id="btn-camera">普通相机</button>
+        <button id="btn-ai">AI换脸App</button>
+    </div>
+    <div id="canvas-area">
+        <svg viewBox="0 0 600 300">
+            <!-- 手机主体 -->
+            <rect x="250" y="50" width="100" height="180" rx="10" fill="#334155" />
+            <rect x="265" y="70" width="70" height="120" fill="#cbd5e1" />
+            
+            <!-- 动画元素 -->
+            <g id="anim-layer"></g>
+        </svg>
+    </div>
+    <div class="info-box" id="msg">请点击上方按钮进行观察</div>
+</div>
+
+<script>
+    const animLayer = document.getElementById('anim-layer');
+    const msg = document.getElementById('msg');
+    const btnCamera = document.getElementById('btn-camera');
+    const btnAi = document.getElementById('btn-ai');
+
+    function clearAnim() { animLayer.innerHTML = ''; }
+
+    btnCamera.addEventListener('click', () => {
+        clearAnim();
+        btnCamera.classList.add('active');
+        btnAi.classList.remove('active');
+        msg.innerText = "普通相机：照片直接存储在手机本地相册中。";
+        
+        // 动画：照片进入相册
+        animLayer.innerHTML = `
+            <rect x="270" y="80" width="60" height="100" fill="#94a3b8" />
+            <animateTransform attributeName="transform" type="translate" from="0 0" to="0 50" dur="1s" repeatCount="indefinite" />
+            <text x="300" y="140" text-anchor="middle" font-size="12" fill="white">相册</text>
+        `;
+    });
+
+    btnAi.addEventListener('click', () => {
+        clearAnim();
+        btnAi.classList.add('active');
+        btnCamera.classList.remove('active');
+        msg.innerText = "AI换脸App：正在提取面部特征点并上传至云端服务器...";
+        
+        // 动画：特征点网格
+        animLayer.innerHTML = `
+            <circle cx="300" cy="130" r="30" fill="none" stroke="#3b82f6" stroke-width="2" />
+            <line x1="280" y1="110" x2="320" y2="150" stroke="#3b82f6" />
+            <line x1="320" y1="110" x2="280" y2="150" stroke="#3b82f6" />
+            <circle cx="290" cy="120" r="3" fill="#3b82f6" />
+            <circle cx="310" cy="120" r="3" fill="#3b82f6" />
+            
+            <!-- 数据流向 -->
+            <rect x="450" y="50" width="100" height="60" rx="5" fill="#f1f5f9" stroke="#3b82f6" />
+            <text x="500" y="85" text-anchor="middle" font-size="14">云端服务器</text>
+            <line x1="350" y1="130" x2="450" y2="80" stroke="#3b82f6" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="100" to="0" dur="1s" repeatCount="indefinite" />
+            </line>
+        `;
+    });
+</script>
+
+</body>
+</html>

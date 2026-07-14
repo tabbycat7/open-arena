@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>探索“税率”的奥秘</title>
+  <style>
+    :root {
+      --primary-color: #2b579a;
+      --primary-light: #e8eef8;
+      --accent-color: #e0a800;
+      --success-color: #28a745;
+      --success-light: #d4edda;
+      --text-color: #333333;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --border-color: #b5c5da;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      background-color: #7a91a9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      width: 100vw;
+      height: 75vw; /* 4:3 */
+      max-width: 960px;
+      max-height: 720px;
+      background-color: var(--bg-color);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      border: 4px solid #4e657d;
+    }
+
+    /* 头部区域 */
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      background-color: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* 主工作区 */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* 左侧卡片源区 */
+    .source-panel {
+      background-color: var(--primary-light);
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    /* 可拖拽卡片 */
+    .card {
+      width: 100%;
+      height: 70px;
+      background-color: var(--card-bg);
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      touch-action: none; /* 禁用默认触摸行为以支持拖拽 */
+      z-index: 10;
+    }
+
+    .card:active {
+      cursor: grabbing;
+    }
+
+    .card.dragging {
+      opacity: 0.8;
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .card.selected {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(224, 168, 0, 0.4);
+    }
+
+    .card-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .card-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    /* 右侧公式构建区 */
+    .formula-panel {
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .instruction-text {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--primary-color);
+      padding-left: 10px;
+    }
+
+    /* 核心公式结构 */
+    .formula-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: auto 0;
+      padding: 20px 0;
+    }
+
+    /* 分数结构 */
+    .fraction-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 220px;
+    }
+
+    .fraction-line {
+      width: 100%;
+      height: 4px;
+      background-color: #333;
+      margin: 12px 0;
+      border-radius: 2px;
+    }
+
+    /* 目标放置框 */
+    .drop-zone {
+      width: 200px;
+      height: 80px;
+      border: 3px dashed var(--border-color);
+      border-radius: 8px;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s, border-color 0.3s;
+      position: relative;
+    }
+
+    .drop-zone.hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary-color);
+    }
+
+    .drop-zone.correct {
+      background-color: var(--success-light);
+      border-color: var(--success-color);
+      border-style: solid;
+    }
+
+    .drop-zone-placeholder {
+      font-size: 15px;
+      color: #999;
+      font-weight: bold;
+      pointer-events: none;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .drop-zone .card {
+      width: 100%;
+      height: 100%;
+      border: none;
+      box-shadow: none;
+      background-color: transparent;
+    }
+
+    .operator {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      margin: 0 10px;
+    }
+
+    /* 底部反馈面板 */
+    .feedback-panel {
+      height: 140px;
+      background-color: #eef2f5;
+      border-top: 2px solid #d0d7de;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feedback-content {
+      flex: 1;
+    }
+
+    .feedback-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-text {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .highlight-math {
+      font-family: "Cambria", "Times New Roman", serif;
+      font-size: 18px;
+      font-weight: bold;
+      color: #d9534f;
+      background-color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #ffccd5;
+    }
+
+    /* 控制按钮 */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-left: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1e3f72;
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #1e7e34;
+    }
+
+    /* 动画效果 */
+    @keyframes success-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .animate-success {
+      animation: success-pulse 0.5s ease-in-out;
+    }
+
+    /* 辅助提示 */
+    .tip-badge {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background-color: #6c757d;
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: normal;
+    }
+
+    .drop-zone.correct .tip-badge {
+      background-color: var(--success-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <header>
+      <h1>探索“税率”的数学本质</h1>
+      <div class="subtitle">六年级数学 · 百分数应用</div>
+    </header>
+
+    <!-- 主工作区 -->
+    <div class="workspace">
+      <!-- 左侧卡片源区 -->
+      <div class="source-panel" id="source-panel">
+        <div class="panel-title">拖拽或点击卡片</div>
+        
+        <div class="card" draggable="true" id="card-tax" data-type="tax">
+          <div class="card-value">250元</div>
+          <div class="card-label">应纳税额（税款）</div>
+        </div>
+
+        <div class="card" draggable="true" id="card-income" data-type="income">
+          <div class="card-value">5000元</div>
+          <div class="card-label">计税收入（营业额）</div>
+        </div>
+
+        <div class="card" draggable="true" id="card-rate" data-type="rate">
+          <div class="card-value">5%</div>
+          <div class="card-label">行业税率</div>
+        </div>
+      </div>
+
+      <!-- 右侧公式构建区 -->
+      <div class="formula-panel">
+        <div class="instruction-text">
+          <strong>探究任务：</strong>某餐饮店的营业额为 5000 元，按照国家税法规定，需要缴纳 250 元的税款。请将左侧的数据卡片放入正确的公式位置，构建出“税率”的关系式。
+        </div>
+
+        <!-- 核心公式 -->
+        <div class="formula-container">
+          <!-- 分数结构 -->
+          <div class="fraction-wrapper">
+            <!-- 分子：应纳税额 -->
+            <div class="drop-zone" id="zone-numerator" data-accept="tax">
+              <span class="tip-badge">分子</span>
+              <div class="drop-zone-placeholder">请放入【应纳税额】</div>
+            </div>
+            
+            <div class="fraction-line"></div>
+            
+            <!-- 分母：计税收入 -->
+            <div class="drop-zone" id="zone-denominator" data-accept="income">
+              <span class="tip-badge">分母</span>
+              <div class="drop-zone-placeholder">请放入【计税收入】</div>
+            </div>
+          </div>
+
+          <div class="operator">=</div>
+
+          <!-- 结果：税率 -->
+          <div class="drop-zone" id="zone-rate" data-accept="rate">
+            <span class="tip-badge">比值</span>
+            <div class="drop-zone-placeholder">请放入【税率】</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部反馈面板 -->
+    <div class="feedback-panel">
+      <div class="feedback-content" id="feedback-content">
+        <div class="feedback-title" id="feedback-title">
+          <span>💡 观察与思考</span>
+        </div>
+        <div class="feedback-text" id="feedback-text">
+          请尝试将左侧的卡片拖动到右侧的虚线框中。你也可以先点击卡片，再点击目标框进行放置。
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-hint">提示</button>
+        <button class="btn btn-success" id="btn-reset">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.card');
+      const dropZones = document.querySelectorAll('.drop-zone');
+      const sourcePanel = document.getElementById('source-panel');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackText = document.getElementById('feedback-text');
+      const btnReset = document.getElementById('btn-reset');
+      const btnHint = document.getElementById('btn-hint');
+
+      let selectedCard = null;
+      let draggedCard = null;
+
+      // 初始化卡片原始父节点
+      const originalPositions = new Map();
+      cards.forEach(card => {
+        originalPositions.set(card.id, sourcePanel);
+      });
+
+      // --- 拖拽事件处理 (支持鼠标和触摸) ---
+      cards.forEach(card => {
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+        
+        // 移动端/触摸屏支持
+        card.addEventListener('pointerdown', handlePointerDown);
+      });
+
+      dropZones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+        zone.addEventListener('click', handleZoneClick);
+      });
+
+      // 传统拖拽
+      function handleDragStart(e) {
+        draggedCard = this;
+        this.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', this.id);
+      }
+
+      function handleDragEnd() {
+        this.classList.remove('dragging');
+        draggedCard = null;
+        dropZones.forEach(z => z.classList.remove('hover'));
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        if (!this.querySelector('.card')) {
+          this.classList.add('hover');
+        }
+      }
+
+      function handleDragLeave() {
+        this.classList.remove('hover');
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        this.classList.remove('hover');
+        const cardId = e.dataTransfer.getData('text/plain');
+        const card = document.getElementById(cardId);
+        
+        placeCardInZone(card, this);
+      }
+
+      // --- 点击交互支持 (更适合课堂电子白板) ---
+      cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          // 如果卡片已经在目标框中，点击它会退回到左侧
+          if (card.parentElement.classList.contains('drop-zone')) {
+            returnCardToSource(card);
+            checkFormulaState();
+            return;
+          }
+
+          if (selectedCard) {
+            selectedCard.classList.remove('selected');
+          }
+          
+          if (selectedCard === card) {
+            selectedCard = null;
+          } else {
+            selectedCard = card;
+            card.classList.add('selected');
+          }
+        });
+      });
+
+      // 点击空白处取消选择
+      document.addEventListener('click', () => {
+        if (selectedCard) {
+          selectedCard.classList.remove('selected');
+          selectedCard = null;
+        }
+      });
+
+      function handleZoneClick(e) {
+        e.stopPropagation();
+        if (selectedCard) {
+          placeCardInZone(selectedCard, this);
+          selectedCard.classList.remove('selected');
+          selectedCard = null;
+        }
+      }
+
+      // --- 触摸/指针拖拽实现 (更平滑的白板体验) ---
+      let activePointerCard = null;
+      let pointerOffsetX = 0;
+      let pointerOffsetY = 0;
+      let initialCardRect = null;
+
+      function handlePointerDown(e) {
+        // 仅当卡片在左侧面板时允许拖拽
+        if (this.parentElement !== sourcePanel) return;
+        
+        activePointerCard = this;
+        this.setPointerCapture(e.pointerId);
+        
+        const rect = this.getBoundingClientRect();
+        pointerOffsetX = e.clientX - rect.left;
+        pointerOffsetY = e.clientY - rect.top;
+        
+        this.style.position = 'fixed';
+        this.style.width = `${rect.width}px`;
+        this.style.height = `${rect.height}px`;
+        this.style.left = `${e.clientX - pointerOffsetX}px`;
+        this.style.top = `${e.clientY - pointerOffsetY}px`;
+        this.classList.add('dragging');
+
+        this.addEventListener('pointermove', handlePointerMove);
+        this.addEventListener('pointerup', handlePointerUp);
+        this.addEventListener('pointercancel', handlePointerUp);
+      }
+
+      function handlePointerMove(e) {
+        if (!activePointerCard) return;
+        activePointerCard.style.left = `${e.clientX - pointerOffsetX}px`;
+        activePointerCard.style.top = `${e.clientY - pointerOffsetY}px`;
+
+        // 碰撞检测高亮
+        dropZones.forEach(zone => {
+          const zoneRect = zone.getBoundingClientRect();
+          if (e.clientX > zoneRect.left && e.clientX < zoneRect.right &&
+              e.clientY > zoneRect.top && e.clientY < zoneRect.bottom) {
+            if (!zone.querySelector('.card')) {
+              zone.classList.add('hover');
+            }
+          } else {
+            zone.classList.remove('hover');
+          }
+        });
+      }
+
+      function handlePointerUp(e) {
+        if (!activePointerCard) return;
+        
+        activePointerCard.removeEventListener('pointermove', handlePointerMove);
+        activePointerCard.removeEventListener('pointerup', handlePointerUp);
+        
+        activePointerCard.releasePointerCapture(e.pointerId);
+        activePointerCard.classList.remove('dragging');
+        
+        // 寻找落点
+        let targetZone = null;
+        dropZones.forEach(zone => {
+          const zoneRect = zone.getBoundingClientRect();
+          if (e.clientX > zoneRect.left && e.clientX < zoneRect.right &&
+              e.clientY > zoneRect.top && e.clientY < zoneRect.bottom) {
+            targetZone = zone;
+          }
+        });
+
+        // 恢复样式
+        activePointerCard.style.position = '';
+        activePointerCard.style.width = '';
+        activePointerCard.style.height = '';
+        activePointerCard.style.left = '';
+        activePointerCard.style.top = '';
+
+        if (targetZone && !targetZone.querySelector('.card')) {
+          placeCardInZone(activePointerCard, targetZone);
+        } else {
+          returnCardToSource(activePointerCard);
+        }
+
+        dropZones.forEach(z => z.classList.remove('hover'));
+        activePointerCard = null;
+      }
+
+
+      // --- 核心业务逻辑 ---
+
+      // 放置卡片
+      function placeCardInZone(card, zone) {
+        if (!card || !zone) return;
+
+        // 如果目标框已有卡片，先将其退回
+        const existingCard = zone.querySelector('.card');
+        if (existingCard) {
+          returnCardToSource(existingCard);
+        }
+
+        // 移动卡片
+        zone.appendChild(card);
+        zone.querySelector('.drop-zone-placeholder').style.display = 'none';
+        
+        checkFormulaState();
+      }
+
+      // 退回卡片
+      function returnCardToSource(card) {
+        const parentZone = card.parentElement;
+        sourcePanel.appendChild(card);
+        if (parentZone && parentZone.classList.contains('drop-zone')) {
+          parentZone.querySelector('.drop-zone-placeholder').style.display = 'block';
+          parentZone.classList.remove('correct');
+        }
+      }
+
+      // 检查公式状态
+      function checkFormulaState() {
+        let correctCount = 0;
+        let filledCount = 0;
+
+        dropZones.forEach(zone => {
+          const card = zone.querySelector('.card');
+          if (card) {
+            filledCount++;
+            const acceptType = zone.getAttribute('data-accept');
+            const cardType = card.getAttribute('data-type');
+
+            if (acceptType === cardType) {
+              zone.classList.add('correct');
+              correctCount++;
+            } else {
+              zone.classList.remove('correct');
+            }
+          } else {
+            zone.classList.remove('correct');
+          }
+        });
+
+        updateFeedback(filledCount, correctCount);
+      }
+
+      // 更新反馈面板
+      function updateFeedback(filledCount, correctCount) {
+        if (filledCount === 0) {
+          feedbackTitle.innerHTML = '<span>💡 观察与思考</span>';
+          feedbackText.innerHTML = '请尝试将左侧的卡片拖动到右侧的虚线框中。你也可以先点击卡片，再点击目标框进行放置。';
+          return;
+        }
+
+        if (filledCount < 3) {
+          feedbackTitle.innerHTML = '<span>⚡ 正在构建中...</span>';
+          feedbackText.innerHTML = `你已经放置了 ${filledCount} 张卡片。继续思考：<strong>应纳税额</strong>（税款）和<strong>计税收入</strong>（营业额）谁是比较的基准（分母）？`;
+          return;
+        }
+
+        // 三张卡片都放满了
+        if (correctCount === 3) {
+          feedbackTitle.innerHTML = '<span>🎉 恭喜你，构建正确！</span>';
+          feedbackText.innerHTML = `
+            数学关系式：<span class="highlight-math">250 ÷ 5000 = 5%</span><br>
+            <strong>概念建构：</strong>这里的 <span class="highlight-math">5%</span> 就是<strong>税率</strong>。它表示<strong>应纳税额</strong>（250元）占<strong>计税收入</strong>（5000元）的百分之几。
+          `;
+          // 播放成功动画
+          dropZones.forEach(zone => zone.classList.add('animate-success'));
+          setTimeout(() => {
+            dropZones.forEach(zone => zone.classList.remove('animate-success'));
+          }, 500);
+        } else {
+          feedbackTitle.innerHTML = '<span>❌ 关系式似乎不对哦</span>';
+          feedbackText.innerHTML = '请重新对比一下：税率是“应纳税额”占“计税收入”的百分之几。谁应该作为分子（被除数），谁作为分母（除数）呢？';
+        }
+      }
+
+      // 重置按钮
+      btnReset.addEventListener('click', () => {
+        cards.forEach(card => {
+          returnCardToSource(card);
+        });
+        selectedCard = null;
+        checkFormulaState();
+      });
+
+      // 提示按钮
+      btnHint.addEventListener('click', () => {
+        cards.forEach(card => {
+          const type = card.getAttribute('data-type');
+          const matchingZone = document.querySelector(`.drop-zone[data-accept="${type}"]`);
+          if (matchingZone) {
+            placeCardInZone(card, matchingZone);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

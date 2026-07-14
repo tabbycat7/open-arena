@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>自动驾驶导航算法可视化</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        h2 { margin: 0 0 10px 0; font-size: 24px; color: #333; }
+        #canvas-area {
+            flex-grow: 1;
+            background: #e0e0e0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            transition: background 0.3s;
+        }
+        button:hover { background: #0056b3; }
+        #status-text {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d9534f;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>自动驾驶导航指令测试</h2>
+    <div id="canvas-area">
+        <svg id="scene" width="100%" height="100%" viewBox="0 0 800 400">
+            <!-- 路面 -->
+            <rect x="0" y="100" width="800" height="200" fill="#555"/>
+            <line x1="0" y1="200" x2="800" y2="200" stroke="white" stroke-dasharray="20,20" stroke-width="4"/>
+            <line x1="0" y1="100" x2="800" y2="100" stroke="#aaa" stroke-width="2"/>
+            <line x1="0" y1="300" x2="800" y2="300" stroke="#aaa" stroke-width="2"/>
+            
+            <!-- 汽车 -->
+            <g id="car" transform="translate(50, 150)">
+                <rect x="0" y="0" width="60" height="30" fill="#ff4757" rx="5"/>
+                <circle cx="15" cy="30" r="8" fill="#333"/>
+                <circle cx="45" cy="30" r="8" fill="#333"/>
+                <text id="emoji" x="20" y="-10" font-size="30" style="display:none;">❓</text>
+            </g>
+
+            <!-- 辅助线 -->
+            <path id="path-b" d="M 110 165 Q 400 165 400 250" fill="none" stroke="#2ed573" stroke-width="4" stroke-dasharray="10,10" style="display:none;"/>
+        </svg>
+    </div>
+    <div id="status-text">请选择一个指令进行测试</div>
+    <div class="controls">
+        <button id="btn-a">指令A：在前方不远处停车</button>
+        <button id="btn-b">指令B：前方50米右转并停在应急车道</button>
+    </div>
+</div>
+
+<script>
+    const car = document.getElementById('car');
+    const emoji = document.getElementById('emoji');
+    const pathB = document.getElementById('path-b');
+    const statusText = document.getElementById('status-text');
+    const btnA = document.getElementById('btn-a');
+    const btnB = document.getElementById('btn-b');
+
+    btnA.addEventListener('click', () => {
+        statusText.innerText = "警告：指令模糊！汽车无法定义“不远处”，导致犹豫不决！";
+        statusText.style.color = "#d9534f";
+        car.setAttribute('transform', 'translate(200, 150)');
+        emoji.style.display = 'block';
+        pathB.style.display = 'none';
+    });
+
+    btnB.addEventListener('click', () => {
+        statusText.innerText = "成功：指令明确！汽车已计算路径并精准停靠。";
+        statusText.style.color = "#2ed573";
+        car.setAttribute('transform', 'translate(400, 250)');
+        emoji.style.display = 'none';
+        pathB.style.display = 'block';
+    });
+</script>
+
+</body>
+</html>

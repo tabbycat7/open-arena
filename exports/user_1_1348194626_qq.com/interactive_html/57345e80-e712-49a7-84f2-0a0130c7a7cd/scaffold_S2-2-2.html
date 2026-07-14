@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>穿鞋与穿袜的逻辑顺序</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background: #4a90e2;
+            color: white;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+        #canvas-area {
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            height: 40px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2 style="color: #2c3e50;">请选择你的操作顺序：</h2>
+    <div class="controls">
+        <button id="btn-socks">先穿袜子</button>
+        <button id="btn-shoes">先穿鞋子</button>
+    </div>
+    
+    <div id="canvas-area">
+        <svg viewBox="0 0 400 300" width="100%" height="100%">
+            <!-- 脚 -->
+            <path id="foot" d="M150,200 Q150,150 200,150 L250,150 Q300,150 300,200 L280,250 L170,250 Z" fill="#ffdbac" stroke="#333" stroke-width="2"/>
+            <!-- 袜子 -->
+            <path id="sock" d="M150,200 Q150,150 200,150 L250,150 Q260,150 260,175 L240,200 Z" fill="#ff6b6b" opacity="0"/>
+            <!-- 鞋 -->
+            <path id="shoe" d="M140,200 L310,200 L300,260 L150,260 Z" fill="#4a4a4a" opacity="0"/>
+        </svg>
+    </div>
+    <div id="message"></div>
+</div>
+
+<script>
+    const btnSocks = document.getElementById('btn-socks');
+    const btnShoes = document.getElementById('btn-shoes');
+    const sock = document.getElementById('sock');
+    const shoe = document.getElementById('shoe');
+    const message = document.getElementById('message');
+
+    btnSocks.addEventListener('click', () => {
+        // 动画演示
+        sock.style.opacity = "1";
+        setTimeout(() => {
+            shoe.style.opacity = "1";
+            message.innerText = "穿袜子是穿鞋子的前提，顺序不能颠倒！";
+            message.style.color = "#27ae60";
+        }, 500);
+    });
+
+    btnShoes.addEventListener('click', () => {
+        // 错误反馈
+        message.innerText = "这样穿不进去哦，请再试一次！";
+        message.style.color = "#e74c3c";
+        sock.style.opacity = "0";
+        shoe.style.opacity = "0";
+    });
+</script>
+
+</body>
+</html>

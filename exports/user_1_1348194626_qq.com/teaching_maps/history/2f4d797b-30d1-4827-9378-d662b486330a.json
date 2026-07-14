@@ -1,0 +1,236 @@
+{
+  "id": "2f4d797b-30d1-4827-9378-d662b486330a",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性\r\n",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "生动活泼",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"大家来看这两种增长方式：一个是细胞1变2、2变4地翻倍，另一个是银行里每年固定增加100元本金。如果比‘后劲’，十年后哪个会拉开惊人的差距？为什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.6, \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"我们记下细胞分裂的次数x和总数y，比如0次时1个，1次时2个……你们能发现x和y之间的‘暗号’吗？如果分裂速度不同，这个‘暗号’会怎么变？现在和同桌一起，画出速度分别是‘翻倍’和‘减半’时的图像，看看它们透露了什么共同秘密？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我这里有几个函数‘选手’：y=(-2)^x, y=1^x, y=x^2，它们都想自称是指数函数。你们来当裁判，谁能入选？为什么那些落选的‘选手’不行？再考考你们，0.5^3和0.5^2，哪个更大？这结果和你第一感觉一样吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.75, \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"假设有个城市人口每年增长5%，但环境最多承载1000万人。我们能用一个数学式子来描述未来的人口变化吗？这个式子能告诉我们什么时候会‘挤不下’吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.8, \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"现在举办一场‘衰减小竞赛’：碳-14大约5730年衰减一半，锶-90大约29年衰减一半。如果同时开始，几百年后谁剩下的多？这和细胞分裂的‘后劲’感觉一样吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.58, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"来场‘暗号挑战’：函数y=(a-1)^x想当指数函数，参数a需要满足什么‘入职条件’？画出a=2（入职成功）和a=0.5（也成功）时的图像草图，说说它俩的性格（单调性）为何相反？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"指数函数y=2^x和幂函数y=x^2在x≥0时都是‘增长选手’。把它们前几局的‘比分’（函数值）列出来，再想象一下赛跑图像，谁在后期会变成让人惊呼的‘飞毛腿’？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"找茬游戏升级：有人说y=(-1)^x也是指数函数，因为底数是个常数。你同意吗？试着画出它的图像（x取…,-2,-1,0,1,2,…），这图像透露了什么‘古怪’的秘密？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.78, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"理财高手挑战：本金1万元，A银行年利率2%，B银行年利率2.5%，都按复利计算。谁的资产先翻倍？别看只差0.5%，30年后这‘微小差距’会变成多大的‘财富鸿沟’？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"如果a分别是-2、0、1、2，y=a^x在x=1和x=2时算出的值，有哪些看起来“生病了”？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"承接M2中发现的指数函数形式y=a^x，引导学生在具体计算和观察中，发现当a取某些特殊值时（如负值、0或1），函数值的变化规律与“快速增长”的直观印象相悖，从而为M3中理性辨析指数函数的严格定义做铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"当底数a是个小于1的正数，比如0.5，你觉得它喜欢x变大还是变小？试着比比0.5^1.2和0.5^0.8的大小。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"基于M2中通过图像发现的底数对函数增减性的影响，本问题引导学生将“单调性”这一性质应用于具体的同底数幂的大小比较中，建立起从图像性质到数值比较的桥梁，为M3中更复杂的跨底比较和判断提供思维基础。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-21 12:40:18",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "大家来看这两种增长方式：一个是细胞1变2、2变4地翻倍，另一个是银行里每年固定增加100元本金。如果比‘后劲’，十年后哪个会拉开惊人的差距？为什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.6,
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "我们记下细胞分裂的次数x和总数y，比如0次时1个，1次时2个……你们能发现x和y之间的‘暗号’吗？如果分裂速度不同，这个‘暗号’会怎么变？现在和同桌一起，画出速度分别是‘翻倍’和‘减半’时的图像，看看它们透露了什么共同秘密？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我这里有几个函数‘选手’：y=(-2)^x, y=1^x, y=x^2，它们都想自称是指数函数。你们来当裁判，谁能入选？为什么那些落选的‘选手’不行？再考考你们，0.5^3和0.5^2，哪个更大？这结果和你第一感觉一样吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.75,
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "假设有个城市人口每年增长5%，但环境最多承载1000万人。我们能用一个数学式子来描述未来的人口变化吗？这个式子能告诉我们什么时候会‘挤不下’吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.8,
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "现在举办一场‘衰减小竞赛’：碳-14大约5730年衰减一半，锶-90大约29年衰减一半。如果同时开始，几百年后谁剩下的多？这和细胞分裂的‘后劲’感觉一样吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.58,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "来场‘暗号挑战’：函数y=(a-1)^x想当指数函数，参数a需要满足什么‘入职条件’？画出a=2（入职成功）和a=0.5（也成功）时的图像草图，说说它俩的性格（单调性）为何相反？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "指数函数y=2^x和幂函数y=x^2在x≥0时都是‘增长选手’。把它们前几局的‘比分’（函数值）列出来，再想象一下赛跑图像，谁在后期会变成让人惊呼的‘飞毛腿’？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "找茬游戏升级：有人说y=(-1)^x也是指数函数，因为底数是个常数。你同意吗？试着画出它的图像（x取…,-2,-1,0,1,2,…），这图像透露了什么‘古怪’的秘密？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.78,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "理财高手挑战：本金1万元，A银行年利率2%，B银行年利率2.5%，都按复利计算。谁的资产先翻倍？别看只差0.5%，30年后这‘微小差距’会变成多大的‘财富鸿沟’？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "如果a分别是-2、0、1、2，y=a^x在x=1和x=2时算出的值，有哪些看起来“生病了”？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "承接M2中发现的指数函数形式y=a^x，引导学生在具体计算和观察中，发现当a取某些特殊值时（如负值、0或1），函数值的变化规律与“快速增长”的直观印象相悖，从而为M3中理性辨析指数函数的严格定义做铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "当底数a是个小于1的正数，比如0.5，你觉得它喜欢x变大还是变小？试着比比0.5^1.2和0.5^0.8的大小。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "基于M2中通过图像发现的底数对函数增减性的影响，本问题引导学生将“单调性”这一性质应用于具体的同底数幂的大小比较中，建立起从图像性质到数值比较的桥梁，为M3中更复杂的跨底比较和判断提供思维基础。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

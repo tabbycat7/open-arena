@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>扫地机器人路径规划</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; margin: 0; padding: 20px; }
+        #container { width: 800px; height: 600px; background: white; border: 2px solid #333; display: flex; position: relative; overflow: hidden; }
+        #canvas-area { flex: 2; position: relative; background: #e8f5e9; border-right: 2px solid #ccc; }
+        #code-area { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .step { padding: 10px; background: #fff; border: 1px solid #999; border-radius: 4px; cursor: default; }
+        #drop-zone { height: 60px; border: 2px dashed #aaa; display: flex; align-items: center; justify-content: center; color: #666; margin: 10px 0; }
+        .card { padding: 10px; background: #ffeb3b; border: 1px solid #fbc02d; cursor: grab; border-radius: 4px; user-select: none; }
+        button { padding: 10px; background: #4caf50; color: white; border: none; cursor: pointer; font-size: 16px; }
+        #robot { width: 40px; height: 40px; background: #2196f3; position: absolute; border-radius: 50%; transition: all 0.3s linear; }
+        #cat { width: 50px; height: 50px; position: absolute; left: 400px; top: 250px; font-size: 40px; }
+        #status { position: absolute; bottom: 10px; left: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="canvas-area">
+        <div id="robot" style="left: 50px; top: 250px;"></div>
+        <div id="cat">🐱</div>
+        <div id="status">状态：待命</div>
+    </div>
+    <div id="code-area">
+        <h3>算法编辑器</h3>
+        <div class="step">1. 直行清扫</div>
+        <div id="drop-zone">拖入条件卡片到此处</div>
+        <div class="step">2. 撞墙转弯</div>
+        <div id="card" class="card">如果前方30cm有猫 -> 绕行</div>
+        <button id="run-btn">启动运行</button>
+        <button id="reset-btn" style="background:#f44336">重置</button>
+    </div>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const dropZone = document.getElementById('drop-zone');
+    const card = document.getElementById('card');
+    const runBtn = document.getElementById('run-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const status = document.getElementById('status');
+    
+    let hasCondition = false;
+    let isRunning = false;
+
+    card.addEventListener('dragstart', (e) => e.dataTransfer.setData('text', 'card'));
+    dropZone.addEventListener('dragover', (e) => e.preventDefault());
+    dropZone.addEventListener('drop', (e) => {
+        dropZone.textContent = "已加入：如果前方有猫 -> 绕行";
+        dropZone.style.borderColor = "#4caf50";
+        hasCondition = true;
+        card.style.display = 'none';
+    });
+
+    runBtn.addEventListener('click', () => {
+        if(isRunning) return;
+        isRunning = true;
+        status.textContent = "状态：清扫中...";
+        
+        // 动画逻辑
+        robot.style.left = "350px"; // 移动到猫前
+        
+        setTimeout(() => {
+            if(hasCondition) {
+                status.textContent = "状态：检测到猫，安全绕行中...";
+                robot.style.top = "150px";
+                setTimeout(() => {
+                    robot.style.left = "600px";
+                    status.textContent = "状态：清扫完成！";
+                }, 500);
+            } else {
+                status.textContent = "状态：撞到猫了！猫咪抓狂中！";
+                robot.style.background = "red";
+                document.getElementById('cat').textContent = "😾";
+            }
+        }, 1000);
+    });
+
+    resetBtn.addEventListener('click', () => {
+        robot.style.left = "50px";
+        robot.style.top = "250px";
+        robot.style.background = "#2196f3";
+        document.getElementById('cat').textContent = "🐱";
+        status.textContent = "状态：待命";
+        isRunning = false;
+    });
+</script>
+
+</body>
+</html>

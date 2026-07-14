@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI真伪侦探：识破虚假新闻</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
+        #container { width: 800px; height: 600px; background: white; border: 2px solid #ddd; position: relative; display: flex; overflow: hidden; }
+        
+        /* 左侧画布区 */
+        #canvas-area { width: 500px; height: 600px; position: relative; cursor: crosshair; background: #eee; }
+        .fake-image { width: 100%; height: 100%; background: linear-gradient(45deg, #333, #111); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; text-align: center; }
+        
+        /* 放大镜 */
+        #magnifier { width: 120px; height: 120px; border: 4px solid #fff; border-radius: 50%; position: absolute; pointer-events: none; box-shadow: 0 0 20px rgba(0,0,0,0.5); background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 100%); display: none; z-index: 10; }
+        
+        /* 右侧工具箱 */
+        #toolbox { width: 300px; padding: 20px; border-left: 2px solid #eee; display: flex; flex-direction: column; gap: 15px; }
+        button { padding: 10px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 4px; font-size: 14px; }
+        #hint-box { flex-grow: 1; border: 1px dashed #ccc; padding: 10px; font-size: 13px; color: #555; }
+        
+        .clue { position: absolute; width: 60px; height: 60px; border: 2px dashed yellow; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="canvas-area" id="stage">
+        <div class="fake-image">
+            [AI生成：外星人降临操场]<br>
+            <small>(请移动鼠标寻找破绽)</small>
+        </div>
+        <!-- 预设破绽区域 -->
+        <div class="clue" style="top: 150px; left: 100px;" data-info="破绽1：外星人的手部有6根手指，这是AI生成常见的解剖学错误。"></div>
+        <div class="clue" style="top: 300px; left: 300px;" data-info="破绽2：教学楼窗户线条扭曲，物理结构不符合现实建筑逻辑。"></div>
+        <div class="clue" style="top: 80px; left: 250px;" data-info="破绽3：背景横幅上的文字是乱码，AI无法准确生成复杂文字。"></div>
+        <div id="magnifier"></div>
+    </div>
+
+    <div id="toolbox">
+        <h3>🔍 核实工具箱</h3>
+        <button id="btn-search">搜索权威媒体</button>
+        <button id="btn-reverse">图片反向搜索</button>
+        <div id="hint-box">
+            <strong>侦探笔记：</strong><br>
+            请使用放大镜检查图片细节，并尝试使用工具箱核实信息。
+        </div>
+    </div>
+</div>
+
+<script>
+    const stage = document.getElementById('canvas-area');
+    const mag = document.getElementById('magnifier');
+    const hintBox = document.getElementById('hint-box');
+    const clues = document.querySelectorAll('.clue');
+
+    // 放大镜跟随
+    stage.addEventListener('mousemove', (e) => {
+        const rect = stage.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        mag.style.display = 'block';
+        mag.style.left = (x - 60) + 'px';
+        mag.style.top = (y - 60) + 'px';
+    });
+
+    stage.addEventListener('mouseleave', () => {
+        mag.style.display = 'none';
+    });
+
+    // 点击破绽
+    clues.forEach(clue => {
+        clue.addEventListener('click', () => {
+            hintBox.innerHTML = "<strong>发现破绽！</strong><br>" + clue.getAttribute('data-info');
+        });
+    });
+
+    // 工具交互
+    document.getElementById('btn-search').addEventListener('click', () => {
+        hintBox.innerHTML = "<strong>搜索结果：</strong><br>各大权威媒体均无相关报道。结论：该事件为虚假信息。";
+    });
+
+    document.getElementById('btn-reverse').addEventListener('click', () => {
+        hintBox.innerHTML = "<strong>反向搜索：</strong><br>系统检测到该图片由AI模型（如Midjourney）生成，并非真实拍摄。";
+    });
+</script>
+
+</body>
+</html>

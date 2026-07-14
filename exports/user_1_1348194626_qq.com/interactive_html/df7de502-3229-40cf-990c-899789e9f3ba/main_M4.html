@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>餐厅经营决策沙盘</title>
+    <style>
+        :root { --bg: #f0f2f5; --card: #ffffff; --primary: #4a90e2; --danger: #e74c3c; --success: #27ae60; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: var(--card); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: grid; grid-template-columns: 250px 1fr; padding: 20px; gap: 20px; }
+        .panel { display: flex; flex-direction: column; gap: 15px; }
+        .card { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: grab; background: white; transition: 0.3s; user-select: none; }
+        .card:hover { border-color: var(--primary); }
+        .scene-area { border: 3px dashed #ccc; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: #fafafa; }
+        #drop-zone { width: 300px; height: 150px; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary); margin-top: 20px; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #eee; font-size: 16px; }
+        button.active { background: var(--primary); color: white; }
+        #feedback { font-size: 18px; font-weight: bold; margin-top: 20px; height: 30px; }
+        .status-icon { font-size: 40px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="panel">
+        <h3>算法卡片</h3>
+        <div class="card" draggable="true" id="high">⚡ 雷霆模式 (高效率/高能耗)</div>
+        <div class="card" draggable="true" id="low">🔋 省电模式 (低效率/低能耗)</div>
+        <div style="margin-top:20px; font-size: 0.9em; color: #666;">拖拽卡片到右侧槽位进行决策</div>
+    </div>
+    
+    <div class="scene-area">
+        <div class="btn-group">
+            <button id="btn-peak" class="active">午餐高峰期</button>
+            <button id="btn-off">深夜淡季</button>
+        </div>
+        <div id="scene-visual" class="status-icon">🍽️</div>
+        <div id="scene-desc">当前场景：午餐高峰期</div>
+        <div id="drop-zone">将算法卡片拖入此处</div>
+        <div id="feedback"></div>
+    </div>
+</div>
+
+<script>
+    let currentScene = 'peak'; // peak or off
+    const dropZone = document.getElementById('drop-zone');
+    const feedback = document.getElementById('feedback');
+    const sceneDesc = document.getElementById('scene-desc');
+    const sceneVisual = document.getElementById('scene-visual');
+
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.id));
+    });
+
+    dropZone.addEventListener('dragover', e => e.preventDefault());
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        const algo = e.dataTransfer.getData('text');
+        checkDecision(algo);
+    });
+
+    function checkDecision(algo) {
+        if (currentScene === 'peak') {
+            if (algo === 'high') {
+                feedback.innerText = "✅ 完美运营！顾客满意，营业额增长！";
+                feedback.style.color = "var(--success)";
+            } else {
+                feedback.innerText = "❌ 糟糕！顾客等待太久，气愤离开！";
+                feedback.style.color = "var(--danger)";
+            }
+        } else {
+            if (algo === 'low') {
+                feedback.innerText = "✅ 完美运营！电费节省，利润最大化！";
+                feedback.style.color = "var(--success)";
+            } else {
+                feedback.innerText = "❌ 糟糕！电费账单暴涨，利润变负！";
+                feedback.style.color = "var(--danger)";
+            }
+        }
+    }
+
+    document.getElementById('btn-peak').addEventListener('click', () => {
+        currentScene = 'peak';
+        sceneDesc.innerText = "当前场景：午餐高峰期";
+        sceneVisual.innerText = "⏳🍽️⏳";
+        updateUI('btn-peak', 'btn-off');
+    });
+
+    document.getElementById('btn-off').addEventListener('click', () => {
+        currentScene = 'off';
+        sceneDesc.innerText = "当前场景：深夜淡季";
+        sceneVisual.innerText = "🌙🍽️";
+        updateUI('btn-off', 'btn-peak');
+    });
+
+    function updateUI(active, inactive) {
+        document.getElementById(active).classList.add('active');
+        document.getElementById(inactive).classList.remove('active');
+        feedback.innerText = "";
+        dropZone.innerText = "将算法卡片拖入此处";
+    }
+</script>
+
+</body>
+</html>

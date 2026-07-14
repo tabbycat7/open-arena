@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学探究：怎样征税更公平？</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f1c40f;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #d5e0ea;
+            color: var(--dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #f8fafc;
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #ffffff;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: var(--dark-color);
+            color: #ffffff;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: var(--warning-color);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* 主展示区 */
+        .main-stage {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 120px 1fr;
+            gap: 10px;
+            padding: 20px;
+            position: relative;
+            background: linear-gradient(to bottom, #eef2f3, #8e9eab);
+            overflow: hidden;
+        }
+
+        /* 角色卡片 */
+        .entity-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: all 0.5s ease;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .entity-card.active-danger {
+            border-color: var(--danger-color);
+            background-color: #fdf2f2;
+            animation: shake 0.5s ease-in-out infinite alternate;
+        }
+
+        .entity-card.active-success {
+            border-color: var(--success-color);
+            background-color: #f2fdf5;
+        }
+
+        .entity-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #fff;
+        }
+
+        .shop-title { background-color: #e67e22; }
+        .supermarket-title { background-color: #9b59b6; }
+
+        /* SVG 绘制 */
+        .illustration {
+            width: 100%;
+            height: 140px;
+            margin: 10px 0;
+        }
+
+        /* 数据面板 */
+        .data-panel {
+            width: 100%;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .data-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .data-value {
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 15px;
+        }
+
+        .value-revenue { color: #27ae60; }
+        .value-tax { color: #c0392b; transition: color 0.3s; }
+        .value-remain { color: #2c3e50; transition: color 0.3s; }
+
+        /* 状态表情与文字 */
+        .status-overlay {
+            position: absolute;
+            top: 50px;
+            font-size: 64px;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        .status-overlay.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .status-text {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .status-text.show {
+            opacity: 1;
+        }
+
+        /* 中间国库 */
+        .treasury-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .treasury-box {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, #f39c12, #d35400);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            border: 3px solid #f1c40f;
+            z-index: 5;
+        }
+
+        .treasury-box span {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .treasury-counter {
+            font-family: monospace;
+            font-size: 14px;
+            background: #2c3e50;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 8px;
+            color: #f1c40f;
+            text-align: center;
+            width: 110px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background-color: #ffffff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 2px solid #e2e8f0;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            max-width: 240px;
+            padding: 12px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: white;
+            text-align: center;
+        }
+
+        .btn-flat {
+            background-color: #e74c3c;
+        }
+
+        .btn-flat:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-prop {
+            background-color: #2ecc71;
+        }
+
+        .btn-prop:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background-color: #7f8c8d;
+            max-width: 100px;
+        }
+
+        .btn-reset:hover {
+            background-color: #95a5a6;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 引导思考区域 */
+        .guide-banner {
+            background-color: #ebf5fb;
+            border-left: 5px solid var(--primary-color);
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #2980b9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 金币动画粒子 */
+        .coin-particle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #f1c40f, #f39c12);
+            border: 1px solid #d35400;
+            border-radius: 50%;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 抖动动画 */
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>探究：怎样征税更公平？</h1>
+            <p>如果每个商店每个月都必须固定交纳 1 万元的税，对不同营业额的商店会产生什么影响？</p>
+        </div>
+
+        <!-- 主展示区 -->
+        <div class="main-stage" id="mainStage">
+            
+            <!-- 左侧：小卖部 -->
+            <div class="entity-card" id="shopCard">
+                <div class="entity-title shop-title">小卖部</div>
+                
+                <!-- 哭笑脸状态 -->
+                <div class="status-overlay" id="shopEmoji">😐</div>
+
+                <!-- 小卖部 SVG 矢量图 -->
+                <svg class="illustration" viewBox="0 0 200 140">
+                    <!-- 地面 -->
+                    <line x1="10" y1="130" x2="190" y2="130" stroke="#7f8c8d" stroke-width="3"/>
+                    <!-- 墙体 -->
+                    <rect x="40" y="60" width="120" height="70" fill="#e0a96d" stroke="#2c3e50" stroke-width="3"/>
+                    <!-- 屋顶 -->
+                    <polygon points="30,60 100,20 170,60" fill="#d35400" stroke="#2c3e50" stroke-width="3"/>
+                    <!-- 门 -->
+                    <rect x="60" y="90" width="30" height="40" fill="#8e44ad" stroke="#2c3e50" stroke-width="2"/>
+                    <!-- 窗户 -->
+                    <rect x="110" y="80" width="35" height="25" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="127.5" y1="80" x2="127.5" y2="105" stroke="#2c3e50" stroke-width="1.5"/>
+                    <line x1="110" y1="92.5" x2="145" y2="92.5" stroke="#2c3e50" stroke-width="1.5"/>
+                    <!-- 招牌 -->
+                    <rect x="60" y="45" width="80" height="20" fill="#f1c40f" stroke="#2c3e50" stroke-width="2" rx="3"/>
+                    <text x="100" y="60" font-size="11" font-weight="bold" fill="#2c3e50" text-anchor="middle">小卖部</text>
+                </svg>
+
+                <div class="status-text" id="shopStatusText">正常营业</div>
+
+                <div class="data-panel">
+                    <div class="data-row">
+                        <span>月营业额:</span>
+                        <span class="data-value value-revenue">8,000 元</span>
+                    </div>
+                    <div class="data-row">
+                        <span>应交税额:</span>
+                        <span class="data-value value-tax" id="shopTax">0 元</span>
+                    </div>
+                    <div class="data-row" style="border-top: 1px solid #cbd5e1; margin-top: 4px; padding-top: 6px;">
+                        <span>剩余收入:</span>
+                        <span class="data-value value-remain" id="shopRemain">8,000 元</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中间：国库 -->
+            <div class="treasury-zone">
+                <div class="treasury-box" id="treasuryBox">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <span>国家国库</span>
+                </div>
+                <div class="treasury-counter">
+                    收到税收<br><span id="totalTaxCollected" style="font-weight: bold; font-size: 16px;">0</span> 元
+                </div>
+            </div>
+
+            <!-- 右侧：大超市 -->
+            <div class="entity-card" id="supermarketCard">
+                <div class="entity-title supermarket-title">大超市</div>
+                
+                <!-- 哭笑脸状态 -->
+                <div class="status-overlay" id="supermarketEmoji">😐</div>
+
+                <!-- 大超市 SVG 矢量图 -->
+                <svg class="illustration" viewBox="0 0 200 140">
+                    <!-- 地面 -->
+                    <line x1="10" y1="130" x2="190" y2="130" stroke="#7f8c8d" stroke-width="3"/>
+                    <!-- 现代建筑主体 -->
+                    <rect x="30" y="30" width="140" height="100" fill="#34495e" stroke="#2c3e50" stroke-width="3"/>
+                    <!-- 玻璃幕墙装饰 -->
+                    <rect x="40" y="50" width="35" height="50" fill="#aed6f1" opacity="0.8"/>
+                    <rect x="125" y="50" width="35" height="50" fill="#aed6f1" opacity="0.8"/>
+                    <!-- 旋转门 -->
+                    <rect x="85" y="90" width="30" height="40" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="100" y1="90" x2="100" y2="130" stroke="#2c3e50" stroke-width="2"/>
+                    <!-- 霓虹招牌 -->
+                    <rect x="45" y="15" width="110" height="22" fill="#9b59b6" stroke="#2c3e50" stroke-width="2" rx="5"/>
+                    <text x="100" y="31" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">SUPERMARKET</text>
+                </svg>
+
+                <div class="status-text" id="supermarketStatusText">正常营业</div>
+
+                <div class="data-panel">
+                    <div class="data-row">
+                        <span>月营业额:</span>
+                        <span class="data-value value-revenue">1,000,000 元</span>
+                    </div>
+                    <div class="data-row">
+                        <span>应交税额:</span>
+                        <span class="data-value value-tax" id="supermarketTax">0 元</span>
+                    </div>
+                    <div class="data-row" style="border-top: 1px solid #cbd5e1; margin-top: 4px; padding-top: 6px;">
+                        <span>剩余收入:</span>
+                        <span class="data-value value-remain" id="supermarketRemain">1,000,000 元</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 引导思考 -->
+        <div class="guide-banner">
+            <span>💡 <strong>思考：</strong> 哪一种征税方案能让两个商店都合理地生存下去，并为国家做贡献？</span>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <button class="btn btn-flat" id="btnFlat">方案一：固定征税 1 万元</button>
+            <button class="btn btn-prop" id="btnProp">方案二：按比例征税 (5%)</button>
+            <button class="btn btn-reset" id="btnReset">重置</button>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const btnFlat = document.getElementById('btnFlat');
+        const btnProp = document.getElementById('btnProp');
+        const btnReset = document.getElementById('btnReset');
+
+        const shopCard = document.getElementById('shopCard');
+        const shopEmoji = document.getElementById('shopEmoji');
+        const shopStatusText = document.getElementById('shopStatusText');
+        const shopTax = document.getElementById('shopTax');
+        const shopRemain = document.getElementById('shopRemain');
+
+        const supermarketCard = document.getElementById('supermarketCard');
+        const supermarketEmoji = document.getElementById('supermarketEmoji');
+        const supermarketStatusText = document.getElementById('supermarketStatusText');
+        const supermarketTax = document.getElementById('supermarketTax');
+        const supermarketRemain = document.getElementById('supermarketRemain');
+
+        const totalTaxCollected = document.getElementById('totalTaxCollected');
+        const mainStage = document.getElementById('mainStage');
+        const treasuryBox = document.getElementById('treasuryBox');
+
+        // 初始数据
+        const shopRevenue = 8000;
+        const supermarketRevenue = 1000000;
+
+        // 绑定按钮事件
+        btnFlat.addEventListener('click', () => applyTaxScheme('flat'));
+        btnProp.addEventListener('click', () => applyTaxScheme('proportional'));
+        btnReset.addEventListener('click', resetState);
+
+        // 产生金币飞舞动画
+        function spawnCoins(sourceCard, count) {
+            const rectSource = sourceCard.getBoundingClientRect();
+            const rectTarget = treasuryBox.getBoundingClientRect();
+            const stageRect = mainStage.getBoundingClientRect();
+
+            const startX = rectSource.left + rectSource.width / 2 - stageRect.left;
+            const startY = rectSource.top + rectSource.height / 2 - stageRect.top;
+            const endX = rectTarget.left + rectTarget.width / 2 - stageRect.left;
+            const endY = rectTarget.top + rectTarget.height / 2 - stageRect.top;
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin-particle';
+                    coin.style.left = `${startX}px`;
+                    coin.style.top = `${startY}px`;
+                    mainStage.appendChild(coin);
+
+                    // 随机控制点，形成弧线轨迹
+                    const ctrlX = (startX + endX) / 2 + (Math.random() - 0.5) * 100;
+                    const ctrlY = Math.min(startX, endY) - 50 - Math.random() * 50;
+
+                    const duration = 800 + Math.random() * 400;
+                    const startTime = performance.now();
+
+                    function animate(now) {
+                        const progress = (now - startTime) / duration;
+                        if (progress < 1) {
+                            // 贝塞尔曲线公式
+                            const t = progress;
+                            const x = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * ctrlX + t * t * endX;
+                            const y = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * ctrlY + t * t * endY;
+                            coin.style.left = `${x}px`;
+                            coin.style.top = `${y}px`;
+                            requestAnimationFrame(animate);
+                        } else {
+                            coin.remove();
+                        }
+                    }
+                    requestAnimationFrame(animate);
+                }, i * 80);
+            }
+        }
+
+        // 执行征税方案
+        function applyTaxScheme(scheme) {
+            // 重置状态防止叠加
+            resetVisuals();
+
+            setTimeout(() => {
+                if (scheme === 'flat') {
+                    // 方案一：固定征税 10000 元
+                    const sTax = 10000;
+                    const sRemain = shopRevenue - sTax;
+                    const mTax = 10000;
+                    const mRemain = supermarketRevenue - mTax;
+
+                    // 小卖部状态：破产
+                    shopTax.textContent = '10,000 元';
+                    shopTax.style.color = 'var(--danger-color)';
+                    shopRemain.textContent = `${sRemain.toLocaleString()} 元`;
+                    shopRemain.style.color = 'var(--danger-color)';
+                    
+                    shopCard.classList.add('active-danger');
+                    shopEmoji.textContent = '😭';
+                    shopEmoji.classList.add('show');
+                    shopStatusText.textContent = '入不敷出，被迫破产！';
+                    shopStatusText.style.color = 'var(--danger-color)';
+                    shopStatusText.classList.add('show');
+
+                    // 大超市状态：毫无影响
+                    supermarketTax.textContent = '10,000 元';
+                    supermarketRemain.textContent = `${mRemain.toLocaleString()} 元`;
+                    
+                    supermarketCard.classList.add('active-success');
+                    supermarketEmoji.textContent = '😏';
+                    supermarketEmoji.classList.add('show');
+                    supermarketStatusText.textContent = '九牛一毛，毫无压力';
+                    supermarketStatusText.style.color = 'var(--success-color)';
+                    supermarketStatusText.classList.add('show');
+
+                    // 动画效果
+                    spawnCoins(shopCard, 1); // 勉强飞出一个
+                    spawnCoins(supermarketCard, 5); // 飞出少量
+
+                    animateCounter(sTax + mTax);
+
+                } else if (scheme === 'proportional') {
+                    // 方案二：按比例征税 (5%)
+                    const rate = 0.05;
+                    const sTax = shopRevenue * rate;
+                    const sRemain = shopRevenue - sTax;
+                    const mTax = supermarketRevenue * rate;
+                    const mRemain = supermarketRevenue - mTax;
+
+                    // 小卖部状态：合理纳税，正常营业
+                    shopTax.textContent = `${sTax.toLocaleString()} 元 (5%)`;
+                    shopTax.style.color = 'var(--dark-color)';
+                    shopRemain.textContent = `${sRemain.toLocaleString()} 元`;
+                    shopRemain.style.color = 'var(--success-color)';
+                    
+                    shopCard.classList.add('active-success');
+                    shopEmoji.textContent = '😊';
+                    shopEmoji.classList.add('show');
+                    shopStatusText.textContent = '合理纳税，照常营业';
+                    shopStatusText.style.color = 'var(--success-color)';
+                    shopStatusText.classList.add('show');
+
+                    // 大超市状态：合理纳税，实力雄厚
+                    supermarketTax.textContent = `${mTax.toLocaleString()} 元 (5%)`;
+                    supermarketTax.style.color = 'var(--danger-color)'; // 纳税大户
+                    supermarketRemain.textContent = `${mRemain.toLocaleString()} 元`;
+                    supermarketRemain.style.color = 'var(--success-color)';
+                    
+                    supermarketCard.classList.add('active-success');
+                    supermarketEmoji.textContent = '😃';
+                    supermarketEmoji.classList.add('show');
+                    supermarketStatusText.textContent = '纳税大户，支持国家建设！';
+                    supermarketStatusText.style.color = 'var(--success-color)';
+                    supermarketStatusText.classList.add('show');
+
+                    // 动画效果
+                    spawnCoins(shopCard, 3); // 飞出少量金币
+                    spawnCoins(supermarketCard, 25); // 飞出大量金币
+
+                    animateCounter(sTax + mTax);
+                }
+            }, 100);
+        }
+
+        // 计数器动画
+        function animateCounter(targetValue) {
+            let startValue = 0;
+            const duration = 1500;
+            const startTime = performance.now();
+
+            function update(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const currentValue = Math.floor(progress * targetValue);
+                totalTaxCollected.textContent = currentValue.toLocaleString();
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // 清除状态样式
+        function resetVisuals() {
+            shopCard.className = 'entity-card';
+            supermarketCard.className = 'entity-card';
+            shopEmoji.className = 'status-overlay';
+            supermarketEmoji.className = 'status-overlay';
+            shopStatusText.className = 'status-text';
+            supermarketStatusText.className = 'status-text';
+            totalTaxCollected.textContent = '0';
+        }
+
+        // 完全重置
+        function resetState() {
+            resetVisuals();
+            
+            shopTax.textContent = '0 元';
+            shopTax.style.color = 'var(--dark-color)';
+            shopRemain.textContent = '8,000 元';
+            shopRemain.style.color = 'var(--dark-color)';
+            shopStatusText.textContent = '正常营业';
+            shopStatusText.style.color = 'var(--dark-color)';
+
+            supermarketTax.textContent = '0 元';
+            supermarketTax.style.color = 'var(--dark-color)';
+            supermarketRemain.textContent = '1,000,000 元';
+            supermarketRemain.style.color = 'var(--dark-color)';
+            supermarketStatusText.textContent = '正常营业';
+            supermarketStatusText.style.color = 'var(--dark-color)';
+        }
+    </script>
+</body>
+</html>

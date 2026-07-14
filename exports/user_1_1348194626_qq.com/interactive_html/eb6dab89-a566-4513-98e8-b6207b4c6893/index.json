@@ -1,0 +1,248 @@
+{
+  "task_id": "eb6dab89-a566-4513-98e8-b6207b4c6893",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请看教材第 22 页毕达哥拉斯发现的地砖图案（图 17.1-1），如果我们将视线聚焦在中间那个等腰直角三角形上，以它的三条边为边长向外作正方形，这三个正方形的面积之间藏着什么数量关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果不是等腰直角三角形，比如图 17.1-3 网格中的这些一般直角三角形，我们该如何利用“割补法”算出那个斜放正方形 C'的面积，并验证刚才发现的面积关系是否依然成立？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "猜想需要严谨的证明，大家观察图 17.1-5 的“赵爽弦图”，如何利用四个全等直角三角形和小正方形拼成大正方形，通过面积不变的原理推导出 $a^2+b^2=c^2$？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "定理已经证明，现在面对一个直角三角形，如果已知任意两边的长度，我们该如何判断该用加法还是减法，来准确求出第三边的长？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "生活中很多问题不会直接画出直角三角形，比如例 1 中木板过门框，或例 2 中梯子滑动，我们该如何从这些实际情境中抽象出直角三角形模型，并找到那个“不变的量”来解决问题？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "假如去掉网格，直接告诉你等腰直角三角形的直角边长是 3，斜边长约为 4.24，你能通过计算三个正方形的面积，依然发现它们之间藏着那个神奇的加法关系吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果我们将中间的三角形换成一个普通的锐角三角形，同样以三边向外作正方形，刚才发现的“两个小面积之和等于大面积”的规律还成立吗？这说明什么条件是不可或缺的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "这次网格里的直角三角形变得更“瘦长”了，直角边分别是 5 和 12。请你再次运用割补法，算出斜边上正方形的面积，看看它是否依然精准地等于两个小正方形面积之和？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "工人师傅要在一个直角三角形区域铺地砖，已知两直角边区域分别用了 9 平米和 16 平米的砖。如果不测量斜边区域，你能利用刚才验证的规律，直接推断出斜边区域大概需要多少平米的砖吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "除了赵爽弦图，美国总统加菲尔德也用两个全等直角三角形拼成了一个梯形来证明勾股定理。请观察他的拼图，思考他是如何利用“梯形面积等于三个三角形面积之和”列出等式的？这与赵爽弦图的思路有何异同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果证明过程中列出的等式是 $(a+b)^2 = c^2 + 4 \times \frac{1}{2}ab$，你能在脑海中构建出这是由怎样的大正方形减去四个三角形得到的吗？请描述这个图形的拼接结构。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "已知一个直角三角形的两边长分别是 3 和 4，请问第三边的长度一定是 5 吗？是否存在另一种可能？请说明在什么情况下用加法，什么情况下用减法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "如果直角三角形的斜边长是 $m$，一条直角边长是 $n$（$m>n$），你能用含 $m$ 和 $n$ 的式子表示出另一条直角边的长度吗？注意最后的结果形式。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一根竹子高 10 米，折断后顶端恰好落在离根部 6 米的地面上。请问折断处离地面有多高？在这个问题中，谁是那个长度始终不变的“斜边”，谁又是我们需要设未知数求解的边？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "一辆宽 2.5 米、高 3 米的卡车想要通过一个宽 3 米、高 4 米的拱形门洞（顶部为半圆）。请构建直角三角形模型计算门洞在车宽处的实际高度，并判断卡车能否安全通过？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "大家看这个斜放的正方形 C'，它的边没有压在网格线上，还能像刚才那样直接数出它占了多少个小方格吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果我们在外面画一个刚好包住它的大正方形，你会发现正方形 C' 和大正方形之间，多出了几个什么样的小三角形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "仔细观察围在周围的这四个三角形，它们的两条直角边是不是都正好落在网格线上？这意味着我们能算出它们的面积吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "我们在网格上算的几个例子都符合规律，但如果直角三角形的边长不是整数，画不出这么精准的格子了，刚才的数格子方法还管用吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "请看赵爽弦图，无论我们把这四个三角形和小正方形怎么移动、重新拼接，所有图形加起来的‘总面积’会变多或者变少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "既然总面积不变，那‘四个三角形加小正方形’的面积和，与‘那个以斜边 c 为边长的大正方形’面积，可以用什么符号连起来？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "在准备计算前，请先用手指指出来：在这个三角形中，哪条边是正对着直角的？它是我们公式里的 $a$、$b$ 还是 $c$？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果我们要求的那条边是直角边，而已经知道了斜边，这时候是用两个数‘加起来’大，还是用大数‘减去’小数更合理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "算出 $c^2$ 等于 25 之后，题目问的是‘边长 c'是多少，这时候我们还需要对 25 做最后一步什么运算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "看这个梯子靠墙的画面，墙壁和地面通常是什么位置关系？梯子的长度对应的是三角形的哪一条边？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "当梯子顶端向下滑动时，梯子的高度和底端距离都在变，但梯子本身的长度变了吗？这个不变的长度在解题中有什么用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "既然梯子长度没变，那‘滑动前’算出的斜边平方，和‘滑动后’算出的斜边平方，它们之间应该是什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

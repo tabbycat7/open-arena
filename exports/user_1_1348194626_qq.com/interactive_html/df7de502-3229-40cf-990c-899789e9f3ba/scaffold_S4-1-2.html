@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法优化模拟器</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { width: 800px; height: 600px; background: white; border: 2px solid #e2e8f0; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .header { padding: 20px; border-bottom: 1px solid #e2e8f0; }
+        .stage { flex: 1; position: relative; display: flex; justify-content: space-around; align-items: center; padding: 20px; }
+        
+        .card { width: 140px; height: 80px; background: #eff6ff; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; position: relative; transition: all 0.5s ease; }
+        .card.removed { opacity: 0; transform: scale(0); width: 0; padding: 0; border: none; }
+        
+        .robot { width: 50px; height: 50px; background: #ef4444; border-radius: 50%; position: absolute; bottom: 50px; left: 50px; transition: all 2s linear; }
+        
+        .controls { padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 6px; }
+        
+        #msg { font-size: 24px; font-weight: bold; color: #16a34a; margin-top: 10px; opacity: 0; }
+        .scissors { cursor: pointer; position: absolute; top: -15px; right: -15px; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h3>任务：优化送餐算法</h3>
+        <p>点击剪刀图标删除“原地转圈”步骤，观察机器人行为变化。</p>
+    </div>
+    
+    <div class="stage" id="program">
+        <div class="card" id="step1">1. 走到3号桌</div>
+        <div class="card" id="step2">2. 原地转圈3次<span class="scissors" id="cut">✂️</span></div>
+        <div class="card" id="step3">3. 放置餐点</div>
+        <div class="robot" id="robot"></div>
+    </div>
+
+    <div class="controls">
+        <button id="runBtn">运行程序 (耗时: <span id="time">10</span>秒)</button>
+        <div id="msg">优化成功！效率提升50%！</div>
+    </div>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const runBtn = document.getElementById('runBtn');
+    const cut = document.getElementById('cut');
+    const step2 = document.getElementById('step2');
+    const timeDisplay = document.getElementById('time');
+    const msg = document.getElementById('msg');
+    
+    let isOptimized = false;
+
+    cut.addEventListener('click', () => {
+        step2.classList.add('removed');
+        isOptimized = true;
+        timeDisplay.innerText = "5";
+        msg.style.opacity = "1";
+        msg.innerText = "优化成功！效率提升50%！";
+    });
+
+    runBtn.addEventListener('click', () => {
+        robot.style.left = "50px";
+        robot.style.transition = "none";
+        
+        setTimeout(() => {
+            robot.style.transition = "all 2s linear";
+            if (isOptimized) {
+                robot.style.left = "700px";
+            } else {
+                // 模拟转圈停顿
+                robot.style.left = "350px";
+                setTimeout(() => {
+                    robot.style.left = "700px";
+                }, 2000);
+            }
+        }, 50);
+    });
+</script>
+
+</body>
+</html>

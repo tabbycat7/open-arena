@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>送餐机器人路径规划挑战</title>
+    <style>
+        :root { --primary: #4a90e2; --bg: #f4f7f6; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        #container { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; padding: 20px; gap: 20px; }
+        #grid-area { flex: 2; position: relative; border: 2px solid #ddd; background: #fafafa; }
+        #control-area { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .btn { padding: 15px; font-size: 16px; cursor: pointer; border: none; border-radius: 8px; background: var(--primary); color: white; transition: 0.2s; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .disabled-icon { color: red; font-weight: bold; margin-right: 5px; }
+        #log { height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 10px; font-size: 14px; background: #fff; }
+        .badge { display: none; color: #d4af37; font-weight: bold; text-align: center; padding: 10px; border: 2px solid #d4af37; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="grid-area">
+        <svg id="svg-canvas" width="100%" height="100%" viewBox="0 0 400 400">
+            <!-- 网格 -->
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            <!-- 终点 -->
+            <rect x="320" y="40" width="40" height="40" fill="#a8e063" />
+            <text x="325" y="65" font-size="12">终点</text>
+            <!-- 机器人 -->
+            <g id="robot" transform="translate(40, 320) rotate(0)">
+                <circle cx="20" cy="20" r="15" fill="#4a90e2" />
+                <path d="M 20 5 L 35 35 L 5 35 Z" fill="white" />
+            </g>
+        </svg>
+    </div>
+
+    <div id="control-area">
+        <h3>指令控制台</h3>
+        <button id="btn-forward" class="btn">向前走</button>
+        <button id="btn-right" class="btn">向右转</button>
+        <button id="btn-left" class="btn" disabled><span class="disabled-icon">✕</span>向左转 (故障)</button>
+        <button id="btn-reset" class="btn" style="background:#e74c3c">重置地图</button>
+        <div id="log">指令记录：</div>
+        <div id="badge" class="badge">成功用右转代替左转！</div>
+    </div>
+</div>
+
+<script>
+    const robot = document.getElementById('robot');
+    const log = document.getElementById('log');
+    const badge = document.getElementById('badge');
+    
+    let x = 40, y = 320, angle = 0;
+    let steps = [];
+
+    function updateRobot() {
+        robot.setAttribute('transform', `translate(${x}, ${y}) rotate(${angle})`);
+        if (x === 320 && y === 40) {
+            badge.style.display = 'block';
+        }
+    }
+
+    document.getElementById('btn-forward').addEventListener('click', () => {
+        const rad = (angle * Math.PI) / 180;
+        x += Math.round(Math.sin(rad)) * 40;
+        y -= Math.round(Math.cos(rad)) * 40;
+        x = Math.max(0, Math.min(360, x));
+        y = Math.max(0, Math.min(360, y));
+        log.innerHTML += "向前走<br>";
+        updateRobot();
+    });
+
+    document.getElementById('btn-right').addEventListener('click', () => {
+        angle = (angle + 90) % 360;
+        log.innerHTML += "向右转<br>";
+        updateRobot();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+        x = 40; y = 320; angle = 0;
+        log.innerHTML = "指令记录：<br>";
+        badge.style.display = 'none';
+        updateRobot();
+    });
+</script>
+
+</body>
+</html>

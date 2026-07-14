@@ -1,0 +1,158 @@
+{
+  "task_id": "43b918b0-fc8b-4e18-8280-96e24e2282b5",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，把4支铅笔放进3个笔筒。有人说“不管怎么放，总有一个笔筒至少有2支”。你们敢不敢挑战一下？看能不能找到一种放法，让每个笔筒里的笔都少于2支？动手试一试！",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "100支笔放99个筒，没法摆了！如果让每个筒先“抢”一支，最后那支“落单”的笔会怎样？这告诉我们什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看这些算式，物体数除以抽屉数，商是几？余数是几？那个“至少数”又是几？这三者之间有什么关系？能不能用一道算式表示出来？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "我们来看个扑克牌魔术：一副牌取出大小王，9人每人随意抽一张，至少有3张牌是同花色的。在这个游戏中，谁是“鸽”，谁是“巢”？你们能用刚才的模型验证这个结论吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "给出一种放法：(2,1,1,1)。有人说这里“总有一个笔筒至少有2支”，你觉得对吗？如果把那2支分开，能不能让每个笔筒都少于2支？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "换个场景：4只鸽子飞进3个鸽笼。有人说“可能有一个笼子空着”，也有人说“总有一个笼子至少有2只”。哪个说法是一定对的？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果要保证“4个笔筒中总有一个至少有3支笔”，铅笔的总数最少是多少？试着运用“平均分”的想法倒推一下。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果只有3支笔放进4个笔筒，我们还能用“假设每个笔筒先放1支”的方法推理吗？会遇到什么问题？这说明了什么前提？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "看个特例：6支铅笔放进3个笔筒，刚好分完。这时候“至少数”是“商+1”还是“商”？这和刚才有余数的情况，哪里不一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "魔术师断言：“抽6张牌，至少有2张同花色。”这个结论一定成立吗？为什么？如果抽了8张牌，结论会有什么变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "走进班级调查：13名同学中，至少有几人在同一个月过生日？一年12个月在这里扮演什么角色？结论又是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-0",
+      "question_type": "scaffold",
+      "content": "看看摆出的所有情况，为什么说“总有一个笔筒至少有2支”？“总有”能换成“有时候”吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "如果铅笔变成100支，摆出所有情况还容易吗？你觉得枚举法适合数据多还是少的情况？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "假设每个笔筒先放同样多，是为了让笔筒里的笔尽可能多，还是尽可能少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "把“每个笔筒先放一支”写成算式，除数是谁？商1表示什么意思？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "在这个游戏里，谁是被分的“物体”？谁是装东西的“抽屉”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "扑克牌一共有几种花色？这相当于几个“抽屉”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

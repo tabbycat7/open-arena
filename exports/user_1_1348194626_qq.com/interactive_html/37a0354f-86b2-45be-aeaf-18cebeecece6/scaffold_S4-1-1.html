@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学教学可视化：个税起征点</title>
+    <style>
+        /* 全局样式与重置 */
+        :root {
+            --primary-color: #4a90e2;
+            --green-zone: #e2f0d9;
+            --green-stroke: #385723;
+            --green-bar: #70ad47;
+            --red-zone: #fce4d6;
+            --red-stroke: #c65911;
+            --red-bar: #ed7d31;
+            --gate-color: #c00000;
+            --text-color: #2c3e50;
+            --bg-color: #f5f7fa;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d0d7de;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        /* 4:3 比例容器 */
+        .container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 24px;
+            margin: 0 0 8px 0;
+            color: #1a1a1a;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .question-box {
+            background-color: #f0f4f8;
+            border-left: 5px solid var(--primary-color);
+            padding: 10px 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+        }
+
+        .question-highlight {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        /* 可视化核心区域 */
+        .vis-area {
+            flex-grow: 1;
+            margin: 15px 0;
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 区间背景指示 */
+        .zone-indicator {
+            display: flex;
+            height: 28px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 5px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .zone-left {
+            width: 50%;
+            background-color: var(--green-zone);
+            color: var(--green-stroke);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .zone-right {
+            width: 50%;
+            background-color: var(--red-zone);
+            color: var(--red-stroke);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* 刻度尺 */
+        .ruler-wrapper {
+            position: relative;
+            height: 25px;
+            margin-bottom: 15px;
+        }
+
+        .ticks {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 100%;
+        }
+
+        .tick {
+            position: absolute;
+            width: 1px;
+            height: 8px;
+            background-color: #94a3b8;
+            bottom: 0;
+        }
+
+        .tick::after {
+            content: attr(data-val);
+            position: absolute;
+            bottom: 10px;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .tick-major {
+            height: 12px;
+            background-color: #475569;
+        }
+
+        .tick-major::after {
+            font-weight: bold;
+        }
+
+        /* 税收大门 */
+        .gate-container {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .gate-line {
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                -45deg,
+                var(--gate-color),
+                var(--gate-color) 8px,
+                #fff 8px,
+                #fff 16px
+            );
+            box-shadow: 0 0 8px rgba(192, 0, 0, 0.4);
+        }
+
+        .gate-sign {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gate-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* 跑道/轨道 */
+        .tracks-container {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .track-row {
+            position: relative;
+            height: 65px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .track-label {
+            position: absolute;
+            left: -15px;
+            background: #334155;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 5;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .track-path {
+            position: relative;
+            flex-grow: 1;
+            height: 16px;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            margin-left: 50px;
+            margin-right: 10px;
+            overflow: visible;
+        }
+
+        /* 薪资进度条 */
+        .salary-bar-green {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-color: var(--green-bar);
+            border-radius: 8px 0 0 8px;
+            transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .salary-bar-red {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            background-color: var(--red-bar);
+            border-radius: 0 8px 8px 0;
+            transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* 人物头像 */
+        .avatar-wrapper {
+            position: absolute;
+            top: -22px;
+            transform: translateX(-50%);
+            transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 6;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: grab;
+        }
+
+        .avatar:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        .avatar-tag {
+            background: rgba(15, 23, 42, 0.85);
+            color: white;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-top: 3px;
+            white-space: nowrap;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            display: flex;
+            gap: 16px;
+        }
+
+        .control-card {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .salary-display {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .slider-row input[type="range"] {
+            flex-grow: 1;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            background: #cbd5e1;
+            cursor: pointer;
+        }
+
+        /* 状态反馈框 */
+        .status-box {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            line-height: 1.4;
+            min-height: 34px;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-free {
+            background-color: #e2f0d9;
+            color: #385723;
+            border: 1px solid #c5e0b4;
+        }
+
+        .status-tax {
+            background-color: #fce4d6;
+            color: #c65911;
+            border: 1px solid #f8cbad;
+        }
+
+        /* 底部工具栏 */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+        }
+
+        .preset-btn {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        .preset-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .preset-btn-primary:hover {
+            background-color: #357abd;
+        }
+
+        .summary-tip {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部：问题引入 -->
+    <div class="header">
+        <div class="title">🔍 探索“个税起征点”的秘密</div>
+        <div class="question-box">
+            <strong>思考题：</strong> 听说“个税起征点是 <strong>5000元</strong>”。如果有一位叔叔，他每个月的工资是 <span class="question-highlight">4800元</span>。你觉得他需要向国家缴纳个人所得税吗？为什么？
+        </div>
+    </div>
+
+    <!-- 中部：交互式可视化跑道 -->
+    <div class="vis-area">
+        <!-- 起征点大门 -->
+        <div class="gate-container">
+            <div class="gate-sign">🚧 税收大门 (5000元起征点)</div>
+            <div class="gate-line"></div>
+        </div>
+
+        <!-- 区间指示 -->
+        <div class="zone-indicator">
+            <div class="zone-left">免税区（5000元及以下部分）</div>
+            <div class="zone-right">纳税区（超出5000元的部分）</div>
+        </div>
+
+        <!-- 刻度尺 -->
+        <div class="ruler-wrapper">
+            <div class="ticks" id="ruler-ticks">
+                <!-- 刻度由JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 角色跑道 -->
+        <div class="tracks-container">
+            <!-- 跑道1：小李 -->
+            <div class="track-row">
+                <div class="track-label">小李</div>
+                <div class="track-path">
+                    <div class="salary-bar-green" id="bar-li-green"></div>
+                    <div class="salary-bar-red" id="bar-li-red"></div>
+                    <div class="avatar-wrapper" id="avatar-li">
+                        <div class="avatar">👦</div>
+                        <div class="avatar-tag" id="tag-li">0元</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 跑道2：大张 -->
+            <div class="track-row">
+                <div class="track-label">大张</div>
+                <div class="track-path">
+                    <div class="salary-bar-green" id="bar-zhang-green"></div>
+                    <div class="salary-bar-red" id="bar-zhang-red"></div>
+                    <div class="avatar-wrapper" id="avatar-zhang">
+                        <div class="avatar">👨‍💼</div>
+                        <div class="avatar-tag" id="tag-zhang">0元</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下部：控制面板 -->
+    <div class="control-panel">
+        <!-- 卡片1：小李 -->
+        <div class="control-card" id="card-li">
+            <div class="card-header">
+                <span class="card-title">👦 小李的月工资</span>
+                <span class="salary-display" id="text-li-salary">0元</span>
+            </div>
+            <div class="slider-row">
+                <span>0</span>
+                <input type="range" id="slider-li" min="0" max="10000" step="100" value="4800">
+                <span>10k</span>
+            </div>
+            <div class="status-box" id="status-li">
+                <!-- 动态计算结果 -->
+            </div>
+        </div>
+
+        <!-- 卡片2：大张 -->
+        <div class="control-card" id="card-zhang">
+            <div class="card-header">
+                <span class="card-title">👨‍💼 大张的月工资</span>
+                <span class="salary-display" id="text-zhang-salary">0元</span>
+            </div>
+            <div class="slider-row">
+                <span>0</span>
+                <input type="range" id="slider-zhang" min="0" max="10000" step="100" value="8000">
+                <span>10k</span>
+            </div>
+            <div class="status-box" id="status-zhang">
+                <!-- 动态计算结果 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部：操作与总结 -->
+    <div class="footer">
+        <div class="preset-actions">
+            <button class="preset-btn preset-btn-primary" id="btn-reset">还原题干情境</button>
+            <button class="preset-btn" id="btn-demo1">小李涨薪到 6000元</button>
+            <button class="preset-btn" id="btn-demo2">大张降薪到 4500元</button>
+        </div>
+        <div class="summary-tip">
+            <span>💡 <strong>核心概念：</strong> 只有<strong>超过起征点</strong>的部分才需要纳税。</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const sliderLi = document.getElementById('slider-li');
+    const sliderZhang = document.getElementById('slider-zhang');
+    
+    const textLiSalary = document.getElementById('text-li-salary');
+    const textZhangSalary = document.getElementById('text-zhang-salary');
+    
+    const avatarLi = document.getElementById('avatar-li');
+    const avatarZhang = document.getElementById('avatar-zhang');
+    
+    const tagLi = document.getElementById('tag-li');
+    const tagZhang = document.getElementById('tag-zhang');
+    
+    const barLiGreen = document.getElementById('bar-li-green');
+    const barLiRed = document.getElementById('bar-li-red');
+    const barZhangGreen = document.getElementById('bar-zhang-green');
+    const barZhangRed = document.getElementById('bar-zhang-red');
+    
+    const statusLi = document.getElementById('status-li');
+    const statusZhang = document.getElementById('status-zhang');
+    
+    const btnReset = document.getElementById('btn-reset');
+    const btnDemo1 = document.getElementById('btn-demo1');
+    const btnDemo2 = document.getElementById('btn-demo2');
+    
+    const rulerTicks = document.getElementById('ruler-ticks');
+
+    // 初始化刻度尺
+    function initRuler() {
+        rulerTicks.innerHTML = '';
+        for (let i = 0; i <= 10000; i += 1000) {
+            const pct = i / 10000 * 100;
+            const tick = document.createElement('div');
+            tick.className = 'tick';
+            if (i % 2000 === 0 || i === 5000) {
+                tick.classList.add('tick-major');
+                tick.setAttribute('data-val', i === 5000 ? '5000(起征点)' : i);
+            } else {
+                tick.setAttribute('data-val', i);
+            }
+            tick.style.left = `${pct}%`;
+            rulerTicks.appendChild(tick);
+        }
+    }
+
+    // 更新单个角色的状态
+    function updateCharacter(salary, elements) {
+        const maxSalary = 10000;
+        const threshold = 5000;
+        
+        // 计算百分比
+        const totalPct = (salary / maxSalary) * 100;
+        
+        // 计算绿色和红色条的宽度
+        let greenPct = 0;
+        let redPct = 0;
+        
+        if (salary <= threshold) {
+            greenPct = totalPct;
+            redPct = 0;
+        } else {
+            greenPct = 50; // 5000元占10000元的50%
+            redPct = ((salary - threshold) / maxSalary) * 100;
+        }
+        
+        // 更新视图
+        elements.avatar.style.left = `${totalPct}%`;
+        elements.tag.textContent = `${salary}元`;
+        elements.textSalary.textContent = `${salary} 元`;
+        
+        elements.barGreen.style.width = `${greenPct}%`;
+        elements.barRed.style.width = `${redPct}%`;
+        
+        // 更新状态卡片
+        if (salary <= threshold) {
+            elements.statusBox.className = 'status-box status-free';
+            elements.statusBox.innerHTML = `✅ <strong>免税：</strong>工资 ${salary}元 ≤ 起征点 5000元，不需要纳税。`;
+        } else {
+            const taxable = salary - threshold;
+            elements.statusBox.className = 'status-box status-tax';
+            elements.statusBox.innerHTML = `⚠️ <strong>需纳税：</strong>超出部分 <strong>${taxable}元</strong> (${salary} - 5000) 需要计算纳税。`;
+        }
+    }
+
+    // 全局更新
+    function updateAll() {
+        const valLi = parseInt(sliderLi.value);
+        const valZhang = parseInt(sliderZhang.value);
+        
+        updateCharacter(valLi, {
+            avatar: avatarLi,
+            tag: tagLi,
+            textSalary: textLiSalary,
+            barGreen: barLiGreen,
+            barRed: barLiRed,
+            statusBox: statusLi
+        });
+        
+        updateCharacter(valZhang, {
+            avatar: avatarZhang,
+            tag: tagZhang,
+            textSalary: textZhangSalary,
+            barGreen: barZhangGreen,
+            barRed: barZhangRed,
+            statusBox: statusZhang
+        });
+    }
+
+    // 事件监听
+    sliderLi.addEventListener('input', updateAll);
+    sliderZhang.addEventListener('input', updateAll);
+
+    // 预设按钮事件
+    btnReset.addEventListener('click', () => {
+        sliderLi.value = 4800;
+        sliderZhang.value = 8000;
+        updateAll();
+    });
+
+    btnDemo1.addEventListener('click', () => {
+        sliderLi.value = 6000;
+        updateAll();
+    });
+
+    btnDemo2.addEventListener('click', () => {
+        sliderZhang.value = 4500;
+        updateAll();
+    });
+
+    // 初始化运行
+    initRuler();
+    updateAll();
+</script>
+
+</body>
+</html>

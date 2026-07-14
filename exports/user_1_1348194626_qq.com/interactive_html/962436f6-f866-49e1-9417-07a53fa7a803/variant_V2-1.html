@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税率变化与应纳税额关系探究</title>
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --income-color: #2563eb;
+            --rate-color: #ea580c;
+            --tax-color: #16a34a;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            max-width: 1000px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--primary-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* 头部标题与问题 */
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .question-box {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--income-color);
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1e3a8a;
+        }
+
+        /* 主交互区域：左右分栏 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            min-height: 0; /* 允许子元素在flex中缩放 */
+            margin-bottom: 12px;
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--income-color);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]#rate-slider::-webkit-slider-thumb {
+            background: var(--rate-color);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 快捷按钮 */
+        .preset-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-preset {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .btn-preset:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-preset.active {
+            background-color: var(--rate-color);
+            color: white;
+            border-color: var(--rate-color);
+        }
+
+        /* 右侧可视化图形 */
+        .visual-panel {
+            flex: 1.2;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .visual-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        /* 公式展示区域 */
+        .formula-panel {
+            background: #1e293b;
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .formula-title {
+            font-size: 13px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .formula-expr {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .formula-val {
+            font-size: 24px;
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+        }
+
+        /* 颜色高亮 */
+        .color-income { color: #60a5fa; }
+        .color-rate { color: #fb923c; }
+        .color-tax { color: #4ade80; }
+
+        .text-income { color: var(--income-color); }
+        .text-rate { color: var(--rate-color); }
+        .text-tax { color: var(--tax-color); }
+
+        /* 引导观察 */
+        .observation-tip {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            background-color: #f1f5f9;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border: 1px dashed var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>税率变化与应纳税额关系探究</h1>
+            <div class="question-box">
+                <strong>思考问题：</strong>如果把税率从 10% 调整为 5% 或 20%，在计税收入不变的情况下，应纳税额会发生怎样的变化？这说明税率在计算中起到了什么作用？
+            </div>
+        </div>
+
+        <!-- 中部交互 -->
+        <div class="main-content">
+            <!-- 左侧控制 -->
+            <div class="control-panel">
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>1. 设定计税收入 (固定)</span>
+                        <span class="text-income" id="income-display" style="font-size: 18px; font-weight: bold;">5000 元</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="income-slider" min="1000" max="10000" step="1000" value="5000">
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">拖动可改变实验基数，观察规律是否普适</p>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>2. 调节税率 (变量)</span>
+                        <span class="text-rate" id="rate-display" style="font-size: 18px; font-weight: bold;">10%</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="rate-slider" min="5" max="20" step="1" value="10">
+                    </div>
+                    <div class="preset-container">
+                        <button class="btn-preset" id="btn-rate-5">设为 5%</button>
+                        <button class="btn-preset active" id="btn-rate-10">设为 10%</button>
+                        <button class="btn-preset" id="btn-rate-20">设为 20%</button>
+                    </div>
+                </div>
+
+                <div class="observation-tip">
+                    💡 <strong>观察提示：</strong>注意比较税率翻倍（10% → 20%）或减半（10% → 5%）时，应纳税额的变化幅度。
+                </div>
+            </div>
+
+            <!-- 右侧图形 -->
+            <div class="visual-panel">
+                <div class="visual-title">直观图示：税额占计税收入的比例</div>
+                <svg id="visual-svg" viewBox="0 0 400 280" width="100%" height="100%">
+                    <!-- 定义网格和渐变 -->
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" rx="8" />
+
+                    <!-- 计税收入大条形图 (100%) -->
+                    <text x="20" y="40" font-size="14" font-weight="bold" fill="#475569">计税收入整体 (100%)</text>
+                    <rect x="20" y="50" width="360" height="40" rx="6" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2" />
+                    <text id="svg-income-text" x="200" y="75" font-size="14" font-weight="bold" fill="#1e293b" text-anchor="middle">5000 元</text>
+
+                    <!-- 应纳税额占比条形图 (动态) -->
+                    <text x="20" y="130" font-size="14" font-weight="bold" fill="#475569">应纳税额部分 (税率比例)</text>
+                    <rect x="20" y="140" width="360" height="40" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2" />
+                    <!-- 动态填充的税额条 -->
+                    <rect id="svg-tax-bar" x="20" y="140" width="36" height="40" rx="6" fill="url(#tax-gradient)" style="fill: #f97316; transition: width 0.3s ease;" />
+                    
+                    <!-- 比例刻度尺 -->
+                    <line x1="20" y1="195" x2="380" y2="195" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" />
+                    <text x="20" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">0%</text>
+                    <text x="110" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">25%</text>
+                    <text x="200" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">50%</text>
+                    <text x="290" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">75%</text>
+                    <text x="380" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">100%</text>
+
+                    <!-- 动态指示箭头和文本 -->
+                    <path id="svg-pointer" d="M 56 140 L 56 110" stroke="#ea580c" stroke-width="2" marker-end="url(#arrow)" style="transition: transform 0.3s ease;" />
+                    <text id="svg-tax-text" x="38" y="245" font-size="16" font-weight="bold" fill="#16a34a" style="transition: transform 0.3s ease;">应纳税额: 500 元</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 底部公式 -->
+        <div class="formula-panel">
+            <div class="formula-title">数学关系计算器</div>
+            <div class="formula-expr">
+                <span class="color-tax">应纳税额</span>
+                <span>=</span>
+                <span class="color-income">计税收入</span>
+                <span>×</span>
+                <span class="color-rate">税率</span>
+            </div>
+            <div class="formula-expr" style="margin-top: 8px; font-size: 26px;">
+                <span id="calc-tax" class="color-tax formula-val">500</span> <span style="font-size:16px;" class="color-tax">元</span>
+                <span>=</span>
+                <span id="calc-income" class="color-income formula-val">5000</span> <span style="font-size:16px;" class="color-income">元</span>
+                <span>×</span>
+                <span id="calc-rate" class="color-rate formula-val">10%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const incomeSlider = document.getElementById('income-slider');
+        const rateSlider = document.getElementById('rate-slider');
+        const incomeDisplay = document.getElementById('income-display');
+        const rateDisplay = document.getElementById('rate-display');
+        
+        const calcIncome = document.getElementById('calc-income');
+        const calcRate = document.getElementById('calc-rate');
+        const calcTax = document.getElementById('calc-tax');
+
+        const svgIncomeText = document.getElementById('svg-income-text');
+        const svgTaxBar = document.getElementById('svg-tax-bar');
+        const svgTaxText = document.getElementById('svg-tax-text');
+
+        const btn5 = document.getElementById('btn-rate-5');
+        const btn10 = document.getElementById('btn-rate-10');
+        const btn20 = document.getElementById('btn-rate-20');
+
+        // 更新视图主函数
+        function updateVisualization() {
+            const income = parseInt(incomeSlider.value);
+            const rate = parseInt(rateSlider.value);
+            const tax = Math.round(income * (rate / 100));
+
+            // 1. 更新文本显示
+            incomeDisplay.textContent = `${income} 元`;
+            rateDisplay.textContent = `${rate}%`;
+
+            // 2. 更新公式计算区
+            calcIncome.textContent = income;
+            calcRate.textContent = `${rate}%`;
+            calcTax.textContent = tax;
+
+            // 3. 更新SVG图形
+            svgIncomeText.textContent = `${income} 元`;
+            
+            // 计算条形图宽度 (满宽 360px 对应 100%)
+            const maxBarWidth = 360;
+            const activeWidth = (rate / 100) * maxBarWidth;
+            svgTaxBar.setAttribute('width', activeWidth);
+
+            // 动态改变税额条的颜色深浅，税率越高颜色越醒目
+            const opacity = 0.5 + (rate / 20) * 0.5;
+            svgTaxBar.style.fill = `rgba(234, 88, 12, ${opacity})`;
+
+            // 更新SVG文字和位置
+            svgTaxText.textContent = `应纳税额: ${tax} 元 (${rate}%)`;
+            // 让文字位置随条形图长度适当偏移，避免死板
+            const textX = Math.max(20, Math.min(240, activeWidth - 40));
+            svgTaxText.setAttribute('transform', `translate(${textX}, 0)`);
+            
+            // 更新快捷按钮的高亮状态
+            [btn5, btn10, btn20].forEach(btn => btn.classList.remove('active'));
+            if (rate === 5) btn5.classList.add('active');
+            if (rate === 10) btn10.classList.add('active');
+            if (rate === 20) btn20.classList.add('active');
+        }
+
+        // 绑定滑块事件
+        incomeSlider.addEventListener('input', updateVisualization);
+        rateSlider.addEventListener('input', updateVisualization);
+
+        // 绑定快捷按钮事件
+        btn5.addEventListener('click', () => {
+            rateSlider.value = 5;
+            updateVisualization();
+        });
+        btn10.addEventListener('click', () => {
+            rateSlider.value = 10;
+            updateVisualization();
+        });
+        btn20.addEventListener('click', () => {
+            rateSlider.value = 20;
+            updateVisualization();
+        });
+
+        // 初始化
+        updateVisualization();
+    </script>
+</body>
+</html>

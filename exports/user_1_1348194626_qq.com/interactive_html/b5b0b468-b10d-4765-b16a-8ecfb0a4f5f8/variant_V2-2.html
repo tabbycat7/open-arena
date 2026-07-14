@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数 f(x) = |x-1| + |x-a| 常数区间逆向探究</title>
+    <style>
+        /* 基础样式与投屏优化 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 宽高比自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e1e8ed;
+        }
+        /* 头部区域 */
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-bottom: 4px solid #3498db;
+        }
+        .header .subtitle {
+            font-size: 0.85rem;
+            color: #bdc3c7;
+            margin-top: 4px;
+            font-weight: normal;
+        }
+        /* 题干展示 */
+        .question-box {
+            background-color: #ebf5fb;
+            border-left: 4px solid #3498db;
+            padding: 12px 20px;
+            margin: 15px 20px 5px 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+        /* 主画布区域 */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            margin: 10px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #fafbfc;
+            overflow: hidden;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+        /* 控制面板 */
+        .control-panel {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-top: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 120px;
+        }
+        .range-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #ddd;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2ecc71;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: background 0.2s;
+        }
+        .range-slider::-webkit-slider-thumb:hover {
+            background: #27ae60;
+        }
+        /* 状态指示灯与说明 */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot.active {
+            background-color: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+        }
+        .dot.inactive {
+            background-color: #e74c3c;
+            box-shadow: 0 0 8px #e74c3c;
+        }
+        .status-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        /* 拖拽提示 */
+        .drag-tip {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #2980b9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px dashed #3498db;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <div>探究常数区间：f(x) = |x - 1| + |x - a|</div>
+        <div class="subtitle">高中数学 / 高一 / 函数的单调性与最值</div>
+    </div>
+
+    <!-- 题干 -->
+    <div class="question-box">
+        <strong>思考题：</strong> 若函数 $f(x) = |x-1| + |x-a|$ 在区间 $[1, 3]$ 上是一个常数函数（即图象是一条水平线段），参数 $a$ 的取值范围应该是什么？请调节下方参数 $a$ 观察区间覆盖与函数图象的变化。
+    </div>
+
+    <!-- 可视化画布 -->
+    <div class="canvas-container">
+        <div class="drag-tip">提示：拖动下方滑块改变参数 a 的值</div>
+        <svg id="visualizer" viewBox="0 0 760 280">
+            <!-- 网格背景 -->
+            <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <!-- 数轴 (Y=180) -->
+            <g transform="translate(0, 180)">
+                <line x1="50" y1="0" x2="710" y2="0" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrow)" />
+                <!-- 刻度与标注 -->
+                <!-- 比例尺：x=0 对应 150px, 每 1个单位 = 100px -->
+                <!-- 刻度 0, 1, 2, 3, 4, 5, 6 -->
+                <g id="ticks">
+                    <!-- JS 动态生成 -->
+                </g>
+            </g>
+
+            <!-- 目标区间 [1, 3] 覆盖指示 (上方) -->
+            <rect id="target-interval" x="250" y="110" width="200" height="30" fill="#f39c12" fill-opacity="0.25" stroke="#e67e22" stroke-width="2" stroke-dasharray="4,4" />
+            <text x="350" y="130" fill="#d35400" font-size="12" font-weight="bold" text-anchor="middle">已知常数区间 [1, 3]</text>
+
+            <!-- 绝对值零点区间 [1, a] 或 [a, 1] 覆盖范围 -->
+            <rect id="zero-interval" x="250" y="145" width="0" height="15" fill="#2ecc71" fill-opacity="0.3" stroke="#27ae60" stroke-width="1.5" />
+            <text id="zero-interval-text" x="250" y="157" fill="#27ae60" font-size="10" font-weight="bold" text-anchor="middle"></text>
+
+            <!-- 动态函数折线图 (上方绘制) -->
+            <path id="func-path" d="" fill="none" stroke="#3498db" stroke-width="3" />
+            <text id="func-label" x="80" y="50" fill="#2980b9" font-size="13" font-weight="bold">f(x) = |x-1| + |x-a|</text>
+
+            <!-- 关键点标记 -->
+            <circle id="point-1" cx="250" cy="180" r="5" fill="#e74c3c" />
+            <text x="250" y="202" fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle">1</text>
+
+            <circle id="point-a" cx="250" cy="180" r="6" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+            <text id="label-a" x="250" y="218" fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle">a</text>
+
+            <!-- 箭头定义 -->
+            <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#7f8c8d" />
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- 控制与状态反馈 -->
+    <div class="control-panel">
+        <div class="slider-container">
+            <span class="slider-label" id="slider-val-label">参数 a = 1.0</span>
+            <input type="range" id="a-slider" class="range-slider" min="-1" max="5" step="0.1" value="1">
+        </div>
+        <div class="status-bar">
+            <div class="status-indicator">
+                <span id="status-dot" class="dot inactive"></span>
+                <span id="status-title">未激活</span>
+            </div>
+            <div class="status-text" id="status-desc">
+                请拖动滑块，观察区间 [1, 3] 是否完全被夹在 1 和 a 之间。
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('a-slider');
+    const sliderLabel = document.getElementById('slider-val-label');
+    const ticksContainer = document.getElementById('ticks');
+    const pointA = document.getElementById('point-a');
+    const labelA = document.getElementById('label-a');
+    const zeroInterval = document.getElementById('zero-interval');
+    const zeroIntervalText = document.getElementById('zero-interval-text');
+    const funcPath = document.getElementById('func-path');
+    const statusDot = document.getElementById('status-dot');
+    const statusTitle = document.getElementById('status-title');
+    const statusDesc = document.getElementById('status-desc');
+
+    // 比例尺配置：x=0 对应 150px, 1单位 = 100px
+    const originX = 150;
+    const unitX = 100;
+    const axisY = 180; // 数轴Y坐标
+
+    // 初始化数轴刻度
+    function initTicks() {
+        ticksContainer.innerHTML = '';
+        for (let i = -1; i <= 5.5; i += 1) {
+            const cx = originX + i * unitX;
+            if (cx < 50 || cx > 710) continue;
+            
+            // 刻度线
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", cx);
+            line.setAttribute("y1", -5);
+            line.setAttribute("x2", cx);
+            line.setAttribute("y2", 5);
+            line.setAttribute("stroke", "#7f8c8d");
+            line.setAttribute("stroke-width", "1.5");
+            ticksContainer.appendChild(line);
+
+            // 刻度值 (排除1，因为1有特殊红色高亮标注)
+            if (i !== 1) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", cx);
+                text.setAttribute("y", 20);
+                text.setAttribute("fill", "#7f8c8d");
+                text.setAttribute("font-size", "11");
+                text.setAttribute("text-anchor", "middle");
+                text.textContent = i;
+                ticksContainer.appendChild(text);
+            }
+        }
+    }
+
+    // 计算函数 f(x) = |x-1| + |x-a| 的 Y 坐标
+    // 为了在画布上方美观展示，我们将函数值放大并翻转：
+    // 设逻辑坐标 y_val = |x - 1| + |x - a|
+    // 映射到画布 Y 坐标：Y = axisY - 30 - (y_val * 25)
+    function getCanvasY(x, a) {
+        const yVal = Math.abs(x - 1) + Math.abs(x - a);
+        return axisY - 20 - (yVal * 20);
+    }
+
+    // 更新可视化状态
+    function update(a) {
+        // 1. 更新滑块数值文本
+        sliderLabel.textContent = `参数 a = ${a.toFixed(1)}`;
+
+        // 2. 更新点 a 的位置
+        const ax = originX + a * unitX;
+        pointA.setAttribute("cx", ax);
+        labelA.setAttribute("x", ax);
+        labelA.textContent = `a = ${a.toFixed(1)}`;
+
+        // 3. 更新绝对值零点区间 [1, a] 或 [a, 1]
+        const x1 = originX + 1 * unitX;
+        const left = Math.min(x1, ax);
+        const width = Math.abs(x1 - ax);
+        zeroInterval.setAttribute("x", left);
+        zeroInterval.setAttribute("width", width);
+        
+        if (width > 10) {
+            zeroIntervalText.setAttribute("x", left + width / 2);
+            zeroIntervalText.textContent = a >= 1 ? `[1, a]` : `[a, 1]`;
+            zeroIntervalText.setAttribute("display", "block");
+        } else {
+            zeroIntervalText.setAttribute("display", "none");
+        }
+
+        // 4. 绘制函数图像折线
+        // 关键转折点为 x = min(1, a) 和 x = max(1, a)
+        const minX = Math.min(1, a);
+        const maxX = Math.max(1, a);
+        
+        // 采样点
+        const points = [
+            -1,
+            minX,
+            maxX,
+            5.5
+        ];
+        // 排序去重
+        const uniquePoints = [...new Set(points)].sort((p1, p2) => p1 - p2);
+        
+        let pathD = "";
+        uniquePoints.forEach((px, index) => {
+            const cx = originX + px * unitX;
+            const cy = getCanvasY(px, a);
+            if (index === 0) {
+                pathD += `M ${cx} ${cy}`;
+            } else {
+                pathD += ` L ${cx} ${cy}`;
+            }
+        });
+        funcPath.setAttribute("d", pathD);
+
+        // 5. 判断 [1, 3] 是否为常数区间并更新状态
+        // 代数原理：当且仅当 [1, 3] 包含于 [1, a]（即 a >= 3）时，
+        // 在 [1, 3] 上，x-1 >= 0 且 x-a <= 0，此时 f(x) = (x-1) - (x-a) = a - 1 (常数)
+        const isConstant = (a >= 3);
+
+        if (isConstant) {
+            statusDot.className = "dot active";
+            statusTitle.textContent = "常数区间激活！";
+            statusTitle.style.color = "#2ecc71";
+            statusDesc.innerHTML = `当 <strong>a ≥ 3</strong> 时，区间 [1, 3] 完全被包裹在 [1, a] 内。此时对任意 x∈[1,3]，f(x) = (x-1) + (a-x) = <strong>${(a-1).toFixed(1)}</strong> (常数)。`;
+        } else {
+            statusDot.className = "dot inactive";
+            statusTitle.textContent = "未形成常数区间";
+            statusTitle.style.color = "#e74c3c";
+            if (a < 1) {
+                statusDesc.innerHTML = `当前 a < 1。在 [1, 3] 上，f(x) = (x-1) + (x-a) = 2x - 1 - a，含有变量 x，不是常数。`;
+            } else {
+                statusDesc.innerHTML = `橙色区间有部分暴露在绿色 [1, a] 之外。在暴露的 (a, 3] 上，x 无法相互抵消，函数不再是常数。`;
+            }
+        }
+    }
+
+    // 绑定事件
+    slider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        update(val);
+    });
+
+    // 初始化
+    initTicks();
+    update(1.0);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+{
+  "task_id": "57d330c3-9dd9-4ebc-8ed7-4a619ac54848",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，把4支笔放进3个笔筒里，请大家动手摆一摆。观察一下，不管怎么放，总有一个笔筒里笔的数量有什么共同的特点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才我们发现总有一个笔筒至少有2支笔。如果笔的数量变得很大，比如100支，还要一种一种列出来吗？有没有一种更巧妙的方法，不用全列出来，也能断定这个结果？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们用“平均分”的方法找到了规律。观察这些算式，你发现“至少数”跟商、余数有什么关系？为什么不管余数是几，算“至少数”时都只加1呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "来看这个扑克牌问题：一副牌去掉大小王有52张，从中任意抽5张。在这个情境里，什么相当于“物体”，什么相当于“抽屉”？你能算出至少有几张牌是同花色的吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "把4支笔放进3个笔筒，总有一个笔筒至少有2支。如果把5支笔放进4个笔筒，结果会变吗？请推理证明。为什么笔和笔筒数量变了，‘至少数’却没变？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "我们发现了4支笔放3个笔筒的规律。如果笔减少到3支放入3个笔筒，你还能断定‘总有一个笔筒至少有2支’吗？如果不能，是‘平均分’的方法失效了，还是什么条件变了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "挑战升级：把100支笔放进99个笔筒，不动笔列举，你能用“平均分”的思路推理出，总有一个笔筒至少放进了几支笔吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "有人随便放就得出结论，有人用“平均分”来推导。这两种方法，哪一种能直接证明“至少”是多少？为什么“平均分”才是最保险的讲理方式？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "计算“7支笔放3个笔筒”时，小明认为至少数是“商+余数”等于4支，小刚认为是“商+1”等于3支。谁对谁错？请用分的过程辩一辩。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "已知“至少数”是3，笔筒有4个，笔的数量最少是多少支？写出算式，并想想为什么不能更少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "换个情境：13只鸽子飞进4个鸽笼，总有一个鸽笼里至少有几只鸽子？这里的“鸽子”和“鸽笼”分别对应模型中的什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "走进生活：某班有32名学生，至少有几人是同一个月出生的？这里隐藏的“抽屉”是什么？你能找出物体数和抽屉数吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "看黑板上的四种摆法：(4,0,0)、(3,1,0)、(2,2,0)、(2,1,1)。每种摆法里，笔最多的那个笔筒，分别有几支笔？这些“最多”的数量里，最小的一个是几？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "请拿出4支笔和3个笔筒。如果先在每个笔筒里放1支，手里还剩几支？把剩下的这支放进任意一个笔筒，那个笔筒现在有几支？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "4支笔平均分给3个笔筒，每个笔筒分1支，还剩1支。把这个过程写成除法算式是什么？算式里的两个“1”分别代表什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果有5支笔，平均分后剩2支。试一试：把剩下的2支全放进同一个笔筒，最多的笔筒有几支？如果把剩下的2支分开两个笔筒放，最多的笔筒又有几支？哪种放法得到的“最多数量”更小？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "扑克牌有红桃、黑桃、方块、梅花4种花色。要把抽出的5张牌按花色分类，一共可以分成几类？这里的“抽屉”是指什么？“物体”又是指什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "这里的“笔筒”变成了看不见的“花色”，说明“抽屉”必须是真实的盒子吗？想一想，还有哪些分类标准也可以当作“抽屉”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

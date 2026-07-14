@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学教学可视化：从具体到一般的桥梁</title>
+    <style>
+        /* 课堂投屏优化：4:3 比例自适应与清爽配色 */
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #16a34a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例容器 */
+        .container {
+            width: 960px;
+            height: 720px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部区域 */
+        .header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .question-box {
+            background-color: #f1f5f9;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .formula {
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            color: #0f172a;
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 画布与交互区域 */
+        .interactive-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            margin-top: 20px;
+        }
+
+        /* SVG 连线层 */
+        #svg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 卡片列 */
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            z-index: 2;
+        }
+
+        .card {
+            width: 180px;
+            height: 100px;
+            background: #ffffff;
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card.selected {
+            border-color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .card.matched {
+            border-color: var(--success-color);
+            background-color: #f0fdf4;
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .card-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        /* 连接点指示器 */
+        .port {
+            width: 12px;
+            height: 12px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: background-color 0.2s;
+        }
+
+        .left-column .port {
+            right: -8px;
+        }
+
+        .right-column .port {
+            left: -8px;
+        }
+
+        .card.selected .port {
+            background-color: var(--primary-color);
+            transform: translateY(-50%) scale(1.3);
+        }
+
+        .card.matched .port {
+            background-color: var(--success-color);
+        }
+
+        /* 顶部提示横幅 */
+        .alert-banner {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(22, 163, 74, 0.3);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-banner.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 底部控制与重置 */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .tip {
+            font-size: 16px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reset {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background-color: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 成功提示 -->
+        <div class="alert-banner" id="success-banner">
+            🎉 结构完全一致，字母只是数值的替身！
+        </div>
+
+        <!-- 头部 -->
+        <div class="header">
+            <h1 class="title">代数结构的“替身”关系</h1>
+            <div class="question-box">
+                <strong>思考：</strong>对比两个方程：
+                原来的 <span class="formula">|x - 1| + |x + 1| = a</span>，
+                和现在的 <span class="formula">|x - p| + |x - q| = a</span>（设 <span class="formula">p &lt; q</span>）。<br>
+                如果我们做个连线，原来的定点 <span class="formula">1</span> 和 <span class="formula">-1</span>，现在对应的是哪两个字母？请在下方拖动或点击连线配对。
+            </div>
+        </div>
+
+        <!-- 交互区域 -->
+        <div class="interactive-area" id="interactive-container">
+            <svg id="svg-canvas"></svg>
+
+            <!-- 左侧：具体数值 -->
+            <div class="column left-column">
+                <div class="card" id="card-1" data-side="left" data-val="1">
+                    <span class="card-label">定点 (较大值)</span>
+                    <span class="card-value">1</span>
+                    <div class="port"></div>
+                </div>
+                <div class="card" id="card-neg1" data-side="left" data-val="-1">
+                    <span class="card-label">定点 (较小值)</span>
+                    <span class="card-value">-1</span>
+                    <div class="port"></div>
+                </div>
+            </div>
+
+            <!-- 右侧：抽象字母 -->
+            <div class="column right-column">
+                <div class="card" id="card-q" data-side="right" data-val="q">
+                    <span class="card-label">参数 (较大值)</span>
+                    <span class="card-value">q</span>
+                    <div class="port"></div>
+                </div>
+                <div class="card" id="card-p" data-side="right" data-val="p">
+                    <span class="card-label">参数 (较小值)</span>
+                    <span class="card-value">p</span>
+                    <div class="port"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <div class="tip" id="status-tip">
+                💡 提示：点击左侧卡片，再点击右侧对应的字母卡片进行连线。
+            </div>
+            <button class="btn-reset" id="btn-reset">重置连线</button>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('interactive-container');
+        const svg = document.getElementById('svg-canvas');
+        const cards = document.querySelectorAll('.card');
+        const successBanner = document.getElementById('success-banner');
+        const statusTip = document.getElementById('status-tip');
+        const btnReset = document.getElementById('btn-reset');
+
+        let selectedLeft = null;
+        let connections = []; // 存储格式：{ leftId, rightId, isCorrect }
+        
+        // 正确的映射关系
+        const correctPairs = {
+            'card-1': 'card-q',    // 1 是较大值，对应 q (p < q)
+            'card-neg1': 'card-p'  // -1 是较小值，对应 p
+        };
+
+        // 初始化与窗口自适应
+        function resizeCanvas() {
+            svg.setAttribute('width', container.clientWidth);
+            svg.setAttribute('height', container.clientHeight);
+            drawLines();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+
+        // 卡片点击事件
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.classList.contains('matched')) return;
+
+                const side = card.dataset.side;
+
+                if (side === 'left') {
+                    // 切换左侧选择
+                    document.querySelectorAll('.left-column .card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedLeft = card;
+                    statusTip.innerHTML = "💡 请选择右侧与 <b>" + card.querySelector('.card-value').innerText + "</b> 对应的字母。";
+                } else if (side === 'right' && selectedLeft) {
+                    // 尝试连接
+                    const leftId = selectedLeft.id;
+                    const rightId = card.id;
+
+                    // 检查是否已经有连接占用了这两个卡片，如果有则清除旧连接
+                    connections = connections.filter(conn => conn.leftId !== leftId && conn.rightId !== rightId);
+
+                    const isCorrect = correctPairs[leftId] === rightId;
+                    connections.push({ leftId, rightId, isCorrect });
+
+                    // 清除左侧选择状态
+                    selectedLeft.classList.remove('selected');
+                    selectedLeft = null;
+
+                    // 检查是否全部正确配对
+                    checkGameStatus();
+                    drawLines();
+                }
+            });
+        });
+
+        // 绘制连线
+        function drawLines() {
+            // 清空旧线
+            svg.innerHTML = '';
+
+            connections.forEach(conn => {
+                const leftCard = document.getElementById(conn.leftId);
+                const rightCard = document.getElementById(conn.rightId);
+
+                const leftRect = leftCard.getBoundingClientRect();
+                const rightRect = rightCard.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+
+                // 计算相对于 SVG 容器的坐标
+                const x1 = leftRect.right - containerRect.left;
+                const y1 = leftRect.top + leftRect.height / 2 - containerRect.top;
+                const x2 = rightRect.left - containerRect.left;
+                const y2 = rightRect.top + rightRect.height / 2 - containerRect.top;
+
+                // 创建贝塞尔曲线，让连线更平滑美观
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const controlOffset = Math.abs(x2 - x1) * 0.5;
+                const d = `M ${x1} ${y1} C ${x1 + controlOffset} ${y1}, ${x2 - controlOffset} ${y2}, ${x2} ${y2}`;
+                
+                path.setAttribute('d', d);
+                path.setAttribute('fill', 'none');
+                
+                if (conn.isCorrect && connections.length === 2) {
+                    path.setAttribute('stroke', '#16a34a'); // 成功绿色
+                    path.setAttribute('stroke-width', '4');
+                } else {
+                    path.setAttribute('stroke', '#2563eb'); // 过程蓝色
+                    path.setAttribute('stroke-width', '3');
+                }
+                
+                svg.appendChild(path);
+            });
+        }
+
+        // 检查游戏状态
+        function checkGameStatus() {
+            if (connections.length === 2) {
+                const allCorrect = connections.every(conn => conn.isCorrect);
+                if (allCorrect) {
+                    // 全部正确
+                    cards.forEach(c => c.classList.add('matched'));
+                    successBanner.classList.add('show');
+                    statusTip.innerHTML = "✨ 完美配对！你已经看透了字母的本质。";
+                } else {
+                    statusTip.innerHTML = "❌ 对应关系好像不对哦，再观察一下大小关系？点击“重置”重新试试。";
+                }
+            } else {
+                statusTip.innerHTML = "💡 已建立一条连线，请继续配对其余卡片。";
+            }
+        }
+
+        // 重置
+        btnReset.addEventListener('click', () => {
+            connections = [];
+            selectedLeft = null;
+            cards.forEach(c => {
+                c.classList.remove('selected', 'matched');
+            });
+            successBanner.classList.remove('show');
+            statusTip.innerHTML = "💡 提示：点击左侧卡片，再点击右侧对应的字母卡片进行连线。";
+            drawLines();
+        });
+    </script>
+</body>
+</html>

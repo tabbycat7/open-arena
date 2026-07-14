@@ -1,0 +1,158 @@
+{
+  "task_id": "73cded16-7efd-4a94-924b-348249a5daf3",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "老师今天要和大家打个赌。手里有4支铅笔和3个笔筒，我敢断定，不管怎么放，总有一个笔筒里至少有2支铅笔。你们能想办法推翻我的结论吗？动手试试！",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才大家都在找反例，结果发现我的结论好像是对的。但只摆一种情况还不够严谨，怎么做才能让所有人彻底信服？能不能想办法把所有摆法都找出来，看看有没有漏网之鱼？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "如果是100支铅笔放进99个笔筒，还这样一个个列出来，是不是太麻烦了？不动手摆，能不能直接‘想’出结果？谁有高招？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "刚才大家用‘平均分’的道理讲通了。数学讲究简洁，回忆刚才分的过程，用哪种运算最能体现‘平均分’？试着把7本书放进3个抽屉的过程写下来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "最后玩个扑克牌魔术。一副牌去掉大小王，5人每人抽一张，肯定有2张同花色。这里的‘铅笔’和‘笔筒’分别是谁？如果我想保证至少有2张牌是同一个点数，5个人抽牌够吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "换个场景：4只鸽子飞进3个鸽笼，总有一个鸽笼至少有2只鸽子吗？这和刚才的铅笔问题有什么相似之处？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "铅笔增加到5支，笔筒还是3个。现在的结论还是“至少有2支”吗？还是会变了？试着推想一下。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "14本书放4个抽屉。小明算出14÷4=3……2，认为“至少有5本”。你同意吗？用“平均分”的道理辩一辩。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "观察算式 7÷3=2……1 和 7÷2=3……1。余数都是1，为什么“至少数”一个是3，一个是4？这说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "扑克牌去掉大小王，随意抽5张。为什么肯定有2张同花色？这里的“铅笔”和“笔筒”分别对应什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "袋子里有红黄蓝白4种球，要保证至少摸出3个同色球，至少要摸几个？先想想最“倒霉”的情况是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "“至少有2支”意味着最少有2支。如果每个笔筒里的铅笔都比2支少，那么每个笔筒最多只能放几支？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "比较(4,0,0)和(2,1,1)，哪种情况里“最多的那个笔筒”铅笔更少？要让这个“最多的数量”变少，分的时候要尽量怎么做？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果每个笔筒最多只能放1支，3个笔筒一共能放几支？现在有4支铅笔，能放得下吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "“平均分”的过程通常用什么算式记录？把4支铅笔平均分到3个笔筒，算式是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "算式4÷3=1……1中，商“1”表示每个笔筒分到1支，余数“1”表示什么？把余下的这1支放进任意一个笔筒，那个笔筒会有几支？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "找“同花色”时，4种花色相当于“笔筒”。如果找“同点数”，13种点数相当于什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

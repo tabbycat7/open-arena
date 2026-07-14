@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的顺序性探究</title>
+    <style>
+        :root { --primary: #2563eb; --error: #ef4444; --success: #22c55e; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f8fafc; margin: 0; padding: 20px; height: 100vh; box-sizing: border-box; }
+        .container { display: flex; gap: 40px; width: 100%; max-width: 800px; height: 70%; }
+        .panel { flex: 1; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
+        h3 { margin-top: 0; color: #334155; }
+        .drop-zone { width: 100%; height: 200px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative; }
+        .card { width: 120px; padding: 10px; background: #e2e8f0; border-radius: 6px; cursor: grab; text-align: center; user-select: none; font-weight: bold; }
+        .card.dragging { opacity: 0.5; }
+        #message { margin-top: 20px; font-weight: bold; color: var(--primary); text-align: center; height: 3em; }
+        .hint { font-size: 0.9em; color: #64748b; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>算法的顺序性：逻辑依赖的奥秘</h2>
+    
+    <div class="container">
+        <!-- 穿鞋袜区域 -->
+        <div class="panel">
+            <h3>穿鞋袜 (有依赖)</h3>
+            <div id="socks-shoes" class="drop-zone">
+                <div class="card" draggable="true" id="step-sock">1. 穿袜子</div>
+                <div class="card" draggable="true" id="step-shoe">2. 穿鞋子</div>
+            </div>
+            <p class="hint">拖动卡片尝试交换顺序</p>
+        </div>
+
+        <!-- 戴手套区域 -->
+        <div class="panel">
+            <h3>戴手套 (无依赖)</h3>
+            <div id="gloves" class="drop-zone">
+                <div class="card" draggable="true" id="step-left">1. 戴左手手套</div>
+                <div class="card" draggable="true" id="step-right">2. 戴右手手套</div>
+            </div>
+            <p class="hint">拖动卡片尝试交换顺序</p>
+        </div>
+    </div>
+
+    <div id="message">请尝试拖动卡片，观察算法顺序的影响。</div>
+
+    <script>
+        const msg = document.getElementById('message');
+        let draggedItem = null;
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                draggedItem = e.target;
+                e.target.classList.add('dragging');
+            });
+
+            card.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+                checkLogic();
+            });
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(zone, e.clientY);
+                if (afterElement == null) {
+                    zone.appendChild(draggedItem);
+                } else {
+                    zone.insertBefore(draggedItem, afterElement);
+                }
+            });
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+                return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function checkLogic() {
+            const socksZone = document.getElementById('socks-shoes');
+            const children = [...socksZone.children];
+            
+            if (children[0].id === 'step-shoe') {
+                socksZone.style.borderColor = 'var(--error)';
+                msg.innerText = "警告：先穿鞋后穿袜在逻辑上是错误的！";
+                msg.style.color = 'var(--error)';
+            } else {
+                socksZone.style.borderColor = 'var(--success)';
+                msg.innerText = "逻辑正确：步骤依赖关系已满足。";
+                msg.style.color = 'var(--success)';
+            }
+            
+            // 戴手套逻辑提示
+            const gloveZone = document.getElementById('gloves');
+            gloveZone.style.borderColor = 'var(--success)';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+{
+  "id": "0152fbec-9f5a-4174-9bf7-0ee35bdeca37",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1、经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”，会用“鸽巢原理”解决简单的实际问题。2、通过操作发展学生的类推能力，形成比较抽象的数学思维。3、通过“鸽巢原理”的灵活应用感受数学的魅力。\r\n",
+  "student_profile": "学习者分析为了更准确的了解学情，我做了课前问卷调查，设计的问题是：你知道什么是鸽巢原理吗？若知道，请举例说明。调查人数 41人，41.4%学生能正确举例。34.5%学生理解模糊，24.1%学生完全不知道。也就是说很多同学课前接触过鸽巢问题，基本都可以用平均分的方法解决问题，但知其然，不知其所以然。基于以上调查，我认为六年级的学生对于总结规律的方法研究比较少，尤其对于“数学证明”。因此，教学过程中教师要耐心细致的引导，重在让学生经历知识的发生、发展过程，而不是生搬硬套，只求结论，要让学生知其然，更要知其所以然。",
+  "difficulty_analysis": "教学重难点分析及解决措施重点：使学生经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”。新课标提倡“做数学”。学生只有亲历知识形成的过程，才能真正理解知识，灵活运用知识。本节课主要采用了游戏激趣法、活动体验法、讲授法、实践操作法。通过猜测、验证、观察、分析等活动，建立数学模型，渗透数学思想。激发学生参与学习的积极性，让学生在求知的学习状态中展示个性。促进学生思考，引导学生自己进行探索，丰富数学活动经验。难点：“对鸽巢原理的认识，尤其是对“总有”“至少”的意义，和“至少数=商数十1”的理解”。学生通过动手实践、自主探索、合作交流等活动，体验知识的形成过程，掌握基本知识和技能，建立数学模型，发展数学思考和解决问题的能力，形成良好的情感、态度和价值观。",
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，老师这里有5支铅笔和4个笔筒。请同桌两人一组动手试试：不管怎么摆放，你们发现一定会出现什么现象？还是可能有特别的情况？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"（举起铅笔和笔筒）大家操作时特别注意：'总有'是什么意思？是每次都会出现吗？'至少2支'该怎么理解？想想我们学过的平均分——铅笔比笔筒多1支时，最少的笔筒会怎样？\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"创设'5支铅笔放4个笔筒'冲突情境，激活平均分先备知识，引导发现'总有至少1个笔筒放2支以上'现象，聚焦'总有''至少'的数学含义\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"每个小组有7本书和3个抽屉。大家动手试试不同的放法，记录每次'最满抽屉的本数'。想想为什么这个数总是不小于3？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"（分发学具）看看各组的记录：所有放法中最满抽屉的最小值是多少？这个'3本'怎么算出来的？如果书增加到100本，还能这样摆吗？思考一下总本数和抽屉数的关系。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"通过'7本书放3个抽屉'实物操作，系统枚举所有分配方案，发现'至少数'规律，培养分类思考与模式识别能力\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"假如10只鸽子要飞进9个鸽笼，如果每个笼子最多停1只鸽子，这能实现吗？为什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"（画鸽笼示意图）关键假设：每个笼子≤1只时，9笼最多装9只。但我们有10只鸽子！第10只会去哪？它必须飞进已有鸽子的笼子，这说明什么？原来不用摆实物也能证明规律。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"以'10只鸽子飞进9个鸽笼'为例，引导学生用反证法推导矛盾，培养抽象推理能力，突破反证思维障碍\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"看这三组题：10÷9=1...1→至少2只；7÷3=2...1→至少3本；6÷3=2→至少？本。为什么商都是2，至少数却不同？余数起什么作用？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"（指对比表）重点看余数：有余数时为什么加1？6÷3余0时至少数为什么是2？余数其实在告诉我们什么关键信息？这个'+1'的规律在什么情况下需要调整？\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"对比多组推导结果，抽象出至少数=商数+1的数学模型，重点阐释余数决定'加1'的逻辑本质\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"13个同学分到4个小组，至少几人同组？如果再加1个同学呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"先找清楚：谁是'物品'？谁是'容器'？（指黑板公式）13÷4=3余1，余数1表示什么？为什么导致有小组多1人？14人时余数变2，至少数怎么变？\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.82, \"design_intent\": \"解决分组问题强化公式应用，建立'物品-容器'直接对应关系，通过人数变化观察公式动态\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"袋子里有红黄蓝三种颜色的球各10个，至少要摸几个才能保证有2个同色的？这个原理能解释为什么367人中总有2人同生日吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"（摇动彩球盒）'容器'没有直接出现哦！'保证两个同色'时，什么在扮演鸽巢的角色？（展示生日统计表）有人用这个设计密码锁，为什么说能增加安全性？这个原理最神奇的是能用一句话说清这么多现象。\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.85, \"design_intent\": \"在变式问题中引导学生抽象容器本质，讨论原理在密码学等领域的应用价值，感受数学魅力\", \"design_rationale\": \"\"}, {\"id\": \"M1-V1\", \"content\": \"6颗糖果分给5位小朋友，同桌合作尝试：无论怎么分配，一定会出现什么现象？有可能每人恰好1颗吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过分糖果情境重构原理初建场景，用生活化对象强化'总有至少一人得2颗'的必然性认知\", \"design_rationale\": \"\"}, {\"id\": \"M1-V2\", \"content\": \"有4支铅笔分给4个笔筒。小明说：“不管怎么放，总有一个笔筒至少有2支铅笔。”他说得对吗？请你举例说明理由。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过辨析错误结论，明确原理成立的前提条件（物体数大于容器数），强化对边界条件的认知\", \"design_rationale\": \"\"}, {\"id\": \"M2-V1\", \"content\": \"要保证3个抽屉中总有一个抽屉至少有3本书，至少需要多少本书？用枚举法验证你的结论。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"将问题结构从正向计算改为逆向求最小值，通过目标值变化强化枚举归纳深度\", \"design_rationale\": \"\"}, {\"id\": \"M2-V2\", \"content\": \"用枚举法研究“5本书放入2个抽屉”的所有放法。你发现了哪几种情况？放书最多的抽屉至少有几本书？如果书增加到6本，你能从规律中直接得出什么结论？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过数量递增触发对枚举局限性的思考，引导学生从具体操作转向模式归纳\", \"design_rationale\": \"\"}, {\"id\": \"M3-V1\", \"content\": \"证明：“15只鸽子飞进12个笼子，总有一个笼子至少飞进3只。”小明的证明：假设每笼最多2只，12笼最多装24只>15，所以假设成立。他的证明错在哪里？正确证明需如何假设？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.78, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过错误证明案例暴露反证法关键逻辑（需假设至多k-1才能证至少k），提升假设准确性\", \"design_rationale\": \"\"}, {\"id\": \"M3-V2\", \"content\": \"证明'10只鸽子飞进3个笼子，总有至少4只在同一个笼子'。小刚假设每笼最多3只，发现3×3=9<10，得出矛盾。他的证明有什么问题？应该怎么假设？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.8, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过错误案例揭示反证法核心逻辑：要证至少k只必须假设每笼≤k-1只\", \"design_rationale\": \"\"}, {\"id\": \"M4-V1\", \"content\": \"观察两组计算：A)11本书÷3抽屉=3...2→至少4本；B)12本书÷3抽屉=4...0→至少4本。为什么余数不同（2和0），但'至少数'相同？余数怎样影响计算结果？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过整除与有余数对比，揭示余数在公式中的作用及'+1'的触发条件\", \"design_rationale\": \"\"}, {\"id\": \"M4-V2\", \"content\": \"计算两种分法：10本书分到3个抽屉（10÷3=3...1）和9本书分到3个抽屉（9÷3=3）。它们的至少数分别是多少？为什么余数会影响公式中的'+1'？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.82, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"对比整除和有余数两种情况，揭示余数在公式中的作用及+1的本质\", \"design_rationale\": \"\"}, {\"id\": \"M5-V1\", \"content\": \"至少要多少只鸽子飞进6个笼子，才能保证总有一个笼子至少有4只？说说你的推理思路。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"设计逆向问题考察临界值计算，强化公式的灵活应用能力\", \"design_rationale\": \"\"}, {\"id\": \"M5-V2\", \"content\": \"13封信用3个信箱投递。能否保证总有一个信箱至少有5封信？如果不能，至少需要增加几封信才能保证？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.83, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过正向判断与逆向计算整合，深化临界值理解并训练思维转换能力\", \"design_rationale\": \"\"}, {\"id\": \"M6-V1\", \"content\": \"图书馆有科幻、历史、童话三类书各20本，至少借多少本才能保证有4本同类书？这里的'容器'是什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.85, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"用借书情境构建更直观的容器模型，训练抽象特征识别能力\", \"design_rationale\": \"\"}, {\"id\": \"M6-V2\", \"content\": \"身份证尾号有00-99共100种可能。至少需要多少人，才能保证有3人尾号相同？若只需保证2人尾号相同呢？这个原理如何提升密码锁安全性？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.88, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过变保证值（2人→3人）提升思维层次，联系安全设计领悟原理应用价值\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"图中有一个装了2支铅笔的笔筒，请圈出来。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"通过可视化实例固化'至少2支'的具象认知，为M2操作提供参照\", \"design_intent\": \"用图示聚焦'至少2支'的具体表现，填补术语理解断层\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"有没有方法让所有笔筒的铅笔都不超过1支？为什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"对比可能情况与必然现象，强化'总有'的确定性认知\", \"design_intent\": \"通过'可能vs不可能'对比建立确定性认知\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"如果每个抽屉最多放2本书，3个抽屉最多放几本？7本书够放吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"用假设情境转化枚举结果，显性化反证逻辑步骤\", \"design_intent\": \"通过容量假设桥接具体操作与抽象推导\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"10只鸽子分9个笼：如果每笼最多1只，最多能住几只？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"通过极限假设巩固反证结论，铺垫余数作用\", \"design_intent\": \"用反证结论解释余数意义\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"6÷3=2表示每个笼子有2只，至少数是多少？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.68, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"对比整除与有余数案例，构建公式雏形\", \"design_intent\": \"通过对比案例揭示余数对'加1'的决定性\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"13个同学分4组：同学对应什么？小组对应什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"强化模型要素识别，建立问题与公式对应\", \"design_intent\": \"通过要素标注强化'物品-容器'对应关系\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"生日问题中：367人对应什么？366天对应什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"分解抽象情境要素，连接公式与变式\", \"design_intent\": \"用要素对应分解抽象情境\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"颜色球问题：颜色种类相当于几个抽屉？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"完成抽象容器转换，应用公式解决变式\", \"design_intent\": \"通过半结构化引导完成模型转换\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"M1-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"M1-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"M2-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"M2-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"M3-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"M3-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"M4-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"M4-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"M5-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"M5-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"M6-V1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"M6-V2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-04 19:01:57",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，老师这里有5支铅笔和4个笔筒。请同桌两人一组动手试试：不管怎么摆放，你们发现一定会出现什么现象？还是可能有特别的情况？",
+        "question_type": "main",
+        "lesson_presentation_script": "（举起铅笔和笔筒）大家操作时特别注意：'总有'是什么意思？是每次都会出现吗？'至少2支'该怎么理解？想想我们学过的平均分——铅笔比笔筒多1支时，最少的笔筒会怎样？",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "创设'5支铅笔放4个笔筒'冲突情境，激活平均分先备知识，引导发现'总有至少1个笔筒放2支以上'现象，聚焦'总有''至少'的数学含义",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "每个小组有7本书和3个抽屉。大家动手试试不同的放法，记录每次'最满抽屉的本数'。想想为什么这个数总是不小于3？",
+        "question_type": "main",
+        "lesson_presentation_script": "（分发学具）看看各组的记录：所有放法中最满抽屉的最小值是多少？这个'3本'怎么算出来的？如果书增加到100本，还能这样摆吗？思考一下总本数和抽屉数的关系。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "通过'7本书放3个抽屉'实物操作，系统枚举所有分配方案，发现'至少数'规律，培养分类思考与模式识别能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "假如10只鸽子要飞进9个鸽笼，如果每个笼子最多停1只鸽子，这能实现吗？为什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "（画鸽笼示意图）关键假设：每个笼子≤1只时，9笼最多装9只。但我们有10只鸽子！第10只会去哪？它必须飞进已有鸽子的笼子，这说明什么？原来不用摆实物也能证明规律。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "以'10只鸽子飞进9个鸽笼'为例，引导学生用反证法推导矛盾，培养抽象推理能力，突破反证思维障碍",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "看这三组题：10÷9=1...1→至少2只；7÷3=2...1→至少3本；6÷3=2→至少？本。为什么商都是2，至少数却不同？余数起什么作用？",
+        "question_type": "main",
+        "lesson_presentation_script": "（指对比表）重点看余数：有余数时为什么加1？6÷3余0时至少数为什么是2？余数其实在告诉我们什么关键信息？这个'+1'的规律在什么情况下需要调整？",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "对比多组推导结果，抽象出至少数=商数+1的数学模型，重点阐释余数决定'加1'的逻辑本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "13个同学分到4个小组，至少几人同组？如果再加1个同学呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "先找清楚：谁是'物品'？谁是'容器'？（指黑板公式）13÷4=3余1，余数1表示什么？为什么导致有小组多1人？14人时余数变2，至少数怎么变？",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.82,
+        "design_intent": "解决分组问题强化公式应用，建立'物品-容器'直接对应关系，通过人数变化观察公式动态",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "袋子里有红黄蓝三种颜色的球各10个，至少要摸几个才能保证有2个同色的？这个原理能解释为什么367人中总有2人同生日吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "（摇动彩球盒）'容器'没有直接出现哦！'保证两个同色'时，什么在扮演鸽巢的角色？（展示生日统计表）有人用这个设计密码锁，为什么说能增加安全性？这个原理最神奇的是能用一句话说清这么多现象。",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.85,
+        "design_intent": "在变式问题中引导学生抽象容器本质，讨论原理在密码学等领域的应用价值，感受数学魅力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M1-V1",
+        "content": "6颗糖果分给5位小朋友，同桌合作尝试：无论怎么分配，一定会出现什么现象？有可能每人恰好1颗吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过分糖果情境重构原理初建场景，用生活化对象强化'总有至少一人得2颗'的必然性认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "M1-V2",
+        "content": "有4支铅笔分给4个笔筒。小明说：“不管怎么放，总有一个笔筒至少有2支铅笔。”他说得对吗？请你举例说明理由。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过辨析错误结论，明确原理成立的前提条件（物体数大于容器数），强化对边界条件的认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2-V1",
+        "content": "要保证3个抽屉中总有一个抽屉至少有3本书，至少需要多少本书？用枚举法验证你的结论。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "将问题结构从正向计算改为逆向求最小值，通过目标值变化强化枚举归纳深度",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2-V2",
+        "content": "用枚举法研究“5本书放入2个抽屉”的所有放法。你发现了哪几种情况？放书最多的抽屉至少有几本书？如果书增加到6本，你能从规律中直接得出什么结论？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过数量递增触发对枚举局限性的思考，引导学生从具体操作转向模式归纳",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3-V1",
+        "content": "证明：“15只鸽子飞进12个笼子，总有一个笼子至少飞进3只。”小明的证明：假设每笼最多2只，12笼最多装24只>15，所以假设成立。他的证明错在哪里？正确证明需如何假设？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.78,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过错误证明案例暴露反证法关键逻辑（需假设至多k-1才能证至少k），提升假设准确性",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3-V2",
+        "content": "证明'10只鸽子飞进3个笼子，总有至少4只在同一个笼子'。小刚假设每笼最多3只，发现3×3=9<10，得出矛盾。他的证明有什么问题？应该怎么假设？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.8,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过错误案例揭示反证法核心逻辑：要证至少k只必须假设每笼≤k-1只",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4-V1",
+        "content": "观察两组计算：A)11本书÷3抽屉=3...2→至少4本；B)12本书÷3抽屉=4...0→至少4本。为什么余数不同（2和0），但'至少数'相同？余数怎样影响计算结果？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过整除与有余数对比，揭示余数在公式中的作用及'+1'的触发条件",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4-V2",
+        "content": "计算两种分法：10本书分到3个抽屉（10÷3=3...1）和9本书分到3个抽屉（9÷3=3）。它们的至少数分别是多少？为什么余数会影响公式中的'+1'？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.82,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "对比整除和有余数两种情况，揭示余数在公式中的作用及+1的本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5-V1",
+        "content": "至少要多少只鸽子飞进6个笼子，才能保证总有一个笼子至少有4只？说说你的推理思路。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "设计逆向问题考察临界值计算，强化公式的灵活应用能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5-V2",
+        "content": "13封信用3个信箱投递。能否保证总有一个信箱至少有5封信？如果不能，至少需要增加几封信才能保证？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.83,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过正向判断与逆向计算整合，深化临界值理解并训练思维转换能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6-V1",
+        "content": "图书馆有科幻、历史、童话三类书各20本，至少借多少本才能保证有4本同类书？这里的'容器'是什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.85,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "用借书情境构建更直观的容器模型，训练抽象特征识别能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6-V2",
+        "content": "身份证尾号有00-99共100种可能。至少需要多少人，才能保证有3人尾号相同？若只需保证2人尾号相同呢？这个原理如何提升密码锁安全性？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.88,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过变保证值（2人→3人）提升思维层次，联系安全设计领悟原理应用价值",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "图中有一个装了2支铅笔的笔筒，请圈出来。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "通过可视化实例固化'至少2支'的具象认知，为M2操作提供参照",
+        "design_intent": "用图示聚焦'至少2支'的具体表现，填补术语理解断层",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "有没有方法让所有笔筒的铅笔都不超过1支？为什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "对比可能情况与必然现象，强化'总有'的确定性认知",
+        "design_intent": "通过'可能vs不可能'对比建立确定性认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "如果每个抽屉最多放2本书，3个抽屉最多放几本？7本书够放吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "用假设情境转化枚举结果，显性化反证逻辑步骤",
+        "design_intent": "通过容量假设桥接具体操作与抽象推导",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "10只鸽子分9个笼：如果每笼最多1只，最多能住几只？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "通过极限假设巩固反证结论，铺垫余数作用",
+        "design_intent": "用反证结论解释余数意义",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "6÷3=2表示每个笼子有2只，至少数是多少？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.68,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "对比整除与有余数案例，构建公式雏形",
+        "design_intent": "通过对比案例揭示余数对'加1'的决定性",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "13个同学分4组：同学对应什么？小组对应什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "强化模型要素识别，建立问题与公式对应",
+        "design_intent": "通过要素标注强化'物品-容器'对应关系",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "生日问题中：367人对应什么？366天对应什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "分解抽象情境要素，连接公式与变式",
+        "design_intent": "用要素对应分解抽象情境",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "颜色球问题：颜色种类相当于几个抽屉？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "完成抽象容器转换，应用公式解决变式",
+        "design_intent": "通过半结构化引导完成模型转换",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "M1-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "M1-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "M2-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "M2-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "M3-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "M3-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "M4-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "M4-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "M5-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "M5-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "M6-V1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "M6-V2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

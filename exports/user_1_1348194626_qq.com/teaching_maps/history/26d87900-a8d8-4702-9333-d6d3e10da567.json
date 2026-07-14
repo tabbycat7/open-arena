@@ -1,0 +1,609 @@
+{
+  "id": "26d87900-a8d8-4702-9333-d6d3e10da567",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1、经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”，会用“鸽巢原理”解决简单的实际问题。2、通过操作发展学生的类推能力，形成比较抽象的数学思维。3、通过“鸽巢原理”的灵活应用感受数学的魅力。",
+  "student_profile": "学习者分析为了更准确的了解学情，我做了课前问卷调查，设计的问题是：你知道什么是鸽巢原理吗？若知道，请举例说明。调查人数 41人，41.4%学生能正确举例。34.5%学生理解模糊，24.1%学生完全不知道。也就是说很多同学课前接触过鸽巢问题，基本都可以用平均分的方法解决问题，但知其然，不知其所以然。基于以上调查，我认为六年级的学生对于总结规律的方法研究比较少，尤其对于“数学证明”。因此，教学过程中教师要耐心细致的引导，重在让学生经历知识的发生、发展过程，而不是生搬硬套，只求结论，要让学生知其然，更要知其所以然。\r\n\r\n",
+  "difficulty_analysis": "教学重难点分析及解决措施重点：使学生经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”。新课标提倡“做数学”。学生只有亲历知识形成的过程，才能真正理解知识，灵活运用知识。本节课主要采用了游戏激趣法、活动体验法、讲授法、实践操作法。通过猜测、验证、观察、分析等活动，建立数学模型，渗透数学思想。激发学生参与学习的积极性，让学生在求知的学习状态中展示个性。促进学生思考，引导学生自己进行探索，丰富数学活动经验。难点：“对鸽巢原理的认识，尤其是对“总有”“至少”的意义，和“至少数=商数十1”的理解”。学生通过动手实践、自主探索、合作交流等活动，体验知识的形成过程，掌握基本知识和技能，建立数学模型，发展数学思考和解决问题的能力，形成良好的情感、态度和价值观。",
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，今天我们要学习一个新知识，在这之前，先请大家拿出抽屉里的学具盒，我们来做个小操作：把4支铅笔放进3个笔筒里，任意放都可以，看看一共会有几种不同的放法？完成后跟同桌交流一下你们的发现。\", \"question_type\": \"main\", \"lesson_presentation_script\": \"【承上启下】同学们，在开始新课之前，老师想和大家一起做个有趣的小游戏。【核心讲解】请看黑板，这里有4支铅笔和3个笔筒（出示教具），现在我们把4支铅笔放进3个笔筒里，任意放都可以，你想怎么放就怎么放。【思维点拨】放好后，请仔细观察：每个笔筒里各有几支铅笔？把你们的发现小声告诉同桌，看看有没有相同的结论。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.58, \"design_intent\": \"通过'4支铅笔放入3个笔筒'的动手操作活动，让学生列举所有可能的分配情况，验证'总有一个笔筒至少有2支铅笔'的结论。从学生熟悉的操作入手，激发兴趣，激活先备的平均分经验，为后续抽象推理积累具体表象。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"通过刚才的操作，大家都发现了无论怎么放，总有一个笔筒至少有2支铅笔。那同学们有没有注意到老师刚才说的这句话里有几个特别的词？谁能来说说'总有'和'至少'是什么意思？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"【承上启下】通过刚才的操作，大家都发现了这个有趣的现象。现在我们来仔细读读这句话：【核心讲解】'把4支铅笔放进3个笔筒中，不管怎么放，总有1个笔筒里至少有2支铅笔。'同学们，这句话里有几个特别的词，谁能告诉老师'总有'是什么意思？'至少'又是什么意思？【思维点拨】'总有'就是一定有的意思，不管哪种情况都会发生；'至少'则是最少、最少有的意思。结合起来就是：不管你怎么放，一定会有一个笔筒里最少有2支铅笔。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.62, \"design_intent\": \"在枚举操作基础上顺势引入'总有''至少'两个核心概念。'总有'表示必然存在（100%成立），'至少'表示最小可能值。通过具体例子反复辨析，解决日常语言与数学术语含义差异导致的理解偏差，为后续公式理解奠定语言基础。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们知道了结论，但为什么一定会这样呢？有没有更聪明的办法能证明这个结论？请同学们思考：如果我们假设每个笔筒最多只能放1支铅笔，那么3个笔筒最多能放几支？可我们现在要放几支？这说明什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"【承上启下】我们通过操作发现了这个结论，但数学不仅要知道'是什么'，还要知道'为什么'。现在老师教你们一个更厉害的方法。【核心讲解】请同学们思考：如果我们假设每个笔筒最多只放1支铅笔，那么3个笔筒最多能放几支？是的，最多放3支。但我们现在要放几支？4支！这说明什么？【思维点拨】这说明我们的假设是错误的！如果每个笔筒只放1支，根本装不下4支铅笔，所以一定会有的笔筒里超过1支，也就是至少有2支。这种方法叫做反证法，先假设一个情况，然后证明这个假设是错的，从而得出正确的结论。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"design_intent\": \"这是本课最核心的思维方法，也是最难理解的环节。通过'假设每个笔筒最多放1支，那么3个笔筒最多放3支，但实际有4支，所以必有1个笔筒至少放2支'的推理过程，让学生理解'假设-矛盾-结论'的反证法逻辑。帮助学生从具体操作过渡到抽象推理，突破正向思维定势。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"刚才我们用反证法证明了4支铅笔放进3个笔筒的情况。那如果有7本书放进3个抽屉，怎么很快算出至少有多少本书呢？请同学们试着用除法算一算，看看商和余数与'至少数'有什么关系？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"【承上启下】我们用反证法证明了4支铅笔的情况，但数学家总是喜欢找规律、总结方法。现在我们来研究更一般的情况。【核心讲解】如果7本书放进3个抽屉，怎么很快算出至少有多少本书？请同学们用除法算一算：7÷3等于多少？【思维点拨】7÷3=2余1，商是2，余数是1。谁能告诉我们'至少数'是多少？2+1=3本。为什么是加1？因为即使我们平均分配，每抽屉2本，还剩下1本，这1本必须放到某个抽屉里，所以至少有3本。同学们，记住这个规律：物体数÷抽屉数=商数余数，至少数=商数+1。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"design_intent\": \"在理解反证法后，自然过渡到至少数公式的推导。引导学生从具体例子归纳出'物体数÷抽屉数=商数...余数，至少数=商数+1'的规律。让学生明白'为何要+1'——因为即使平均分配，还会有余数余下的物体必须放入某个抽屉，所以至少是商数+1。完成从理解到应用的跨越，建立解决此类问题的数学模型。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"现在我们有了这个'秘密武器'，谁想来挑战一下？老师这里有几个问题：1. 13位老师中，至少有几位老师属相相同？为什么？2. 5只鸽子飞进3个鸽笼，至少有几只鸽子会在同一个鸽笼里？3. 盒子里有红球和蓝球各4个，至少摸出几个球才能保证一定有两个同色？请同学们先用公式算一算，再和同桌说说你的想法。\", \"question_type\": \"main\", \"lesson_presentation_script\": \"【承上启下】同学们，你们已经掌握了这个'秘密武器'——至少数公式。现在老师要出几道题考考大家，看谁能正确使用这个公式。【核心讲解】请看大屏幕：第一个问题，13位老师属相相同，是把什么当作'抽屉'？对，是12个生肖。第二个问题，5只鸽子飞进3个鸽笼。第三个问题，摸球保证同色，是把颜色种类当作'抽屉'。【思维点拨】现在请同学们先用公式算一算：物体数÷抽屉数=？商是几？余数是几？至少数等于多少？算好后和同桌说说你是怎么想的，为什么这样算。\", \"knowledge_points\": [\"KP5\", \"KP6\", \"KP7\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.75, \"design_intent\": \"通过三个不同情境的应用问题：颜色问题（摸球）、生肖/日期问题、鸽子飞入鸽笼问题，让学生将实际问题转化为鸽巢问题并求解。培养学生建模能力，体会数学与生活的密切联系，感受数学的魅力。鼓励学有余力的学生自主发现问题中的鸽巢原理结构，设计解决方案。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"小明说“5支笔放进4个笔筒，总有一个笔筒至少有2支笔”，小红说“不一定，要看怎么放”。你同意谁的说法？请举出一个具体的放法来证明你的观点。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过设置观点冲突，引导学生主动寻找反例或支持例证来验证结论是否成立。变式将思维焦点从“枚举所有情况”转向“寻找反例”，实现认知路径的转换，避免伪变式的简单数字替换。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"如果把3支铅笔放进3个笔筒，“总有一个笔筒至少有2支铅笔”这句话还成立吗？那应该怎么修改（只改数字），才能让这句话一定成立？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过反例情境引导学生思考结论成立的条件，直接利用已知的反例思考“至少”的含义，实现认知焦点从操作验证向概念理解的转变，避免重复枚举操作。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"仔细看这两句话：①“可能有2支铅笔在同一个笔筒”②“至少有2支铅笔在同一个笔筒”，它们的意思一样吗？谁能举例说明你的想法？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过“可能有”与“至少有”的对比辨析，让学生深刻理解“总有”“至少”表示必然性和最小值，帮助学生从日常模糊语言过渡到精确的数学表达。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"老师把“总有”换成“一定有”，把“至少有2支”换成“最多有2支”，这句话还成立吗？请举例说明为什么不行。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过追问“一定有”和“最多有”能否替代原词，让学生从反面理解数学语言的精确性，体会“总有”表示必然存在、“至少”表示最小值的不可替代性。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"10个人要进入9间房间，如果每间房最多只能进1个人，可能吗？为什么？请用刚才学的方法推理一下。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"将铅笔笔筒替换为人物房间的新情景，让学生用假设法（每间房最多1人）推导必然矛盾，从而理解反证法的核心逻辑，突破思维难点。\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"刚才我们假设每个笔筒只放1支铅笔，如果反过来想：假设每个笔筒放2支铅笔，会发生什么情况？这还能证明我们的结论吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过追问反向假设（每个抽屉放2支）会发生什么，引导学生理解假设法的关键在于考虑“最少”情况下的矛盾，培养学生深入思考假设法本质的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"算一算：(1) 7本书放进3个抽屉；(2) 6本书放进3个抽屉。比较你的计算过程和结果，说说“至少数=商+1”这个公式在什么情况下需要特别注意？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.68, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过对比有余数(7÷3)和无余数(6÷3=2正好整除)两种情况，引导学生主动发现公式的适用条件，特别是当物体数能被抽屉数整除时“+1”的必要性，深化对公式本质的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"有个同学这样算：13本书放进5个抽屉，至少有2本书在同一个抽屉，因为13÷5=2余3，所以答案是2本。你同意吗？哪里算错了？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过错例辨析，让学生发现直接用商作为答案的错误，理解“为何要+1”——因为余数必须放入某个抽屉，从而深刻理解至少数公式中“+1”的数学本质。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"抽屉里有4只红袜子、4只蓝袜子、4只黄袜子（这些袜子都混在一起了），至少摸出多少只，才能保证一定摸到2只同色的袜子？请想一想，袜子的颜色相当于什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过配袜子这一生活化的场景，让学生将颜色种类转化为“抽屉”，运用至少数公式解决问题。增加了“每种4只”的干扰信息，培养学生排除干扰、抓住问题本质的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"我们学校二年级有6个班，要选多少人当班干部，才能保证至少有两个班选的是同一个人？请你想一想，这里的“抽屉”是什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将生肖问题替换为学校实际情境，需要学生先识别“抽屉”（6个班级），再逆向思考问题。增加了问题解决的步骤，培养学生的建模能力和逆向思维。\", \"design_rationale\": \"\"}, {\"id\": \"V5-3\", \"content\": \"一个年级有367名学生，老师说其中至少有2个人的生日是同一天，这可能吗？请你想一想，一年到底有几天？这个结论跟闰年有什么关系？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将鸽子问题替换为学生生日问题，引入对“366天”（闰年）这一关键条件的讨论。学生需要判断一年是365天还是366天，并理解只有当367>366时结论才必然成立，培养学生分析问题关键条件的能力。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"把不同的放法画出来或写下来。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.35, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生梳理操作结果，将具体操作经验转化为可表述的形式\", \"design_intent\": \"帮助学困生聚焦于整理已有的分配情况，为后续概念学习提供具体表象支撑\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"在所有不同的放法中，每个笔筒里的铅笔数量有什么共同特点？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生从具体操作中发现规律，过渡到数学语言的表述\", \"design_intent\": \"帮助学生从操作结论自然过渡到数学语言表述，为引入'总有''至少'两个核心概念做铺垫\", \"design_rationale\": \"\"}, {\"id\": \"S2-1-1\", \"content\": \"在你摆出的放法中，铅笔最多的笔筒里最少有几支？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"通过具体实例枚举，帮助学困生建立'至少'的概念表象，突破日常语言与数学术语的认知障碍\", \"design_intent\": \"在S2-1前增加基于具体操作的直观支架问题，帮助学困生理解'至少'是下限而非固定值\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"所以，'至少2支'是说最少有2支，但有可能更多，对吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.42, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"深化对核心概念'至少'的理解，为后续探究证明方法奠定认知基础\", \"design_intent\": \"通过追问帮助学困生理解'至少'表示最小可能值而非唯一确定的值\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"既然'总有'表示一定会发生，那么，如果我们想让'总有一个笔筒至少有2支'这件事不发生，需要满足什么条件？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"从概念理解自然过渡到方法探究，激发学生寻找更简便证明方法的意识\", \"design_intent\": \"激发学困生的探究意识，引导学生从'必然性'概念出发思考如何否定结论，帮助学生从'知道是什么'走向'思考为什么'\", \"design_rationale\": \"\"}, {\"id\": \"S3-0-1\", \"content\": \"我们刚才看到，不管怎么放，总有一个笔筒至少有2支。那有没有一种放法，能让每个笔筒里的铅笔数都尽量少？试着摆一摆。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.43, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"将抽象的'否定结论'具体化，引导学生反向思考，为后续操作验证做铺垫\", \"design_intent\": \"从正向操作平滑过渡到逆向假设，帮助学困生理解反证法的思维起点\", \"design_rationale\": \"\"}, {\"id\": \"S3-0-2\", \"content\": \"如果每个笔筒最多放1支，3个笔筒一共最多能放几支？你现在有4支，能这样放吗？动手试试看。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"通过操作验证假设的矛盾性，帮助学困生理解反证法的起点\", \"design_intent\": \"在S3-0-1基础上通过操作验证假设不成立，更符合学困生从具体到抽象的认知路径\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"如果每个笔筒只放1支，最多能放多少支？还剩下多少支？这剩下的铅笔应该放在哪里？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.48, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"通过具体问题的引导，帮助学生理解反证法'假设-矛盾-结论'的逻辑链条\", \"design_intent\": \"通过分层设问引导学困生理解反证法的核心矛盾，突破逆向思维难点\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果变成7支铅笔放进3个笔筒，按照刚才的假设法思路，应该怎么推理？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"将反证法从简单情况推广到一般情况，为公式中'商数+1'的理解做具体铺垫\", \"design_intent\": \"帮助学困生从理解简单情况的反证法过渡到一般情况的推理，搭建从反证法到公式的桥梁\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"10本书放进3个抽屉，用除法算一算，平均每个抽屉能分到几本？还多出几本？这多出来的书怎么办？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.45, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"通过连续的认知引导帮助学生建立公式应用的程序性知识，从理解走向应用\", \"design_intent\": \"将'提示'转化为连续的认知引导，帮助学困生理解公式每一步的含义\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"用我们刚才的假设法来想：如果每个抽屉最多放2本（商），3个抽屉最多放几本？实际有7本，会怎样？这多出来的1本（余数）说明了什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.52, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"追问公式中'+1'的算理，沟通反证法与公式的内在联系\", \"design_intent\": \"结合具体例子帮助学困生理解公式中'+1'的来源，明白余数必须放入某个抽屉，沟通知识间内在联系\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1-1\", \"target\": \"S2-1\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-0-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-0-1\", \"target\": \"S3-0-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-0-2\", \"target\": \"S3-1\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-04 14:52:11",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，今天我们要学习一个新知识，在这之前，先请大家拿出抽屉里的学具盒，我们来做个小操作：把4支铅笔放进3个笔筒里，任意放都可以，看看一共会有几种不同的放法？完成后跟同桌交流一下你们的发现。",
+        "question_type": "main",
+        "lesson_presentation_script": "【承上启下】同学们，在开始新课之前，老师想和大家一起做个有趣的小游戏。【核心讲解】请看黑板，这里有4支铅笔和3个笔筒（出示教具），现在我们把4支铅笔放进3个笔筒里，任意放都可以，你想怎么放就怎么放。【思维点拨】放好后，请仔细观察：每个笔筒里各有几支铅笔？把你们的发现小声告诉同桌，看看有没有相同的结论。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.58,
+        "design_intent": "通过'4支铅笔放入3个笔筒'的动手操作活动，让学生列举所有可能的分配情况，验证'总有一个笔筒至少有2支铅笔'的结论。从学生熟悉的操作入手，激发兴趣，激活先备的平均分经验，为后续抽象推理积累具体表象。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "通过刚才的操作，大家都发现了无论怎么放，总有一个笔筒至少有2支铅笔。那同学们有没有注意到老师刚才说的这句话里有几个特别的词？谁能来说说'总有'和'至少'是什么意思？",
+        "question_type": "main",
+        "lesson_presentation_script": "【承上启下】通过刚才的操作，大家都发现了这个有趣的现象。现在我们来仔细读读这句话：【核心讲解】'把4支铅笔放进3个笔筒中，不管怎么放，总有1个笔筒里至少有2支铅笔。'同学们，这句话里有几个特别的词，谁能告诉老师'总有'是什么意思？'至少'又是什么意思？【思维点拨】'总有'就是一定有的意思，不管哪种情况都会发生；'至少'则是最少、最少有的意思。结合起来就是：不管你怎么放，一定会有一个笔筒里最少有2支铅笔。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.62,
+        "design_intent": "在枚举操作基础上顺势引入'总有''至少'两个核心概念。'总有'表示必然存在（100%成立），'至少'表示最小可能值。通过具体例子反复辨析，解决日常语言与数学术语含义差异导致的理解偏差，为后续公式理解奠定语言基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们知道了结论，但为什么一定会这样呢？有没有更聪明的办法能证明这个结论？请同学们思考：如果我们假设每个笔筒最多只能放1支铅笔，那么3个笔筒最多能放几支？可我们现在要放几支？这说明什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "【承上启下】我们通过操作发现了这个结论，但数学不仅要知道'是什么'，还要知道'为什么'。现在老师教你们一个更厉害的方法。【核心讲解】请同学们思考：如果我们假设每个笔筒最多只放1支铅笔，那么3个笔筒最多能放几支？是的，最多放3支。但我们现在要放几支？4支！这说明什么？【思维点拨】这说明我们的假设是错误的！如果每个笔筒只放1支，根本装不下4支铅笔，所以一定会有的笔筒里超过1支，也就是至少有2支。这种方法叫做反证法，先假设一个情况，然后证明这个假设是错的，从而得出正确的结论。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "design_intent": "这是本课最核心的思维方法，也是最难理解的环节。通过'假设每个笔筒最多放1支，那么3个笔筒最多放3支，但实际有4支，所以必有1个笔筒至少放2支'的推理过程，让学生理解'假设-矛盾-结论'的反证法逻辑。帮助学生从具体操作过渡到抽象推理，突破正向思维定势。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "刚才我们用反证法证明了4支铅笔放进3个笔筒的情况。那如果有7本书放进3个抽屉，怎么很快算出至少有多少本书呢？请同学们试着用除法算一算，看看商和余数与'至少数'有什么关系？",
+        "question_type": "main",
+        "lesson_presentation_script": "【承上启下】我们用反证法证明了4支铅笔的情况，但数学家总是喜欢找规律、总结方法。现在我们来研究更一般的情况。【核心讲解】如果7本书放进3个抽屉，怎么很快算出至少有多少本书？请同学们用除法算一算：7÷3等于多少？【思维点拨】7÷3=2余1，商是2，余数是1。谁能告诉我们'至少数'是多少？2+1=3本。为什么是加1？因为即使我们平均分配，每抽屉2本，还剩下1本，这1本必须放到某个抽屉里，所以至少有3本。同学们，记住这个规律：物体数÷抽屉数=商数余数，至少数=商数+1。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "design_intent": "在理解反证法后，自然过渡到至少数公式的推导。引导学生从具体例子归纳出'物体数÷抽屉数=商数...余数，至少数=商数+1'的规律。让学生明白'为何要+1'——因为即使平均分配，还会有余数余下的物体必须放入某个抽屉，所以至少是商数+1。完成从理解到应用的跨越，建立解决此类问题的数学模型。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "现在我们有了这个'秘密武器'，谁想来挑战一下？老师这里有几个问题：1. 13位老师中，至少有几位老师属相相同？为什么？2. 5只鸽子飞进3个鸽笼，至少有几只鸽子会在同一个鸽笼里？3. 盒子里有红球和蓝球各4个，至少摸出几个球才能保证一定有两个同色？请同学们先用公式算一算，再和同桌说说你的想法。",
+        "question_type": "main",
+        "lesson_presentation_script": "【承上启下】同学们，你们已经掌握了这个'秘密武器'——至少数公式。现在老师要出几道题考考大家，看谁能正确使用这个公式。【核心讲解】请看大屏幕：第一个问题，13位老师属相相同，是把什么当作'抽屉'？对，是12个生肖。第二个问题，5只鸽子飞进3个鸽笼。第三个问题，摸球保证同色，是把颜色种类当作'抽屉'。【思维点拨】现在请同学们先用公式算一算：物体数÷抽屉数=？商是几？余数是几？至少数等于多少？算好后和同桌说说你是怎么想的，为什么这样算。",
+        "knowledge_points": [
+          "KP5",
+          "KP6",
+          "KP7"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.75,
+        "design_intent": "通过三个不同情境的应用问题：颜色问题（摸球）、生肖/日期问题、鸽子飞入鸽笼问题，让学生将实际问题转化为鸽巢问题并求解。培养学生建模能力，体会数学与生活的密切联系，感受数学的魅力。鼓励学有余力的学生自主发现问题中的鸽巢原理结构，设计解决方案。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "小明说“5支笔放进4个笔筒，总有一个笔筒至少有2支笔”，小红说“不一定，要看怎么放”。你同意谁的说法？请举出一个具体的放法来证明你的观点。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过设置观点冲突，引导学生主动寻找反例或支持例证来验证结论是否成立。变式将思维焦点从“枚举所有情况”转向“寻找反例”，实现认知路径的转换，避免伪变式的简单数字替换。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "如果把3支铅笔放进3个笔筒，“总有一个笔筒至少有2支铅笔”这句话还成立吗？那应该怎么修改（只改数字），才能让这句话一定成立？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过反例情境引导学生思考结论成立的条件，直接利用已知的反例思考“至少”的含义，实现认知焦点从操作验证向概念理解的转变，避免重复枚举操作。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "仔细看这两句话：①“可能有2支铅笔在同一个笔筒”②“至少有2支铅笔在同一个笔筒”，它们的意思一样吗？谁能举例说明你的想法？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过“可能有”与“至少有”的对比辨析，让学生深刻理解“总有”“至少”表示必然性和最小值，帮助学生从日常模糊语言过渡到精确的数学表达。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "老师把“总有”换成“一定有”，把“至少有2支”换成“最多有2支”，这句话还成立吗？请举例说明为什么不行。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过追问“一定有”和“最多有”能否替代原词，让学生从反面理解数学语言的精确性，体会“总有”表示必然存在、“至少”表示最小值的不可替代性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "10个人要进入9间房间，如果每间房最多只能进1个人，可能吗？为什么？请用刚才学的方法推理一下。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "将铅笔笔筒替换为人物房间的新情景，让学生用假设法（每间房最多1人）推导必然矛盾，从而理解反证法的核心逻辑，突破思维难点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "刚才我们假设每个笔筒只放1支铅笔，如果反过来想：假设每个笔筒放2支铅笔，会发生什么情况？这还能证明我们的结论吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过追问反向假设（每个抽屉放2支）会发生什么，引导学生理解假设法的关键在于考虑“最少”情况下的矛盾，培养学生深入思考假设法本质的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "算一算：(1) 7本书放进3个抽屉；(2) 6本书放进3个抽屉。比较你的计算过程和结果，说说“至少数=商+1”这个公式在什么情况下需要特别注意？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.68,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过对比有余数(7÷3)和无余数(6÷3=2正好整除)两种情况，引导学生主动发现公式的适用条件，特别是当物体数能被抽屉数整除时“+1”的必要性，深化对公式本质的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "有个同学这样算：13本书放进5个抽屉，至少有2本书在同一个抽屉，因为13÷5=2余3，所以答案是2本。你同意吗？哪里算错了？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过错例辨析，让学生发现直接用商作为答案的错误，理解“为何要+1”——因为余数必须放入某个抽屉，从而深刻理解至少数公式中“+1”的数学本质。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "抽屉里有4只红袜子、4只蓝袜子、4只黄袜子（这些袜子都混在一起了），至少摸出多少只，才能保证一定摸到2只同色的袜子？请想一想，袜子的颜色相当于什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过配袜子这一生活化的场景，让学生将颜色种类转化为“抽屉”，运用至少数公式解决问题。增加了“每种4只”的干扰信息，培养学生排除干扰、抓住问题本质的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "我们学校二年级有6个班，要选多少人当班干部，才能保证至少有两个班选的是同一个人？请你想一想，这里的“抽屉”是什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将生肖问题替换为学校实际情境，需要学生先识别“抽屉”（6个班级），再逆向思考问题。增加了问题解决的步骤，培养学生的建模能力和逆向思维。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-3",
+        "content": "一个年级有367名学生，老师说其中至少有2个人的生日是同一天，这可能吗？请你想一想，一年到底有几天？这个结论跟闰年有什么关系？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将鸽子问题替换为学生生日问题，引入对“366天”（闰年）这一关键条件的讨论。学生需要判断一年是365天还是366天，并理解只有当367>366时结论才必然成立，培养学生分析问题关键条件的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "把不同的放法画出来或写下来。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.35,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生梳理操作结果，将具体操作经验转化为可表述的形式",
+        "design_intent": "帮助学困生聚焦于整理已有的分配情况，为后续概念学习提供具体表象支撑",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "在所有不同的放法中，每个笔筒里的铅笔数量有什么共同特点？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生从具体操作中发现规律，过渡到数学语言的表述",
+        "design_intent": "帮助学生从操作结论自然过渡到数学语言表述，为引入'总有''至少'两个核心概念做铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1-1",
+        "content": "在你摆出的放法中，铅笔最多的笔筒里最少有几支？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "通过具体实例枚举，帮助学困生建立'至少'的概念表象，突破日常语言与数学术语的认知障碍",
+        "design_intent": "在S2-1前增加基于具体操作的直观支架问题，帮助学困生理解'至少'是下限而非固定值",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "所以，'至少2支'是说最少有2支，但有可能更多，对吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.42,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "深化对核心概念'至少'的理解，为后续探究证明方法奠定认知基础",
+        "design_intent": "通过追问帮助学困生理解'至少'表示最小可能值而非唯一确定的值",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "既然'总有'表示一定会发生，那么，如果我们想让'总有一个笔筒至少有2支'这件事不发生，需要满足什么条件？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "从概念理解自然过渡到方法探究，激发学生寻找更简便证明方法的意识",
+        "design_intent": "激发学困生的探究意识，引导学生从'必然性'概念出发思考如何否定结论，帮助学生从'知道是什么'走向'思考为什么'",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-0-1",
+        "content": "我们刚才看到，不管怎么放，总有一个笔筒至少有2支。那有没有一种放法，能让每个笔筒里的铅笔数都尽量少？试着摆一摆。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.43,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "将抽象的'否定结论'具体化，引导学生反向思考，为后续操作验证做铺垫",
+        "design_intent": "从正向操作平滑过渡到逆向假设，帮助学困生理解反证法的思维起点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-0-2",
+        "content": "如果每个笔筒最多放1支，3个笔筒一共最多能放几支？你现在有4支，能这样放吗？动手试试看。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "通过操作验证假设的矛盾性，帮助学困生理解反证法的起点",
+        "design_intent": "在S3-0-1基础上通过操作验证假设不成立，更符合学困生从具体到抽象的认知路径",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "如果每个笔筒只放1支，最多能放多少支？还剩下多少支？这剩下的铅笔应该放在哪里？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.48,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "通过具体问题的引导，帮助学生理解反证法'假设-矛盾-结论'的逻辑链条",
+        "design_intent": "通过分层设问引导学困生理解反证法的核心矛盾，突破逆向思维难点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果变成7支铅笔放进3个笔筒，按照刚才的假设法思路，应该怎么推理？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "将反证法从简单情况推广到一般情况，为公式中'商数+1'的理解做具体铺垫",
+        "design_intent": "帮助学困生从理解简单情况的反证法过渡到一般情况的推理，搭建从反证法到公式的桥梁",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "10本书放进3个抽屉，用除法算一算，平均每个抽屉能分到几本？还多出几本？这多出来的书怎么办？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.45,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "通过连续的认知引导帮助学生建立公式应用的程序性知识，从理解走向应用",
+        "design_intent": "将'提示'转化为连续的认知引导，帮助学困生理解公式每一步的含义",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "用我们刚才的假设法来想：如果每个抽屉最多放2本（商），3个抽屉最多放几本？实际有7本，会怎样？这多出来的1本（余数）说明了什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.52,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "追问公式中'+1'的算理，沟通反证法与公式的内在联系",
+        "design_intent": "结合具体例子帮助学困生理解公式中'+1'的来源，明白余数必须放入某个抽屉，沟通知识间内在联系",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1-1",
+        "target": "S2-1",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-0-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-0-1",
+        "target": "S3-0-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-0-2",
+        "target": "S3-1",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个税逆向还原天平 - 六年级数学</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      color: #1e293b;
+      user-select: none;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .app-container {
+      width: 96vw;
+      height: 72vw;
+      max-width: 960px;
+      max-height: 720px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 24px;
+      position: relative;
+    }
+
+    /* 头部区域 */
+    .header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin: 0 0 8px 0;
+      color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .header h1 .badge {
+      font-size: 12px;
+      background-color: #3b82f6;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: normal;
+    }
+    .problem-card {
+      background-color: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 10px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #334155;
+      text-align: left;
+    }
+
+    /* 进度指示器 */
+    .progress-tracker {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px auto;
+      width: 80%;
+      position: relative;
+    }
+    .progress-tracker::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #e2e8f0;
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    .progress-step {
+      position: relative;
+      z-index: 2;
+      background-color: #fff;
+      padding: 0 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.3s ease;
+    }
+    .progress-step .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #cbd5e1;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px #cbd5e1;
+      transition: all 0.3s ease;
+    }
+    .progress-step.active {
+      color: #3b82f6;
+      font-weight: bold;
+    }
+    .progress-step.active .dot {
+      background-color: #3b82f6;
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+    .progress-step.completed {
+      color: #10b981;
+    }
+    .progress-step.completed .dot {
+      background-color: #10b981;
+      box-shadow: 0 0 0 2px #10b981;
+    }
+
+    /* 可视化天平区域 */
+    .visualization-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+      border-radius: 12px;
+      border: 1px solid #f1f5f9;
+    }
+
+    /* 天平 SVG 样式 */
+    #balance-svg {
+      width: 100%;
+      height: 100%;
+      max-height: 280px;
+    }
+
+    /* 托盘内 HTML 样式 */
+    .pan-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: transparent;
+    }
+    .weight-box {
+      width: 150px;
+      height: 65px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid;
+      box-sizing: border-box;
+    }
+    .known-weight {
+      background: linear-gradient(135deg, #fef3c7, #fcd34d);
+      border-color: #d97706;
+      color: #78350f;
+    }
+    .variable-weight {
+      background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+      border-color: #0284c7;
+      color: #0c4a6e;
+    }
+    .weight-title {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+    }
+    .weight-value {
+      font-size: 15px;
+      font-weight: 800;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* 脉冲动画效果 */
+    .pulse {
+      animation: pulse-glow 1.5s infinite alternate;
+    }
+    @keyframes pulse-glow {
+      0% { transform: scale(1); box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
+      100% { transform: scale(1.05); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+    }
+
+    /* 控制面板区域 */
+    .control-panel {
+      height: 180px;
+      background-color: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #e2e8f0;
+    }
+    .instruction-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #334155;
+      text-align: center;
+      min-height: 48px;
+    }
+    .interactive-zone {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* 数学输入框 */
+    .formula-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #0f172a;
+      background: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .math-input {
+      width: 70px;
+      height: 36px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e293b;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .math-input:focus {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    .math-input.correct {
+      border-color: #10b981;
+      background-color: #ecfdf5;
+      color: #065f46;
+    }
+    .math-input.incorrect {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+      color: #991b1b;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    /* 按钮样式 */
+    .btn {
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    }
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+    .btn-success {
+      background-color: #10b981;
+      color: white;
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    }
+    .btn-success:hover {
+      background-color: #059669;
+    }
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #475569;
+    }
+    .btn-secondary:hover {
+      background-color: #cbd5e1;
+    }
+    .btn:disabled {
+      background-color: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* 提示信息 */
+    .feedback-tip {
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      height: 18px;
+      margin-top: 4px;
+      transition: color 0.3s;
+    }
+    .tip-info { color: #64748b; }
+    .tip-success { color: #10b981; }
+    .tip-error { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部与题干 -->
+    <div class="header">
+      <h1>个税逆向还原天平 <span class="badge">六年级 · 数学</span></h1>
+      <div class="problem-card">
+        <strong>思考题：</strong>小税务官在核对账目时，发现某员工上个月超出 5000 元起征点的部分按照 3% 的税率，缴纳了 45 元个人所得税。你能运用“两步法”思维，逆向帮小税务官算出这位员工上个月的月工资是多少元吗？
+      </div>
+    </div>
+
+    <!-- 进度指示器 -->
+    <div class="progress-tracker">
+      <div class="progress-step active" id="step-indicator-0">
+        <div class="dot"></div>
+        <span>情境导入</span>
+      </div>
+      <div class="progress-step" id="step-indicator-1">
+        <div class="dot"></div>
+        <span>第一步：求计税基数</span>
+      </div>
+      <div class="progress-step" id="step-indicator-2">
+        <div class="dot"></div>
+        <span>第二步：求总工资</span>
+      </div>
+      <div class="progress-step" id="step-indicator-3">
+        <div class="dot"></div>
+        <span>逆推成功</span>
+      </div>
+    </div>
+
+    <!-- 可视化天平 -->
+    <div class="visualization-area">
+      <svg id="balance-svg" viewBox="0 0 800 300">
+        <!-- 支架与底座 -->
+        <path d="M 370 280 L 430 280 L 415 260 L 415 100 L 385 100 L 385 260 Z" fill="#64748b" />
+        <circle cx="400" cy="100" r="8" fill="#334155" />
+        
+        <!-- 刻度盘背景 -->
+        <path d="M 360 50 A 40 40 0 0 1 440 50" fill="none" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="2,2" />
+        <line x1="400" y1="42" x2="400" y2="50" stroke="#94a3b8" stroke-width="2" />
+
+        <!-- 旋转主体（横梁与指针） -->
+        <g id="beam" style="transform-origin: 400px 100px; transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);">
+          <!-- 横梁 -->
+          <line x1="180" y1="100" x2="620" y2="100" stroke="#475569" stroke-width="8" stroke-linecap="round" />
+          <!-- 指针 -->
+          <polygon points="400,100 396,35 404,35" fill="#ef4444" />
+          
+          <!-- 左托盘组合 -->
+          <g id="left-pan" style="transform-origin: 180px 100px; transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);">
+            <line x1="180" y1="100" x2="110" y2="220" stroke="#94a3b8" stroke-width="2" />
+            <line x1="180" y1="100" x2="250" y2="220" stroke="#94a3b8" stroke-width="2" />
+            <path d="M 100 220 Q 180 232 260 220 Z" fill="#475569" />
+            <path d="M 100 220 Q 180 212 260 220" stroke="#334155" stroke-width="2" fill="none" />
+            
+            <!-- 左托盘 HTML 砝码 -->
+            <foreignObject x="90" y="135" width="180" height="80">
+              <div xmlns="http://www.w3.org/1999/xhtml" class="pan-content">
+                <div id="left-weight" class="weight-box known-weight">
+                  <div class="weight-title" id="left-title">已知税额</div>
+                  <div class="weight-value" id="left-val">45 元</div>
+                </div>
+              </div>
+            </foreignObject>
+          </g>
+
+          <!-- 右托盘组合 -->
+          <g id="right-pan" style="transform-origin: 620px 100px; transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);">
+            <line x1="620" y1="100" x2="550" y2="220" stroke="#94a3b8" stroke-width="2" />
+            <line x1="620" y1="100" x2="690" y2="220" stroke="#94a3b8" stroke-width="2" />
+            <path d="M 540 220 Q 620 232 700 220 Z" fill="#475569" />
+            <path d="M 540 220 Q 620 212 700 220" stroke="#334155" stroke-width="2" fill="none" />
+            
+            <!-- 右托盘 HTML 砝码 -->
+            <foreignObject x="530" y="135" width="180" height="80">
+              <div xmlns="http://www.w3.org/1999/xhtml" class="pan-content">
+                <div id="right-weight" class="weight-box variable-weight">
+                  <div class="weight-title" id="right-title">等价算式</div>
+                  <div class="weight-value" id="right-val">(月工资 - 5000) × 3%</div>
+                </div>
+              </div>
+            </foreignObject>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <div class="instruction-text" id="instruction">
+        加载中...
+      </div>
+      
+      <div class="interactive-zone" id="interactive-zone">
+        <!-- 动态生成交互内容 -->
+      </div>
+
+      <div class="feedback-tip" id="feedback-tip">
+        <!-- 提示信息 -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态机定义
+    let currentState = 0;
+
+    const states = {
+      0: {
+        instruction: "小税务官发现：超出 5000 元起征点的部分按照 3% 税率，缴纳了 45 元个税。<br>让我们用<strong>“逆向两步法”</strong>，一步步还原出员工的月工资吧！",
+        leftTitle: "已知税额",
+        leftVal: "45 元",
+        rightTitle: "等价算式",
+        rightVal: "(月工资 - 5000) × 3%",
+        tilt: 0,
+        render: (container) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-primary';
+          btn.innerHTML = '开始第一步逆推 ➜';
+          btn.addEventListener('click', () => transitionTo(1));
+          container.appendChild(btn);
+        }
+      },
+      1: {
+        instruction: "<strong>【第一步】求计税基数（即超出5000元的部分）</strong><br>等式两边同时除以税率 3%，消除右侧的 '× 3%'：",
+        leftTitle: "已知税额",
+        leftVal: "45 元",
+        rightTitle: "等价算式",
+        rightVal: "(月工资 - 5000) × 3%",
+        tilt: -4, // 稍微向左倾斜，表示正在对左边进行逆运算
+        render: (container) => {
+          const formula = document.createElement('div');
+          formula.className = 'formula-container';
+          formula.innerHTML = `
+            <span>45 ÷ </span>
+            <input id="input-rate" class="math-input" type="text" placeholder="税率" style="width: 60px;" />
+            <span>% = </span>
+            <input id="input-base" class="math-input" type="text" placeholder="超出部分" style="width: 90px;" />
+            <span>元</span>
+          `;
+          container.appendChild(formula);
+
+          const btnGroup = document.createElement('div');
+          btnGroup.style.display = 'flex';
+          btnGroup.style.gap = '8px';
+
+          const btnVerify = document.createElement('button');
+          btnVerify.className = 'btn btn-success';
+          btnVerify.innerText = '验证计算';
+          
+          const btnDemo = document.createElement('button');
+          btnDemo.className = 'btn btn-secondary';
+          btnDemo.innerText = '直接演示';
+
+          btnGroup.appendChild(btnVerify);
+          btnGroup.appendChild(btnDemo);
+          container.appendChild(btnGroup);
+
+          // 绑定事件
+          btnVerify.addEventListener('click', () => {
+            const rateInput = document.getElementById('input-rate');
+            const baseInput = document.getElementById('input-base');
+            const isRateCorrect = rateInput.value.trim() === '3';
+            const isBaseCorrect = baseInput.value.trim() === '1500';
+
+            rateInput.className = `math-input ${isRateCorrect ? 'correct' : 'incorrect'}`;
+            baseInput.className = `math-input ${isBaseCorrect ? 'correct' : 'incorrect'}`;
+
+            if (isRateCorrect && isBaseCorrect) {
+              playFeedbackSound(true);
+              showFeedback("计算正确！等式两边同时除以 3% 后，天平重新恢复平衡！", "success");
+              btnVerify.disabled = true;
+              btnDemo.disabled = true;
+              setTimeout(() => transitionTo(2), 1800);
+            } else {
+              playFeedbackSound(false);
+              showFeedback("算式或结果不正确哦，请再思考一下！提示：税率是 3%。", "error");
+            }
+          });
+
+          btnDemo.addEventListener('click', () => {
+            document.getElementById('input-rate').value = '3';
+            document.getElementById('input-base').value = '1500';
+            document.getElementById('input-rate').className = 'math-input correct';
+            document.getElementById('input-base').className = 'math-input correct';
+            playFeedbackSound(true);
+            showFeedback("正在演示：45 ÷ 3% = 1500 元", "success");
+            btnVerify.disabled = true;
+            btnDemo.disabled = true;
+            setTimeout(() => transitionTo(2), 1800);
+          });
+        }
+      },
+      2: {
+        instruction: "<strong>第一步逆推成功！</strong><br>我们算出了超出起征点的部分（计税基数）是 <strong>1500 元</strong>。<br>现在等式简化为：<code>月工资 - 5000 = 1500</code>",
+        leftTitle: "计税基数",
+        leftVal: "1500 元",
+        rightTitle: "等价算式",
+        rightVal: "月工资 - 5000",
+        tilt: 0, // 恢复平衡
+        render: (container) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-primary';
+          btn.innerHTML = '进入第二步逆推 ➜';
+          btn.addEventListener('click', () => transitionTo(3));
+          container.appendChild(btn);
+        }
+      },
+      3: {
+        instruction: "<strong>【第二步】求月工资总额</strong><br>等式两边同时加上起征点 5000 元，消除右侧的 '- 5000'：",
+        leftTitle: "计税基数",
+        leftVal: "1500 元",
+        rightTitle: "等价算式",
+        rightVal: "月工资 - 5000",
+        tilt: 4, // 稍微向右倾斜
+        render: (container) => {
+          const formula = document.createElement('div');
+          formula.className = 'formula-container';
+          formula.innerHTML = `
+            <input id="input-prev" class="math-input" type="text" placeholder="计税基数" style="width: 90px;" />
+            <span>+</span>
+            <input id="input-threshold" class="math-input" type="text" placeholder="起征点" style="width: 80px;" />
+            <span>=</span>
+            <input id="input-salary" class="math-input" type="text" placeholder="总工资" style="width: 90px;" />
+            <span>元</span>
+          `;
+          container.appendChild(formula);
+
+          const btnGroup = document.createElement('div');
+          btnGroup.style.display = 'flex';
+          btnGroup.style.gap = '8px';
+
+          const btnVerify = document.createElement('button');
+          btnVerify.className = 'btn btn-success';
+          btnVerify.innerText = '验证计算';
+          
+          const btnDemo = document.createElement('button');
+          btnDemo.className = 'btn btn-secondary';
+          btnDemo.innerText = '直接演示';
+
+          btnGroup.appendChild(btnVerify);
+          btnGroup.appendChild(btnDemo);
+          container.appendChild(btnGroup);
+
+          // 绑定事件
+          btnVerify.addEventListener('click', () => {
+            const prevInput = document.getElementById('input-prev');
+            const thresholdInput = document.getElementById('input-threshold');
+            const salaryInput = document.getElementById('input-salary');
+            
+            const isPrevCorrect = prevInput.value.trim() === '1500';
+            const isThresholdCorrect = thresholdInput.value.trim() === '5000';
+            const isSalaryCorrect = salaryInput.value.trim() === '6500';
+
+            prevInput.className = `math-input ${isPrevCorrect ? 'correct' : 'incorrect'}`;
+            thresholdInput.className = `math-input ${isThresholdCorrect ? 'correct' : 'incorrect'}`;
+            salaryInput.className = `math-input ${isSalaryCorrect ? 'correct' : 'incorrect'}`;
+
+            if (isPrevCorrect && isThresholdCorrect && isSalaryCorrect) {
+              playFeedbackSound(true);
+              showFeedback("计算正确！加上起征点后，成功还原出月工资！", "success");
+              btnVerify.disabled = true;
+              btnDemo.disabled = true;
+              setTimeout(() => transitionTo(4), 1800);
+            } else {
+              playFeedbackSound(false);
+              showFeedback("算式或结果不正确哦，请再试一次！提示：起征点是 5000 元。", "error");
+            }
+          });
+
+          btnDemo.addEventListener('click', () => {
+            document.getElementById('input-prev').value = '1500';
+            document.getElementById('input-threshold').value = '5000';
+            document.getElementById('input-salary').value = '6500';
+            document.getElementById('input-prev').className = 'math-input correct';
+            document.getElementById('input-threshold').className = 'math-input correct';
+            document.getElementById('input-salary').className = 'math-input correct';
+            playFeedbackSound(true);
+            showFeedback("正在演示：1500 + 5000 = 6500 元", "success");
+            btnVerify.disabled = true;
+            btnDemo.disabled = true;
+            setTimeout(() => transitionTo(4), 1800);
+          });
+        }
+      },
+      4: {
+        instruction: "<strong>恭喜！成功逆推出该员工上个月的月工资是 <span style='color:#10b981;'>6500</span> 元！</strong><br><strong>“两步法”思维总结：</strong> 1. 税额 ÷ 税率 = 计税基数； 2. 计税基数 + 起征点 = 总工资。",
+        leftTitle: "总工资",
+        leftVal: "6500 元",
+        rightTitle: "等价算式",
+        rightVal: "月工资",
+        tilt: 0, // 恢复平衡
+        render: (container) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-primary';
+          btn.innerHTML = '重新体验 ↺';
+          btn.addEventListener('click', () => transitionTo(0));
+          container.appendChild(btn);
+        }
+      }
+    };
+
+    // 状态切换函数
+    function transitionTo(stateIndex) {
+      currentState = stateIndex;
+      const state = states[stateIndex];
+
+      // 更新文本说明
+      document.getElementById('instruction').innerHTML = state.instruction;
+
+      // 更新天平托盘内容
+      document.getElementById('left-title').innerText = state.leftTitle;
+      document.getElementById('left-val').innerText = state.leftVal;
+      document.getElementById('right-title').innerText = state.rightTitle;
+      document.getElementById('right-val').innerText = state.rightVal;
+
+      // 应用天平倾斜动画
+      applyTilt(state.tilt);
+
+      // 重新渲染交互区域
+      const interactiveZone = document.getElementById('interactive-zone');
+      interactiveZone.innerHTML = '';
+      state.render(interactiveZone);
+
+      // 清空提示信息
+      clearFeedback();
+
+      // 更新进度指示器
+      updateProgressTracker(stateIndex);
+
+      // 触发砝码高亮动画
+      const leftWeight = document.getElementById('left-weight');
+      const rightWeight = document.getElementById('right-weight');
+      leftWeight.classList.add('pulse');
+      rightWeight.classList.add('pulse');
+      setTimeout(() => {
+        leftWeight.classList.remove('pulse');
+        rightWeight.classList.remove('pulse');
+      }, 1500);
+    }
+
+    // 天平倾斜控制
+    function applyTilt(degrees) {
+      const beam = document.getElementById('beam');
+      const leftPan = document.getElementById('left-pan');
+      const rightPan = document.getElementById('right-pan');
+
+      // 横梁旋转
+      beam.style.transform = `rotate(${degrees}deg)`;
+      // 托盘反向旋转，保持水平
+      leftPan.style.transform = `rotate(${-degrees}deg)`;
+      rightPan.style.transform = `rotate(${-degrees}deg)`;
+    }
+
+    // 进度指示器更新
+    function updateProgressTracker(stateIndex) {
+      // 映射状态到4个进度步骤
+      let step = 0;
+      if (stateIndex === 0) step = 0;
+      else if (stateIndex === 1 || stateIndex === 2) step = 1;
+      else if (stateIndex === 3) step = 2;
+      else if (stateIndex === 4) step = 3;
+
+      for (let i = 0; i < 4; i++) {
+        const el = document.getElementById(`step-indicator-${i}`);
+        el.className = 'progress-step';
+        if (i < step) {
+          el.classList.add('completed');
+        } else if (i === step) {
+          el.classList.add('active');
+        }
+      }
+    }
+
+    // 提示信息控制
+    function showFeedback(text, type) {
+      const tip = document.getElementById('feedback-tip');
+      tip.innerText = text;
+      tip.className = `feedback-tip tip-${type}`;
+    }
+
+    function clearFeedback() {
+      const tip = document.getElementById('feedback-tip');
+      tip.innerText = '';
+      tip.className = 'feedback-tip';
+    }
+
+    // 声音反馈（使用 Web Audio API，无需外部音频文件）
+    function playFeedbackSound(isSuccess) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (isSuccess) {
+          // 欢快的成功音效 (C5 -> E5)
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); 
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
+        } else {
+          // 低沉的失败提示音
+          osc.frequency.setValueAtTime(180, ctx.currentTime);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        }
+      } catch (e) {
+        // 忽略浏览器音频限制报错
+      }
+    }
+
+    // 初始化启动
+    window.addEventListener('DOMContentLoaded', () => {
+      transitionTo(0);
+    });
+  </script>
+</body>
+</html>

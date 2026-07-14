@@ -1,0 +1,212 @@
+{
+  "task_id": "718f2336-c13c-453c-b760-3ffd37a5facf",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，相传2500多年前毕达哥拉斯在朋友家做客时，被一种地砖图案吸引了。请大家观察课本图17.1-2，如果我们把等腰直角三角形的三条边分别当作正方形的边长，这三个正方形的面积之间隐藏着怎样的数量关系呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才我们在等腰直角三角形中发现了面积规律，那换成一般的直角三角形，这个规律还成立吗？请大家看图17.1-3的网格，你能想办法算出以斜边为边长的倾斜正方形C和C'的面积，并验证我们的猜想吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们在网格里验证了猜想，但这还不够。我国汉代数学家赵爽用了一个非常巧妙的拼图法来证明。请大家观察图17.1-6的“赵爽弦图”，你能利用大正方形面积等于四个直角三角形加上中间小正方形面积这个关系，用含有a、b、c的代数式把等式列出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "代数式列出来了，接下来就是见证奇迹的时刻。请大家动笔把刚才列出的等式展开并化简，看看最后能得出什么结果？你能用自己的话完整准确地表述我们今天发现的这个伟大定理吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "定理既然确立了，我们马上来用它解决问题。请大家翻到课本练习第1题，已知直角三角形的两条边长，你能正确套用勾股定理公式，求出第三条边的长度吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果地砖上的等腰直角三角形不是平放的，而是倾斜的，并且没有了网格线，老师只告诉你直角边上的两个小正方形面积都是4，你能直接猜出斜边上大正方形的面积吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "刚才我们是以等腰直角三角形的三边为边长向外画正方形。如果我们在三条边上画的不是正方形，而是半圆，这三个半圆的面积之间，还会存在那种奇妙的加和关系吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "大家看大屏幕上这个新的网格直角三角形，这次外围没有画那三个正方形。你能直接利用网格线，算出两条直角边的平方和，再想办法求出斜边的平方来进行验证吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果在网格里画一个不是直角的三角形，比如一个角是钝角，你再去算一算三条边上正方形的面积，它们之间还会有‘两个小的加起来等于最大的’这种神奇关系吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "赵爽是把四个直角三角形拼在一个大正方形里面。如果老师把这四个三角形向外翻转，拼成一个中间是边长为c的大正方形、外围带四个角的风车图形，你能根据这个新图形列出一个不同的面积等式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "刚才我们是用大正方形的面积等于五个小图形的面积和。如果现在让你以中间那个黄色小正方形的面积作为等号的左边，你能用大正方形和四个直角三角形的面积把它表示出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "黑板上有一位同学的化简过程，他把(b-a)的平方直接写成了b的平方减a的平方，最后怎么也凑不出我们的猜想。你能帮他指出错误在哪里，并解释为什么几何拼凑必须对应严谨的代数展开吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "大家都习惯了用a、b表示直角边，c表示斜边。如果在一个直角三角形中，直角所对的边被命名为a，另外两条直角边是b和c，那勾股定理的等式该怎么写？公式里的字母能随便套吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一根长5米的竹竿斜靠在墙上，竹竿底端距离墙角3米。你能利用刚才学过的勾股定理，算算竹竿顶端距离地面有多高吗？画个草图试试看谁是斜边。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "如果老师只告诉你一个直角三角形的两条边长分别是3和4，并没有说哪条是直角边哪条是斜边。你能算出第三条边的长度吗？想一想，答案是不是只有一种？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "大家看图17.1-3里的这个新的直角三角形，它的两条直角边不再一样长了。你能借助背景里的网格，数一数这两条直角边分别占了几个小格吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "正方形A和B是正着放的，很好数。但正方形C是倾斜的，直接数格子容易错。如果我们像书上提示的那样，在它外面画一个正着的大正方形把它完全框起来，你能看出这个大正方形的边长是多少吗？四个角落里多出来的直角三角形，面积又该怎么算呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "我们来看图17.1-6的赵爽弦图。这里有四个全等的直角三角形，如果它们的直角边分别是a和b，斜边是c，你能指出来，外面这个大正方形的边长对应的是哪条边吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "大正方形的面积是c的平方，这个很直观。大家再仔细看看中间那个黄色的空心小正方形，它的一条边，刚好是较长的直角边b，减去较短的直角边a剩下的一截。你能试着用a和b把这个小正方形的边长表示出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "刚才我们列出的等式里包含了(b-a)的平方。在动手化简之前，谁能帮大家回忆一下，我们学过的完全平方公式(b-a)²展开后，应该是哪三项？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "把括号展开之后，式子里会出现一个‘减去2ab’。大家再看看等号右边的另一部分，四个直角三角形的面积加起来刚好是‘加上2ab’。当‘加上2ab’遇到‘减去2ab’，会发生什么奇妙的变化呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "在做练习第1题之前，我们先观察一下题目给出的三个图形。在这些直角三角形里，哪一条边是斜边c？你是怎么通过直角一眼把它找出来的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果题目已知两条直角边求斜边，我们把它们的平方相加；但如果像第(2)小题那样，已经知道了斜边和一条直角边，要求另一条直角边，我们的公式应该怎么变形？这时候是该用加法还是减法呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

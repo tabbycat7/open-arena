@@ -1,0 +1,248 @@
+{
+  "task_id": "a1781d52-d06a-4d9a-935d-bcf1f1270fa1",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "结合咱们平时上学、去公园、看病的生活经历，再看看教材开头关于税收的介绍，你知道税收都用来做什么，咱们为什么要纳税吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "咱们看教材里给出的税率定义，你能说说税率到底是什么，它和咱们要交的税款是一回事吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "咱们看教材里的例3，这家小规模企业10月份要缴纳多少增值税，你能用之前学的“求一个数的百分之几是多少”的方法算一算吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "咱们看教材里“做一做”的李阿姨工资纳税问题，这里说的“应纳税的部分”是什么意思，能不能直接用李阿姨的全部工资来算个税呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "如果现在给你看爸爸妈妈的工资条，或者你去超市购物拿到的发票，你能说说这里面的纳税是怎么算的，这些交上去的税对我们的生活有什么意义吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "咱们学校今年新修了塑胶操场、更新了图书馆的图书，你知道这些建设资金可能来自哪里吗？和纳税有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有人说“我自己赚的钱为什么要交给国家，纳税和我没关系”，你觉得这句话对吗？说说你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "张叔叔开的水果店这个月交了1800元增值税，当地小规模纳税人的增值税征收率是3%，这两个数哪个是税率？哪个是应纳税额？两者有什么区别？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "有同学说“我家开店这个月的税率是2400元”，这句话哪里说错了？你能帮他改正过来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "社区超市这个月的应纳税销售额是12万元，增值税税率是3%，这家超市这个月要交多少增值税？你用到了之前学的什么知识来计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "李阿姨开的花店这个月交了900元增值税，适用的税率是3%，你能算出这家花店这个月的应纳税销售额是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "按规定稿费超过800元的部分才需要按14%交个人所得税，王叔叔拿到了3500元的稿费，能不能直接用3500元乘14%算他要交的税？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "有两种纳税情况：①小规模企业按全部销售额的3%交增值税；②工资扣除5000元免征额后按3%交个税。算这两种税的时候找计税基数有什么不一样？要注意什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "咱们小区新修了老年健身广场，妈妈买护肤品的发票上显示交了18元消费税，你能说说这两件事之间有什么联系吗？用到了咱们这节课学的哪些知识？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "这是一张餐饮消费发票，上面写着消费金额300元，税额9元，你能算出这项餐饮服务的税率是多少吗？这些交上去的税款最终会用到什么地方？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "我们平时缴纳的税款，是具体的钱数，还是表示比例的百分数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "翻开教材中写税率定义的段落，圈出描述税率属性的关键词。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "具体的钱数和表示比例的比率，是同一个概念吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "求一个数的百分之几是多少，要用什么运算方法？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "例3里给出的3%，属于税率还是实际要缴纳的税款？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "例3中的30万元，是用来计算税款的计税收入吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "圈出“做一做”题目里“个税免征额”这个关键词。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "月工资7000元，扣除5000元免征额，需要交税的部分是多少元？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "计算税款时，应该用全部工资乘税率，还是用应纳税部分乘税率？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "工资条上的“应税金额”，是不是我们说的计税基数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "购物发票上标注的“税额”，是不是实际缴纳的应纳税额？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "你能说出一个由税款支撑的公共服务项目吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

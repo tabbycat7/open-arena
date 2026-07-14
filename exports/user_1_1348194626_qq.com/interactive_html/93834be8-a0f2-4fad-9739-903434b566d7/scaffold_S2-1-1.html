@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兵力减法直观演示尺</title>
+    <style>
+        /* 全局重置与课堂大屏适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            height: 71.25vw; /* 95 * 0.75 */
+            max-width: 1024px;
+            max-height: 768px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 16px;
+            color: #475569;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        /* 可视化区域 */
+        .visualization-area {
+            flex: 1;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* SVG 样式 */
+        svg {
+            width: 100%;
+            height: 100%;
+            max-height: 280px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .slider-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ef4444;
+            min-width: 180px;
+        }
+
+        /* 自定义滑块 */
+        .custom-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 12px;
+            border-radius: 6px;
+            background: #cbd5e1;
+            outline: none;
+            cursor: pointer;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 快捷按钮 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 8px 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-min {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+        .btn-min:hover, .btn-min.active {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+        }
+        .btn-max {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+        .btn-max:hover, .btn-max.active {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+        }
+
+        /* 动态公式展示 */
+        .formula-display {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #eff6ff;
+            border: 2px dashed #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .formula-item {
+            text-align: center;
+        }
+        .formula-title {
+            font-size: 14px;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+        .formula-body {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        .highlight-green {
+            color: #10b981;
+        }
+        .highlight-red {
+            color: #ef4444;
+        }
+
+        /* 思考引导 */
+        .thinking-prompt {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0f172a;
+            background: #fef08a;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #fef08a;
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>兵力减法直观演示尺</h1>
+        <p>总兵力 1500 人，战死 400 ~ 500 人。拖动滑块，观察剩余兵力的变化范围。</p>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 可视化数轴区域 -->
+        <div class="visualization-area">
+            <svg id="ruler-svg" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid meet">
+                <!-- 定义渐变和阴影 -->
+                <defs>
+                    <linearGradient id="blue-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#1d4ed8" />
+                    </linearGradient>
+                    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#10b981" />
+                        <stop offset="100%" stop-color="#047857" />
+                    </linearGradient>
+                    <linearGradient id="red-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#f87171" />
+                        <stop offset="100%" stop-color="#dc2626" />
+                    </linearGradient>
+                </defs>
+
+                <!-- 总兵力背景条 (1500) -->
+                <rect x="50" y="40" width="700" height="30" rx="6" fill="url(#blue-grad)" opacity="0.15" />
+                <rect x="50" y="40" width="700" height="30" rx="6" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4" />
+                <text x="400" y="25" font-size="16" font-weight="bold" fill="#1d4ed8" text-anchor="middle">总兵力：1500 人</text>
+
+                <!-- 动态：剩余兵力条 (绿色) -->
+                <rect id="rect-remaining" x="50" y="40" width="513.3" height="30" rx="6" fill="url(#green-grad)" />
+                
+                <!-- 动态：战死兵力条 (红色，靠右对齐) -->
+                <rect id="rect-dead" x="563.3" y="40" width="186.7" height="30" rx="6" fill="url(#red-grad)" />
+
+                <!-- 刻度尺基线 -->
+                <line x1="50" y1="110" x2="750" y2="110" stroke="#64748b" stroke-width="3" />
+                
+                <!-- 关键刻度线与文字 -->
+                <!-- 0 -->
+                <line x1="50" y1="110" x2="50" y2="120" stroke="#64748b" stroke-width="3" />
+                <text x="50" y="140" font-size="14" fill="#64748b" text-anchor="middle">0</text>
+
+                <!-- 1000 (最少剩余) -->
+                <line x1="516.7" y1="110" x2="516.7" y2="125" stroke="#047857" stroke-width="3" />
+                <text x="516.7" y="145" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">1000</text>
+
+                <!-- 1100 (最多剩余) -->
+                <line x1="563.3" y1="110" x2="563.3" y2="125" stroke="#047857" stroke-width="3" />
+                <text x="563.3" y="145" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">1100</text>
+
+                <!-- 1500 -->
+                <line x1="750" y1="110" x2="750" y2="120" stroke="#64748b" stroke-width="3" />
+                <text x="750" y="140" font-size="14" fill="#64748b" text-anchor="middle">1500</text>
+
+                <!-- 战死区间指示器 (400 - 500) -->
+                <rect x="516.7" y="170" width="46.6" height="18" fill="#fca5a5" opacity="0.6" rx="3" />
+                <line x1="516.7" y1="165" x2="516.7" y2="193" stroke="#ef4444" stroke-width="2" stroke-dasharray="2 2" />
+                <line x1="563.3" y1="165" x2="563.3" y2="193" stroke="#ef4444" stroke-width="2" stroke-dasharray="2 2" />
+                <text x="540" y="184" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">战死变化范围</text>
+
+                <!-- 动态指针与数值标注 -->
+                <!-- 战死人数标注 -->
+                <path id="pointer-dead" d="M 600 75 L 600 100" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)" />
+                <text id="text-dead-val" x="600" y="95" font-size="15" font-weight="bold" fill="#ef4444" text-anchor="middle">战死: 400人</text>
+
+                <!-- 剩余人数标注 -->
+                <text id="text-remain-val" x="280" y="60" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">剩余: 1100人</text>
+            </svg>
+        </div>
+
+        <!-- 动态公式展示 -->
+        <div class="formula-display">
+            <div class="formula-item">
+                <div class="formula-title">当前减法计算过程</div>
+                <div class="formula-body">
+                    1500 - <span id="formula-dead" class="highlight-red">400</span> = <span id="formula-remain" class="highlight-green">1100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="slider-container">
+                <span class="slider-label" id="slider-val-label">设定战死人数: 400 人</span>
+                <input type="range" id="dead-slider" class="custom-slider" min="400" max="500" value="400" step="1">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-min" id="btn-min-dead">边界一：战死最少 (400人)</button>
+                <button class="btn btn-max" id="btn-max-dead">边界二：战死最多 (500人)</button>
+            </div>
+        </div>
+
+        <!-- 思考引导 -->
+        <div class="thinking-prompt">
+            💡 思考：战死的人数越多（400 ➔ 500），剩下的士兵是变多了还是变少了？剩下的范围在什么之间？
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('dead-slider');
+    const sliderLabel = document.getElementById('slider-val-label');
+    const rectRemaining = document.getElementById('rect-remaining');
+    const rectDead = document.getElementById('rect-dead');
+    const textDeadVal = document.getElementById('text-dead-val');
+    const textRemainVal = document.getElementById('text-remain-val');
+    const formulaDead = document.getElementById('formula-dead');
+    const formulaRemain = document.getElementById('formula-remain');
+    
+    const btnMin = document.getElementById('btn-min-dead');
+    const btnMax = document.getElementById('btn-max-dead');
+
+    // 常量定义
+    const TOTAL_SOLDIERS = 1500;
+    const SVG_WIDTH_UNITS = 700; // 对应1500人
+    const START_X = 50;
+
+    // 更新视图函数
+    function updateVisualization(deadCount) {
+        const remainingCount = TOTAL_SOLDIERS - deadCount;
+
+        // 计算比例宽度
+        const remainingWidth = (remainingCount / TOTAL_SOLDIERS) * SVG_WIDTH_UNITS;
+        const deadWidth = (deadCount / TOTAL_SOLDIERS) * SVG_WIDTH_UNITS;
+        const deadX = START_X + remainingWidth;
+
+        // 更新SVG元素属性
+        rectRemaining.setAttribute('width', remainingWidth);
+        rectDead.setAttribute('x', deadX);
+        rectDead.setAttribute('width', deadWidth);
+
+        // 更新标注文字位置与内容
+        textDeadVal.textContent = `战死: ${deadCount}人`;
+        // 战死文字定位在红色区域中点
+        textDeadVal.setAttribute('x', deadX + (deadWidth / 2));
+
+        textRemainVal.textContent = `剩余: ${remainingCount}人`;
+        // 剩余文字定位在绿色区域中点
+        textRemainVal.setAttribute('x', START_X + (remainingWidth / 2));
+
+        // 更新公式
+        formulaDead.textContent = deadCount;
+        formulaRemain.textContent = remainingCount;
+
+        // 更新控制台标签
+        sliderLabel.textContent = `设定战死人数: ${deadCount} 人`;
+
+        // 更新按钮高亮状态
+        if (deadCount === 400) {
+            btnMin.classList.add('active');
+            btnMax.classList.remove('active');
+        } else if (deadCount === 500) {
+            btnMax.classList.add('active');
+            btnMin.classList.remove('active');
+        } else {
+            btnMin.classList.remove('active');
+            btnMax.classList.remove('active');
+        }
+    }
+
+    // 滑块事件监听
+    slider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        updateVisualization(val);
+    });
+
+    // 按钮事件监听
+    btnMin.addEventListener('click', () => {
+        slider.value = 400;
+        updateVisualization(400);
+    });
+
+    btnMax.addEventListener('click', () => {
+        slider.value = 500;
+        updateVisualization(500);
+    });
+
+    // 初始化
+    updateVisualization(400);
+</script>
+
+</body>
+</html>

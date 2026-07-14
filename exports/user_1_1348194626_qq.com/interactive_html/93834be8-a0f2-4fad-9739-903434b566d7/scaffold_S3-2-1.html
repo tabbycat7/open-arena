@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3-2-1 循环与分支的先后顺序</title>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --success-color: #2ECC71;
+            --error-color: #E74C3C;
+            --bg-color: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-color: #2C3E50;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #E2E8F0;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #2C3E50, #3498DB);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 核心交互区域 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            justify-content: space-between;
+            background-color: #FCFDFE;
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #34495E;
+            margin-bottom: 10px;
+            background: #EBF5FB;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        /* 双栏对比卡片 */
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            align-items: stretch;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            flex: 1;
+            border: 3px solid #E2E8F0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card-header {
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background-color: #F8FAFC;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .card svg {
+            width: 100%;
+            height: 100%;
+            max-height: 240px;
+        }
+
+        /* 选中与反馈样式 */
+        .card.correct {
+            border-color: var(--success-color);
+            background-color: #F0FBF5;
+        }
+        .card.correct .card-header {
+            background-color: #DEF7EC;
+            color: #03543F;
+            border-bottom-color: var(--success-color);
+        }
+
+        .card.incorrect {
+            border-color: var(--error-color);
+            background-color: #FDF2F2;
+        }
+        .card.incorrect .card-header {
+            background-color: #FDE8E8;
+            color: #9B1C1C;
+            border-bottom-color: var(--error-color);
+        }
+
+        /* 反馈面板 */
+        .feedback-panel {
+            min-height: 80px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #F8FAFC;
+            border: 2px dashed #CBD5E1;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-panel.success {
+            background-color: #DEF7EC;
+            color: #03543F;
+            border: 2px solid var(--success-color);
+        }
+
+        .feedback-panel.error {
+            background-color: #FDE8E8;
+            color: #9B1C1C;
+            border: 2px solid var(--error-color);
+        }
+
+        /* 辅助动效 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .bounce {
+            animation: bounce 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>循环与分支的先后顺序</h1>
+            <p>在编写程序解决数学问题时，我们应该如何安排执行步骤？</p>
+        </div>
+
+        <!-- 核心交互区 -->
+        <div class="content">
+            <div class="instruction">
+                🤔 思考：我们是“先拿出一个具体的数，再判断它”，还是“先判断条件，再决定拿哪个数”？
+            </div>
+
+            <div class="cards-container">
+                <!-- 选项 A -->
+                <div class="card" id="card-a">
+                    <div class="card-header">选项 A：先取数，后判断</div>
+                    <div class="card-body">
+                        <svg viewBox="0 0 400 240">
+                            <!-- 背景网格微装饰 -->
+                            <g opacity="0.1">
+                                <line x1="0" y1="40" x2="400" y2="40" stroke="#000" stroke-dasharray="5,5"/>
+                                <line x1="0" y1="120" x2="400" y2="120" stroke="#000" stroke-dasharray="5,5"/>
+                                <line x1="0" y1="200" x2="400" y2="200" stroke="#000" stroke-dasharray="5,5"/>
+                            </g>
+
+                            <!-- 1000~1100 的数字箱子 -->
+                            <g transform="translate(20, 80)">
+                                <rect x="0" y="20" width="100" height="80" rx="8" fill="#D2B48C" stroke="#8B4513" stroke-width="3"/>
+                                <rect x="10" y="10" width="80" height="20" rx="4" fill="#CD853F" stroke="#8B4513" stroke-width="2"/>
+                                <text x="50" y="65" font-size="14" font-weight="bold" fill="#5C4033" text-anchor="middle">数据箱</text>
+                                <text x="50" y="85" font-size="12" fill="#5C4033" text-anchor="middle">1000 ~ 1100</text>
+                            </g>
+
+                            <!-- 小人 A -->
+                            <g transform="translate(150, 70)">
+                                <!-- 身体 -->
+                                <circle cx="40" cy="30" r="18" fill="#FFD1A9" stroke="#333" stroke-width="2"/>
+                                <path d="M40,48 L40,100 M40,100 L25,140 M40,100 L55,140" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <!-- 手臂拿卡片 -->
+                                <path d="M40,60 L15,75" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M40,60 L65,55" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <!-- 脸部表情 -->
+                                <circle cx="33" cy="26" r="2" fill="#333"/>
+                                <circle cx="47" cy="26" r="2" fill="#333"/>
+                                <path d="M35,38 Q40,43 45,38" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- 拿出的卡片 -->
+                            <g transform="translate(115, 125)">
+                                <rect x="0" y="0" width="45" height="28" rx="4" fill="#FFF" stroke="#FF9F43" stroke-width="2" filter="drop-shadow(2px 2px 2px rgba(0,0,0,0.1))"/>
+                                <text x="22" y="18" font-size="14" font-weight="bold" fill="#FF9F43" text-anchor="middle">1003</text>
+                            </g>
+
+                            <!-- 裁判（判断框） -->
+                            <g transform="translate(270, 60)">
+                                <!-- 决策菱形 -->
+                                <polygon points="50,10 100,50 50,90 0,50" fill="#EBF5FB" stroke="#2980B9" stroke-width="3"/>
+                                <text x="50" y="46" font-size="12" font-weight="bold" fill="#2980B9" text-anchor="middle">符合余数</text>
+                                <text x="50" y="64" font-size="12" font-weight="bold" fill="#2980B9" text-anchor="middle">条件吗？</text>
+                                <!-- 裁判帽子 -->
+                                <path d="M35,5 L65,5 L60,-5 L40,-5 Z" fill="#333"/>
+                                <rect x="45" y="5" width="10" height="6" fill="#FFD700"/>
+                            </g>
+
+                            <!-- 流程箭头 -->
+                            <path d="M125,120 Q150,105 175,120" fill="none" stroke="#2ECC71" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+                            <path d="M220,110 L260,110" fill="none" stroke="#2980B9" stroke-width="3" stroke-linecap="round"/>
+                            <!-- 箭头定义 -->
+                            <defs>
+                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+                                    <path d="M0,0 L0,6 L9,3 Z" fill="#2ECC71"/>
+                                </marker>
+                            </defs>
+
+                            <!-- 步骤标签 -->
+                            <rect x="65" y="15" width="70" height="22" rx="11" fill="#FFEAA7"/>
+                            <text x="100" y="30" font-size="11" font-weight="bold" fill="#D35400" text-anchor="middle">1. 循环取数</text>
+
+                            <rect x="265" y="15" width="70" height="22" rx="11" fill="#D2F8D2"/>
+                            <text x="300" y="30" font-size="11" font-weight="bold" fill="#27AE60" text-anchor="middle">2. 分支判断</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 选项 B -->
+                <div class="card" id="card-b">
+                    <div class="card-header">选项 B：先判断，后取数</div>
+                    <div class="card-body">
+                        <svg viewBox="0 0 400 240">
+                            <!-- 背景网格微装饰 -->
+                            <g opacity="0.1">
+                                <line x1="0" y1="40" x2="400" y2="40" stroke="#000" stroke-dasharray="5,5"/>
+                                <line x1="0" y1="120" x2="400" y2="120" stroke="#000" stroke-dasharray="5,5"/>
+                                <line x1="0" y1="200" x2="400" y2="200" stroke="#000" stroke-dasharray="5,5"/>
+                            </g>
+
+                            <!-- 1000~1100 的数字箱子（在远处，未开启） -->
+                            <g transform="translate(20, 80)" opacity="0.5">
+                                <rect x="0" y="20" width="100" height="80" rx="8" fill="#D2B48C" stroke="#8B4513" stroke-width="2"/>
+                                <text x="50" y="65" font-size="14" fill="#5C4033" text-anchor="middle">数据箱</text>
+                            </g>
+
+                            <!-- 空手的小人 B -->
+                            <g transform="translate(140, 70)">
+                                <!-- 身体 -->
+                                <circle cx="40" cy="30" r="18" fill="#FFD1A9" stroke="#333" stroke-width="2"/>
+                                <path d="M40,48 L40,100 M40,100 L25,140 M40,100 L55,140" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <!-- 摊手无奈动作 -->
+                                <path d="M40,60 L15,50" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M40,60 L65,50" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <!-- 困惑表情 -->
+                                <text x="30" y="28" font-size="10" font-weight="bold">?</text>
+                                <text x="44" y="28" font-size="10" font-weight="bold">?</text>
+                                <path d="M33,38 Q40,33 47,38" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- 裁判直接发问 -->
+                            <g transform="translate(260, 50)">
+                                <!-- 决策菱形 -->
+                                <polygon points="50,10 100,50 50,90 0,50" fill="#FADBD8" stroke="#E74C3C" stroke-width="3"/>
+                                <text x="50" y="54" font-size="12" font-weight="bold" fill="#C0392B" text-anchor="middle">符合条件吗？</text>
+                            </g>
+
+                            <!-- 裁判的疑问气泡 -->
+                            <path d="M250,90 L210,95 M210,95 L220,105" stroke="#E74C3C" stroke-width="2" fill="none"/>
+                            <rect x="180" y="110" width="110" height="45" rx="6" fill="#FFF" stroke="#E74C3C" stroke-width="2"/>
+                            <text x="235" y="128" font-size="11" fill="#C0392B" text-anchor="middle" font-weight="bold">你的数是多少？</text>
+                            <text x="235" y="143" font-size="10" fill="#7F8C8D" text-anchor="middle">（裁判一脸懵）</text>
+
+                            <!-- 步骤标签 -->
+                            <rect x="265" y="15" width="70" height="22" rx="11" fill="#FADBD8"/>
+                            <text x="300" y="30" font-size="11" font-weight="bold" fill="#C0392B" text-anchor="middle">1. 直接判断？</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部反馈面板 -->
+            <div class="feedback-panel" id="feedback">
+                💡 请点击上方你认为正确的执行顺序图，观察会发生什么！
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cardA = document.getElementById('card-a');
+        const cardB = document.getElementById('card-b');
+        const feedback = document.getElementById('feedback');
+
+        cardA.addEventListener('click', () => {
+            // 重置状态
+            cardB.classList.remove('incorrect', 'shake');
+            cardA.classList.remove('bounce');
+            
+            // 激活正确状态
+            cardA.classList.add('correct', 'bounce');
+            
+            feedback.className = 'feedback-panel success';
+            feedback.innerHTML = '🎉 太棒了！分析得完全正确！<br>我们必须先从范围（循环）中拿出一个具体的数（比如 1003），裁判（分支条件）才能对它进行判断。这就是“先循环取数，再分支判断”！';
+        });
+
+        cardB.addEventListener('click', () => {
+            // 重置状态
+            cardA.classList.remove('correct', 'bounce');
+            cardB.classList.remove('shake');
+            
+            // 激活错误状态
+            void cardB.offsetWidth; // 触发重绘以重新播放动画
+            cardB.classList.add('incorrect', 'shake');
+            
+            feedback.className = 'feedback-panel error';
+            feedback.innerHTML = '❌ 哎呀，不对哦！<br>如果手里没有具体的数字，裁判根本不知道该去判断谁。所以不能凭空先判断，必须“先取数，再判断”！';
+        });
+    </script>
+</body>
+</html>

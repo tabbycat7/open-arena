@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方程验证交互可视化 - 寻找区间内的秘密</title>
+    <style>
+        /* 基础样式与投屏自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 比例容器，适合课堂投屏 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eef2f6;
+        }
+        /* 头部标题 */
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        /* 数轴可视化区域 */
+        .axis-container {
+            height: 80px;
+            position: relative;
+            margin: 15px 0;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e1;
+        }
+        .axis-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 方程展示区域 */
+        .equation-box {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .main-eq {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0f172a;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        .main-eq span.x-placeholder {
+            color: #3b82f6;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 0 4px;
+        }
+        
+        /* 动态推导步骤 */
+        .steps-container {
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .step-line {
+            font-size: 20px;
+            color: #475569;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .step-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-line .highlight {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+        .btn {
+            flex: 1;
+            max-width: 150px;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .btn.visited {
+            border-color: #10b981;
+        }
+        .btn.visited:not(.active) {
+            color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        /* 终极发现弹窗/横幅 */
+        .discovery-banner {
+            position: absolute;
+            bottom: -100px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 -10px 25px rgba(16, 185, 129, 0.2);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .discovery-banner.show {
+            bottom: 0;
+        }
+        .discovery-banner p {
+            margin: 0;
+        }
+        .discovery-banner .sub-text {
+            font-size: 16px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        /* 辅助提示 */
+        .tip {
+            font-size: 14px;
+            color: #94a3b8;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>探索方程的解：$|x - 1| + |x + 1| = 2$</h1>
+            <p>在区间 $[-1, 1]$ 内任取一个 $x$ 的值，代入方程看一看</p>
+        </div>
+
+        <!-- 数轴可视化 -->
+        <div class="axis-container">
+            <svg class="axis-svg" viewBox="0 0 700 80">
+                <!-- 数轴主线 -->
+                <line x1="50" y1="40" x2="650" y2="40" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)" />
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#94a3b8" />
+                    </marker>
+                </defs>
+                
+                <!-- 刻度与标签 -->
+                <!-- -2 -->
+                <line x1="150" y1="35" x2="150" y2="45" stroke="#64748b" stroke-width="2" />
+                <text x="150" y="65" font-size="14" fill="#64748b" text-anchor="middle">-2</text>
+                
+                <!-- -1 -->
+                <line x1="250" y1="32" x2="250" y2="48" stroke="#1e293b" stroke-width="3" />
+                <text x="250" y="65" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">-1</text>
+                
+                <!-- 0 -->
+                <line x1="350" y1="35" x2="350" y2="45" stroke="#64748b" stroke-width="2" />
+                <text x="350" y="65" font-size="14" fill="#64748b" text-anchor="middle">0</text>
+                
+                <!-- 1 -->
+                <line x1="450" y1="32" x2="450" y2="48" stroke="#1e293b" stroke-width="3" />
+                <text x="450" y="65" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">1</text>
+                
+                <!-- 2 -->
+                <line x1="550" y1="35" x2="550" y2="45" stroke="#64748b" stroke-width="2" />
+                <text x="550" y="65" font-size="14" fill="#64748b" text-anchor="middle">2</text>
+
+                <!-- [-1, 1] 区间高亮 -->
+                <rect x="250" y="36" width="200" height="8" fill="#3b82f6" fill-opacity="0.3" rx="4" />
+                <text x="350" y="25" font-size="14" font-weight="bold" fill="#3b82f6" text-anchor="middle">区间 [-1, 1]</text>
+
+                <!-- 动态指示点 -->
+                <circle id="pointer" cx="350" cy="40" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" style="display: none; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);" />
+                <text id="pointer-label" x="350" y="15" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle" style="display: none; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);">x = 0</text>
+            </svg>
+        </div>
+
+        <!-- 方程与代数化简展示 -->
+        <div class="equation-box">
+            <div class="main-eq">
+                |<span class="x-placeholder" id="eq-x1">x</span> - 1| + |<span class="x-placeholder" id="eq-x2">x</span> + 1| = 2
+            </div>
+            <div class="steps-container" id="steps-box">
+                <div class="step-line" id="step-1">代入：|? - 1| + |? + 1| = 2</div>
+                <div class="step-line" id="step-2">化简：? + ? = 2</div>
+                <div class="step-line" id="step-3">结论：<span class="highlight">2 = 2 (成立！)</span></div>
+            </div>
+        </div>
+
+        <!-- 交互控制 -->
+        <div class="control-panel">
+            <div class="btn-group">
+                <button class="btn" data-val="0">x = 0</button>
+                <button class="btn" data-val="0.5">x = 0.5</button>
+                <button class="btn" data-val="-0.8">x = -0.8</button>
+            </div>
+            <div class="tip" id="tip-text">请点击上方按钮，选择一个 $x$ 的值代入方程计算</div>
+        </div>
+
+        <!-- 终极发现横幅 -->
+        <div class="discovery-banner" id="discovery-banner">
+            <p>🎉 发现：区间 [-1, 1] 内有无穷多个实数，它们代入都成立！</p>
+            <p class="sub-text">这说明：在区间 [-1, 1] 内，方程有无数个解！</p>
+        </div>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.btn');
+        const eqX1 = document.getElementById('eq-x1');
+        const eqX2 = document.getElementById('eq-x2');
+        const pointer = document.getElementById('pointer');
+        const pointerLabel = document.getElementById('pointer-label');
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        const banner = document.getElementById('discovery-banner');
+        const tipText = document.getElementById('tip-text');
+
+        // 记录点击过的按钮
+        const visited = new Set();
+
+        // 数值映射到数轴像素坐标 (250px 对应 -1, 450px 对应 1, 350px 对应 0)
+        function getXCoord(val) {
+            return 350 + val * 100;
+        }
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 切换激活状态
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                btn.classList.add('visited');
+
+                const val = parseFloat(btn.dataset.val);
+                visited.add(val);
+
+                // 更新数轴上的指示点
+                const cx = getXCoord(val);
+                pointer.setAttribute('cx', cx);
+                pointer.style.display = 'block';
+                pointerLabel.setAttribute('x', cx);
+                pointerLabel.textContent = `x = ${val}`;
+                pointerLabel.style.display = 'block';
+
+                // 更新方程中的 x 变量高亮
+                eqX1.textContent = val;
+                eqX2.textContent = val >= 0 ? `+${val}` : val; // 保持符号美观
+                eqX1.style.color = '#ef4444';
+                eqX2.style.color = '#ef4444';
+
+                // 动态生成化简步骤
+                const part1 = Math.abs(val - 1);
+                const part2 = Math.abs(val + 1);
+                
+                // 步骤1：代入
+                step1.innerHTML = `代入：|${val} - 1| + |${val} + 1| = 2`;
+                // 步骤2：绝对值化简
+                step2.innerHTML = `化简：|${(val - 1).toFixed(1)}| + |${(val + 1).toFixed(1)}| = ${part1.toFixed(1)} + ${part2.toFixed(1)} = 2`;
+                // 步骤3：结论
+                step3.innerHTML = `结论：<span class="highlight">2 = 2 (成立！)</span>`;
+
+                // 播放动画
+                step1.classList.remove('show');
+                step2.classList.remove('show');
+                step3.classList.remove('show');
+
+                setTimeout(() => step1.classList.add('show'), 100);
+                setTimeout(() => step2.classList.add('show'), 600);
+                setTimeout(() => step3.classList.add('show'), 1100);
+
+                // 提示更新
+                if (visited.size < 3) {
+                    tipText.textContent = `很好！再试试其他的数值，看看是否也成立？ (${visited.size}/3)`;
+                } else {
+                    tipText.textContent = "三个数值都验证完毕！请观察下方的终极发现。";
+                    // 触发终极发现
+                    setTimeout(() => {
+                        banner.classList.add('show');
+                    }, 1600);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

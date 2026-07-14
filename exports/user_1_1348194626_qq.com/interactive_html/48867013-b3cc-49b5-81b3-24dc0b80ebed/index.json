@@ -1,0 +1,212 @@
+{
+  "task_id": "48867013-b3cc-49b5-81b3-24dc0b80ebed",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请大家仔细阅读课本第一段，结合文中提到国家把税款用在了哪些地方，用自己的话说一说我们为什么要纳税呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "明确了纳税的种类后，请大家在课本中找到“税率”的定义，读一读并想一想，税率到底是哪两个具体数据相比的结果呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "请大家看课本下方的“做一做”，题目中特别强调李阿姨“应纳税的部分为2500元”，大家思考一下，为什么这里不说“全部工资”，而是专门强调“应纳税的部分”呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "找准了应纳税部分，请大家观察例3的解答过程，你能用学过的百分数知识，解释一下为什么求“应缴纳增值税”要用乘法来计算吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "老师这里有个易错题：王叔叔月工资8000元，其中5000元免税，超过的部分按3%交税，有人直接用8000乘3%算出了税款，你能帮他指出错在哪里，并重新列出正确的算式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "除了课本提到的教育和国防，想一想，你每天上学走过的平坦马路、周末去玩的免费公园，这些建设资金可能是从哪来的？这和我们今天学习的纳税有什么联系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "有人说：“我还是个小学生，自己又没有赚钱，所以纳税这件事和我毫无关系。”你赞同这个观点吗？结合课本刚刚讲的内容，说说你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "小张看到新闻说某店上个月缴了600元的税，他惊呼：“交的税真多，这家店的税率一定很高！”如果告诉你该店上个月的营业额是2万元，你觉得小张的判断对吗？你能帮他算算真实的税率吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "A公司这个月交了10万元税，B公司这个月交了5万元税。能直接判断出A公司的税率比B公司高吗？为什么？如果要比较他们的税率，还必须知道什么信息？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "如果用一条长长的线段来表示李阿姨的全部工资，你能试着在这条线段上分别标出“免征额”和“应纳税部分”吗？从图上看，这两部分加起来等于什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "个人所得税计算时，为了保障基本生活需要先扣除免征额。但并不是所有税种都这样。比如李叔叔买了一辆15万元的新车，需要缴纳10%的车辆购置税。大家觉得，这15万元是全部作为“应纳税部分”，还是也要先扣除一部分呢？说说你的想法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "爸爸发现饭店账单上有一项5%的增值税，金额刚好是200元。他很好奇：这家饭店这笔账单的“应纳税营业额”到底是多少呢？你能根据我们刚学的公式帮他倒推出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "一家超市上个月营业额50万元，按3%缴纳增值税。如果这个月营业额增加到了60万元，税率不变，这家超市这个月要多缴纳多少万元的增值税？除了分别算出两个月的税额再相减，你还有更简便的算法吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "张阿姨这个月的总工资是4800元，如果免税的标准仍然是5000元，超过部分按3%交税。她这个月还需要交税吗？为什么？请用我们今天学的“找应纳税部分”的思路来给大家解释一下。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "王叔叔算了一下，他这个月按3%的税率，刚好缴纳了90元的个人所得税。已知免征额是5000元，你能倒推算出他这个月的总工资是多少吗？说说你是怎么一步步还原出这个真实收入的。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "在课本里介绍了这么多税种之后，大家找一找，书上用哪一个专门的词语，来表示国家收税的具体标准呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "找到“税率”这个词后，请大家看看旁边给出的例子，比如3%、5%，这些都是我们以前学过的什么数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "根据我们刚才找到的文字关系式“税率 = 应纳税额 ÷ 应纳税部分”，这里的除数，也就是作为比较标准的量，叫作什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "既然收税的标准是“应纳税部分”，大家想想，如果一个人每个月赚的钱只够基本生活，国家还把他所有的收入都拿来收税，这合理吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "请大家看例3的题目，营业额是30万元，税率是3%。这里的30万元，对应的就是我们刚刚说的哪一部分？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "我们以前用线段图表示过‘求一个数的百分之几’。如果把30万元（应纳税部分）画成一条线段，税率3%是其中的一小段，要求这一小段代表多少钱，可以怎么列式？这和求30万元的3%是多少，是不是同一个问题？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "仔细看黑板上王叔叔的例子，他的总工资是8000元，但题目里还有一个很关键的条件“5000元免税”，这说明这8000元都要用来算税吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "既然不是全部都要交税，那要找到真正需要交税的“应纳税部分”，我们得先怎么算出这部分钱呢？第一步应该做什么计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

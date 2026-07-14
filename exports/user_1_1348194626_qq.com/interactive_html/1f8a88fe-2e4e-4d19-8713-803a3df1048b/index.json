@@ -1,0 +1,311 @@
+{
+  "task_id": "1f8a88fe-2e4e-4d19-8713-803a3df1048b",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，看看屏幕上这些图片——斗笠、漏斗、建筑上的通风孔帽，它们的形状都是圆锥。我们之前已经认识了圆锥，也学会了计算圆柱的体积。那现在请你想一想：要算一个圆锥的体积，我们至少需要知道圆锥的哪些信息？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "圆柱的底面是圆，圆锥的底面也是圆。如果有一个圆锥和一个圆柱，它们的底面一样大、高也一样高，你猜圆锥的体积大概是圆柱体积的多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "现在每个小组都有一个圆柱容器和一个圆锥容器，它们是等底等高的。请你用圆锥装满沙子往圆柱里倒，看看倒几次正好能把圆柱倒满？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "三次正好倒满——这个实验结果用数学语言怎么说？圆锥的体积和等底等高的圆柱体积到底是什么关系？你能写出圆锥的体积公式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "课本上有这样一道题：一个圆锥形的零件，底面积是19平方厘米，高是12厘米。这个零件的体积是多少？请你用刚才推导出的公式算一算。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "工地上有一堆沙子，形状近似于一个圆锥，底面直径是4米，高是1.5米。注意，这次题目给的不是底面积，而是底面直径。你能算出这堆沙子的体积吗？如果每立方米沙子大约重1.5吨，这堆沙子大约重多少吨？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M7",
+      "question_type": "main",
+      "content": "今天这节课，我们从实验一步步推导出了圆锥的体积公式。现在我想请你回顾一下：圆锥的体积公式是什么？它是怎么得来的？用这个公式的时候最容易犯什么错误？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "三角形的面积需要知道底和高，圆锥的体积也需要知道'底'和'高'。但圆锥的'底'和三角形的'底'一样吗？请你说说，圆锥的'底'到底指的是什么，它和三角形的'底'有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "小明量了一个圆锥形冰淇淋壳的四个数据：底面半径2厘米、底面直径4厘米、侧面的斜边长5厘米、高4.5厘米。如果要算这个冰淇淋壳的体积，这四个数据都要用上吗？哪些是必须的，哪些是多余的？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "有一个又矮又胖的圆锥，底面比旁边的圆柱大很多，但高只有圆柱的一半。这个圆锥的体积还会比圆柱小吗？你觉得比较圆锥和圆柱的体积，光看形状够不够？还需要什么前提条件？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "甜筒冰淇淋的蛋筒是圆锥形的，杯装冰淇淋的杯子是圆柱形的。假如蛋筒和杯子的底面一样大、高也一样高，你觉得要把几个蛋筒里的冰淇淋合在一起，才能刚好装满一个杯子？说说你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "刚才我们是用圆锥往圆柱里倒沙子。现在反过来想：如果用等底等高的圆柱装满一整杯沙子，往空的圆锥里倒，每次倒满一个圆锥就把沙子倒掉，你猜圆柱里的沙子够倒满几个圆锥？这和刚才的实验结果矛盾吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "隔壁小组做实验时，用圆锥装满沙子往圆柱里倒，只倒了两次圆柱就满了。他们说：'圆锥的体积是圆柱的二分之一。'你觉得他们的结论对吗？可能是什么原因导致只倒了两次就满了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "一个圆锥底面积是6平方厘米、高是9厘米，旁边有一个圆柱底面积是9平方厘米、高也是9厘米。小红说：'圆锥的体积一定是圆柱体积的三分之一。'你同意吗？请你算一算，看看圆锥的体积到底是不是这个圆柱体积的三分之一。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "圆柱的体积公式是V=Sh，圆锥的体积公式是V=⅓Sh。这两个公式长得很像，只差了一个⅓。请你解释一下：这个⅓是从哪里来的？如果有人把圆锥的体积算成了V=Sh，他实际上算的是什么的体积？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一个圆锥形的沙堆，体积是76立方米，高是12米。请你用圆锥体积公式反过来算一算：这个沙堆的底面积是多少平方米？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "小华算一个圆锥的体积，底面积是15平方厘米，高是8厘米。他写的算式是：V=15×8=120立方厘米。小华的计算过程有没有问题？如果有，错在哪里？正确答案应该是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "一个冰淇淋蛋筒的形状近似圆锥，底面半径是2.5厘米，高是10厘米。这个蛋筒最多能装多少立方厘米的冰淇淋？注意看清楚，这次题目给的是半径还是直径？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "粮仓里有一堆圆锥形的麦子和一个圆柱形的粮桶，它们的底面直径都是3米，高都是2米。请你分别算出麦堆的体积和粮桶能装多少立方米的粮食。算完之后想一想：麦堆里的麦子能装满这个粮桶吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V7-1",
+      "question_type": "variant",
+      "content": "下面这句话对不对？'一个圆锥的体积等于一个圆柱体积的三分之一。'如果你觉得不对，请你把它改成一句正确的话，一个字都不能多，也不能少关键信息。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V7-2",
+      "question_type": "variant",
+      "content": "科学家观察到一只蚁狮挖的陷阱洞穴近似圆锥形，洞口直径大约是5厘米，深度大约是3厘米。请你用今天学的公式算一算，这个小陷阱的体积大约是多少立方厘米？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "同学们，圆柱有底面，有高；圆锥也有底面，也有高。你觉得圆柱和圆锥，哪些地方长得像？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "圆柱的体积等于底面积乘高。现在圆锥也有底面积，也有高，那你觉得圆锥的体积会不会跟圆柱的体积有点关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "同学们，如果你想知道一个大杯子能装几个小杯子的水，你会怎么做？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "在开始倒沙子之前，我们先仔细看看这两个容器。你觉得，要让倒的次数能告诉我们体积的倍数关系，这两个容器在大小上需要满足什么特别的条件吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "你倒了三次才把圆柱装满。那换句话说，一个圆柱里面能装几个圆锥那么多的沙子？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "三个圆锥的体积合起来等于一个圆柱的体积。那反过来想，一个圆锥的体积是这个圆柱体积的几分之几？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "公式V等于三分之一Sh里面有S和h。这道题告诉我们底面积是19平方厘米，高是12厘米。那S是多少？h是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "如果直接用19乘12，算出来的是圆柱的体积还是圆锥的体积？要算圆锥的体积，还需要怎么做？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "同学们，这道题告诉我们的信息，和上一道题有什么不一样？上一题直接给了底面积，这一题给的是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "题目说底面直径是4米。那半径是多少？你是怎么从直径得到半径的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3",
+      "question_type": "scaffold",
+      "content": "这道题最后要求沙子的重量。要算重量，我们首先需要知道什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S6-1",
+      "question_type": "scaffold",
+      "content": "同学们，我们的圆锥体积公式是通过什么活动发现的？当时我们用圆锥往圆柱里倒了几次沙子？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S6-2",
+      "question_type": "scaffold",
+      "content": "做实验的时候，我们用的圆柱和圆锥有一个很重要的要求。你还记得是什么要求吗？如果不满足这个要求，三分之一的关系还成立吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

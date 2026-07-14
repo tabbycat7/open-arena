@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法执行模拟：除以零</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            width: 100px;
+            border: 2px solid #4a90e2;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #357abd; }
+        
+        #computer {
+            width: 250px;
+            height: 200px;
+            border: 8px solid #333;
+            border-radius: 10px;
+            background: #222;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #0f0;
+            font-family: monospace;
+            text-align: center;
+            padding: 10px;
+        }
+        .sweat {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            width: 15px;
+            height: 20px;
+            background: #aaddff;
+            border-radius: 50%;
+            display: none;
+        }
+        #msg {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #d00;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>计算机执行模拟：100 ÷ X</h2>
+    <div class="stage">
+        <div class="input-area">
+            <label>请输入 X 的值：</label>
+            <input type="number" id="xValue" value="0">
+            <button id="calcBtn">开始计算</button>
+        </div>
+        
+        <div style="position: relative;">
+            <div id="sweat" class="sweat"></div>
+            <div id="computer">
+                <span id="screen">等待指令...</span>
+            </div>
+        </div>
+    </div>
+    <div id="msg"></div>
+</div>
+
+<script>
+    const xInput = document.getElementById('xValue');
+    const calcBtn = document.getElementById('calcBtn');
+    const screen = document.getElementById('screen');
+    const msg = document.getElementById('msg');
+    const sweat = document.getElementById('sweat');
+
+    calcBtn.addEventListener('click', () => {
+        const x = parseFloat(xInput.value);
+        
+        // 重置状态
+        screen.style.color = "#0f0";
+        sweat.style.display = "none";
+        msg.innerText = "";
+
+        if (x === 0) {
+            // 触发错误
+            screen.innerText = "ERROR: 0x0000F\nDIVIDE BY ZERO";
+            screen.style.color = "#f00";
+            sweat.style.display = "block";
+            msg.innerText = "数学上无法计算，计算机无法执行此步骤，算法中断！";
+        } else {
+            // 正常计算
+            const result = 100 / x;
+            screen.innerText = "100 / " + x + " = " + result.toFixed(2);
+            msg.innerText = "计算成功！";
+        }
+    });
+</script>
+
+</body>
+</html>

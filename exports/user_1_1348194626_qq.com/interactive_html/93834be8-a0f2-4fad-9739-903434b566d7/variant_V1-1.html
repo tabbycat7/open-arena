@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五年级信息技术：寻找特定书籍的策略（枚举算法基础）</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --wood-color: #8e5a2f;
+            --wood-dark: #5c3a1e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border: 4px solid #e2e8f0;
+        }
+
+        /* 头部标题区 */
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: var(--dark-color);
+            margin-bottom: 6px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* 主体布局：左侧书架与控制，右侧数据与卡片 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 20px;
+            flex-grow: 1;
+            align-items: stretch;
+            min-height: 0; /* 允许子元素在flex中缩放 */
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 虚拟书架 */
+        .bookshelf-wrapper {
+            background: #fdfaf6;
+            border: 2px solid #e4d5c3;
+            border-radius: 8px;
+            padding: 20px 15px 5px 15px;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            min-height: 200px;
+        }
+
+        .bookshelf {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 150px;
+            border-bottom: 16px solid var(--wood-color);
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        /* 书架阴影与木纹效果 */
+        .bookshelf::after {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: -15px;
+            right: -15px;
+            height: 6px;
+            background: var(--wood-dark);
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* 单本书 */
+        .book {
+            width: 8%;
+            height: 110px;
+            background-color: #5dade2;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.15), inset -3px 0 5px rgba(0,0,0,0.1);
+            position: relative;
+            user-select: none;
+        }
+
+        /* 书脊文字垂直排列 */
+        .book-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 1px;
+        }
+
+        .book-index {
+            font-size: 10px;
+            background: rgba(0,0,0,0.2);
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+
+        /* 书本的不同颜色 */
+        .book:nth-child(3n+1) { background-color: #3498db; }
+        .book:nth-child(3n+2) { background-color: #a569bd; }
+        .book:nth-child(3n+3) { background-color: #1abc9c; }
+
+        /* 书本状态样式 */
+        .book.active-scan {
+            transform: translateY(-15px);
+            box-shadow: 0 10px 15px rgba(52, 152, 219, 0.4);
+            border: 2px solid #fff;
+        }
+
+        .book.state-checked {
+            background-color: var(--success-color) !important;
+        }
+
+        .book.state-duplicate {
+            background-color: var(--danger-color) !important;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .book.state-missed {
+            background-color: #bdc3c7 !important;
+            opacity: 0.6;
+        }
+
+        /* 扫描光线 */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 134px;
+            background: linear-gradient(to right, rgba(52, 152, 219, 0), rgba(52, 152, 219, 1), rgba(52, 152, 219, 0));
+            box-shadow: 0 0 10px #3498db;
+            display: none;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 随机指针 */
+        .pointer-hand {
+            position: absolute;
+            font-size: 28px;
+            display: none;
+            pointer-events: none;
+            z-index: 11;
+            transition: all 0.2s ease;
+        }
+
+        /* 控制按钮区 */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 0.6fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 8px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-random { background-color: #e67e22; }
+        .btn-random:hover { background-color: #d35400; }
+        .btn-seq { background-color: var(--primary-color); }
+        .btn-seq:hover { background-color: #2980b9; }
+        .btn-reset { background-color: #7f8c8d; }
+        .btn-reset:hover { background-color: #95a5a6; }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 右侧面板：数据对比与书籍详情 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        /* 数据看板 */
+        .data-board {
+            background: #f8f9fa;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .data-board h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #edf2f7;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .stat-value.highlight-red { color: var(--danger-color); }
+        .stat-value.highlight-green { color: var(--success-color); }
+
+        /* 书籍属性探测器 */
+        .inspector-panel {
+            background: #eef2f7;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .inspector-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .inspector-details {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .inspector-details span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 底部思考引导区 */
+        .thinking-box {
+            background-color: #ebf8ff;
+            border-left: 5px solid #3182ce;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .thinking-box strong {
+            color: #2b6cb0;
+        }
+
+        /* 动画效果 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        /* 响应式微调 */
+        @media (max-height: 600px) {
+            .container { padding: 15px; }
+            header h1 { font-size: 20px; }
+            .bookshelf-wrapper { min-height: 160px; }
+            .book { height: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 标题区 -->
+    <header>
+        <h1>📚 图书馆寻书计划：体验“枚举思想”</h1>
+        <p>任务：在索书号 300-310 的书架中，找出“出版年份能被4整除，且价格尾数是8”的书籍。</p>
+    </header>
+
+    <!-- 主体交互区 -->
+    <div class="main-layout">
+        <!-- 左侧：书架与控制 -->
+        <div class="left-panel">
+            <div class="bookshelf-wrapper">
+                <!-- 扫描光线 -->
+                <div class="scan-line" id="scanLine"></div>
+                <!-- 随机指针 -->
+                <div class="pointer-hand" id="pointerHand">👉</div>
+                
+                <!-- 书架 -->
+                <div class="bookshelf" id="bookshelf">
+                    <!-- 书籍将由JS动态生成 -->
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="control-panel">
+                <button class="btn btn-random" id="btnRandom">
+                    🎲 无序乱翻
+                </button>
+                <button class="btn btn-seq" id="btnSeq">
+                    🔍 按序依次翻
+                </button>
+                <button class="btn btn-reset" id="btnReset">
+                    🔄 重置
+                </button>
+            </div>
+        </div>
+
+        <!-- 右侧：数据与卡片 -->
+        <div class="right-panel">
+            <!-- 数据看板 -->
+            <div class="data-board">
+                <h3 id="strategyTitle">当前策略：等待选择</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">已检查书籍</div>
+                        <div class="stat-value" id="statChecked">0 / 11</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">重复检查次数</div>
+                        <div class="stat-value highlight-red" id="statDuplicate">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">遗漏书籍数量</div>
+                        <div class="stat-value" id="statMissed">11</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">遗漏率</div>
+                        <div class="stat-value highlight-red" id="statMissRate">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 书籍属性探测器 -->
+            <div class="inspector-panel">
+                <div class="inspector-title">🔍 书籍属性探测器 (点击上方书籍查看)</div>
+                <div class="inspector-details" id="inspectorDetails">
+                    点击上方书架上的任意一本书，查看它的出版年份和价格，看看它是否符合我们的目标条件！
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部思考引导 -->
+    <div class="thinking-box">
+        <strong>💡 课堂思考：</strong>
+        如果我们不用脑子乱猜（无序乱翻），为什么很难找齐？如果这排书有 <strong>1000</strong> 本，你的“无序乱翻”计划会遇到什么困难？“按序依次翻”的优势在哪里？
+    </div>
+</div>
+
+<script>
+    // 书籍数据定义
+    const booksData = [
+        { id: 300, year: 2011, price: 25.5 },
+        { id: 301, year: 2012, price: 28.8 }, // 目标书籍: 2012%4==0, 28.8尾数是8
+        { id: 302, year: 2015, price: 18.0 },
+        { id: 303, year: 2016, price: 15.0 }, // 年份能被4整除，但价格尾数不是8
+        { id: 304, year: 2003, price: 45.8 }, // 价格尾数是8，但年份不能被4整除
+        { id: 305, year: 2018, price: 18.8 },
+        { id: 306, year: 2020, price: 24.3 },
+        { id: 307, year: 2011, price: 19.8 },
+        { id: 308, year: 2004, price: 30.2 },
+        { id: 309, year: 2021, price: 28.8 },
+        { id: 310, year: 2008, price: 35.4 }
+    ];
+
+    const bookshelf = document.getElementById('bookshelf');
+    const btnRandom = document.getElementById('btnRandom');
+    const btnSeq = document.getElementById('btnSeq');
+    const btnReset = document.getElementById('btnReset');
+    const scanLine = document.getElementById('scanLine');
+    const pointerHand = document.getElementById('pointerHand');
+
+    const statChecked = document.getElementById('statChecked');
+    const statDuplicate = document.getElementById('statDuplicate');
+    const statMissed = document.getElementById('statMissed');
+    const statMissRate = document.getElementById('statMissRate');
+    const strategyTitle = document.getElementById('strategyTitle');
+    const inspectorDetails = document.getElementById('inspectorDetails');
+
+    let isRunning = false;
+    let checkedSet = new Set();
+    let duplicateCount = 0;
+
+    // 初始化生成书籍
+    function initBooks() {
+        bookshelf.innerHTML = '';
+        booksData.forEach((book, index) => {
+            const bookDiv = document.createElement('div');
+            bookDiv.className = 'book';
+            bookDiv.dataset.index = index;
+            bookDiv.innerHTML = `
+                <span class="book-index">${book.id}</span>
+                <span class="book-label">科幻书</span>
+            `;
+            bookDiv.addEventListener('click', () => inspectBook(index));
+            bookshelf.appendChild(bookDiv);
+        });
+        resetStats();
+    }
+
+    // 重置统计数据和状态
+    function resetStats() {
+        checkedSet.clear();
+        duplicateCount = 0;
+        isRunning = false;
+        
+        // 恢复按钮
+        btnRandom.disabled = false;
+        btnSeq.disabled = false;
+        
+        // 隐藏辅助动画元素
+        scanLine.style.display = 'none';
+        pointerHand.style.display = 'none';
+
+        // 更新界面
+        strategyTitle.textContent = '当前策略：等待选择';
+        strategyTitle.style.color = 'var(--dark-color)';
+        statChecked.textContent = '0 / 11';
+        statDuplicate.textContent = '0';
+        statMissed.textContent = '11';
+        statMissRate.textContent = '100%';
+        statMissRate.className = 'stat-value highlight-red';
+
+        // 恢复书籍样式
+        const books = document.querySelectorAll('.book');
+        books.forEach(book => {
+            book.className = 'book';
+            book.style.transform = 'none';
+        });
+
+        inspectorDetails.innerHTML = '点击上方书架上的任意一本书，查看它的出版年份和价格，看看它是否符合我们的目标条件！';
+    }
+
+    // 探测单本书籍属性
+    function inspectBook(index) {
+        if (isRunning) return; // 演示运行时禁止手动点击
+        
+        const book = booksData[index];
+        const isYearDiv4 = book.year % 4 === 0;
+        const isPriceEnd8 = book.price.toFixed(1).endsWith('8');
+        const isTarget = isYearDiv4 && isPriceEnd8;
+
+        let resultHTML = `
+            <strong>索书号：</strong><span>${book.id}</span><br>
+            <strong>出版年份：</strong>${book.year}年 (${isYearDiv4 ? '✅ 能被4整除' : '❌ 不能被4整除'})<br>
+            <strong>书籍价格：</strong>${book.price}元 (${isPriceEnd8 ? '✅ 尾数是8' : '❌ 尾数不是8'})<br>
+            <hr style="margin:8px 0; border:none; border-top:1px solid #cbd5e0;">
+            <strong>结论：</strong> ${isTarget ? '<span style="color:var(--success-color)">🌟 完美符合条件！这就是我们要找的书！</span>' : '<span style="color:var(--danger-color)">❌ 不符合条件</span>'}
+        `;
+        inspectorDetails.innerHTML = resultHTML;
+
+        // 高亮被点击的书
+        const books = document.querySelectorAll('.book');
+        books.forEach(b => b.classList.remove('active-scan'));
+        books[index].classList.add('active-scan');
+    }
+
+    // 顺序扫描策略
+    function runSequential() {
+        if (isRunning) return;
+        resetStats();
+        isRunning = true;
+        btnRandom.disabled = true;
+        btnSeq.disabled = true;
+        strategyTitle.textContent = '当前策略：按序依次翻 (顺序寻找)';
+        strategyTitle.style.color = 'var(--primary-color)';
+
+        scanLine.style.display = 'block';
+        scanLine.style.left = '0%';
+
+        let currentIndex = 0;
+        const books = document.querySelectorAll('.book');
+
+        const interval = setInterval(() => {
+            if (currentIndex >= booksData.length) {
+                clearInterval(interval);
+                scanLine.style.display = 'none';
+                isRunning = false;
+                btnReset.disabled = false;
+                return;
+            }
+
+            // 移动扫描线
+            const bookElement = books[currentIndex];
+            const rect = bookElement.getBoundingClientRect();
+            const shelfRect = bookshelf.getBoundingClientRect();
+            const relativeLeft = rect.left - shelfRect.left + (rect.width / 2);
+            scanLine.style.left = `${relativeLeft}px`;
+
+            // 标记当前检查的书籍
+            bookElement.classList.add('active-scan');
+            
+            // 延迟一下变绿，模拟翻阅过程
+            setTimeout(() => {
+                bookElement.classList.remove('active-scan');
+                bookElement.classList.add('state-checked');
+                checkedSet.add(currentIndex);
+                updateDashboard();
+            }, 150);
+
+            currentIndex++;
+        }, 450);
+    }
+
+    // 无序乱翻策略
+    function runRandom() {
+        if (isRunning) return;
+        resetStats();
+        isRunning = true;
+        btnRandom.disabled = true;
+        btnSeq.disabled = true;
+        strategyTitle.textContent = '当前策略：无序乱翻 (随机寻找)';
+        strategyTitle.style.color = '#e67e22';
+
+        pointerHand.style.display = 'block';
+
+        let steps = 0;
+        const maxSteps = 11; // 同样给11次机会，对比效率
+        const books = document.querySelectorAll('.book');
+
+        const interval = setInterval(() => {
+            if (steps >= maxSteps) {
+                clearInterval(interval);
+                pointerHand.style.display = 'none';
+                
+                // 标记未被翻阅到的遗漏书籍
+                books.forEach((book, idx) => {
+                    if (!checkedSet.has(idx)) {
+                        book.classList.add('state-missed');
+                    }
+                });
+
+                isRunning = false;
+                return;
+            }
+
+            // 随机选择一本书
+            const randomIndex = Math.floor(Math.random() * booksData.length);
+            const bookElement = books[randomIndex];
+
+            // 移动指针手势
+            const rect = bookElement.getBoundingClientRect();
+            const shelfRect = bookshelf.getBoundingClientRect();
+            const relativeLeft = rect.left - shelfRect.left + (rect.width / 2) - 15;
+            pointerHand.style.left = `${relativeLeft}px`;
+            pointerHand.style.top = `-35px`;
+
+            // 检查是否重复
+            if (checkedSet.has(randomIndex)) {
+                duplicateCount++;
+                bookElement.classList.add('state-duplicate');
+                setTimeout(() => {
+                    bookElement.classList.remove('state-duplicate');
+                }, 300);
+            } else {
+                checkedSet.add(randomIndex);
+                bookElement.classList.add('state-checked');
+            }
+
+            updateDashboard();
+            steps++;
+        }, 600);
+    }
+
+    // 更新数据看板
+    function updateDashboard() {
+        const checkedCount = checkedSet.size;
+        const totalBooks = booksData.length;
+        const missedCount = totalBooks - checkedCount;
+        const missRate = Math.round((missedCount / totalBooks) * 100);
+
+        statChecked.textContent = `${checkedCount} / ${totalBooks}`;
+        statDuplicate.textContent = duplicateCount;
+        statMissed.textContent = missedCount;
+        statMissRate.textContent = `${missRate}%`;
+
+        if (missRate === 0) {
+            statMissRate.className = 'stat-value highlight-green';
+        } else {
+            statMissRate.className = 'stat-value highlight-red';
+        }
+    }
+
+    // 绑定按钮事件
+    btnSeq.addEventListener('click', runSequential);
+    btnRandom.addEventListener('click', runRandom);
+    btnReset.addEventListener('click', resetStats);
+
+    // 初始化
+    initBooks();
+</script>
+
+</body>
+</html>

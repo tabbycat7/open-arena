@@ -1,0 +1,482 @@
+{
+  "id": "bec8e610-15fb-4a56-838c-528a1ece32b2",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "1．物理观念:(1)认识重力，知道重力是如何产生的。(2)了解重力的大小与质量的关系，正确书写关系式G=mg，能进行简单运算。\r\n2．科学思维:(1)通过举例生活中的现象与观察课堂实验，证明重力的存在。(2)通过收集到的实验数据并对其进行分析,总结出重力的大小与质量成正比。\r\n3．科学探究:(1)经历探究重力大小与什么因素有关的实验过程,培养动手操作与收集数据的能力。\r\n4．科学态度与责任:(1)通过身边的小实验以及观察生活中重力的应用,感受物理就在身边，激发学生探究科学知识的兴趣\r\n\r\n",
+  "student_profile": "学情描述：知识基础： 八年级学生在生活中对“重力”现象有丰富的感性认识（如水往低处流、物体下落），且在前一节已经学习了“力”和“质量”的概念，具备了学习重力的前置知识。能力水平： 学生具备初步的观察能力和实验操作能力，但将生活经验转化为物理概念（如区分质量与重力）仍有难度，尤其在处理 $G=mg$ 的实验数据归纳时，逻辑推理能力尚需引导。心理特征： 该阶段学生好奇心强，乐于参与动手实验，但注意力容易被有趣的现象分散，需要教师通过任务驱动引导其深度思考。群体分布： 班级整体学习氛围良好。**优生（约25%）**思维活跃，能独立完成实验并尝试推导 $g$ 的含义；**中等生（约55%）**能完成基础操作，但在定量分析上依赖教材；**学困生（约20%）**对“质量”与“重力”的概念极易混淆，需重点指导单位换算。",
+  "difficulty_analysis": "",
+  "language_style": "启发引导",
+  "model_id": "Pro/zai-org/GLM-5",
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，观察这几幅图：熟透的苹果落向地面，抛出的铅球最终落地，瀑布飞流直下。为什么这些物体最终都要落向地面？这背后是不是有一个共同的‘推手’在作用？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家请看大屏幕上的这些场景。不管是树上的苹果，还是手里的铅球，或者高处的流水，它们运动的方向有什么共同点？对，都是向下。那为什么它们不飞向天空，而是非要落向地面呢？是谁在‘拉’着它们？大家结合我们之前学的‘力’的知识，想一想，这个力的施力物体是谁？\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.6, \"design_intent\": \"从具体现象抽象出物理概念，培养学生的归纳概括能力，落实重力概念的教学。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"生活中我们常说“这个东西很重”，大家觉得这里的“重”，是指它的质量大，还是它受到的重力大？质量和重力是一回事吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们认识了重力，知道它是地球对物体的吸引力。但在生活中，我们经常把‘质量’和‘重力’混着说。比如买苹果时，我们关心的是苹果有多少（质量），提苹果时，我们感觉手受到拉力（重力）。请大家回忆一下质量的定义，它和重力有什么本质区别？如果我把这个钩码带到太空中，它的质量变了吗？它还受重力吗？\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"针对学情分析中的典型错误，通过对比辨析，打破错误的前概念，为探究定量关系扫清障碍。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"既然质量大的物体看起来“更重”，那重力的大小和质量到底有什么定量关系？利用桌上的弹簧测力计和钩码，我们该怎么设计实验来探究？需要记录哪些数据？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"要想找出规律，光靠猜是不行的，得用数据说话。大家看桌上的器材：弹簧测力计可以测量力的大小，钩码的质量是已知的。我们可以通过改变钩码的数量来改变质量，然后读出测力计的示数。请各小组讨论一下，你们的实验步骤是怎样的？数据记录表打算怎么画？注意，使用测力计前别忘了做什么？（调零）\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"通过动手操作，培养科学探究能力，获取一手数据，为数据分析提供事实依据。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"观察大家刚才测得的数据，随着钩码质量增加，重力怎么变化？请大家算一算重力与质量的比值，或者看看画出的G-m图像，你们发现了什么规律？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家看黑板汇总的数据，随着钩码质量的成倍增加，测得的重力大小是怎样变化的？是不是也在成倍增加？那这两者之间是不是简单的正比关系呢？请大家动笔算一算重力与质量的比值，或者看看你们画出的图像是不是一条过原点的直线。这个比值大概是多少？它有什么特点？\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"突破难点，培养数据处理能力和归纳推理能力，落实科学思维目标。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"既然重力与质量成正比，且比值 g 约为 9.8 N/kg，能不能用一个公式来表示 G、m、g 的关系？如果已知质量是 5kg，怎么计算它的重力？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"物理学中，我们用 G 表示重力，m 表示质量，g 表示这个比值。根据正比关系，大家试着写出这个公式。写出来后，我们来试一试：如果书包质量是 5kg，怎么代入公式计算？注意，计算时质量的单位要用千克，g 我们一般取 9.8 N/kg。算出来的结果是多少牛顿？\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"将探究结果转化为可操作的公式，解决实际问题，实现知识内化与应用迁移。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"无论你向哪个方向泼水，水最终都落向地面。这说明重力的方向有什么特点？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.58, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过多方向泼水的动态情景，引导学生剥离现象表象，聚焦于重力方向竖直向下的本质属性。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"观察宇航员在空间站里可以漂浮，而在地面上我们却稳稳站立。这两种情况中，宇航员的质量变了吗？他受到的重力变了吗？这说明了重力的什么特点？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过对比地球与太空的极端环境，打破'重力始终存在且不变'的错误前概念，深化对重力特性的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"设想在月球上，一个物体的质量会变吗？它受到的重力呢？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"将情境置于月球这一极端环境，利用认知冲突，清晰区分质量（属性）与重力（受力）随位置变化的不同特性。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"超市电子秤显示的是物体的质量还是重力？为什么它称同一个物体，在地球和月球上显示的数字会不同？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.62, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"从生活器具（电子秤）的实际工作原理切入，在具体应用场景中辨析质量与重力的混淆点。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"如果实验测得的三组数据点不在一条直线上，你觉得可能是什么原因？为了更准确地得出结论，我们该如何改进实验？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"从理想数据转向误差分析，培养学生评估实验过程和优化设计方案的科学探究能力。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"根据得出的比值，若某星球上G/m=1.6N/kg，这说明什么？同一物体在该星球上的重力如何变化？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"将数据分析迁移至未知星球情境，训练学生利用比值常数进行预测和迁移应用的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"月球车在地球上测试重约1800N，为了适应月球(g月≈1.6N/kg)，它的设计质量最大不能超过多少？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将公式计算置于航天工程背景下，通过不同星球重力环境的对比，提升解决实际工程问题的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"小华说他的体重是500N，小明说他的质量是50kg。谁的说法更符合物理规范？请通过计算说明。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过辨析生活中常见的口语表达，强化重力与质量的单位及概念区别，提升科学表达能力。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"买苹果时，老板说“这袋苹果重5千克”，这里的“重”是指苹果含物质的多少，还是受到的引力？提在手里感觉沉甸甸的，这又是什么力在作用？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"通过生活用语与物理概念的冲突，暴露学生混淆质量与重力的前概念。\", \"design_intent\": \"激活生活经验，引发认知冲突，为概念辨析做铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"为了分清它们，我们来比一比：质量是物体本身的属性，单位是千克；重力是地球对物体的作用，单位是牛顿。想一想，如果把物体带到太空，它的质量会变吗？重力还会存在吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"提供定义、单位、位置变化三个维度的对比，帮助学生构建区分两者的认知框架。\", \"design_intent\": \"通过多维对比，帮助学生区分质量与重力的本质属性。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"测量重力需要专门的工具。测量力的大小的工具叫什么？使用前指针要指在哪里？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"复习工具使用，为实验操作扫清障碍。\", \"design_intent\": \"复习测力计用法，排除操作障碍。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"我们要探究重力大小和质量的关系，除了知道钩码的质量，还需要测量哪个物理量才能进行比较？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"明确实验目的，引导学生关注因变量的测量。\", \"design_intent\": \"引导关注实验目标变量。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"请看这份记录表，第一行数据算出的比值是 0.98。你能照样子算出后面几行的比值吗？看看这些比值有什么共同特点？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"提供计算示例，降低数据处理难度，引导学生发现比值恒定的规律。\", \"design_intent\": \"通过计算具体数值，发现比值接近。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"利用算出的数据，我们在坐标纸上描点连线。观察这条线，它是直的还是弯的？这代表重力与质量是什么关系？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"结合图像直观展示，辅助理解正比例关系。\", \"design_intent\": \"通过图像直观辅助，理解正比关系。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"既然比值 g 是固定的，你能把 G/m=g 变换一下，写出计算重力 G 的公式吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"引导学生将规律转化为公式，实现数学化表达。\", \"design_intent\": \"建立G/m=g与G=mg的对应关系。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果题目给的质量是500克，在代入公式 G=mg 前，我们需要先把单位换成千克。你能完成这个换算吗？（提示：1千克 = 1000克）\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.45, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"解决计算中的单位障碍，确保公式正确应用。\", \"design_intent\": \"针对学困生单位换算困难进行提示。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-05 12:26:31",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，观察这几幅图：熟透的苹果落向地面，抛出的铅球最终落地，瀑布飞流直下。为什么这些物体最终都要落向地面？这背后是不是有一个共同的‘推手’在作用？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家请看大屏幕上的这些场景。不管是树上的苹果，还是手里的铅球，或者高处的流水，它们运动的方向有什么共同点？对，都是向下。那为什么它们不飞向天空，而是非要落向地面呢？是谁在‘拉’着它们？大家结合我们之前学的‘力’的知识，想一想，这个力的施力物体是谁？",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.6,
+        "design_intent": "从具体现象抽象出物理概念，培养学生的归纳概括能力，落实重力概念的教学。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "生活中我们常说“这个东西很重”，大家觉得这里的“重”，是指它的质量大，还是它受到的重力大？质量和重力是一回事吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们认识了重力，知道它是地球对物体的吸引力。但在生活中，我们经常把‘质量’和‘重力’混着说。比如买苹果时，我们关心的是苹果有多少（质量），提苹果时，我们感觉手受到拉力（重力）。请大家回忆一下质量的定义，它和重力有什么本质区别？如果我把这个钩码带到太空中，它的质量变了吗？它还受重力吗？",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "针对学情分析中的典型错误，通过对比辨析，打破错误的前概念，为探究定量关系扫清障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "既然质量大的物体看起来“更重”，那重力的大小和质量到底有什么定量关系？利用桌上的弹簧测力计和钩码，我们该怎么设计实验来探究？需要记录哪些数据？",
+        "question_type": "main",
+        "lesson_presentation_script": "要想找出规律，光靠猜是不行的，得用数据说话。大家看桌上的器材：弹簧测力计可以测量力的大小，钩码的质量是已知的。我们可以通过改变钩码的数量来改变质量，然后读出测力计的示数。请各小组讨论一下，你们的实验步骤是怎样的？数据记录表打算怎么画？注意，使用测力计前别忘了做什么？（调零）",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "通过动手操作，培养科学探究能力，获取一手数据，为数据分析提供事实依据。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "观察大家刚才测得的数据，随着钩码质量增加，重力怎么变化？请大家算一算重力与质量的比值，或者看看画出的G-m图像，你们发现了什么规律？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家看黑板汇总的数据，随着钩码质量的成倍增加，测得的重力大小是怎样变化的？是不是也在成倍增加？那这两者之间是不是简单的正比关系呢？请大家动笔算一算重力与质量的比值，或者看看你们画出的图像是不是一条过原点的直线。这个比值大概是多少？它有什么特点？",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "突破难点，培养数据处理能力和归纳推理能力，落实科学思维目标。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "既然重力与质量成正比，且比值 g 约为 9.8 N/kg，能不能用一个公式来表示 G、m、g 的关系？如果已知质量是 5kg，怎么计算它的重力？",
+        "question_type": "main",
+        "lesson_presentation_script": "物理学中，我们用 G 表示重力，m 表示质量，g 表示这个比值。根据正比关系，大家试着写出这个公式。写出来后，我们来试一试：如果书包质量是 5kg，怎么代入公式计算？注意，计算时质量的单位要用千克，g 我们一般取 9.8 N/kg。算出来的结果是多少牛顿？",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "将探究结果转化为可操作的公式，解决实际问题，实现知识内化与应用迁移。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "无论你向哪个方向泼水，水最终都落向地面。这说明重力的方向有什么特点？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.58,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过多方向泼水的动态情景，引导学生剥离现象表象，聚焦于重力方向竖直向下的本质属性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "观察宇航员在空间站里可以漂浮，而在地面上我们却稳稳站立。这两种情况中，宇航员的质量变了吗？他受到的重力变了吗？这说明了重力的什么特点？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过对比地球与太空的极端环境，打破'重力始终存在且不变'的错误前概念，深化对重力特性的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "设想在月球上，一个物体的质量会变吗？它受到的重力呢？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "将情境置于月球这一极端环境，利用认知冲突，清晰区分质量（属性）与重力（受力）随位置变化的不同特性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "超市电子秤显示的是物体的质量还是重力？为什么它称同一个物体，在地球和月球上显示的数字会不同？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.62,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "从生活器具（电子秤）的实际工作原理切入，在具体应用场景中辨析质量与重力的混淆点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "如果实验测得的三组数据点不在一条直线上，你觉得可能是什么原因？为了更准确地得出结论，我们该如何改进实验？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "从理想数据转向误差分析，培养学生评估实验过程和优化设计方案的科学探究能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "根据得出的比值，若某星球上G/m=1.6N/kg，这说明什么？同一物体在该星球上的重力如何变化？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "将数据分析迁移至未知星球情境，训练学生利用比值常数进行预测和迁移应用的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "月球车在地球上测试重约1800N，为了适应月球(g月≈1.6N/kg)，它的设计质量最大不能超过多少？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将公式计算置于航天工程背景下，通过不同星球重力环境的对比，提升解决实际工程问题的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "小华说他的体重是500N，小明说他的质量是50kg。谁的说法更符合物理规范？请通过计算说明。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过辨析生活中常见的口语表达，强化重力与质量的单位及概念区别，提升科学表达能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "买苹果时，老板说“这袋苹果重5千克”，这里的“重”是指苹果含物质的多少，还是受到的引力？提在手里感觉沉甸甸的，这又是什么力在作用？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "通过生活用语与物理概念的冲突，暴露学生混淆质量与重力的前概念。",
+        "design_intent": "激活生活经验，引发认知冲突，为概念辨析做铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "为了分清它们，我们来比一比：质量是物体本身的属性，单位是千克；重力是地球对物体的作用，单位是牛顿。想一想，如果把物体带到太空，它的质量会变吗？重力还会存在吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "提供定义、单位、位置变化三个维度的对比，帮助学生构建区分两者的认知框架。",
+        "design_intent": "通过多维对比，帮助学生区分质量与重力的本质属性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "测量重力需要专门的工具。测量力的大小的工具叫什么？使用前指针要指在哪里？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "复习工具使用，为实验操作扫清障碍。",
+        "design_intent": "复习测力计用法，排除操作障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "我们要探究重力大小和质量的关系，除了知道钩码的质量，还需要测量哪个物理量才能进行比较？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "明确实验目的，引导学生关注因变量的测量。",
+        "design_intent": "引导关注实验目标变量。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "请看这份记录表，第一行数据算出的比值是 0.98。你能照样子算出后面几行的比值吗？看看这些比值有什么共同特点？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "提供计算示例，降低数据处理难度，引导学生发现比值恒定的规律。",
+        "design_intent": "通过计算具体数值，发现比值接近。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "利用算出的数据，我们在坐标纸上描点连线。观察这条线，它是直的还是弯的？这代表重力与质量是什么关系？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "结合图像直观展示，辅助理解正比例关系。",
+        "design_intent": "通过图像直观辅助，理解正比关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "既然比值 g 是固定的，你能把 G/m=g 变换一下，写出计算重力 G 的公式吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "引导学生将规律转化为公式，实现数学化表达。",
+        "design_intent": "建立G/m=g与G=mg的对应关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果题目给的质量是500克，在代入公式 G=mg 前，我们需要先把单位换成千克。你能完成这个换算吗？（提示：1千克 = 1000克）",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.45,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "解决计算中的单位障碍，确保公式正确应用。",
+        "design_intent": "针对学困生单位换算困难进行提示。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法常识：水温的物理限制</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        svg { width: 100%; height: auto; }
+        .slider-container { margin: 20px 0; }
+        input[type=range] { width: 80%; cursor: pointer; }
+        #warning {
+            color: #d32f2f;
+            font-weight: bold;
+            height: 50px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px dashed #d32f2f;
+            border-radius: 8px;
+            display: none;
+        }
+        .label { font-size: 1.2rem; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h3>算法逻辑与物理现实：水温设定</h3>
+    <div class="label">当前设定水温: <span id="tempDisplay">20</span>℃</div>
+    
+    <svg id="scene" viewBox="0 0 400 300">
+        <!-- 壶身 -->
+        <g id="kettle">
+            <path d="M120,220 Q120,120 200,120 Q280,120 280,220 L280,250 Q280,270 260,270 L140,270 Q120,270 120,250 Z" fill="#b0bec5" stroke="#546e7a" stroke-width="4"/>
+            <path d="M280,180 L330,160 L330,200 Z" fill="#b0bec5" stroke="#546e7a" stroke-width="4"/>
+            <rect x="180" y="80" width="40" height="40" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
+        </g>
+        <!-- 温度计 -->
+        <rect x="350" y="100" width="20" height="150" fill="#eee" stroke="#333"/>
+        <rect id="mercury" x="355" y="248" width="10" height="2" fill="red"/>
+    </svg>
+
+    <div class="slider-container">
+        <input type="range" id="tempSlider" min="20" max="1000" value="20">
+    </div>
+
+    <div id="warning"></div>
+</div>
+
+<script>
+    const slider = document.getElementById('tempSlider');
+    const tempDisplay = document.getElementById('tempDisplay');
+    const mercury = document.getElementById('mercury');
+    const warning = document.getElementById('warning');
+    const kettle = document.getElementById('kettle');
+
+    slider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        tempDisplay.innerText = val;
+        
+        // 更新温度计高度 (250 - 100 = 150px 对应 1000度)
+        const height = (val / 1000) * 150;
+        mercury.setAttribute('height', Math.max(2, height));
+        mercury.setAttribute('y', 250 - height);
+
+        // 逻辑判断
+        if (val > 100) {
+            warning.style.display = 'block';
+            warning.innerText = "警告！在常压下水最高约100℃。1000℃的水在现实中无法获得，算法不可执行！请选择80℃~100℃之间的合理水温。";
+            kettle.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+            kettle.style.fill = "#ff8a80";
+        } else {
+            warning.style.display = 'none';
+            kettle.style.transform = 'translate(0,0)';
+            kettle.style.fill = "#b0bec5";
+        }
+    });
+</script>
+
+</body>
+</html>

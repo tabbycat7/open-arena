@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人路线竞速演示</title>
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --grid: #cbd5e0;
+            --green: #48bb78;
+            --orange: #ed8936;
+        }
+        body {
+            font-family: sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        svg { width: 100%; height: auto; border: 2px solid var(--grid); }
+        .controls { margin-top: 20px; text-align: center; }
+        button {
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:disabled { background: #a0aec0; }
+        .stats { margin-top: 15px; display: flex; justify-content: space-around; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2 style="text-align:center; margin-top:0;">机器人路线竞速</h2>
+    <svg id="raceTrack" viewBox="0 0 600 300">
+        <!-- 网格背景 -->
+        <defs>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+            </pattern>
+        </defs>
+        <rect width="600" height="300" fill="url(#grid)" />
+        
+        <!-- 路线示意 -->
+        <path d="M 50 150 L 200 150" stroke="#48bb78" stroke-width="4" stroke-dasharray="10 5" />
+        <path d="M 50 150 L 50 50 L 350 50 L 350 150" stroke="#ed8936" stroke-width="4" stroke-dasharray="10 5" />
+        
+        <!-- 机器人 -->
+        <circle id="robotGreen" cx="50" cy="150" r="15" fill="#48bb78" />
+        <circle id="robotOrange" cx="50" cy="150" r="15" fill="#ed8936" />
+        
+        <!-- 终点标记 -->
+        <text x="200" y="140" font-size="14" text-anchor="middle">3号桌</text>
+        <rect x="190" y="150" width="20" height="20" fill="#718096" />
+    </svg>
+
+    <div class="stats">
+        <span style="color:var(--green)">绿机器人耗时: <span id="timeG">0</span>s</span>
+        <span style="color:var(--orange)">橙机器人耗时: <span id="timeO">0</span>s</span>
+    </div>
+
+    <div class="controls">
+        <button id="startBtn">开始比赛</button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('startBtn');
+    const gRobot = document.getElementById('robotGreen');
+    const oRobot = document.getElementById('robotOrange');
+    const timeG = document.getElementById('timeG');
+    const timeO = document.getElementById('timeO');
+
+    btn.addEventListener('click', () => {
+        btn.disabled = true;
+        let step = 0;
+        const duration = 500; // 每格移动时间
+        
+        const animate = setInterval(() => {
+            step++;
+            
+            // 绿机器人移动 (3步)
+            if (step <= 3) {
+                gRobot.setAttribute('cx', 50 + step * 50);
+                timeG.textContent = step;
+            } else {
+                gRobot.setAttribute('fill', step % 2 === 0 ? '#48bb78' : '#fff');
+            }
+
+            // 橙机器人移动 (6步)
+            if (step <= 6) {
+                if (step <= 1) oRobot.setAttribute('cy', 150 - step * 50);
+                else if (step <= 4) oRobot.setAttribute('cx', 50 + (step - 1) * 50);
+                else oRobot.setAttribute('cy', 150 - (6 - step) * 50);
+                timeO.textContent = step;
+            }
+
+            if (step >= 6) {
+                clearInterval(animate);
+                btn.disabled = false;
+            }
+        }, duration);
+    });
+</script>
+
+</body>
+</html>

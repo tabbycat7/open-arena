@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法逻辑可视化 - V2-2</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #container { width: 80vw; max-width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .scene { display: flex; justify-content: space-around; align-items: center; height: 200px; border-bottom: 2px dashed #e2e8f0; margin-bottom: 20px; }
+        .light { width: 80px; height: 80px; border-radius: 50%; background: #cbd5e1; transition: 0.3s; border: 4px solid #94a3b8; }
+        .light.on { background: #fbbf24; box-shadow: 0 0 30px #fbbf24; border-color: #f59e0b; }
+        .switch { width: 60px; height: 100px; background: #64748b; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        #logic-panel { display: none; background: #f1f5f9; padding: 15px; border-radius: 8px; }
+        .step { display: inline-block; padding: 8px; margin: 5px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.9em; }
+        button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em; }
+        h2 { margin-top: 0; color: #1e293b; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>算法逻辑探究：开关的秘密</h2>
+    <div class="scene">
+        <div id="light" class="light"></div>
+        <div id="switch" class="switch"><span>按</span></div>
+    </div>
+    
+    <button id="btn-reveal">拆解背后的逻辑</button>
+    
+    <div id="logic-panel">
+        <p><strong>逻辑流程图：</strong></p>
+        <div class="step">1. 检测当前状态</div> → 
+        <div class="step">2. 接收输入(按下)</div> → 
+        <div class="step">3. 执行切换(逻辑处理)</div> → 
+        <div class="step">4. 输出结果(亮/灭)</div>
+        <p style="font-size: 0.85em; color: #475569;">算法定义：为解决特定问题而规定的一系列清晰指令。</p>
+    </div>
+</div>
+
+<script>
+    const light = document.getElementById('light');
+    const switchBtn = document.getElementById('switch');
+    const btnReveal = document.getElementById('btn-reveal');
+    const logicPanel = document.getElementById('logic-panel');
+    
+    let isOn = false;
+
+    switchBtn.addEventListener('click', () => {
+        isOn = !isOn;
+        light.className = isOn ? 'light on' : 'light';
+    });
+
+    btnReveal.addEventListener('click', () => {
+        if (logicPanel.style.display === 'block') {
+            logicPanel.style.display = 'none';
+            btnReveal.textContent = '拆解背后的逻辑';
+        } else {
+            logicPanel.style.display = 'block';
+            btnReveal.textContent = '隐藏逻辑';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>创作路径对比分析</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: var(--primary); margin-top: 0; }
+        .controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: var(--primary);
+            color: white;
+            transition: 0.3s;
+        }
+        button:hover { opacity: 0.8; }
+        svg { width: 100%; height: auto; display: block; }
+        .hidden { display: none; }
+        .label-text { font-weight: bold; font-size: 14px; }
+        .status-box { font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>创作路径对比分析</h2>
+    <div class="controls">
+        <button id="btnA">路径A：一键生成/复印</button>
+        <button id="btnB">路径B：灵感辅助/原创</button>
+    </div>
+
+    <svg viewBox="0 0 800 400" id="canvas">
+        <!-- 基础背景 -->
+        <rect x="50" y="250" width="150" height="60" rx="10" fill="#eee" stroke="#999"/>
+        <text x="125" y="285" text-anchor="middle" class="label-text">他人作品/AI模型</text>
+        
+        <rect x="600" y="250" width="150" height="60" rx="10" fill="#eee" stroke="#999"/>
+        <text x="675" y="285" text-anchor="middle" class="label-text">我的参赛作品</text>
+
+        <!-- 路径A -->
+        <g id="pathA" class="hidden">
+            <path d="M 200 280 L 600 280" stroke="red" stroke-width="4" marker-end="url(#arrowRed)"/>
+            <text x="400" y="260" text-anchor="middle" fill="red">直接复制/一键生成</text>
+            <rect x="610" y="260" width="130" height="40" fill="none" stroke="red" stroke-width="3" stroke-dasharray="5,5"/>
+            <text x="675" y="330" text-anchor="middle" fill="red" font-size="18">✘ 署名：剽窃/欺骗</text>
+        </g>
+
+        <!-- 路径B -->
+        <g id="pathB" class="hidden">
+            <path d="M 200 280 Q 400 150 600 280" fill="none" stroke="green" stroke-width="4" marker-end="url(#arrowGreen)"/>
+            <text x="400" y="180" text-anchor="middle" fill="green">AI配色建议 -> 手绘草图 -> 自主修改</text>
+            <rect x="610" y="260" width="130" height="40" fill="none" stroke="green" stroke-width="3"/>
+            <text x="675" y="330" text-anchor="middle" fill="green" font-size="18">✔ 署名：诚实原创</text>
+        </g>
+
+        <defs>
+            <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="red"/>
+            </marker>
+            <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="green"/>
+            </marker>
+        </defs>
+    </svg>
+</div>
+
+<script>
+    const btnA = document.getElementById('btnA');
+    const btnB = document.getElementById('btnB');
+    const pathA = document.getElementById('pathA');
+    const pathB = document.getElementById('pathB');
+
+    btnA.addEventListener('click', () => {
+        pathA.classList.remove('hidden');
+        pathB.classList.add('hidden');
+    });
+
+    btnB.addEventListener('click', () => {
+        pathB.classList.remove('hidden');
+        pathA.classList.add('hidden');
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>智能窗帘算法设计</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        h2 { color: #1e293b; margin-bottom: 10px; }
+        .scene { width: 100%; height: 300px; border: 2px solid #e2e8f0; border-radius: 8px; position: relative; overflow: hidden; background: #f1f5f9; }
+        .controls { width: 100%; margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; }
+        .slider-group { margin: 15px 0; display: flex; align-items: center; gap: 15px; }
+        input[type=range] { flex-grow: 1; }
+        button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        #status { margin-top: 10px; font-weight: bold; color: var(--primary); }
+        .instruction { background: #fee2e2; padding: 10px; border-radius: 4px; color: #991b1b; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>智能窗帘算法设计</h2>
+    <div class="instruction" id="instr">模糊指令：当房间里太暗的时候，就把窗帘拉开一点点。</div>
+    
+    <div class="scene" id="scene">
+        <svg width="100%" height="100%" viewBox="0 0 400 300">
+            <!-- 窗户 -->
+            <rect x="120" y="50" width="160" height="120" fill="#cbd5e1" stroke="#64748b" stroke-width="4"/>
+            <!-- 窗帘 -->
+            <rect id="curtain" x="120" y="50" width="160" height="120" fill="#64748b"/>
+            <!-- 传感器 -->
+            <circle id="sensor" cx="100" cy="70" r="10" fill="#ef4444"/>
+            <text x="85" y="100" font-size="12">传感器</text>
+        </svg>
+    </div>
+
+    <div class="controls">
+        <div class="slider-group">
+            <label>光照阈值 (lux): <span id="val-lux">200</span></label>
+            <input type="range" id="range-lux" min="50" max="500" value="200">
+        </div>
+        <div class="slider-group">
+            <label>窗帘拉开 (%): <span id="val-curtain">50</span></label>
+            <input type="range" id="range-curtain" min="0" max="100" value="50">
+        </div>
+        <button id="btn-write">写入芯片</button>
+        <div id="status"></div>
+    </div>
+</div>
+
+<script>
+    const curtain = document.getElementById('curtain');
+    const sensor = document.getElementById('sensor');
+    const instr = document.getElementById('instr');
+    const status = document.getElementById('status');
+    
+    const rangeLux = document.getElementById('range-lux');
+    const rangeCurtain = document.getElementById('range-curtain');
+    const valLux = document.getElementById('val-lux');
+    const valCurtain = document.getElementById('val-curtain');
+    const btnWrite = document.getElementById('btn-write');
+
+    rangeLux.addEventListener('input', (e) => valLux.textContent = e.target.value);
+    rangeCurtain.addEventListener('input', (e) => valCurtain.textContent = e.target.value);
+
+    btnWrite.addEventListener('click', () => {
+        const lux = rangeLux.value;
+        const percent = rangeCurtain.value;
+        
+        // 更新逻辑
+        instr.textContent = `算法：当光照 < ${lux} lux，窗帘拉开 ${percent}%`;
+        instr.style.background = "#dcfce7";
+        instr.style.color = "#166534";
+        
+        // 模拟执行效果
+        const openHeight = 120 * (percent / 100);
+        curtain.setAttribute('height', 120 - openHeight);
+        
+        sensor.setAttribute('fill', '#22c55e');
+        status.textContent = "算法写入成功，系统运行正常！";
+        
+        setTimeout(() => {
+            sensor.setAttribute('fill', '#ef4444');
+        }, 1000);
+    });
+</script>
+
+</body>
+</html>

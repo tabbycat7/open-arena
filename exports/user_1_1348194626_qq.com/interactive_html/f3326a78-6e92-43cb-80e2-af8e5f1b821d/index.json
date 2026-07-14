@@ -1,0 +1,158 @@
+{
+  "task_id": "f3326a78-6e92-43cb-80e2-af8e5f1b821d",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "我们常用二氧化碳来灭火，有人说是因为它隔绝了空气，也有人说是因为它密度比空气大，能下沉覆盖火焰。你们觉得哪种说法更有道理呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果真像我们猜的，二氧化碳密度比空气大，那该怎么设计一个实验，让我们能像倒水一样‘看到’它被倒出来呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "二氧化碳能使紫色石蕊试液变红。但使石蕊变红的，究竟是二氧化碳本身，还是它进入水里后变出来的‘新东西’呢？我们怎么用实验来分辨？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "向澄清石灰水里持续通入二氧化碳，会先变浑浊，之后又慢慢变澄清。这一连串的变化，该怎么用我们刚才学到的反应来解释呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "舞台上，干冰升华产生白雾，它们总是沉沉地铺在舞台底部。这能让你推断出二氧化碳具有什么物理性质？若把干冰块放入一个充满空气的气球并扎紧，你觉得气球会下沉还是上浮？说说你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果阶梯蜡烛实验中，我们将两支蜡烛的高度差调得更大，或者换用一只更短的集气瓶来倾倒二氧化碳，你预测蜡烛熄灭的顺序会改变吗？这会影响我们得出‘二氧化碳密度比空气大’的结论吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "设想一下，如果某位同学在做倾倒二氧化碳实验时，不小心将集气瓶口朝上倾倒（即瓶底高于瓶口），会发生什么现象？这个‘失败’的操作，能用来证明二氧化碳的密度比空气小吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "将变红的石蕊试液（由二氧化碳生成碳酸所致）和另一支变红的石蕊试液（滴入少量醋酸所致）同时加热。一支恢复紫色，另一支仍为红色。这个对比实验说明了碳酸和醋酸在性质上有什么根本不同？这对理解‘碳酸的不稳定性’有何帮助？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "打开一瓶可乐，立刻将燃着的木条伸入瓶口，火焰会熄灭。但把可乐敞开放置半天后再试，可能就不那么容易熄灭了。请结合本课所学，尝试解释这一有趣的变化。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "既然二氧化碳能使紫色石蕊试液变红，那么可以用石蕊试液来检验二氧化碳吗？与用澄清石灰水检验相比，你觉得这两种方法各有什么优点和缺点？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "野外山洞中有个‘死狗洞’，狗入洞则死，人站立无事。科学家发现洞底二氧化碳浓度极高。请结合二氧化碳的性质，解释动物死因，并分析为什么气体会聚集在洞底，以及洞底的石灰岩（CaCO3）可能发生什么变化？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "我们想验证二氧化碳比空气‘重’，拿它和谁比最方便？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "收集比空气‘重’的气体时，集气瓶口应该朝上还是朝下？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "二氧化碳除了密度比空气大，它还有一个大家熟悉的性质是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "当气体‘溶解’到水里，就像盐溶解一样，只是分散开吗？会不会也可能和水‘手拉手’变成新东西？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "二氧化碳和水反应我们关注酸性，那它和石灰水反应，我们更看重它哪一点呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果CO₂和Ca(OH)₂反应，可能会生成……（填空：_ 和 _）？生成的白色固体用什么符号表示？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

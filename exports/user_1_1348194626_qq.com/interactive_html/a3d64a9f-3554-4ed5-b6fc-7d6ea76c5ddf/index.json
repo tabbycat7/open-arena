@@ -1,0 +1,338 @@
+{
+  "task_id": "a3d64a9f-3554-4ed5-b6fc-7d6ea76c5ddf",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请看课本第22页这个地砖图案。毕达哥拉斯在朋友家做客时，就是看着这样的地面发现了重要的数学规律。大家观察图17.1-2中这三个正方形——两个蓝色的小正方形和那个红色的大正方形，它们的面积之间有什么关系？等腰直角三角形的三边又藏着什么秘密？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才我们发现等腰直角三角形有这个规律，那普通的直角三角形呢？请大家看课本第23页图17.1-3的网格图，每个小方格面积都是1。请算一算正方形A、B、C和A'、B'、C'的面积，看看刚才发现的面积关系在这里还成立吗？特别是那个倾斜的正方形C，它的面积该怎么算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "通过刚才的计算，我们猜想直角三角形三边有特殊的数量关系。现在请大家看课本第23页命题1的表述——如果直角边是a和b，斜边是c，我们该怎么用符号语言把这个猜想写下来？另外，图17.1-4中标出了勾、股、弦，谁能说说这三条边分别对应什么位置？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "现在我们要证明a²+b²=c²。请大家看课本第23页的赵爽弦图，也就是图17.1-5。这个由四个红色直角三角形和中间黄色小正方形拼成的大正方形，边长是多少？我们能不能用两种不同的方法来表示这个大正方形的面积，从而推出那个等式？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "我们刚才用赵爽的弦图完成了证明。课本第24页提到，这个图案被选为2002年国际数学家大会的会徽。大家想一想，为什么世界各国数学家会选择这个来自中国古代的图形作为会徽？对比毕达哥拉斯只是观察地砖的故事，赵爽的证明方法体现了怎样的数学智慧？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "掌握了定理，我们来做几道计算题巩固一下。请大家看课本第24页练习第1题，已知直角三角形的两条边，求第三边。这三道小题分别告诉我们：已知两条直角边怎么求斜边？已知一条直角边和斜边怎么求另一条直角边？做题时注意先确定哪条是斜边，c永远是斜边。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M7",
+      "question_type": "main",
+      "content": "现在我们来解决两个实际问题。先看课本第25页例1，这块木板能不能通过门框？大家想想，木板横着竖着都不行，那斜着呢？门框对角线构成的直角三角形里，谁是直角边谁是斜边？再看例2的梯子问题，如果梯子顶端下滑0.5米，底端是不是也外移0.5米？请大家建立直角三角形模型算一算，看看实际结果和你的直觉一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "七巧板中的大等腰直角三角形正好由两块小等腰直角三角形拼成。如果以它们的直角边和斜边分别作正方形，这三个正方形的面积之间还保持着刚才地砖中发现的关系吗？试着用面积比一比。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "不用数格子的方法，你能把以直角边为边长的两个小正方形剪下来，重新拼成以斜边为边长的大正方形吗？动手试一试，看看面积是否真的相等。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果把这个直角三角形从方格纸上拿出来，放在白纸上，没有任何格子辅助，你还能算出斜边上那个倾斜正方形的面积吗？试着用辅助线或大正方形减四个角的方法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果把直角换成锐角，变成锐角三角形，再以三边为边长向外作正方形，这时两个小正方形面积加起来还等于大正方形面积吗？算一算，看看直角条件有多重要。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "一个直角三角形两条边分别是3和4，第三边是5。写成a²+b²=c²时，谁可以当a谁可以当b？如果我把斜边5当作a，直角边3和4当作b和c，等式还成立吗？符号位置能不能随便换？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果测量一个三角形的三边，发现2²+3²不等于4²，你能断定这个三角形一定没有直角吗？为什么？这说明a²+b²=c²和直角之间是什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "不用赵爽的弦图，如果把三个直角三角形拼成一个直角梯形，像课本提到的那种方法，还能用面积关系推出a²+b²=c²吗？试着用梯形面积等于三个三角形面积之和来列式。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "如果直角三角形恰好是等腰直角三角形，也就是a等于b，赵爽弦图中间那个小正方形会变成什么样？边长b-a等于多少？这时图形还成立吗？证明过程需要修改吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "毕达哥拉斯学派用演绎推理证明勾股定理，赵爽用出入相补的拼图证明。如果让你向外国友人介绍中国数学的特点，赵爽的方法体现了怎样的东方智慧？哪种方法更直观？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "如果让你为班级设计一个包含勾股定理元素的班徽，你会选择弦图的哪个特征来表达数学的简洁美？是四个全等三角形，还是中间的小正方形？说说你的文化寓意。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-3",
+      "question_type": "variant",
+      "content": "2002年数学家大会用了赵爽弦图做会徽。如果让你为班级设计一个包含勾股定理元素的班徽，你会保留弦图的哪些特征？是四个全等的直角三角形，还是中间的小正方形？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "一个直角三角形的两边长分别是3和5，第三边一定是4吗？如果5是直角边而不是斜边，结果还一样吗？请分两种情况讨论，看看为什么必须先说清楚谁是斜边。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "小明说：'既然a²+b²=c²，那么a²+c²一定等于b²。'你觉得对吗？用具体数字验证一下。这说明在勾股定理里，直角边和斜边的位置可以随便交换吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V7-1",
+      "question_type": "variant",
+      "content": "一只蚂蚁在长方体盒子的顶点A处，想爬到对角顶点B处吃食物。它不能穿墙，只能沿着表面爬。如果把盒子表面展开成平面，蚂蚁爬行的最短路径能构成直角三角形吗？怎么用勾股定理计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V7-2",
+      "question_type": "variant",
+      "content": "一根绳子从旗杆顶端垂到地面还多出1米。如果把绳子下端拉开5米拉直，绳子正好用完。很多同学觉得旗杆高度就是5米加1米等于6米，对吗？画个直角三角形算算看，实际高度和直觉差多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "刚才我们在等腰直角三角形里发现了什么规律？两个小正方形的面积加起来，正好等于哪个正方形的面积？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "现在看这个普通的直角三角形，两条直角边不一样长了。你觉得刚才那个'两个小正方形加起来等于大正方形'的规律，在这里还会成立吗？说说看，什么让你这样觉得？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "看这个斜着放的正方形C，数格子数不清楚。想想能不能把它看成一个大的正方形框，减去周围四个小直角三角形来算面积？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "刚才我们算了好几组数据，不管是3、4、5还是5、12、13，都发现一个规律：两条直角边的平方加起来，总是等于谁的平方？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果我们把较短的直角边叫做a，较长的叫做b，斜边叫做c。那么刚才说的'两条直角边的平方和等于斜边的平方'，用这三个字母该怎么写成等式？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "我们要证明的是a²+b²=c²。看看这个弦图，外面这个大正方形的边长是多少？它的面积可以怎么表示？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "现在看看大正方形里面，除了四个红色的直角三角形，中间还留出了什么形状？这个中间图形的边长，能不能用a和b看出来是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "既然大正方形的面积既可以用c²表示，又可以用四个三角形加中间小正方形的面积来表示，那么这两个表示方法之间可以填什么符号？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "刚才我们用赵爽弦图证明时，主要用了什么思想？是测量边长，还是通过图形的割补来算面积？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "毕达哥拉斯是观察地砖数出来的，而赵爽是用图形拼补证明的。这种'把图形切开再重新拼合，面积不变'的方法，你觉得有什么好处？为什么有人说这体现了中国数学的巧妙？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "回到我们的定理。如果直角三角形的两条直角边是a和b，斜边是c，这个关系式子我们该怎么写？c一定对着哪个角？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "做题时，题目告诉我们两条边，让我们求第三条。第一步应该先做什么？是不是要先确定哪条边是斜边，哪条是直角边？斜边通常有什么特征？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S6-1",
+      "question_type": "scaffold",
+      "content": "刚才我们做了几道计算题，都是知道两边求第三边。如果知道两条直角边，该先算什么再开方？如果知道斜边和一条直角边呢，该先减还是先加？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S6-2",
+      "question_type": "scaffold",
+      "content": "看这道门的问题。木板要斜着通过，门框的宽和高在图上组成了直角三角形的哪两条边？木板的长度对应这个三角形的哪条边？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S6-3",
+      "question_type": "scaffold",
+      "content": "梯子顶端下滑了0.5米，底端外移的距离一定也是0.5米吗？如果我们先算出滑动前底端离墙多远，再算出滑动后的距离，这两个数相减是不是0.5？该怎么验证？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

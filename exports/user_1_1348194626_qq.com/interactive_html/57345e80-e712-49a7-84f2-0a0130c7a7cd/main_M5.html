@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法检测仪 - 五年级信息技术</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --error: #e74c3c; --success: #27ae60; }
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #stage { width: 800px; height: 600px; background: white; border: 2px solid #ddd; border-radius: 10px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card { width: 220px; padding: 15px; background: #fff; border: 2px solid #333; border-radius: 8px; cursor: grab; position: absolute; z-index: 10; user-select: none; box-shadow: 3px 3px 0 #ccc; }
+        .card:active { cursor: grabbing; }
+        .detector { width: 400px; height: 250px; border: 4px dashed #bdc3c7; position: absolute; left: 350px; top: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 20px; }
+        .lights { display: flex; gap: 20px; margin-bottom: 20px; }
+        .light { width: 60px; height: 60px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #fff; transition: 0.3s; }
+        #msg-box { width: 300px; height: 80px; border: 2px solid #333; padding: 10px; text-align: center; font-weight: bold; color: var(--error); display: none; }
+        .hint { position: absolute; top: 50px; left: 50px; width: 250px; }
+    </style>
+</head>
+<body>
+
+<div id="stage">
+    <h2 style="text-align: center; color: var(--primary);">算法检测仪</h2>
+    <div class="hint">
+        <p><strong>算法的三大特征：</strong></p>
+        <ul>
+            <li>有穷性（有限步骤）</li>
+            <li>明确性（无歧义）</li>
+            <li>可行性（可执行）</li>
+        </ul>
+        <p style="color: #666; font-size: 0.9em;">请将左侧方案拖入检测仪进行分析：</p>
+    </div>
+
+    <div id="card1" class="card" style="top: 300px; left: 50px;">
+        <strong>方案一：做甜点</strong><br>
+        1. 准备面粉<br>
+        2. 凭感觉加糖<br>
+        3. 烘烤完成
+    </div>
+
+    <div id="card2" class="card" style="top: 420px; left: 50px;">
+        <strong>方案二：数学计算</strong><br>
+        1. 输入数字 X<br>
+        2. 计算 Y = 100 / X<br>
+        3. 输出结果
+    </div>
+
+    <div class="detector" id="detector">
+        <div class="lights">
+            <div id="l1" class="light">顺序</div>
+            <div id="l2" class="light">明确</div>
+            <div id="l3" class="light">可行</div>
+        </div>
+        <div id="msg-box"></div>
+    </div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.card');
+    const detector = document.getElementById('detector');
+    const msgBox = document.getElementById('msg-box');
+    const lights = [document.getElementById('l1'), document.getElementById('l2'), document.getElementById('l3')];
+
+    let dragged = null;
+
+    cards.forEach(card => {
+        card.addEventListener('mousedown', e => { dragged = card; });
+    });
+
+    document.addEventListener('mouseup', e => {
+        if (!dragged) return;
+        const rect = detector.getBoundingClientRect();
+        if (e.clientX > rect.left && e.clientX < rect.right && e.clientY > rect.top && e.clientY < rect.bottom) {
+            analyze(dragged.id);
+        }
+        dragged = null;
+    });
+
+    function analyze(id) {
+        lights.forEach(l => l.style.backgroundColor = '#27ae60');
+        msgBox.style.display = 'block';
+        
+        if (id === 'card1') {
+            lights[1].style.backgroundColor = '#e74c3c';
+            msgBox.innerText = "检测未通过：'凭感觉'因人而异，步骤不明确！";
+        } else {
+            lights[2].style.backgroundColor = '#e74c3c';
+            msgBox.innerText = "检测未通过：除以0在数学上无意义，不可执行！";
+        }
+    }
+
+    // 简单的拖拽逻辑
+    document.addEventListener('mousemove', e => {
+        if (dragged) {
+            dragged.style.left = (e.clientX - 100) + 'px';
+            dragged.style.top = (e.clientY - 50) + 'px';
+        }
+    });
+</script>
+</body>
+</html>

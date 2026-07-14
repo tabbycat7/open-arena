@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法优化：神奇的“跳跃检查”</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e2e8f0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .classroom-container {
+            width: 800px;
+            height: 600px;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 26px;
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        /* 核心画布区域 */
+        .stage {
+            flex-grow: 1;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* 控制面板 */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .step-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-label {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        /* 分段选择器 */
+        .segmented-control {
+            display: flex;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .step-btn {
+            border: none;
+            background: none;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .step-btn:hover {
+            color: var(--text-main);
+        }
+
+        .step-btn.active {
+            background-color: #ffffff;
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        /* 底部启发思考框 */
+        .hint-box {
+            margin-top: 12px;
+            padding: 10px 16px;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+            font-size: 14px;
+            color: #1e40af;
+            line-height: 1.4;
+        }
+
+        /* SVG 内部样式 */
+        .track-title {
+            font-size: 14px;
+            font-weight: bold;
+            fill: var(--text-main);
+        }
+
+        .track-counter {
+            font-size: 14px;
+            font-weight: bold;
+            fill: var(--text-muted);
+        }
+
+        .tick-label {
+            font-size: 11px;
+            fill: #94a3b8;
+            text-anchor: middle;
+        }
+
+        .char-label {
+            font-size: 12px;
+            font-weight: bold;
+            fill: var(--text-main);
+            text-anchor: middle;
+        }
+
+        /* 汗水动画 */
+        @keyframes sweat-fall {
+            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translate(4px, 10px) scale(0.5); opacity: 0; }
+        }
+
+        .sweat-drop {
+            animation: sweat-fall 1.2s infinite;
+            transform-origin: 12px -22px;
+        }
+
+        /* 闪电侠跳跃动画类 */
+        .jump-animation {
+            animation: leap-bounce 0.25s ease-out-in;
+        }
+
+        @keyframes leap-bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.05); }
+        }
+
+        /* 奖章弹出动画 */
+        @keyframes medal-pop {
+            0% { transform: translate(400px, 160px) scale(0) rotate(-180deg); opacity: 0; }
+            70% { transform: translate(400px, 160px) scale(1.2) rotate(10deg); opacity: 1; }
+            100% { transform: translate(400px, 160px) scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-medal {
+            animation: medal-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="classroom-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>算法优化：神奇的“跳跃检查”</h1>
+            <p>算 101 次才找到答案？试试增大“步长”，让计算机跳着去寻找吧！</p>
+        </div>
+
+        <!-- 交互舞台 -->
+        <div class="stage">
+            <svg id="svg-stage" viewBox="0 0 752 340" width="100%" height="100%">
+                <defs>
+                    <!-- 渐变与滤镜 -->
+                    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fbbf24" />
+                        <stop offset="100%" stop-color="#d97706" />
+                    </linearGradient>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+
+                <!-- 跑道 A (上方：逐个检查) -->
+                <g transform="translate(0, 10)">
+                    <text x="40" y="35" class="track-title">方法 A：逐个检查（步长 = 1）</text>
+                    <text x="710" y="35" id="label-count-a" class="track-counter" text-anchor="end">检测次数: 0 次</text>
+                    
+                    <!-- 跑道底线 -->
+                    <line x1="60" y1="70" x2="660" y2="70" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round" />
+                    <!-- 100个微小刻度（用虚线模拟） -->
+                    <line x1="60" y1="70" x2="660" y2="70" stroke="#cbd5e1" stroke-width="8" stroke-dasharray="1 5" stroke-linecap="round" opacity="0.8" />
+                    
+                    <!-- 起点终点标识 -->
+                    <text x="60" y="95" class="tick-label">0</text>
+                    <text x="360" y="95" class="tick-label">50</text>
+                    <text x="660" y="95" class="tick-label">100</text>
+
+                    <!-- 终点宝箱 -->
+                    <g transform="translate(660, 70)">
+                        <circle r="16" fill="#fef08a" stroke="#eab308" stroke-width="2" />
+                        <text y="5" text-anchor="middle" font-size="14">🎁</text>
+                    </g>
+
+                    <!-- 足迹容器 A -->
+                    <g id="footprints-a"></g>
+
+                    <!-- 重甲兵角色 -->
+                    <g id="runner-a" transform="translate(60, 70)">
+                        <!-- 身体/重甲 -->
+                        <rect x="-16" y="-28" width="32" height="28" rx="6" fill="#64748b" stroke="#334155" stroke-width="2" />
+                        <!-- 头盔面罩 -->
+                        <rect x="-10" y="-22" width="20" height="8" rx="2" fill="#1e293b" />
+                        <!-- 疲惫的眼睛 -->
+                        <circle cx="-4" cy="-18" r="1.5" fill="#ef4444" />
+                        <circle cx="4" cy="-18" r="1.5" fill="#ef4444" />
+                        <!-- 重型盾牌 -->
+                        <path d="M -22 -20 L -14 -20 L -18 -5 Z" fill="#475569" stroke="#334155" stroke-width="1.5" />
+                        <!-- 汗水 -->
+                        <path class="sweat-drop" d="M 12 -22 Q 14 -17 12 -14 Q 10 -17 12 -22" fill="#38bdf8" />
+                        <text x="0" y="-36" class="char-label">重甲兵</text>
+                    </g>
+                </g>
+
+                <!-- 跑道 B (下方：跳跃检查) -->
+                <g transform="translate(0, 160)">
+                    <text x="40" y="35" class="track-title">方法 B：跳跃检查（步长 = <tspan id="step-display-val" fill="#2563eb">20</tspan>）</text>
+                    <text x="710" y="35" id="label-count-b" class="track-counter" text-anchor="end">检测次数: 0 次</text>
+                    
+                    <!-- 跑道底线 -->
+                    <line x1="60" y1="70" x2="660" y2="70" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round" />
+                    <!-- 动态刻度容器 -->
+                    <g id="ticks-b"></g>
+                    
+                    <!-- 起点终点标识 -->
+                    <text x="60" y="95" class="tick-label">0</text>
+                    <text x="360" y="95" class="tick-label">50</text>
+                    <text x="660" y="95" class="tick-label">100</text>
+
+                    <!-- 终点宝箱 -->
+                    <g transform="translate(660, 70)">
+                        <circle r="16" fill="#fef08a" stroke="#eab308" stroke-width="2" />
+                        <text y="5" text-anchor="middle" font-size="14">🎁</text>
+                    </g>
+
+                    <!-- 足迹容器 B -->
+                    <g id="footprints-b"></g>
+
+                    <!-- 闪电侠角色 -->
+                    <g id="runner-b" transform="translate(60, 70)">
+                        <!-- 身体 -->
+                        <circle cx="0" cy="-16" r="15" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+                        <!-- 护目镜 -->
+                        <polygon points="-10,-20 10,-20 6,-12 -6,-12" fill="#22d3ee" stroke="#0891b2" stroke-width="1.5" />
+                        <!-- 自信的笑容 -->
+                        <path d="M -4 -6 Q 0 -2 4 -6" fill="none" stroke="#78350f" stroke-width="2" stroke-linecap="round" />
+                        <!-- 跑鞋上的小翅膀 -->
+                        <path d="M -15 -8 Q -22 -15 -15 -18 Q -18 -8 -10 -8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" />
+                        <text x="0" y="-36" class="char-label">闪电侠</text>
+                    </g>
+                </g>
+
+                <!-- 大步流星奖章 (初始隐藏) -->
+                <g id="medal-container" transform="translate(376, 170)" style="display: none; cursor: pointer;">
+                    <circle r="55" fill="url(#gold-grad)" stroke="#f59e0b" stroke-width="4" filter="url(#glow)" />
+                    <!-- 奖章翅膀 -->
+                    <path d="M -55 -10 C -90 -40 -110 0 -55 15 Z" fill="#38bdf8" opacity="0.9" stroke="#0284c7" stroke-width="1.5"/>
+                    <path d="M 55 -10 C 90 -40 120 0 55 15 Z" fill="#38bdf8" opacity="0.9" stroke="#0284c7" stroke-width="1.5"/>
+                    <!-- 奖章内部星星 -->
+                    <path d="M 0 -25 L 7 -8 L 25 -8 L 11 4 L 16 22 L 0 12 L -16 22 L -11 4 L -25 -8 L -7 -8 Z" fill="#ffffff" />
+                    <text y="40" text-anchor="middle" font-size="13" font-weight="bold" fill="#78350f">大步流星奖章</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="controls">
+            <div class="step-selector-group">
+                <span class="control-label">设置闪电侠的“步长”：</span>
+                <div class="segmented-control" id="step-selector">
+                    <button class="step-btn" data-step="5">5</button>
+                    <button class="step-btn" data-step="10">10</button>
+                    <button class="step-btn active" data-step="20">20</button>
+                    <button class="step-btn" data-step="25">25</button>
+                    <button class="step-btn" data-step="50">50</button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="btn-start" class="btn btn-primary">开始对比 🚀</button>
+                <button id="btn-reset" class="btn btn-secondary">重置 🔄</button>
+            </div>
+        </div>
+
+        <!-- 启发思考 -->
+        <div class="hint-box">
+            💡 <strong>思考：</strong> 步长越大，找到答案所需的<strong>检测次数</strong>就越少，速度越快！但如果步长设得太大（比如直接设为100），会不会不小心“漏掉”中间的正确答案呢？
+        </div>
+    </div>
+
+    <script>
+        // 常量定义
+        const TRACK_START_X = 60;
+        const TRACK_END_X = 660;
+        const TRACK_WIDTH = TRACK_END_X - TRACK_START_X; // 600px
+
+        // 状态变量
+        let stepSize = 20;
+        let posA = 0; // 0 到 100
+        let posB = 0; // 0 到 100
+        let countA = 0;
+        let countB = 0;
+        let isRunning = false;
+        let timerA = null;
+        let timerB = null;
+
+        // DOM 元素
+        const btnStart = document.getElementById('btn-start');
+        const btnReset = document.getElementById('btn-reset');
+        const stepSelector = document.getElementById('step-selector');
+        const stepDisplayVal = document.getElementById('step-display-val');
+        const labelCountA = document.getElementById('label-count-a');
+        const labelCountB = document.getElementById('label-count-b');
+        const runnerA = document.getElementById('runner-a');
+        const runnerB = document.getElementById('runner-b');
+        const footprintsA = document.getElementById('footprints-a');
+        const footprintsB = document.getElementById('footprints-b');
+        const ticksBContainer = document.getElementById('ticks-b');
+        const medalContainer = document.getElementById('medal-container');
+
+        // 初始化跑道B的刻度
+        function drawTicksB() {
+            ticksBContainer.innerHTML = '';
+            for (let i = 0; i <= 100; i += stepSize) {
+                const x = TRACK_START_X + (i / 100) * TRACK_WIDTH;
+                
+                // 创建刻度线
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', '62');
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', '78');
+                line.setAttribute('stroke', '#94a3b8');
+                line.setAttribute('stroke-width', '2');
+                ticksBContainer.appendChild(line);
+
+                // 创建刻度数字（避开起点和终点，防止重叠）
+                if (i !== 0 && i !== 100) {
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', '95');
+                    text.setAttribute('class', 'tick-label');
+                    text.textContent = i;
+                    ticksBContainer.appendChild(text);
+                }
+            }
+        }
+
+        // 重置状态
+        function reset() {
+            clearInterval(timerA);
+            clearInterval(timerB);
+            isRunning = false;
+
+            posA = 0;
+            posB = 0;
+            countA = 0;
+            countB = 0;
+
+            // 还原位置
+            runnerA.setAttribute('transform', `translate(${TRACK_START_X}, 70)`);
+            runnerB.setAttribute('transform', `translate(${TRACK_START_X}, 70)`);
+            runnerB.classList.remove('jump-animation');
+
+            // 还原文本
+            labelCountA.textContent = '检测次数: 0 次';
+            labelCountB.textContent = '检测次数: 0 次';
+            labelCountA.setAttribute('fill', 'var(--text-muted)');
+            labelCountB.setAttribute('fill', 'var(--text-muted)');
+
+            // 清空足迹
+            footprintsA.innerHTML = '';
+            footprintsB.innerHTML = '';
+
+            // 隐藏奖章
+            medalContainer.style.display = 'none';
+            medalContainer.classList.remove('animate-medal');
+
+            // 启用控制
+            btnStart.disabled = false;
+            const buttons = stepSelector.querySelectorAll('.step-btn');
+            buttons.forEach(btn => btn.disabled = false);
+        }
+
+        // 开始动画对比
+        function startSimulation() {
+            if (isRunning) return;
+            isRunning = true;
+
+            btnStart.disabled = true;
+            // 禁用步长选择
+            const buttons = stepSelector.querySelectorAll('.step-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // 1. 重甲兵 A 开始（每 40ms 走 1 步，总共 100 步，约 4 秒到达）
+            timerA = setInterval(() => {
+                if (posA < 100) {
+                    posA += 1;
+                    countA += 1;
+                    
+                    const x = TRACK_START_X + (posA / 100) * TRACK_WIDTH;
+                    runnerA.setAttribute('transform', `translate(${x}, 70)`);
+                    
+                    // 留下足迹
+                    addFootprint(footprintsA, x, 70, 'tiny');
+                    labelCountA.textContent = `检测次数: ${countA} 次`;
+                } else {
+                    clearInterval(timerA);
+                    labelCountA.textContent = `检测完毕！共检测 ${countA} 次 😫`;
+                    labelCountA.setAttribute('fill', 'var(--danger-color)');
+                }
+            }, 40);
+
+            // 2. 闪电侠 B 开始（每 250ms 跳一步，步长由用户决定）
+            timerB = setInterval(() => {
+                if (posB < 100) {
+                    posB += stepSize;
+                    if (posB > 100) posB = 100; // 确保不超过终点
+                    countB += 1;
+
+                    const x = TRACK_START_X + (posB / 100) * TRACK_WIDTH;
+                    
+                    // 触发跳跃动画效果
+                    runnerB.classList.remove('jump-animation');
+                    void runnerB.offsetWidth; // 触发重绘
+                    runnerB.classList.add('jump-animation');
+
+                    runnerB.setAttribute('transform', `translate(${x}, 70)`);
+
+                    // 留下大足迹
+                    addFootprint(footprintsB, x, 70, 'large');
+                    labelCountB.textContent = `检测次数: ${countB} 次`;
+                } else {
+                    clearInterval(timerB);
+                    labelCountB.textContent = `成功抵达！仅检测 ${countB} 次 ⚡`;
+                    labelCountB.setAttribute('fill', 'var(--success-color)');
+                    
+                    // 弹出大步流星奖章
+                    showMedal();
+                }
+            }, 250);
+        }
+
+        // 添加足迹
+        function addFootprint(container, x, y, type) {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            
+            if (type === 'tiny') {
+                circle.setAttribute('r', '3');
+                circle.setAttribute('fill', 'var(--danger-color)');
+                circle.setAttribute('opacity', '0.6');
+            } else {
+                circle.setAttribute('r', '6');
+                circle.setAttribute('fill', 'var(--success-color)');
+                circle.setAttribute('stroke', '#ffffff');
+                circle.setAttribute('stroke-width', '1.5');
+            }
+            container.appendChild(circle);
+        }
+
+        // 展示奖章
+        function showMedal() {
+            medalContainer.style.display = 'block';
+            medalContainer.classList.add('animate-medal');
+        }
+
+        // 事件监听：步长选择
+        stepSelector.addEventListener('click', (e) => {
+            if (isRunning) return;
+            if (e.target.classList.contains('step-btn')) {
+                // 切换高亮
+                stepSelector.querySelectorAll('.step-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+
+                // 更新步长
+                stepSize = parseInt(e.target.getAttribute('data-step'), 10);
+                stepDisplayVal.textContent = stepSize;
+
+                // 重新绘制跑道B刻度
+                drawTicksB();
+            }
+        });
+
+        // 事件监听：开始与重置
+        btnStart.addEventListener('click', startSimulation);
+        btnReset.addEventListener('click', reset);
+
+        // 点击奖章可以将其收起
+        medalContainer.addEventListener('click', () => {
+            medalContainer.style.display = 'none';
+        });
+
+        // 初始化
+        drawTicksB();
+    </script>
+</body>
+</html>

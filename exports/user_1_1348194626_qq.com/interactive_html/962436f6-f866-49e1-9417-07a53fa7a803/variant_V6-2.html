@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>税负天平与社会公平 - 交互式数学微课堂</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --scheme1-color: #e74c3c;
+            --scheme2-color: #2ecc71;
+            --diff-color: #e67e22;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #dbe2e9;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 宽高比容器 */
+        .app-container {
+            width: 800px;
+            height: 600px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            height: 75px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .badge {
+            background-color: #e67e22;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* 主体布局 */
+        .main-layout {
+            flex: 1;
+            display: flex;
+            height: 425px; /* 600 - 75 - 100 */
+        }
+
+        /* 左侧：天平可视化区 */
+        .visual-box {
+            flex: 1.2;
+            border-right: 1px solid #e2e8f0;
+            background-color: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* 右侧：数据与解析区 */
+        .info-box {
+            flex: 0.8;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-label {
+            color: #555;
+        }
+
+        .data-value {
+            font-weight: bold;
+        }
+
+        .tax1-color { color: var(--scheme1-color); }
+        .tax2-color { color: var(--scheme2-color); }
+        .diff-color { color: var(--diff-color); }
+
+        /* 差额卡片高亮动画 */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(230, 126, 34, 0.2); border-color: #f3a663; }
+            50% { box-shadow: 0 0 15px rgba(230, 126, 34, 0.6); border-color: var(--diff-color); }
+            100% { box-shadow: 0 0 5px rgba(230, 126, 34, 0.2); border-color: #f3a663; }
+        }
+
+        .glow-active {
+            animation: glow 2s infinite;
+            background-color: #fffaf5;
+        }
+
+        /* 公平价值卡片 */
+        .equity-card {
+            background: linear-gradient(135deg, #eef9ff, #e8f4fd);
+            border: 1px solid #bee3f8;
+        }
+
+        .equity-card .card-title {
+            border-left-color: #3182ce;
+            color: #2b6cb0;
+        }
+
+        .equity-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        .equity-highlight {
+            background-color: #feebc8;
+            font-weight: bold;
+            padding: 1px 4px;
+            border-radius: 4px;
+            color: #c05621;
+        }
+
+        /* 底部控制区 */
+        .control-box {
+            height: 100px;
+            border-top: 1px solid #e2e8f0;
+            padding: 15px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            background-color: #ffffff;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-label {
+            font-size: 15px;
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .slider-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .slider-value-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 110px;
+            text-align: right;
+        }
+
+        /* 预设按钮 */
+        .presets {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .preset-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .preset-btn {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: var(--text-color);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .preset-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* SVG 动画过渡 */
+        #beam, #left-pan, #right-pan {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-title">
+            <h1>税负天平与社会公平</h1>
+            <p>通过调节收入，观察不同税制方案下的税负差额与调节作用</p>
+        </div>
+        <div class="badge">六年级数学 · 百分数应用</div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-layout">
+        <!-- 左侧：天平可视化 -->
+        <div class="visual-box">
+            <svg id="scale-svg" viewBox="0 0 480 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <!-- 背景网格 -->
+                <defs>
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" rx="10" />
+
+                <!-- 刻度盘背景 -->
+                <path d="M 200 80 A 40 40 0 0 1 280 80" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="2 2"/>
+                <line x1="240" y1="40" x2="240" y2="50" stroke="#94a3b8" stroke-width="2"/>
+
+                <!-- 天平底座与支架 -->
+                <ellipse cx="240" cy="335" rx="70" ry="8" fill="#cbd5e1" />
+                <rect x="232" y="110" width="16" height="220" fill="#94a3b8" rx="2"/>
+                <circle cx="240" cy="110" r="8" fill="#475569"/>
+
+                <!-- 动态天平横梁组 -->
+                <g id="beam" transform="rotate(0, 240, 110)">
+                    <!-- 横梁 -->
+                    <rect x="90" y="106" width="300" height="8" rx="4" fill="#475569"/>
+                    <!-- 指针 -->
+                    <polygon points="240,110 237,60 243,60" fill="#e74c3c"/>
+                    
+                    <!-- 左吊盘 (方案一) -->
+                    <g id="left-pan" transform="translate(100, 110)">
+                        <!-- 吊绳 -->
+                        <path d="M 0 0 L -30 90 M 0 0 L 30 90" stroke="#94a3b8" stroke-width="1.5"/>
+                        <!-- 托盘 -->
+                        <path d="M -40 90 L 40 90 L 30 98 L -30 98 Z" fill="#64748b"/>
+                        <!-- 金币堆放容器 -->
+                        <g id="left-coins"></g>
+                        <!-- 标签 -->
+                        <rect x="-35" y="105" width="70" height="18" rx="4" fill="#fee2e2" stroke="#fca5a5" stroke-width="1"/>
+                        <text x="0" y="118" text-anchor="middle" font-size="10" font-weight="bold" fill="#b91c1c">方案一(旧)</text>
+                    </g>
+
+                    <!-- 右吊盘 (方案二) -->
+                    <g id="right-pan" transform="translate(380, 110)">
+                        <!-- 吊绳 -->
+                        <path d="M 0 0 L -30 90 M 0 0 L 30 90" stroke="#94a3b8" stroke-width="1.5"/>
+                        <!-- 托盘 -->
+                        <path d="M -40 90 L 40 90 L 30 98 L -30 98 Z" fill="#64748b"/>
+                        <!-- 金币堆放容器 -->
+                        <g id="right-coins"></g>
+                        <!-- 标签 -->
+                        <rect x="-35" y="105" width="70" height="18" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+                        <text x="0" y="118" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">方案二(新)</text>
+                    </g>
+                </g>
+
+                <!-- 悬挂的税负差额标签 (不随横梁旋转，保持垂直悬挂在中心下方) -->
+                <g id="diff-tag" transform="translate(240, 160)">
+                    <line x1="0" y1="-40" x2="0" y2="0" stroke="#e67e22" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <rect x="-55" y="0" width="110" height="26" rx="13" fill="#fff" stroke="#e67e22" stroke-width="2" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.1))"/>
+                    <text id="svg-diff-text" x="0" y="17" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">差额: 1,000元</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 右侧：数据与解析 -->
+        <div class="info-box">
+            <!-- 方案对比卡片 -->
+            <div class="card">
+                <div class="card-title">方案规则对比</div>
+                <div class="data-row">
+                    <span class="data-label">方案一 (旧)</span>
+                    <span class="data-value" style="font-size: 12px;">起征点 5000元 | 税率 13.3%</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">方案二 (新)</span>
+                    <span class="data-value" style="font-size: 12px;">起征点 8000元 | 税率 8.3%</span>
+                </div>
+            </div>
+
+            <!-- 实时计算卡片 -->
+            <div class="card">
+                <div class="card-title">应纳税额计算</div>
+                <div class="data-row">
+                    <span class="data-label">方案一应纳税：</span>
+                    <span class="data-value tax1-color" id="tax1-display">2,000 元</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">方案二应纳税：</span>
+                    <span class="data-value tax2-color" id="tax2-display">1,000 元</span>
+                </div>
+            </div>
+
+            <!-- 差额卡片 -->
+            <div class="card" id="diff-card">
+                <div class="card-title">
+                    <span>税负差额 (方案一 - 方案二)</span>
+                    <span id="target-badge" style="display:none; background:#e67e22; color:white; font-size:10px; padding:1px 6px; border-radius:10px;">题干核心点</span>
+                </div>
+                <div class="data-row" style="justify-content: center; margin: 5px 0;">
+                    <span style="font-size: 28px; font-weight: bold; color: var(--diff-color);" id="diff-display">1,000 元</span>
+                </div>
+            </div>
+
+            <!-- 价值引导卡片 -->
+            <div class="card equity-card" id="equity-card">
+                <div class="card-title">💡 思考：这笔差额代表了什么？</div>
+                <div class="equity-text">
+                    这 <span class="equity-highlight" id="equity-val-text">1000元</span> 的差额，不仅是数学计算的结果，更代表了国家通过<span class="equity-highlight">提高起征点</span>和<span class="equity-highlight">降低税率</span>，对居民收入分配进行的<span class="equity-highlight">社会公平调节</span>。它切实减轻了中低收入群体的税收负担，提升了可支配收入。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部控制区 -->
+    <div class="control-box">
+        <div class="slider-wrapper">
+            <span class="slider-label">月收入调节</span>
+            <div class="slider-container">
+                <input type="range" id="income-slider" min="5000" max="30000" step="1000" value="20000">
+            </div>
+            <span class="slider-value-display" id="slider-val">20,000 元</span>
+        </div>
+
+        <div class="presets">
+            <span class="preset-label">快速设点：</span>
+            <button class="preset-btn" data-val="5000">5,000元 (免税点)</button>
+            <button class="preset-btn" data-val="12000">12,000元</button>
+            <button class="preset-btn active" data-val="20000">20,000元 (题干)</button>
+            <button class="preset-btn" data-val="30000">30,000元</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('income-slider');
+    const sliderVal = document.getElementById('slider-val');
+    const tax1Display = document.getElementById('tax1-display');
+    const tax2Display = document.getElementById('tax2-display');
+    const diffDisplay = document.getElementById('diff-display');
+    const svgDiffText = document.getElementById('svg-diff-text');
+    const diffCard = document.getElementById('diff-card');
+    const targetBadge = document.getElementById('target-badge');
+    const equityValText = document.getElementById('equity-val-text');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+
+    // 方案一公式：起征点5000，税率13.333% (为了在20000元时刚好是2000元)
+    // (20000 - 5000) * 0.133333 = 2000
+    function calcTax1(income) {
+        if (income <= 5000) return 0;
+        return Math.round((income - 5000) * 0.133333);
+    }
+
+    // 方案二公式：起征点8000，税率8.3333% (为了在20000元时刚好是1000元)
+    // (20000 - 8000) * 0.083333 = 1000
+    function calcTax2(income) {
+        if (income <= 8000) return 0;
+        return Math.round((income - 8000) * 0.083333);
+    }
+
+    // 动态生成金币堆叠效果
+    function drawCoins(containerId, tax, isScheme1) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        
+        // 1个金币代表100元税额
+        const coinCount = Math.min(30, Math.round(tax / 100)); 
+        const coinsPerRow = 4;
+        
+        for (let i = 0; i < coinCount; i++) {
+            const row = Math.floor(i / coinsPerRow);
+            const col = i % coinsPerRow;
+            
+            // 计算金币在托盘上的相对位置
+            const x = -22 + col * 12;
+            const y = 84 - row * 5;
+
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", x);
+            rect.setAttribute("y", y);
+            rect.setAttribute("width", 10);
+            rect.setAttribute("height", 4);
+            rect.setAttribute("rx", 1);
+            
+            if (isScheme1) {
+                rect.setAttribute("fill", "#f1c40f");
+                rect.setAttribute("stroke", "#d35400");
+            } else {
+                rect.setAttribute("fill", "#a3e635");
+                rect.setAttribute("stroke", "#15803d");
+            }
+            rect.setAttribute("stroke-width", "0.5");
+            container.appendChild(rect);
+        }
+    }
+
+    // 更新整个可视化界面
+    function update(income) {
+        const tax1 = calcTax1(income);
+        const tax2 = calcTax2(income);
+        const diff = tax1 - tax2;
+
+        // 更新文本显示
+        sliderVal.innerText = income.toLocaleString() + ' 元';
+        tax1Display.innerText = tax1.toLocaleString() + ' 元';
+        tax2Display.innerText = tax2.toLocaleString() + ' 元';
+        diffDisplay.innerText = diff.toLocaleString() + ' 元';
+        svgDiffText.innerText = '差额: ' + diff.toLocaleString() + '元';
+        equityValText.innerText = diff.toLocaleString() + '元';
+
+        // 计算天平倾斜角度 (差额越大，倾斜越明显，最大限制在20度)
+        // 方案一税重大，向左倾斜（SVG中逆时针为负角度）
+        let angle = 0;
+        if (diff > 0) {
+            angle = -Math.min(20, diff * 0.012);
+        }
+        
+        // 应用旋转变换
+        document.getElementById('beam').setAttribute('transform', `rotate(${angle}, 240, 110)`);
+        // 保持吊盘垂直向下
+        document.getElementById('left-pan').setAttribute('transform', `translate(100, 110) rotate(${-angle})`);
+        document.getElementById('right-pan').setAttribute('transform', `translate(380, 110) rotate(${-angle})`);
+
+        // 重新绘制金币
+        drawCoins('left-coins', tax1, true);
+        drawCoins('right-coins', tax2, false);
+
+        // 题干核心点高亮逻辑 (20,000元)
+        if (income === 20000) {
+            diffCard.classList.add('glow-active');
+            targetBadge.style.display = 'inline-block';
+        } else {
+            diffCard.classList.remove('glow-active');
+            targetBadge.style.display = 'none';
+        }
+
+        // 同步更新预设按钮的激活状态
+        presetBtns.forEach(btn => {
+            if (parseInt(btn.getAttribute('data-val')) === income) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // 绑定滑块事件
+    slider.addEventListener('input', (e) => {
+        update(parseInt(e.target.value));
+    });
+
+    // 绑定预设按钮事件
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = parseInt(btn.getAttribute('data-val'));
+            slider.value = val;
+            update(val);
+        });
+    });
+
+    // 初始化加载
+    window.addEventListener('DOMContentLoaded', () => {
+        update(20000);
+    });
+</script>
+
+</body>
+</html>

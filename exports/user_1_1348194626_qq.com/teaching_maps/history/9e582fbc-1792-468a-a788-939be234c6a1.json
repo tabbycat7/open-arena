@@ -1,0 +1,841 @@
+{
+  "id": "9e582fbc-1792-468a-a788-939be234c6a1",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "八年级",
+  "teaching_goals": "1.能够通过分析实际问题中的数量关系，找出变量之间的依赖关系，能够准确理解常量与变量的定义，并能够在具体情境中识别出变量与常量，了解常量、变量的意义;2.通过观察、分析、归纳等数学活动，学生能够体验从实际问题中抽象出数学概念的过程，充分体会运动变化过程中量的变化，培养数学抽象和逻辑推理能力。",
+  "student_profile": "学生已具备的知识与经验：学生已经掌握了基本的算术运算和代数表达式，能够处理简单的数量关系。学生对“变化”这一概念有一定的直观认识，但尚未从数学角度深入理解变化过程中量的变化规律。学生在日常生活中经常遇到各种变化现象，如气温随时间变化、身高随年龄增长等，这些经验为理解变量与常量的概念提供了丰富的感性材料。学生可能已经注意到某些量在特定条件下保持不变，而另一些量则随条件变化而变化，但尚未形成系统的数学概念。学生存在的困难：学生可能难以从运动与变化的观点去体会两个变量之间相互依赖的变化关系，存在理解困难。",
+  "difficulty_analysis": "重点：能找出一个变化过程中的变量与常量难点：体会运动变化过程中量的变化",
+  "language_style": "启发引导",
+  "model_id": "gemma-4-31b-it",
+  "duration_seconds": 1611.22,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"大家看教材中这个匀速行驶的例子，在这个过程中，“匀速”这两个字告诉了我们什么信息？有没有哪个量是始终保持不变的？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"首先，我们要观察这个匀速行驶的场景。请同学们把目光聚焦在例题的开头，注意这个关键词——‘匀速’。在数学或物理中，当我们说一个物体‘匀速’时，意味着什么东西被死死地固定住了？请大家试着找出这个在整个过程中完全没有发生改变的量。\", \"knowledge_points\": [\"常量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"先识别“匀速”这个常量，建立“不变”的基准，为后续与变量的对比做铺垫。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"既然速度是不变的，那么随着行驶时间的增加，小车行驶的路程会发生怎样的变化？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在我们有了‘不变’的基准——速度。那么，在这个基准下，如果我们让时间像时钟一样滴答滴答地走，路程会怎么变？时间增加 1 秒，路程怎么变？增加 10 秒，路程又怎么变？请大家直观地感受一下这两个量之间‘同步变’的现象。\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"在常量的基准下识别时间与路程这两个变量，通过“变”与“不变”的对比，强化对变量的认知。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"像时间、路程这样在变化过程中改变的量，以及像速度这样保持不变的量，在数学中我们分别怎么称呼它们？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在，请大家翻开教材，寻找对应的数学术语。我们将刚才讨论的‘变’和‘不变’分别对接给这两个专业词汇。请同学们尝试用自己的话描述一下，什么是变量，什么是常量。\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.7, \"design_intent\": \"完成从感性经验到数学概念的抽象过程，使学生准确掌握常量与变量的定义。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"我们换个场景，观察圆的面积公式 S=πr²。当圆的半径 r 逐渐增大时，面积 S 会怎么变？而这里的 π 发生了变化吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"为了检验大家对这两个概念的掌握情况，我们来看一个几何例子。请大家思考圆的面积公式。当圆的半径 r 像气球一样慢慢变大时，面积 S 会发生什么？而那个特殊的数字 π 呢？试着把刚才学到的‘变量’和‘常量’这两个词填进去，看看能不能准确识别。\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"在新的简单数学情境中应用常量与变量的定义，巩固识别能力，为后续讨论相对性提供认知基础。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"现在我们反过来想，如果我要求圆的面积 S 必须保持不变，而让半径 r 去调整，那么刚才的‘变量’和‘常量’会发生什么变化？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"这是一个很有意思的转折。刚才我们让半径变，面积随之变；但现在，如果我规定面积必须死死地固定住，为了维持这个面积，半径是不是得跟着变？这时候，你们发现没有，原本是‘变量’的量变成了‘常量’，原本‘常量’的量可能变成了‘变量’。这告诉我们，一个量到底是常量还是变量，取决于什么？\", \"knowledge_points\": [\"常量与变量的相对性\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"通过对比两个明确的情境（半径变 vs 面积不变），引发认知冲突，引导学生体悟常量与变量的相对性。\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"回到匀速行驶的例子，如果速度是 5m/s，当时间从 1 秒变成 2 秒，路程增加了多少？如果时间再增加 1 秒，路程又增加了多少？这种“随之变化”的规律是什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"我们要深入剖析一下这种‘依赖’关系。大家不要只说‘路程也增加’，我们要看它增加得‘精准’不‘精准’。试着计算一下：时间每增加 1 个单位，路程是不是每次都增加一个固定的数值？通过这种具体的数值对比，大家能不能体会到路程的变化是如何被时间‘精准控制’的？这就是两个变量之间的依赖关系。\", \"knowledge_points\": [\"变量\", \"变量之间的依赖关系\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.85, \"design_intent\": \"通过具体数值的动态推理，引导学生超越简单的同增同减，深入理解一个变量如何精确地随另一个变量而变化，建立依赖关系的逻辑内核。\", \"design_rationale\": \"\"}, {\"id\": \"M7\", \"content\": \"想象一个场景：手机在充电。如果我们只关心“电量随时间如何变化”，在这个过程中，哪些量是我们需要关注的，而哪些量是可以暂时忽略的？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在我们挑战一个‘数学抽象’。在充电这个过程中，涉及到了充电器功率、电池容量、初始电量、充电时间等很多因素。但请注意，我们的目标非常纯粹——只看‘电量随时间的变化’。那么，在这种特定的关注点下，哪些量是关键的变量？哪些量在此时此刻可以被看作常量，甚至直接忽略掉？试着把复杂的现象简化成几个核心的量。\", \"knowledge_points\": [\"数学抽象过程\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"design_intent\": \"引入包含干扰信息的真实情境，要求学生完成提取核心变量并剔除无关量的抽象过程，培养高阶数学抽象能力。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果把场景换成去超市买每斤 5 元的苹果，在这个购买过程中，哪个量就像刚才的“速度”一样，是始终保持不变的？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过生活中更直观的“单价”概念，验证学生是否能脱离物理情境，独立识别常量的本质\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"看这张行驶记录表，时间在增加，路程也在增加，但速度这一列的数字全部一样。这种“数字不变”的现象，对应的是我们刚才讨论的哪个概念？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.65, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"训练学生从数字化表征中快速锁定常量，增强对常量在不同呈现形式下的识别能力\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"想象一个水龙头在匀速注水，如果注水时间越长，水池里的水量会怎么变？这里面哪些量是在随时间一起变化的？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过不同物理量的组合（时间-水量），强化学生对“变量”这一抽象概念的泛化能力\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"如果小车不再是匀速，而是忽快忽慢，那么时间增加 1 秒，路程增加的量还是固定的吗？此时时间与路程的关系发生了什么变化？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过引入“非匀速”的干扰条件，引导学生意识到变量之间的关系依赖于常量的稳定性，深化认知\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"如果我说“一个人的身高在成长过程中是变量”，但“一个成年人的身高是常量”，这句话在数学定义上成立吗？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.7, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"防止学生将“变量”简单等同于“变化的量”，通过辨析强化定义边界\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"在刚才的匀速行驶例子中，能不能把“速度”强行解释成一个变量？如果非要把它变成变量，这个场景必须做出什么样的改变？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.75, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过认知冲突，让学生意识到常量与变量在同一特定过程中不能同时存在，巩固概念\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"同样的逻辑，我们看圆的周长公式 C=2πr。如果半径 r 像刚才那样逐渐增大，周长 C 和数字 2π 分别扮演什么角色？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过相似但不同的公式，验证学生是否能将识别方法迁移到其他几何关系中\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"观察矩形面积公式 S=ab。如果我规定这个矩形的宽 a 必须固定为 3 厘米，那么此时 S=3b 中，哪些是常量，哪些是变量？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"引导学生发现常量不仅可以是像 π 这样的数学常数，也可以是通过限定条件而产生的固定值\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"回到那个小车例子，如果这次我规定路程 S 必须固定在 100 米不变，而速度 v 可以调整，那么时间 t 会怎么变？此时 v 和 t 的身份发生了什么变化？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量与变量的相对性\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过将之前的简单情境重新定义，让学生在熟悉的环境中体验“相对性”的冲击\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"买文具时，如果单价固定，总价随数量变；但如果我只有 10 元钱（总价固定），那么数量和单价之间会怎么变？这说明了常量和变量的关系是什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量与变量的相对性\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.85, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将相对性从数学公式迁移到生活决策场景，培养学生灵活切换观察视角的数学思维\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"如果不看具体数字，只看规律：如果时间增加到原来的 3 倍，在速度不变的情况下，路程会增加到原来的几倍？这种精准的对应关系说明了什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\", \"变量之间的依赖关系\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"脱离具体的数字计算，让学生在逻辑层面把握“随之变化”的精准性\", \"design_rationale\": \"\"}, {\"id\": \"V6-2\", \"content\": \"如果一个物体在加速运动，时间每增加 1 秒，路程增加的量也在不断变大。这与我们刚才讨论的匀速行驶在“依赖关系”上有什么本质区别？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\", \"变量之间的依赖关系\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.9, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过反差，让学生意识到依赖关系有多种形式，从而更深刻地理解本节课讨论的“匀速依赖”特点\", \"design_rationale\": \"\"}, {\"id\": \"V7-1\", \"content\": \"想象你在打车，费用由起步价、里程费和等待费组成。如果我们只研究“费用随里程的变化”，哪些因素是必须保留的变量，哪些可以暂时忽略？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"数学抽象过程\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"main_id\": \"M7\", \"parent_id\": \"M7\", \"variation_type\": \"\", \"design_intent\": \"在包含“起步价”等干扰项的真实情境中，训练学生提取核心变量（里程-费用）的抽象能力\", \"design_rationale\": \"\"}, {\"id\": \"V7-2\", \"content\": \"还是充电场景，但这次我们不关心电量，而关心“充电速度随电池电量增加而下降”的规律。那么，刚才被你忽略的量，现在是不是变成了关键变量？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"数学抽象过程\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"main_id\": \"M7\", \"parent_id\": \"M7\", \"variation_type\": \"\", \"design_intent\": \"通过改变研究目标，让学生意识到同一个物理过程在不同的数学抽象目标下，变量的选取是不同的\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"我们刚才确认了速度是‘死死固定’住的，那么在接下来的观察中，请大家时刻记住这个不变的基准。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.25, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"强化“不变”的基准感，为观察变量的动态变化提供认知支撑\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"现在请大家闭上眼想象一下：如果时间像时钟一样，滴答、滴答地走，小车是不是一直在往前走？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"通过引导学生想象时间的流动，诱发对路程变化的直观预期\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"刚才我们讨论了速度、时间和路程。请大家帮我分分类，哪些量是‘一直没变’的，哪些量是‘跟着在变’的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"将刚才讨论的量分为两组，为对接数学术语做准备\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"现在请大家快速浏览一下教材的这一页，看看有没有哪个词能精准地描述‘不变的量’，哪个词能描述‘变化的量’？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"通过简单的寻找任务，将感知经验与教材术语对接\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"我们刚说变量是变化的量。那请你想想，在刚才小车例子里，作为变量的‘时间’，它的数值是怎么表现的？（是一直是一个数，还是可以取不同值？）\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.32, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生描述变量的动态特征，而非简单确认定义，激活具体认知\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"现在看圆的面积公式 S=πr²，这里面出现了 S、π、r 这三个部分。请大家先试着找出，其中哪一个是我们熟悉的、永远不变的那个特殊数字？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.42, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"将公式拆解为可识别的元素，降低迁移难度\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"在刚才的圆面积例子里，我们让半径 r 变大，结果面积 S 也跟着变大。这时候，谁是‘操纵者’（变量），谁是‘随之而变’的量？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量\", \"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"确认当前情境下的角色分配，作为反转对比的起点\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果现在我突然变魔术，要求圆的面积 S 必须死死固定在 10 平方厘米，绝对不能变。那么，此时半径 r 还能随心所欲地变大吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"常量与变量的相对性\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"通过设定“固定结果”的假设，引导学生意识到条件的改变会引发角色转换\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"我们回到那个匀速行驶的例子，假设速度是 5m/s。请大家先在脑子里记住这个数字 5。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.28, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"重新锚定具体数值，为分析依赖关系提供量化基础\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"大家想象一下：时间滴答走 1 秒，路程就往前跳一步；时间再走 1 秒，路程再跳一步。这种‘你走我跳’的同步感，你们能感觉到吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量之间的依赖关系\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.38, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"使用口语化描述建立“同步跳动”的动态意象，让学生先在感官上体会依赖关系\", \"design_rationale\": \"\"}, {\"id\": \"S5-3\", \"content\": \"那么请大家思考，每次时间增加 1 秒，路程‘跳’的那一步距离，每次是不是都一样大？还是说有时跳得远，有时跳得近？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量之间的依赖关系\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.48, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"引导学生观察跳步的大小是否一致，从而触碰“精准控制”的逻辑内核\", \"design_rationale\": \"\"}, {\"id\": \"S6-1\", \"content\": \"在刚才讨论路程和时间时，我们完全没有提到小车的颜色或者天气，因为它们不影响路程的变化。这就叫‘忽略无关项’。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M6\", \"to_id\": \"M7\", \"from_main_id\": \"M6\", \"to_main_id\": \"M7\", \"bridge_function\": \"\", \"design_intent\": \"通过回顾之前的简化经验，让学生意识到数学建模中“忽略无关量”的必要性\", \"design_rationale\": \"\"}, {\"id\": \"S6-2\", \"content\": \"现在看这张充电表格，左边是时间，右边是电量百分比。在这种最简单的表格里，你只看到了哪两个量在变？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M6\", \"to_id\": \"M7\", \"from_main_id\": \"M6\", \"to_main_id\": \"M7\", \"bridge_function\": \"\", \"design_intent\": \"通过先呈现极简的读数变化，引导学生在干扰信息出现前先锁定核心变量对\", \"design_rationale\": \"\"}, {\"id\": \"S6-3\", \"content\": \"如果我现在告诉你，充电头的功率是 65W，这个信息对我们观察‘电量随时间怎么变’这个规律有直接影响吗？我们还需要把它写在表里吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"数学抽象过程\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_id\": \"M6\", \"to_id\": \"M7\", \"from_main_id\": \"M6\", \"to_main_id\": \"M7\", \"bridge_function\": \"\", \"design_intent\": \"引入干扰项并引导剔除，完成从“识别变量”到“数学抽象”的最后一步跨越\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M6\", \"target\": \"M7\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M7\", \"target\": \"V7-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M7\", \"target\": \"V7-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"S5-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-3\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M6\", \"target\": \"S6-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S6-1\", \"target\": \"S6-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S6-2\", \"target\": \"S6-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S6-3\", \"target\": \"M7\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-05 20:20:31",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "大家看教材中这个匀速行驶的例子，在这个过程中，“匀速”这两个字告诉了我们什么信息？有没有哪个量是始终保持不变的？",
+        "question_type": "main",
+        "lesson_presentation_script": "首先，我们要观察这个匀速行驶的场景。请同学们把目光聚焦在例题的开头，注意这个关键词——‘匀速’。在数学或物理中，当我们说一个物体‘匀速’时，意味着什么东西被死死地固定住了？请大家试着找出这个在整个过程中完全没有发生改变的量。",
+        "knowledge_points": [
+          "常量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "先识别“匀速”这个常量，建立“不变”的基准，为后续与变量的对比做铺垫。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "既然速度是不变的，那么随着行驶时间的增加，小车行驶的路程会发生怎样的变化？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在我们有了‘不变’的基准——速度。那么，在这个基准下，如果我们让时间像时钟一样滴答滴答地走，路程会怎么变？时间增加 1 秒，路程怎么变？增加 10 秒，路程又怎么变？请大家直观地感受一下这两个量之间‘同步变’的现象。",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "在常量的基准下识别时间与路程这两个变量，通过“变”与“不变”的对比，强化对变量的认知。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "像时间、路程这样在变化过程中改变的量，以及像速度这样保持不变的量，在数学中我们分别怎么称呼它们？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在，请大家翻开教材，寻找对应的数学术语。我们将刚才讨论的‘变’和‘不变’分别对接给这两个专业词汇。请同学们尝试用自己的话描述一下，什么是变量，什么是常量。",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.7,
+        "design_intent": "完成从感性经验到数学概念的抽象过程，使学生准确掌握常量与变量的定义。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "我们换个场景，观察圆的面积公式 S=πr²。当圆的半径 r 逐渐增大时，面积 S 会怎么变？而这里的 π 发生了变化吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "为了检验大家对这两个概念的掌握情况，我们来看一个几何例子。请大家思考圆的面积公式。当圆的半径 r 像气球一样慢慢变大时，面积 S 会发生什么？而那个特殊的数字 π 呢？试着把刚才学到的‘变量’和‘常量’这两个词填进去，看看能不能准确识别。",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "在新的简单数学情境中应用常量与变量的定义，巩固识别能力，为后续讨论相对性提供认知基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "现在我们反过来想，如果我要求圆的面积 S 必须保持不变，而让半径 r 去调整，那么刚才的‘变量’和‘常量’会发生什么变化？",
+        "question_type": "main",
+        "lesson_presentation_script": "这是一个很有意思的转折。刚才我们让半径变，面积随之变；但现在，如果我规定面积必须死死地固定住，为了维持这个面积，半径是不是得跟着变？这时候，你们发现没有，原本是‘变量’的量变成了‘常量’，原本‘常量’的量可能变成了‘变量’。这告诉我们，一个量到底是常量还是变量，取决于什么？",
+        "knowledge_points": [
+          "常量与变量的相对性"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "通过对比两个明确的情境（半径变 vs 面积不变），引发认知冲突，引导学生体悟常量与变量的相对性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "回到匀速行驶的例子，如果速度是 5m/s，当时间从 1 秒变成 2 秒，路程增加了多少？如果时间再增加 1 秒，路程又增加了多少？这种“随之变化”的规律是什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "我们要深入剖析一下这种‘依赖’关系。大家不要只说‘路程也增加’，我们要看它增加得‘精准’不‘精准’。试着计算一下：时间每增加 1 个单位，路程是不是每次都增加一个固定的数值？通过这种具体的数值对比，大家能不能体会到路程的变化是如何被时间‘精准控制’的？这就是两个变量之间的依赖关系。",
+        "knowledge_points": [
+          "变量",
+          "变量之间的依赖关系"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.85,
+        "design_intent": "通过具体数值的动态推理，引导学生超越简单的同增同减，深入理解一个变量如何精确地随另一个变量而变化，建立依赖关系的逻辑内核。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M7",
+        "content": "想象一个场景：手机在充电。如果我们只关心“电量随时间如何变化”，在这个过程中，哪些量是我们需要关注的，而哪些量是可以暂时忽略的？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在我们挑战一个‘数学抽象’。在充电这个过程中，涉及到了充电器功率、电池容量、初始电量、充电时间等很多因素。但请注意，我们的目标非常纯粹——只看‘电量随时间的变化’。那么，在这种特定的关注点下，哪些量是关键的变量？哪些量在此时此刻可以被看作常量，甚至直接忽略掉？试着把复杂的现象简化成几个核心的量。",
+        "knowledge_points": [
+          "数学抽象过程"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "design_intent": "引入包含干扰信息的真实情境，要求学生完成提取核心变量并剔除无关量的抽象过程，培养高阶数学抽象能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果把场景换成去超市买每斤 5 元的苹果，在这个购买过程中，哪个量就像刚才的“速度”一样，是始终保持不变的？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过生活中更直观的“单价”概念，验证学生是否能脱离物理情境，独立识别常量的本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "看这张行驶记录表，时间在增加，路程也在增加，但速度这一列的数字全部一样。这种“数字不变”的现象，对应的是我们刚才讨论的哪个概念？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.65,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "训练学生从数字化表征中快速锁定常量，增强对常量在不同呈现形式下的识别能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "想象一个水龙头在匀速注水，如果注水时间越长，水池里的水量会怎么变？这里面哪些量是在随时间一起变化的？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过不同物理量的组合（时间-水量），强化学生对“变量”这一抽象概念的泛化能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "如果小车不再是匀速，而是忽快忽慢，那么时间增加 1 秒，路程增加的量还是固定的吗？此时时间与路程的关系发生了什么变化？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过引入“非匀速”的干扰条件，引导学生意识到变量之间的关系依赖于常量的稳定性，深化认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "如果我说“一个人的身高在成长过程中是变量”，但“一个成年人的身高是常量”，这句话在数学定义上成立吗？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.7,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "防止学生将“变量”简单等同于“变化的量”，通过辨析强化定义边界",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "在刚才的匀速行驶例子中，能不能把“速度”强行解释成一个变量？如果非要把它变成变量，这个场景必须做出什么样的改变？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.75,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过认知冲突，让学生意识到常量与变量在同一特定过程中不能同时存在，巩固概念",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "同样的逻辑，我们看圆的周长公式 C=2πr。如果半径 r 像刚才那样逐渐增大，周长 C 和数字 2π 分别扮演什么角色？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过相似但不同的公式，验证学生是否能将识别方法迁移到其他几何关系中",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "观察矩形面积公式 S=ab。如果我规定这个矩形的宽 a 必须固定为 3 厘米，那么此时 S=3b 中，哪些是常量，哪些是变量？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "引导学生发现常量不仅可以是像 π 这样的数学常数，也可以是通过限定条件而产生的固定值",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "回到那个小车例子，如果这次我规定路程 S 必须固定在 100 米不变，而速度 v 可以调整，那么时间 t 会怎么变？此时 v 和 t 的身份发生了什么变化？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量与变量的相对性"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过将之前的简单情境重新定义，让学生在熟悉的环境中体验“相对性”的冲击",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "买文具时，如果单价固定，总价随数量变；但如果我只有 10 元钱（总价固定），那么数量和单价之间会怎么变？这说明了常量和变量的关系是什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量与变量的相对性"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.85,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将相对性从数学公式迁移到生活决策场景，培养学生灵活切换观察视角的数学思维",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "如果不看具体数字，只看规律：如果时间增加到原来的 3 倍，在速度不变的情况下，路程会增加到原来的几倍？这种精准的对应关系说明了什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量",
+          "变量之间的依赖关系"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "脱离具体的数字计算，让学生在逻辑层面把握“随之变化”的精准性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-2",
+        "content": "如果一个物体在加速运动，时间每增加 1 秒，路程增加的量也在不断变大。这与我们刚才讨论的匀速行驶在“依赖关系”上有什么本质区别？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量",
+          "变量之间的依赖关系"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.9,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过反差，让学生意识到依赖关系有多种形式，从而更深刻地理解本节课讨论的“匀速依赖”特点",
+        "design_rationale": ""
+      },
+      {
+        "id": "V7-1",
+        "content": "想象你在打车，费用由起步价、里程费和等待费组成。如果我们只研究“费用随里程的变化”，哪些因素是必须保留的变量，哪些可以暂时忽略？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "数学抽象过程"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "main_id": "M7",
+        "parent_id": "M7",
+        "variation_type": "",
+        "design_intent": "在包含“起步价”等干扰项的真实情境中，训练学生提取核心变量（里程-费用）的抽象能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V7-2",
+        "content": "还是充电场景，但这次我们不关心电量，而关心“充电速度随电池电量增加而下降”的规律。那么，刚才被你忽略的量，现在是不是变成了关键变量？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "数学抽象过程"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "main_id": "M7",
+        "parent_id": "M7",
+        "variation_type": "",
+        "design_intent": "通过改变研究目标，让学生意识到同一个物理过程在不同的数学抽象目标下，变量的选取是不同的",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "我们刚才确认了速度是‘死死固定’住的，那么在接下来的观察中，请大家时刻记住这个不变的基准。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.25,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "强化“不变”的基准感，为观察变量的动态变化提供认知支撑",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "现在请大家闭上眼想象一下：如果时间像时钟一样，滴答、滴答地走，小车是不是一直在往前走？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "通过引导学生想象时间的流动，诱发对路程变化的直观预期",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "刚才我们讨论了速度、时间和路程。请大家帮我分分类，哪些量是‘一直没变’的，哪些量是‘跟着在变’的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "将刚才讨论的量分为两组，为对接数学术语做准备",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "现在请大家快速浏览一下教材的这一页，看看有没有哪个词能精准地描述‘不变的量’，哪个词能描述‘变化的量’？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "通过简单的寻找任务，将感知经验与教材术语对接",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "我们刚说变量是变化的量。那请你想想，在刚才小车例子里，作为变量的‘时间’，它的数值是怎么表现的？（是一直是一个数，还是可以取不同值？）",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.32,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生描述变量的动态特征，而非简单确认定义，激活具体认知",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "现在看圆的面积公式 S=πr²，这里面出现了 S、π、r 这三个部分。请大家先试着找出，其中哪一个是我们熟悉的、永远不变的那个特殊数字？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.42,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "将公式拆解为可识别的元素，降低迁移难度",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "在刚才的圆面积例子里，我们让半径 r 变大，结果面积 S 也跟着变大。这时候，谁是‘操纵者’（变量），谁是‘随之而变’的量？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量",
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "确认当前情境下的角色分配，作为反转对比的起点",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果现在我突然变魔术，要求圆的面积 S 必须死死固定在 10 平方厘米，绝对不能变。那么，此时半径 r 还能随心所欲地变大吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "常量与变量的相对性"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "通过设定“固定结果”的假设，引导学生意识到条件的改变会引发角色转换",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "我们回到那个匀速行驶的例子，假设速度是 5m/s。请大家先在脑子里记住这个数字 5。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.28,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "重新锚定具体数值，为分析依赖关系提供量化基础",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "大家想象一下：时间滴答走 1 秒，路程就往前跳一步；时间再走 1 秒，路程再跳一步。这种‘你走我跳’的同步感，你们能感觉到吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量之间的依赖关系"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.38,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "使用口语化描述建立“同步跳动”的动态意象，让学生先在感官上体会依赖关系",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-3",
+        "content": "那么请大家思考，每次时间增加 1 秒，路程‘跳’的那一步距离，每次是不是都一样大？还是说有时跳得远，有时跳得近？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量之间的依赖关系"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.48,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "引导学生观察跳步的大小是否一致，从而触碰“精准控制”的逻辑内核",
+        "design_rationale": ""
+      },
+      {
+        "id": "S6-1",
+        "content": "在刚才讨论路程和时间时，我们完全没有提到小车的颜色或者天气，因为它们不影响路程的变化。这就叫‘忽略无关项’。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M6",
+        "to_id": "M7",
+        "from_main_id": "M6",
+        "to_main_id": "M7",
+        "bridge_function": "",
+        "design_intent": "通过回顾之前的简化经验，让学生意识到数学建模中“忽略无关量”的必要性",
+        "design_rationale": ""
+      },
+      {
+        "id": "S6-2",
+        "content": "现在看这张充电表格，左边是时间，右边是电量百分比。在这种最简单的表格里，你只看到了哪两个量在变？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M6",
+        "to_id": "M7",
+        "from_main_id": "M6",
+        "to_main_id": "M7",
+        "bridge_function": "",
+        "design_intent": "通过先呈现极简的读数变化，引导学生在干扰信息出现前先锁定核心变量对",
+        "design_rationale": ""
+      },
+      {
+        "id": "S6-3",
+        "content": "如果我现在告诉你，充电头的功率是 65W，这个信息对我们观察‘电量随时间怎么变’这个规律有直接影响吗？我们还需要把它写在表里吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "数学抽象过程"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_id": "M6",
+        "to_id": "M7",
+        "from_main_id": "M6",
+        "to_main_id": "M7",
+        "bridge_function": "",
+        "design_intent": "引入干扰项并引导剔除，完成从“识别变量”到“数学抽象”的最后一步跨越",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M6",
+        "target": "M7",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M7",
+        "target": "V7-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M7",
+        "target": "V7-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "S5-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-3",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M6",
+        "target": "S6-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S6-1",
+        "target": "S6-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S6-2",
+        "target": "S6-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S6-3",
+        "target": "M7",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

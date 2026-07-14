@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI学习策略模拟器</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #333; }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .panel {
+            width: 45%;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        #btnA { background-color: var(--danger); }
+        #btnB { background-color: var(--success); }
+        .scene {
+            height: 200px;
+            background: #eee;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+        .msg {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            font-weight: bold;
+            text-align: center;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI学习策略模拟器</h2>
+    <p>点击下方按钮，观察不同策略在考场上的表现：</p>
+    
+    <div class="stage">
+        <div class="panel">
+            <button id="btnA">做法 A：直接抄</button>
+            <div id="sceneA" class="scene">作业本：空白</div>
+        </div>
+        <div class="panel">
+            <button id="btnB">做法 B：看提示</button>
+            <div id="sceneB" class="scene">作业本：空白</div>
+        </div>
+    </div>
+
+    <div id="message" class="msg">
+        抄袭爽一时，考试泪两行。选择做法B，让AI成为你的助推器！
+    </div>
+</div>
+
+<script>
+    const btnA = document.getElementById('btnA');
+    const btnB = document.getElementById('btnB');
+    const sceneA = document.getElementById('sceneA');
+    const sceneB = document.getElementById('sceneB');
+
+    btnA.addEventListener('click', () => {
+        sceneA.innerHTML = `
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <rect x="20" y="20" width="60" height="60" fill="#fff" stroke="#333"/>
+                <text x="30" y="50" font-size="10">答案已抄</text>
+                <circle cx="50" cy="120" r="20" fill="#e74c3c"/>
+                <text x="35" y="150" fill="#e74c3c">考场：流汗/空白</text>
+            </svg>
+        `;
+        sceneA.style.borderColor = 'var(--danger)';
+    });
+
+    btnB.addEventListener('click', () => {
+        sceneB.innerHTML = `
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <rect x="20" y="20" width="60" height="60" fill="#fff" stroke="#333"/>
+                <text x="30" y="50" font-size="10">思路清晰</text>
+                <circle cx="50" cy="120" r="20" fill="#27ae60"/>
+                <text x="35" y="150" fill="#27ae60">考场：闪现公式/笑脸</text>
+            </svg>
+        `;
+        sceneB.style.borderColor = 'var(--success)';
+    });
+</script>
+
+</body>
+</html>

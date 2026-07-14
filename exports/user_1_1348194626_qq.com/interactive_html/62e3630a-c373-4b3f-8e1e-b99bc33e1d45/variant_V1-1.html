@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>资金去向可视化</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f5a623;
+            --bg: #f9f9f9;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+        .header { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        .stage { flex: 1; display: flex; justify-content: space-around; align-items: center; position: relative; }
+        .zone { width: 30%; height: 80%; border: 2px dashed #ccc; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .zone:hover { border-color: var(--primary); background: #f0f7ff; }
+        .coin { width: 50px; height: 50px; background: gold; border-radius: 50%; border: 3px solid #d4af37; position: absolute; top: 50%; left: 50%; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 10; }
+        #info-box { height: 60px; text-align: center; font-size: 18px; color: #555; margin-top: 10px; padding: 10px; border-top: 1px solid #eee; }
+        .label { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">钱的去向：个人消费 vs 税收贡献</div>
+    <div class="stage" id="stage">
+        <div class="zone" id="zone-snack">
+            <div class="label">买零食</div>
+            <p>个人消费</p>
+        </div>
+        <div class="zone" id="zone-tax">
+            <div class="label">交税</div>
+            <p>公共投入</p>
+        </div>
+        <div id="coin" class="coin">￥</div>
+    </div>
+    <div id="info-box">点击上方选项，观察资金流向与受益人</div>
+</div>
+
+<script>
+    const coin = document.getElementById('coin');
+    const infoBox = document.getElementById('info-box');
+    const zoneSnack = document.getElementById('zone-snack');
+    const zoneTax = document.getElementById('zone-tax');
+
+    function moveCoin(target) {
+        const rect = target.getBoundingClientRect();
+        const containerRect = document.querySelector('.container').getBoundingClientRect();
+        
+        // 计算目标中心位置
+        const targetX = rect.left + rect.width / 2 - containerRect.left - 25;
+        const targetY = rect.top + rect.height / 2 - containerRect.top - 25;
+
+        coin.style.left = targetX + 'px';
+        coin.style.top = targetY + 'px';
+
+        if (target.id === 'zone-snack') {
+            infoBox.innerHTML = "<strong>流向：</strong>商家/企业<br><strong>受益人：</strong>你自己（获得商品或服务）";
+        } else {
+            infoBox.innerHTML = "<strong>流向：</strong>国家财政池<br><strong>受益人：</strong>全体社会成员（如：路灯、图书馆、国防）";
+        }
+    }
+
+    zoneSnack.addEventListener('click', () => moveCoin(zoneSnack));
+    zoneTax.addEventListener('click', () => moveCoin(zoneTax));
+</script>
+
+</body>
+</html>

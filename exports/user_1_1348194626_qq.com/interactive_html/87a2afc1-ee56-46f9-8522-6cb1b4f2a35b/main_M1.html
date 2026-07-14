@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税收的作用 - 资金从哪里来</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --gold-color: #f1c40f;
+      --success-color: #2ecc71;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+    }
+
+    body {
+      background-color: #bdc3c7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例容器，适合课堂投屏 */
+    .aspect-ratio-container {
+      width: 100vw;
+      max-width: 1024px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--bg-color);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部区域 */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), #34495e);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #bdc3c7;
+    }
+
+    /* 主交互区域 */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 15px;
+      padding: 20px;
+      position: relative;
+      background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    /* 列通用样式 */
+    .column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .column-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 6px;
+      background: rgba(0,0,0,0.05);
+      border-radius: 6px;
+    }
+
+    /* 卡片通用样式 */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      border: 2px solid transparent;
+    }
+
+    /* 左侧：纳税人卡片 */
+    .taxpayer-card {
+      cursor: pointer;
+      flex: 1;
+      margin-bottom: 10px;
+    }
+    .taxpayer-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .taxpayer-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      border-color: var(--gold-color);
+    }
+
+    .taxpayer-card:active {
+      transform: scale(0.98);
+    }
+
+    .taxpayer-card svg {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 6px;
+    }
+
+    .taxpayer-card h3 {
+      font-size: 14px;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+    }
+
+    .taxpayer-card p {
+      font-size: 11px;
+      color: #7f8c8d;
+    }
+
+    .pay-btn {
+      margin-top: 6px;
+      background-color: var(--gold-color);
+      color: #333;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      pointer-events: none; /* 让卡片点击事件穿透 */
+    }
+
+    /* 中间：国库 */
+    .treasury-col {
+      justify-content: center;
+      align-items: center;
+    }
+
+    .treasury-container {
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .treasury-building {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+      transition: transform 0.1s ease;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #ecf0f1;
+      height: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-color), #f39c12);
+      transition: width 0.4s ease;
+      border-radius: 12px;
+    }
+
+    .progress-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 0;
+      left: 0;
+      line-height: 24px;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .treasury-status {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #7f8c8d;
+      text-align: center;
+      min-height: 36px;
+    }
+
+    /* 右侧：国家建设 */
+    .project-card {
+      flex: 1;
+      margin-bottom: 10px;
+      filter: grayscale(100%);
+      opacity: 0.5;
+      pointer-events: none;
+      transition: all 0.5s ease;
+    }
+    .project-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-card.unlocked {
+      filter: grayscale(0%);
+      opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      border: 2px dashed var(--success-color);
+    }
+
+    .project-card.unlocked:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 15px rgba(46, 204, 113, 0.2);
+    }
+
+    .project-card svg {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 6px;
+    }
+
+    .project-card h3 {
+      font-size: 14px;
+      color: var(--primary-color);
+    }
+
+    .unlock-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: var(--success-color);
+      color: white;
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .project-card.unlocked .unlock-badge {
+      display: block;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* 动画金币 */
+    .coin {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background-color: var(--gold-color);
+      border: 1.5px solid #d35400;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* 弹窗样式 */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: white;
+      width: 80%;
+      max-width: 450px;
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal h2 {
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    .modal p {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .modal-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-btn:hover {
+      background-color: #34495e;
+    }
+
+    /* 底部控制栏 */
+    .footer-controls {
+      padding: 15px;
+      background-color: #eaeded;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #d5dbdb;
+    }
+
+    .instruction {
+      font-size: 13px;
+      color: #5d6d7e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reset-btn {
+      background-color: #95a5a6;
+      color: white;
+      border: none;
+      padding: 6px 15px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .reset-btn:hover {
+      background-color: #7f8c8d;
+    }
+
+    /* 动画效果 */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .shake {
+      animation: shake 0.2s ease-in-out 2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>神奇的资金循环：国家建设的钱从哪里来？</h1>
+      <p>点击左侧的“纳税人”为国库充值，看看国库充盈后，右侧的重大工程会发生什么变化！</p>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-content" id="main-content">
+      
+      <!-- 左侧：纳税人 -->
+      <div class="column">
+        <div class="column-title">🙋‍♂️ 纳税人 (提供资金)</div>
+        
+        <!-- 市民 -->
+        <div class="card taxpayer-card" id="taxpayer-citizen">
+          <svg viewBox="0 0 64 64">
+            <circle cx="32" cy="22" r="12" fill="#3498db"/>
+            <path d="M12 52 C12 40, 52 40, 52 52 Z" fill="#3498db"/>
+            <circle cx="32" cy="20" r="2" fill="#fff"/>
+            <path d="M28 28 Q32 32 36 28" stroke="#fff" stroke-width="2" fill="none"/>
+          </svg>
+          <h3>普通市民</h3>
+          <p>缴纳个人所得税等</p>
+          <button class="pay-btn">点击纳税</button>
+        </div>
+
+        <!-- 商店 -->
+        <div class="card taxpayer-card" id="taxpayer-shop">
+          <svg viewBox="0 0 64 64">
+            <rect x="10" y="28" width="44" height="28" fill="#e67e22" rx="2"/>
+            <polygon points="6,28 32,12 58,28" fill="#d35400"/>
+            <rect x="24" y="38" width="16" height="18" fill="#ecf0f1"/>
+            <span style="position:absolute; top:20px; font-size:9px; color:white; font-weight:bold;">SHOP</span>
+          </svg>
+          <h3>零售商店</h3>
+          <p>缴纳增值税、消费税等</p>
+          <button class="pay-btn">点击纳税</button>
+        </div>
+
+        <!-- 工厂 -->
+        <div class="card taxpayer-card" id="taxpayer-factory">
+          <svg viewBox="0 0 64 64">
+            <path d="M8 52 L8 28 L24 38 L24 28 L40 38 L40 28 L56 38 L56 52 Z" fill="#7f8c8d"/>
+            <rect x="46" y="16" width="6" height="20" fill="#95a5a6"/>
+            <path d="M49 12 C52 8, 55 12, 58 8" stroke="#bdc3c7" stroke-width="3" fill="none"/>
+            <circle cx="16" cy="45" r="3" fill="#f1c40f"/>
+            <circle cx="32" cy="45" r="3" fill="#f1c40f"/>
+          </svg>
+          <h3>制造工厂</h3>
+          <p>缴纳企业所得税等</p>
+          <button class="pay-btn">点击纳税</button>
+        </div>
+      </div>
+
+      <!-- 中间：国库 -->
+      <div class="column treasury-col">
+        <div class="column-title">🏦 国家国库 (汇聚与调拨)</div>
+        <div class="treasury-container" id="treasury-box">
+          <!-- 国库大楼 SVG -->
+          <svg class="treasury-building" id="treasury-svg" viewBox="0 0 100 100">
+            <rect x="10" y="80" width="80" height="12" fill="#7f8c8d" rx="2"/>
+            <rect x="18" y="40" width="64" height="40" fill="#f39c12"/>
+            <!-- 柱子 -->
+            <rect x="24" y="45" width="6" height="35" fill="#f1c40f"/>
+            <rect x="40" y="45" width="6" height="35" fill="#f1c40f"/>
+            <rect x="54" y="45" width="6" height="35" fill="#f1c40f"/>
+            <rect x="70" y="45" width="6" height="35" fill="#f1c40f"/>
+            <!-- 屋顶 -->
+            <polygon points="12,40 50,15 88,40" fill="#d35400"/>
+            <!-- 国徽星 -->
+            <polygon points="50,22 52,27 58,27 53,31 55,36 50,33 45,36 47,31 42,27 48,27" fill="#f1c40f"/>
+          </svg>
+
+          <!-- 进度条 -->
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-text" id="progress-text">国库资金: 0%</div>
+          </div>
+
+          <div class="treasury-status" id="treasury-status">
+            国库空虚，等待税收注入...
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：国家建设 -->
+      <div class="column">
+        <div class="column-title">🚀 国家建设 (造福于民)</div>
+        
+        <!-- 学校 -->
+        <div class="card project-card" id="project-school" data-project="school">
+          <span class="unlock-badge">可建设</span>
+          <svg viewBox="0 0 64 64">
+            <rect x="10" y="26" width="44" height="30" fill="#3498db" rx="3"/>
+            <polygon points="6,26 32,10 58,26" fill="#2980b9"/>
+            <rect x="26" y="38" width="12" height="18" fill="#f1c40f"/>
+            <line x1="32" y1="10" x2="32" y2="2" stroke="#333" stroke-width="2"/>
+            <polygon points="32,2 44,6 32,10" fill="#e74c3c"/>
+          </svg>
+          <h3>公立学校</h3>
+          <p>需要 30% 资金</p>
+        </div>
+
+        <!-- 港珠澳大桥 -->
+        <div class="card project-card" id="project-bridge" data-project="bridge">
+          <span class="unlock-badge">可建设</span>
+          <svg viewBox="0 0 64 64">
+            <path d="M6 45 Q 32 20 58 45" stroke="#1abc9c" stroke-width="5" fill="none"/>
+            <line x1="6" y1="45" x2="58" y2="45" stroke="#7f8c8d" stroke-width="3"/>
+            <line x1="20" y1="35" x2="20" y2="45" stroke="#1abc9c" stroke-width="2"/>
+            <line x1="32" y1="32" x2="32" y2="45" stroke="#1abc9c" stroke-width="2"/>
+            <line x1="44" y1="35" x2="44" y2="45" stroke="#1abc9c" stroke-width="2"/>
+          </svg>
+          <h3>港珠澳大桥</h3>
+          <p>需要 60% 资金</p>
+        </div>
+
+        <!-- 神舟飞船 -->
+        <div class="card project-card" id="project-space" data-project="space">
+          <span class="unlock-badge">可建设</span>
+          <svg viewBox="0 0 64 64">
+            <path d="M32 10 C25 25 25 45 25 52 L39 52 C39 45 39 25 32 10 Z" fill="#ecf0f1"/>
+            <path d="M20 52 L25 52 L25 42 Z" fill="#e74c3c"/>
+            <path d="M44 52 L39 52 L39 42 Z" fill="#e74c3c"/>
+            <path d="M28 52 L32 62 L36 52 Z" fill="#f39c12"/>
+          </svg>
+          <h3>神舟飞船</h3>
+          <p>需要 100% 资金</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="footer-controls">
+      <div class="instruction">
+        <span>💡</span>
+        <span>提示：点击左侧市民、商店或工厂，源源不断地汇聚税收吧！</span>
+      </div>
+      <button class="reset-btn" id="reset-btn">重置场景</button>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <h2 id="modal-title">建设成功！</h2>
+        <p id="modal-desc">这里是详细的建设意义描述。</p>
+        <button class="modal-btn" id="modal-close">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    let treasuryFunds = 0;
+    const maxFunds = 100;
+    
+    // DOM 元素
+    const taxpayers = document.querySelectorAll('.taxpayer-card');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const treasuryStatus = document.getElementById('treasury-status');
+    const treasuryBox = document.getElementById('treasury-box');
+    const treasurySvg = document.getElementById('treasury-svg');
+    const mainContent = document.getElementById('main-content');
+    const resetBtn = document.getElementById('reset-btn');
+    
+    // 项目卡片
+    const projectSchool = document.getElementById('project-school');
+    const projectBridge = document.getElementById('project-bridge');
+    const projectSpace = document.getElementById('project-space');
+    
+    // 弹窗元素
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalClose = document.getElementById('modal-close');
+
+    // 项目详情数据
+    const projectDetails = {
+      school: {
+        title: "🏫 公立学校建设成功！",
+        desc: "【资金来源】来自千千万万纳税人缴纳的税款。\n\n【给人们带来的便利】国家利用税收建设美丽的校园、宽敞的操场，配备先进的教学设备，并为我们提供免费的义务教育，让每个孩子都能无忧无虑地上学读书！"
+      },
+      bridge: {
+        title: "🌉 港珠澳大桥顺利通车！",
+        desc: "【资金来源】国家财政（税收）全额拨款与支持。\n\n【给人们带来的便利】大桥跨越伶仃洋，将香港、珠海和澳门紧紧相连，原本几小时的车程缩短到只需30分钟！极大地方便了人们的出行，促进了粤港澳大湾区的经济繁荣。"
+      },
+      space: {
+        title: "🚀 神舟飞船直冲云霄！",
+        desc: "【资金来源】国家高科技研发专项资金（100%来自国家税收）。\n\n【给人们带来的便利】探索浩瀚宇宙，展现了中国强大的科技实力。气象卫星、GPS导航等航天技术的民用化，也让我们的生活变得更加便捷和安全！"
+      }
+    };
+
+    // 绑定纳税人点击事件
+    taxpayers.forEach(taxpayer => {
+      taxpayer.addEventListener('click', (e) => {
+        spawnCoins(taxpayer);
+      });
+    });
+
+    // 产生金币动画
+    function spawnCoins(sourceElement) {
+      const sourceRect = sourceElement.getBoundingClientRect();
+      const targetRect = treasurySvg.getBoundingClientRect();
+      const containerRect = mainContent.getBoundingClientRect();
+
+      const startX = sourceRect.left - containerRect.left + sourceRect.width / 2;
+      const startY = sourceRect.top - containerRect.top + sourceRect.height / 2;
+      const endX = targetRect.left - containerRect.left + targetRect.width / 2;
+      const endY = targetRect.top - containerRect.top + targetRect.height / 2;
+
+      // 每次点击产生5枚金币
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const coin = document.createElement('div');
+          coin.className = 'coin';
+          coin.style.left = `${startX}px`;
+          coin.style.top = `${startY}px`;
+          mainContent.appendChild(coin);
+
+          // 随机弧度
+          const midX = (startX + endX) / 2 + (Math.random() - 0.5) * 80;
+          const midY = Math.min(startY, endY) - 60 - Math.random() * 40;
+
+          const animation = coin.animate([
+            { transform: `translate(0, 0) scale(1)` },
+            { transform: `translate(${midX - startX}px, ${midY - startY}px) scale(1.2)`, offset: 0.5 },
+            { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0.6)` }
+          ], {
+            duration: 800,
+            easing: 'ease-out'
+          });
+
+          animation.onfinish = () => {
+            coin.remove();
+            if (i === 4) {
+              // 最后一枚金币到达时，更新国库和震动反馈
+              addFunds(10);
+              triggerTreasuryPulse();
+            }
+          };
+        }, i * 100);
+      }
+    }
+
+    // 国库轻微震动反馈
+    function triggerTreasuryPulse() {
+      treasuryBox.classList.add('shake');
+      setTimeout(() => {
+        treasuryBox.classList.remove('shake');
+      }, 400);
+    }
+
+    // 增加国库资金
+    function addFunds(amount) {
+      if (treasuryFunds >= maxFunds) return;
+      
+      treasuryFunds += amount;
+      if (treasuryFunds > maxFunds) treasuryFunds = maxFunds;
+
+      updateUI();
+    }
+
+    // 更新界面状态
+    function updateUI() {
+      progressBar.style.width = `${treasuryFunds}%`;
+      progressText.textContent = `国库资金: ${treasuryFunds}%`;
+
+      // 阶段性文字提示
+      if (treasuryFunds === 0) {
+        treasuryStatus.innerHTML = "国库空虚，等待税收注入...";
+        treasuryStatus.style.color = "#7f8c8d";
+      } else if (treasuryFunds < 30) {
+        treasuryStatus.innerHTML = "资金正在汇聚，请继续加油！";
+        treasuryStatus.style.color = "#34495e";
+      } else if (treasuryFunds < 60) {
+        treasuryStatus.innerHTML = "🎉 资金已达30%！<br><span style='color:#2ecc71'>【公立学校】</span>建设资金已到位，快去点击建设！";
+        treasuryStatus.style.color = "#2ecc71";
+      } else if (treasuryFunds < 100) {
+        treasuryStatus.innerHTML = "🎉 资金已达60%！<br><span style='color:#1abc9c'>【港珠澳大桥】</span>建设资金已到位，快去点击建设！";
+        treasuryStatus.style.color = "#1abc9c";
+      } else {
+        treasuryStatus.innerHTML = "🌟 国库充盈（100%）！<br><span style='color:#e74c3c'>【神舟飞船】</span>已获得终极科研资金！";
+        treasuryStatus.style.color = "#e74c3c";
+      }
+
+      // 解锁项目卡片
+      if (treasuryFunds >= 30) {
+        unlockProject(projectSchool);
+      }
+      if (treasuryFunds >= 60) {
+        unlockProject(projectBridge);
+      }
+      if (treasuryFunds >= 100) {
+        unlockProject(projectSpace);
+      }
+    }
+
+    // 解锁单个项目
+    function unlockProject(projectCard) {
+      if (!projectCard.classList.contains('unlocked')) {
+        projectCard.classList.add('unlocked');
+        // 播放一次放大动画提示解锁
+        projectCard.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(1.1)', offset: 0.5 },
+          { transform: 'scale(1)' }
+        ], {
+          duration: 500,
+          easing: 'ease-in-out'
+        });
+      }
+    }
+
+    // 点击项目卡片展示弹窗
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.classList.contains('unlocked')) {
+          const projectType = card.getAttribute('data-project');
+          const data = projectDetails[projectType];
+          showModal(data.title, data.desc);
+        }
+      });
+    });
+
+    // 弹窗控制
+    function showModal(title, desc) {
+      modalTitle.textContent = title;
+      modalDesc.innerHTML = desc.replace(/\n/g, '<br>');
+      modalOverlay.classList.add('active');
+    }
+
+    modalClose.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+
+    // 重置场景
+    resetBtn.addEventListener('click', () => {
+      treasuryFunds = 0;
+      projectCards.forEach(card => {
+        card.classList.remove('unlocked');
+      });
+      updateUI();
+    });
+
+    // 初始化
+    updateUI();
+  </script>
+</body>
+</html>

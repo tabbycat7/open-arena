@@ -1,0 +1,556 @@
+{
+  "id": "718f2336-c13c-453c-b760-3ffd37a5facf",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "八年级",
+  "teaching_goals": "1.了解勾股定理的发现过程，掌握勾股定理的内容，会用面积法证明勾股定理；会用勾股定理进行简单的计算，2.经历通过实际分析、拼图等活动，使学生获得较为直观的印象；经历观察、归纳、猜想和验证的数学发现过程，发展合情合理的推理能力问题解决，3.通过获得成功的经验和克服困难的经历，增进数学学习的信心；对比介绍我国古代和西方数学家有关勾股定理的研究，对学生进行爱国主义教育",
+  "student_profile": "八年级的学生在心理与生理方面已经日趋成熟，对待事物的看法和理解有一定的思维，表现欲强，思维敏捷。学生已有三角形的概念及性质的学习为基础，为本节课的学习提供了良好的前提条件，但如何通过拼图来证明勾股定理，学生对这种解决问题的途径还比较陌生，存在一定的困难，这些都将成为我教学过程中需要考虑的因素。",
+  "difficulty_analysis": "重点：掌握勾股定理，并运用它解决简单的计算题，难点：了解利用拼图验证勾股定理的方法，",
+  "language_style": "启发引导",
+  "model_id": "gemini-3.1-pro-preview",
+  "duration_seconds": 585.08,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，相传2500多年前毕达哥拉斯在朋友家做客时，被一种地砖图案吸引了。请大家观察课本图17.1-2，如果我们把等腰直角三角形的三条边分别当作正方形的边长，这三个正方形的面积之间隐藏着怎样的数量关系呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家看大屏幕或者课本上的图17.1-1和17.1-2。日常生活中常见的地砖，在数学家眼里却大有文章。大家不要只盯着中间那个三角形看，试着把目光放宽一点。看直角边上的这两个小正方形，再看看斜边上的这个大正方形。你可以数一数它们各自包含了几个基本的等腰直角三角形。把小正方形的面积加起来，和那个大正方形比一比，你发现了什么规律？等腰直角三角形的三边之间，是不是有一种奇妙的联系？\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.6, \"design_intent\": \"利用生活情境降低认知门槛，从特殊图形的面积关系入手，为后续一般规律的探究奠定直观基础\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"刚才我们在等腰直角三角形中发现了面积规律，那换成一般的直角三角形，这个规律还成立吗？请大家看图17.1-3的网格，你能想办法算出以斜边为边长的倾斜正方形C和C'的面积，并验证我们的猜想吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"特例中的规律总是让人兴奋，但数学的严谨要求我们多问一句：如果不是等腰直角三角形，一般的直角三角形还有这个性质吗？大家来看图17.1-3，正方形A和B的面积很好数，因为它们是正着放的，但是正方形C是倾斜的，直接数格子很容易数错。怎么办呢？大家可以看看书上的提示，能不能用一个更大的正方形把C包围起来，然后减去四个角落里的直角三角形面积？大家动手算一算A、B、C的面积，看看是不是依然有A加B等于C？算完之后，试着用字母a、b、c把你们发现的这个直角三角形三边关系的猜想写下来。\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"通过动手计算和数据归纳，培养学生从特例到一般的合情推理能力，引出本课核心命题\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们在网格里验证了猜想，但这还不够。我国汉代数学家赵爽用了一个非常巧妙的拼图法来证明。请大家观察图17.1-6的“赵爽弦图”，你能利用大正方形面积等于四个直角三角形加上中间小正方形面积这个关系，用含有a、b、c的代数式把等式列出来吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"基于网格的计算只能验证有限的几个例子，要确立一个数学定理，我们需要严密的逻辑证明。在这方面，我国古代数学家展现了惊人的智慧！大家看图17.1-6，这就是著名的‘赵爽弦图’，它也是2002年国际数学家大会的会徽。赵爽用四个全等的直角三角形拼成了一个大正方形。大家仔细看，大正方形的边长是谁？没错，是c。那中间空出来的黄色小正方形，它的边长又是多少呢？大家可以结合直角边a和b找找关系。找到了边长，大家试着把‘大正方形面积等于4个直角三角形面积加上小正方形面积’这个文字等式，翻译成带有a、b、c的代数式写在草稿纸上。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"突破本课难点，利用数形结合思想，将几何面积关系转化为代数等式，同时融入爱国主义教育\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"代数式列出来了，接下来就是见证奇迹的时刻。请大家动笔把刚才列出的等式展开并化简，看看最后能得出什么结果？你能用自己的话完整准确地表述我们今天发现的这个伟大定理吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才大家列出了一个看起来有点长的等式：c的平方等于4个二分之一ab，再加上(b-a)的平方。几何图形的巧妙拼接，现在转化成了代数式的运算。大家动笔用完全平方公式把(b-a)的平方展开，合并一下同类项，小心符号不要出错。化简完之后，你是不是得到了一个极其简洁优美的等式？对，就是a的平方加b的平方等于c的平方！经过观察、猜想、再到严密的拼图证明，我们终于证实了这个结论。这就是著名的勾股定理。谁能站起来，用最准确的数学语言，把勾股定理的前提条件和结论完整地给大家播报一遍？\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"完成猜想的严密验证，正式建构勾股定理的核心知识，培养严谨的数学思维\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"定理既然确立了，我们马上来用它解决问题。请大家翻到课本练习第1题，已知直角三角形的两条边长，你能正确套用勾股定理公式，求出第三条边的长度吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"勾股定理不仅形式优美，而且非常实用，它把图形和数量完美地结合在了一起。有了它，直角三角形的三条边只要知道任意两条，就能求出第三条。大家来看练习第1题的三个小题。做题时老师提醒两点：第一，先看清楚要求的是斜边c，还是直角边a或b，移项的时候千万别把加减法弄反了；第二，公式算出来的是边长的平方，最后一步别忘了开平方根。大家动笔写一写，体会一下把抽象公式应用到具体计算中的成就感。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"检验学生对公式的掌握情况，暴露并纠正计算中的常见错误，完成知识闭环\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果地砖上的等腰直角三角形不是平放的，而是倾斜的，并且没有了网格线，老师只告诉你直角边上的两个小正方形面积都是4，你能直接猜出斜边上大正方形的面积吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.62, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"剥离网格辅助，测试学生能否将刚刚观察到的面积关系直接应用于图形的面积推断中\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"刚才我们是以等腰直角三角形的三边为边长向外画正方形。如果我们在三条边上画的不是正方形，而是半圆，这三个半圆的面积之间，还会存在那种奇妙的加和关系吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"拓展思维边界，让学生初步感知勾股定理的推广形式，体会数学规律的普适性\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"大家看大屏幕上这个新的网格直角三角形，这次外围没有画那三个正方形。你能直接利用网格线，算出两条直角边的平方和，再想办法求出斜边的平方来进行验证吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"引导学生从看正方形面积过渡到直接关注边长的平方，为代数公式的提出做铺垫\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"如果在网格里画一个不是直角的三角形，比如一个角是钝角，你再去算一算三条边上正方形的面积，它们之间还会有‘两个小的加起来等于最大的’这种神奇关系吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过非直角三角形的反例，强调勾股定理成立的必要前提，培养严谨的逻辑判断\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"赵爽是把四个直角三角形拼在一个大正方形里面。如果老师把这四个三角形向外翻转，拼成一个中间是边长为c的大正方形、外围带四个角的风车图形，你能根据这个新图形列出一个不同的面积等式吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.78, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"避免学生死记硬背赵爽弦图，培养灵活利用图形拼接进行面积转化的能力\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"刚才我们是用大正方形的面积等于五个小图形的面积和。如果现在让你以中间那个黄色小正方形的面积作为等号的左边，你能用大正方形和四个直角三角形的面积把它表示出来吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.72, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"帮助普通生从不同角度理解面积守恒，降低代数式列写的思维定势\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"黑板上有一位同学的化简过程，他把(b-a)的平方直接写成了b的平方减a的平方，最后怎么也凑不出我们的猜想。你能帮他指出错误在哪里，并解释为什么几何拼凑必须对应严谨的代数展开吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.75, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过纠错暴露出学生在完全平方公式应用中的常见问题，加深对推导过程的理解\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"大家都习惯了用a、b表示直角边，c表示斜边。如果在一个直角三角形中，直角所对的边被命名为a，另外两条直角边是b和c，那勾股定理的等式该怎么写？公式里的字母能随便套吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.7, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"破除对字母a、b、c的思维定势，直击勾股定理文字表述的核心本质\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"一根长5米的竹竿斜靠在墙上，竹竿底端距离墙角3米。你能利用刚才学过的勾股定理，算算竹竿顶端距离地面有多高吗？画个草图试试看谁是斜边。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将抽象定理还原到真实情境，体会勾股定理的应用价值，初步建立数学模型\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"如果老师只告诉你一个直角三角形的两条边长分别是3和4，并没有说哪条是直角边哪条是斜边。你能算出第三条边的长度吗？想一想，答案是不是只有一种？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.85, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"引入分类讨论思想，考察学生思维的严密性，避免盲目套用公式\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"大家看图17.1-3里的这个新的直角三角形，它的两条直角边不再一样长了。你能借助背景里的网格，数一数这两条直角边分别占了几个小格吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"引导学生将注意力转移到一般直角三角形的直角边上，通过数格子获取基础数据，降低认知起点。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"正方形A和B是正着放的，很好数。但正方形C是倾斜的，直接数格子容易错。如果我们像书上提示的那样，在它外面画一个正着的大正方形把它完全框起来，你能看出这个大正方形的边长是多少吗？四个角落里多出来的直角三角形，面积又该怎么算呢？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"将计算倾斜正方形面积的复杂任务，拆解为计算外接大正方形和四个角落直角三角形的面积，提供具体的操作抓手。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"我们来看图17.1-6的赵爽弦图。这里有四个全等的直角三角形，如果它们的直角边分别是a和b，斜边是c，你能指出来，外面这个大正方形的边长对应的是哪条边吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生在复杂图形中准确识别出大正方形的边长，建立图形与字母c的对应关系。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"大正方形的面积是c的平方，这个很直观。大家再仔细看看中间那个黄色的空心小正方形，它的一条边，刚好是较长的直角边b，减去较短的直角边a剩下的一截。你能试着用a和b把这个小正方形的边长表示出来吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"引导学生聚焦局部线段的加减关系，突破小正方形边长表示这一核心难点，为列等式扫清障碍。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"刚才我们列出的等式里包含了(b-a)的平方。在动手化简之前，谁能帮大家回忆一下，我们学过的完全平方公式(b-a)²展开后，应该是哪三项？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"激活学生对完全平方公式的记忆，提供化简等式必需的代数工具。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"把括号展开之后，式子里会出现一个‘减去2ab’。大家再看看等号右边的另一部分，四个直角三角形的面积加起来刚好是‘加上2ab’。当‘加上2ab’遇到‘减去2ab’，会发生什么奇妙的变化呢？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生关注代数式中一正一负两个2ab的抵消关系，体会代数化简的奇妙与简洁。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"在做练习第1题之前，我们先观察一下题目给出的三个图形。在这些直角三角形里，哪一条边是斜边c？你是怎么通过直角一眼把它找出来的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.2, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"强制要求学生在计算前先确认斜边，养成先找直角、再找斜边的良好解题习惯。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果题目已知两条直角边求斜边，我们把它们的平方相加；但如果像第(2)小题那样，已经知道了斜边和一条直角边，要求另一条直角边，我们的公式应该怎么变形？这时候是该用加法还是减法呢？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"通过对比两种不同的求边情况，帮助学生理清何时用加法、何时用减法，减少套用公式时的盲目性。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-05 19:39:39",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，相传2500多年前毕达哥拉斯在朋友家做客时，被一种地砖图案吸引了。请大家观察课本图17.1-2，如果我们把等腰直角三角形的三条边分别当作正方形的边长，这三个正方形的面积之间隐藏着怎样的数量关系呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家看大屏幕或者课本上的图17.1-1和17.1-2。日常生活中常见的地砖，在数学家眼里却大有文章。大家不要只盯着中间那个三角形看，试着把目光放宽一点。看直角边上的这两个小正方形，再看看斜边上的这个大正方形。你可以数一数它们各自包含了几个基本的等腰直角三角形。把小正方形的面积加起来，和那个大正方形比一比，你发现了什么规律？等腰直角三角形的三边之间，是不是有一种奇妙的联系？",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.6,
+        "design_intent": "利用生活情境降低认知门槛，从特殊图形的面积关系入手，为后续一般规律的探究奠定直观基础",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "刚才我们在等腰直角三角形中发现了面积规律，那换成一般的直角三角形，这个规律还成立吗？请大家看图17.1-3的网格，你能想办法算出以斜边为边长的倾斜正方形C和C'的面积，并验证我们的猜想吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "特例中的规律总是让人兴奋，但数学的严谨要求我们多问一句：如果不是等腰直角三角形，一般的直角三角形还有这个性质吗？大家来看图17.1-3，正方形A和B的面积很好数，因为它们是正着放的，但是正方形C是倾斜的，直接数格子很容易数错。怎么办呢？大家可以看看书上的提示，能不能用一个更大的正方形把C包围起来，然后减去四个角落里的直角三角形面积？大家动手算一算A、B、C的面积，看看是不是依然有A加B等于C？算完之后，试着用字母a、b、c把你们发现的这个直角三角形三边关系的猜想写下来。",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "通过动手计算和数据归纳，培养学生从特例到一般的合情推理能力，引出本课核心命题",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们在网格里验证了猜想，但这还不够。我国汉代数学家赵爽用了一个非常巧妙的拼图法来证明。请大家观察图17.1-6的“赵爽弦图”，你能利用大正方形面积等于四个直角三角形加上中间小正方形面积这个关系，用含有a、b、c的代数式把等式列出来吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "基于网格的计算只能验证有限的几个例子，要确立一个数学定理，我们需要严密的逻辑证明。在这方面，我国古代数学家展现了惊人的智慧！大家看图17.1-6，这就是著名的‘赵爽弦图’，它也是2002年国际数学家大会的会徽。赵爽用四个全等的直角三角形拼成了一个大正方形。大家仔细看，大正方形的边长是谁？没错，是c。那中间空出来的黄色小正方形，它的边长又是多少呢？大家可以结合直角边a和b找找关系。找到了边长，大家试着把‘大正方形面积等于4个直角三角形面积加上小正方形面积’这个文字等式，翻译成带有a、b、c的代数式写在草稿纸上。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "突破本课难点，利用数形结合思想，将几何面积关系转化为代数等式，同时融入爱国主义教育",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "代数式列出来了，接下来就是见证奇迹的时刻。请大家动笔把刚才列出的等式展开并化简，看看最后能得出什么结果？你能用自己的话完整准确地表述我们今天发现的这个伟大定理吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才大家列出了一个看起来有点长的等式：c的平方等于4个二分之一ab，再加上(b-a)的平方。几何图形的巧妙拼接，现在转化成了代数式的运算。大家动笔用完全平方公式把(b-a)的平方展开，合并一下同类项，小心符号不要出错。化简完之后，你是不是得到了一个极其简洁优美的等式？对，就是a的平方加b的平方等于c的平方！经过观察、猜想、再到严密的拼图证明，我们终于证实了这个结论。这就是著名的勾股定理。谁能站起来，用最准确的数学语言，把勾股定理的前提条件和结论完整地给大家播报一遍？",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "完成猜想的严密验证，正式建构勾股定理的核心知识，培养严谨的数学思维",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "定理既然确立了，我们马上来用它解决问题。请大家翻到课本练习第1题，已知直角三角形的两条边长，你能正确套用勾股定理公式，求出第三条边的长度吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "勾股定理不仅形式优美，而且非常实用，它把图形和数量完美地结合在了一起。有了它，直角三角形的三条边只要知道任意两条，就能求出第三条。大家来看练习第1题的三个小题。做题时老师提醒两点：第一，先看清楚要求的是斜边c，还是直角边a或b，移项的时候千万别把加减法弄反了；第二，公式算出来的是边长的平方，最后一步别忘了开平方根。大家动笔写一写，体会一下把抽象公式应用到具体计算中的成就感。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "检验学生对公式的掌握情况，暴露并纠正计算中的常见错误，完成知识闭环",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果地砖上的等腰直角三角形不是平放的，而是倾斜的，并且没有了网格线，老师只告诉你直角边上的两个小正方形面积都是4，你能直接猜出斜边上大正方形的面积吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.62,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "剥离网格辅助，测试学生能否将刚刚观察到的面积关系直接应用于图形的面积推断中",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "刚才我们是以等腰直角三角形的三边为边长向外画正方形。如果我们在三条边上画的不是正方形，而是半圆，这三个半圆的面积之间，还会存在那种奇妙的加和关系吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "拓展思维边界，让学生初步感知勾股定理的推广形式，体会数学规律的普适性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "大家看大屏幕上这个新的网格直角三角形，这次外围没有画那三个正方形。你能直接利用网格线，算出两条直角边的平方和，再想办法求出斜边的平方来进行验证吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "引导学生从看正方形面积过渡到直接关注边长的平方，为代数公式的提出做铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "如果在网格里画一个不是直角的三角形，比如一个角是钝角，你再去算一算三条边上正方形的面积，它们之间还会有‘两个小的加起来等于最大的’这种神奇关系吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过非直角三角形的反例，强调勾股定理成立的必要前提，培养严谨的逻辑判断",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "赵爽是把四个直角三角形拼在一个大正方形里面。如果老师把这四个三角形向外翻转，拼成一个中间是边长为c的大正方形、外围带四个角的风车图形，你能根据这个新图形列出一个不同的面积等式吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.78,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "避免学生死记硬背赵爽弦图，培养灵活利用图形拼接进行面积转化的能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "刚才我们是用大正方形的面积等于五个小图形的面积和。如果现在让你以中间那个黄色小正方形的面积作为等号的左边，你能用大正方形和四个直角三角形的面积把它表示出来吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.72,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "帮助普通生从不同角度理解面积守恒，降低代数式列写的思维定势",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "黑板上有一位同学的化简过程，他把(b-a)的平方直接写成了b的平方减a的平方，最后怎么也凑不出我们的猜想。你能帮他指出错误在哪里，并解释为什么几何拼凑必须对应严谨的代数展开吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.75,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过纠错暴露出学生在完全平方公式应用中的常见问题，加深对推导过程的理解",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "大家都习惯了用a、b表示直角边，c表示斜边。如果在一个直角三角形中，直角所对的边被命名为a，另外两条直角边是b和c，那勾股定理的等式该怎么写？公式里的字母能随便套吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.7,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "破除对字母a、b、c的思维定势，直击勾股定理文字表述的核心本质",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "一根长5米的竹竿斜靠在墙上，竹竿底端距离墙角3米。你能利用刚才学过的勾股定理，算算竹竿顶端距离地面有多高吗？画个草图试试看谁是斜边。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将抽象定理还原到真实情境，体会勾股定理的应用价值，初步建立数学模型",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "如果老师只告诉你一个直角三角形的两条边长分别是3和4，并没有说哪条是直角边哪条是斜边。你能算出第三条边的长度吗？想一想，答案是不是只有一种？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.85,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "引入分类讨论思想，考察学生思维的严密性，避免盲目套用公式",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "大家看图17.1-3里的这个新的直角三角形，它的两条直角边不再一样长了。你能借助背景里的网格，数一数这两条直角边分别占了几个小格吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "引导学生将注意力转移到一般直角三角形的直角边上，通过数格子获取基础数据，降低认知起点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "正方形A和B是正着放的，很好数。但正方形C是倾斜的，直接数格子容易错。如果我们像书上提示的那样，在它外面画一个正着的大正方形把它完全框起来，你能看出这个大正方形的边长是多少吗？四个角落里多出来的直角三角形，面积又该怎么算呢？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "将计算倾斜正方形面积的复杂任务，拆解为计算外接大正方形和四个角落直角三角形的面积，提供具体的操作抓手。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "我们来看图17.1-6的赵爽弦图。这里有四个全等的直角三角形，如果它们的直角边分别是a和b，斜边是c，你能指出来，外面这个大正方形的边长对应的是哪条边吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "帮助学生在复杂图形中准确识别出大正方形的边长，建立图形与字母c的对应关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "大正方形的面积是c的平方，这个很直观。大家再仔细看看中间那个黄色的空心小正方形，它的一条边，刚好是较长的直角边b，减去较短的直角边a剩下的一截。你能试着用a和b把这个小正方形的边长表示出来吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "引导学生聚焦局部线段的加减关系，突破小正方形边长表示这一核心难点，为列等式扫清障碍。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "刚才我们列出的等式里包含了(b-a)的平方。在动手化简之前，谁能帮大家回忆一下，我们学过的完全平方公式(b-a)²展开后，应该是哪三项？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "激活学生对完全平方公式的记忆，提供化简等式必需的代数工具。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "把括号展开之后，式子里会出现一个‘减去2ab’。大家再看看等号右边的另一部分，四个直角三角形的面积加起来刚好是‘加上2ab’。当‘加上2ab’遇到‘减去2ab’，会发生什么奇妙的变化呢？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生关注代数式中一正一负两个2ab的抵消关系，体会代数化简的奇妙与简洁。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "在做练习第1题之前，我们先观察一下题目给出的三个图形。在这些直角三角形里，哪一条边是斜边c？你是怎么通过直角一眼把它找出来的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.2,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "强制要求学生在计算前先确认斜边，养成先找直角、再找斜边的良好解题习惯。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果题目已知两条直角边求斜边，我们把它们的平方相加；但如果像第(2)小题那样，已经知道了斜边和一条直角边，要求另一条直角边，我们的公式应该怎么变形？这时候是该用加法还是减法呢？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "通过对比两种不同的求边情况，帮助学生理清何时用加法、何时用减法，减少套用公式时的盲目性。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>循环控制三要素 - 课堂交互可视化</title>
+  <style>
+    :root {
+      --primary-color: #1e88e5;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --danger-color: #f44336;
+      --info-color: #00bcd4;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .classroom-container {
+      width: 100%;
+      max-width: 1000px;
+      aspect-ratio: 4 / 3;
+      background: var(--bg-color);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 4px solid #cbd5e1;
+    }
+
+    /* 顶部标题栏 */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 左侧控制面板 */
+    .control-panel {
+      width: 42%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border-right: 2px solid var(--border-color);
+      background-color: var(--card-bg);
+    }
+
+    .instruction {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-main);
+      background-color: #eff6ff;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    /* 交互卡片 */
+    .card-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .element-card {
+      background: var(--bg-color);
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .element-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .element-card.active-init {
+      border-style: solid;
+      border-color: var(--warning-color);
+      background-color: #fffbeb;
+    }
+    .element-card.active-cond {
+      border-style: solid;
+      border-color: var(--danger-color);
+      background-color: #fff5f5;
+    }
+    .element-card.active-step {
+      border-style: solid;
+      border-color: var(--info-color);
+      background-color: #ecfeff;
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-label {
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .active-init .card-label { color: #b45309; }
+    .active-cond .card-label { color: #b91c1c; }
+    .active-step .card-label { color: #0e7490; }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .status-badge {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #64748b;
+      font-weight: bold;
+    }
+    .active-init .status-badge { background: var(--warning-color); color: white; }
+    .active-cond .status-badge { background: var(--danger-color); color: white; }
+    .active-step .status-badge { background: var(--info-color); color: white; }
+
+    /* 模拟控制区 */
+    .simulation-box {
+      margin-top: auto;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sim-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .var-monitor {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e3a8a;
+      background: #e0f2fe;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background-color: var(--success-color);
+      color: white;
+    }
+    .btn-primary:hover { background-color: #388e3c; }
+    .btn-primary:disabled {
+      background-color: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: #64748b;
+      color: white;
+    }
+    .btn-secondary:hover { background-color: #475569; }
+
+    /* 运行日志控制台 */
+    .console-log {
+      height: 80px;
+      background: #0f172a;
+      color: #38bdf8;
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-line {
+      line-height: 1.4;
+    }
+    .log-success { color: #4ade80; }
+    .log-warning { color: #fbbf24; }
+    .log-error { color: #f87171; }
+
+    /* 右侧流程图面板 */
+    .flowchart-panel {
+      flex: 1;
+      background-color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      position: relative;
+    }
+
+    /* SVG 样式与动画 */
+    svg {
+      width: 100%;
+      height: 100%;
+      max-height: 540px;
+    }
+
+    .flow-node {
+      transition: all 0.3s ease;
+    }
+
+    /* 虚线框高亮状态 */
+    .flow-node.highlight-init rect {
+      stroke: var(--warning-color);
+      stroke-width: 3px;
+      stroke-dasharray: none;
+      fill: #fffbeb;
+      filter: drop-shadow(0px 0px 8px rgba(255,152,0,0.4));
+    }
+    .flow-node.highlight-cond polygon {
+      stroke: var(--danger-color);
+      stroke-width: 3px;
+      stroke-dasharray: none;
+      fill: #fff5f5;
+      filter: drop-shadow(0px 0px 8px rgba(244,67,54,0.4));
+    }
+    .flow-node.highlight-step rect {
+      stroke: var(--info-color);
+      stroke-width: 3px;
+      stroke-dasharray: none;
+      fill: #ecfeff;
+      filter: drop-shadow(0px 0px 8px rgba(0,188,212,0.4));
+    }
+
+    /* 运行中节点高亮 */
+    .node-running rect, .node-running polygon {
+      stroke: var(--success-color) !important;
+      stroke-width: 4px !important;
+      fill: #e8f5e9 !important;
+      stroke-dasharray: none !important;
+    }
+
+    /* 动画小球 */
+    #anim-dot {
+      filter: drop-shadow(0px 0px 6px #ffeb3b);
+    }
+  </style>
+</head>
+<body>
+
+<div class="classroom-container">
+  <!-- 顶部标题 -->
+  <div class="header">
+    <h1>🔍 寻找循环控制三要素</h1>
+    <div class="subtitle">信息技术 · 五年级</div>
+  </div>
+
+  <!-- 主内容区 -->
+  <div class="main-content">
+    <!-- 左侧控制面板 -->
+    <div class="control-panel">
+      <div class="instruction">
+        <strong>任务：</strong>“从1000开始，每次加1，一直到1100”。请点击下方要素，观察它们应该填在流程图的什么位置？
+      </div>
+
+      <div class="card-group">
+        <!-- 起点卡片 -->
+        <div class="element-card" id="card-init" data-target="init">
+          <div class="card-info">
+            <span class="card-label" style="color: var(--warning-color);">要素一</span>
+            <span class="card-title">起点：从 1000 开始</span>
+          </div>
+          <span class="status-badge" id="badge-init">点击定位</span>
+        </div>
+
+        <!-- 终点卡片 -->
+        <div class="element-card" id="card-cond" data-target="cond">
+          <div class="card-info">
+            <span class="card-label" style="color: var(--danger-color);">要素二</span>
+            <span class="card-title">终点：到 1100 结束</span>
+          </div>
+          <span class="status-badge" id="badge-cond">点击定位</span>
+        </div>
+
+        <!-- 步长卡片 -->
+        <div class="element-card" id="card-step" data-target="step">
+          <div class="card-info">
+            <span class="card-label" style="color: var(--info-color);">要素三</span>
+            <span class="card-title">每次变化：每次加 1</span>
+          </div>
+          <span class="status-badge" id="badge-step">点击定位</span>
+        </div>
+      </div>
+
+      <!-- 模拟运行控制 -->
+      <div class="simulation-box">
+        <div class="sim-header">
+          <span class="sim-title">🤖 流程模拟运行</span>
+          <div>变量 <span class="var-monitor" id="var-display">i = ?</span></div>
+        </div>
+        <div class="console-log" id="console-log">
+          <div class="log-line">[系统] 请先定位上方三个要素...</div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-run" disabled>▶ 运行演示</button>
+          <button class="btn btn-secondary" id="btn-reset">🔄 重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧流程图 -->
+    <div class="flowchart-panel">
+      <svg viewBox="0 0 500 600">
+        <!-- 箭头定义 -->
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+          </marker>
+          <marker id="arrow-active" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4caf50" />
+          </marker>
+        </defs>
+
+        <!-- 流程连接线 -->
+        <!-- 开始 -> 初始化 -->
+        <path d="M 250,55 L 250,90" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+        <!-- 初始化 -> 条件判断 -->
+        <path d="M 250,145 L 250,180" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+        <!-- 条件判断 -> 输出 (是) -->
+        <path d="M 250,280 L 250,315" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+        <!-- 输出 -> 步长累加 -->
+        <path d="M 250,370 L 250,405" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+        
+        <!-- 步长累加 -> 返回条件判断 (循环线) -->
+        <path d="M 250,460 L 250,490 L 80,490 L 80,162 L 250,162 L 250,180" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+        
+        <!-- 条件判断 -> 结束 (否) -->
+        <path d="M 365,230 L 405,230" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+
+        <!-- 节点：开始 -->
+        <g id="node-start" class="flow-node">
+          <rect x="190" y="15" width="120" height="40" rx="20" fill="#e2e8f0" stroke="#64748b" stroke-width="2" />
+          <text x="250" y="40" text-anchor="middle" font-size="15" font-weight="bold" fill="#334155">开始</text>
+        </g>
+
+        <!-- 节点：初始化 (起点) -->
+        <g id="node-init" class="flow-node">
+          <rect x="140" y="90" width="220" height="55" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+          <text x="250" y="118" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e293b">
+            i = <tspan id="txt-init" fill="#64748b">？</tspan>
+          </text>
+          <text x="250" y="135" text-anchor="middle" font-size="10" fill="#94a3b8">【 设定循环起点 】</text>
+        </g>
+
+        <!-- 节点：条件判断 (终点) -->
+        <g id="node-cond" class="flow-node">
+          <polygon points="250,180 365,230 250,280 135,230" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+          <text x="250" y="226" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">
+            i &lt;= <tspan id="txt-cond" fill="#64748b">？</tspan>
+          </text>
+          <text x="250" y="244" text-anchor="middle" font-size="10" fill="#94a3b8">【 判断是否到终点 】</text>
+          <!-- 分支标签 -->
+          <text x="265" y="302" font-size="13" font-weight="bold" fill="#22c55e">是</text>
+          <text x="380" y="220" font-size="13" font-weight="bold" fill="#ef4444">否</text>
+        </g>
+
+        <!-- 节点：输出 -->
+        <g id="node-print" class="flow-node">
+          <polygon points="160,315 340,315 320,370 140,370" fill="#f8fafc" stroke="#64748b" stroke-width="2" />
+          <text x="240" y="350" text-anchor="middle" font-size="15" font-weight="bold" fill="#334155">输出 i</text>
+        </g>
+
+        <!-- 节点：步长累加 (每次变化) -->
+        <g id="node-step" class="flow-node">
+          <rect x="140" y="405" width="220" height="55" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+          <text x="250" y="433" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e293b">
+            i = i + <tspan id="txt-step" fill="#64748b">？</tspan>
+          </text>
+          <text x="250" y="450" text-anchor="middle" font-size="10" fill="#94a3b8">【 设定每次的变化规律 】</text>
+        </g>
+
+        <!-- 节点：结束 -->
+        <g id="node-end" class="flow-node">
+          <rect x="405" y="210" width="80" height="40" rx="20" fill="#e2e8f0" stroke="#64748b" stroke-width="2" />
+          <text x="445" y="235" text-anchor="middle" font-size="15" font-weight="bold" fill="#334155">结束</text>
+        </g>
+
+        <!-- 动画指示球 -->
+        <circle id="anim-dot" r="8" fill="#facc15" stroke="#eab308" stroke-width="2" style="display: none;" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 状态管理
+  const state = {
+    init: { revealed: false, val: "1000", color: "var(--warning-color)" },
+    cond: { revealed: false, val: "1100", color: "var(--danger-color)" },
+    step: { revealed: false, val: "1", color: "var(--info-color)" }
+  };
+
+  let isRunning = false;
+  let stopRequested = false;
+
+  // DOM 元素
+  const cards = {
+    init: document.getElementById('card-init'),
+    cond: document.getElementById('card-cond'),
+    step: document.getElementById('card-step')
+  };
+
+  const badges = {
+    init: document.getElementById('badge-init'),
+    cond: document.getElementById('badge-cond'),
+    step: document.getElementById('badge-step')
+  };
+
+  const svgTexts = {
+    init: document.getElementById('txt-init'),
+    cond: document.getElementById('txt-cond'),
+    step: document.getElementById('txt-step')
+  };
+
+  const svgNodes = {
+    init: document.getElementById('node-init'),
+    cond: document.getElementById('node-cond'),
+    step: document.getElementById('node-step'),
+    start: document.getElementById('node-start'),
+    print: document.getElementById('node-print'),
+    end: document.getElementById('node-end')
+  };
+
+  const btnRun = document.getElementById('btn-run');
+  const btnReset = document.getElementById('btn-reset');
+  const consoleLog = document.getElementById('console-log');
+  const varDisplay = document.getElementById('var-display');
+  const animDot = document.getElementById('anim-dot');
+
+  // 工具函数：延迟
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  // 打印日志
+  function log(text, type = 'info') {
+    const line = document.createElement('div');
+    line.className = `log-line log-${type}`;
+    line.innerText = text;
+    consoleLog.appendChild(line);
+    consoleLog.scrollTop = consoleLog.scrollHeight;
+  }
+
+  // 激活/定位要素
+  function toggleElement(type) {
+    if (isRunning) return;
+
+    const item = state[type];
+    item.revealed = !item.revealed;
+
+    if (item.revealed) {
+      // 激活状态
+      cards[type].classList.add(`active-${type}`);
+      badges[type].innerText = "已定位";
+      svgTexts[type].innerText = item.val;
+      svgTexts[type].setAttribute('fill', item.color);
+      svgNodes[type].classList.add(`highlight-${type}`);
+      log(`[定位] 成功将“${type === 'init' ? '起点' : type === 'cond' ? '终点' : '步长'}”填入流程图！`, 'success');
+    } else {
+      // 取消激活
+      cards[type].classList.remove(`active-${type}`);
+      badges[type].innerText = "点击定位";
+      svgTexts[type].innerText = "？";
+      svgTexts[type].setAttribute('fill', '#64748b');
+      svgNodes[type].classList.remove(`highlight-${type}`);
+    }
+
+    // 检查是否全部定位完成
+    const allRevealed = state.init.revealed && state.cond.revealed && state.step.revealed;
+    btnRun.disabled = !allRevealed;
+    if (allRevealed) {
+      log("[系统] 恭喜！所有要素定位成功，可以点击【运行演示】观察执行过程。", "success");
+    }
+  }
+
+  // 绑定卡片点击事件
+  Object.keys(cards).forEach(type => {
+    cards[type].addEventListener('click', () => toggleElement(type));
+  });
+
+  // 动画小球移动
+  async function moveDot(x, y, duration = 500) {
+    animDot.style.display = 'block';
+    animDot.style.transition = `cx ${duration}ms ease-in-out, cy ${duration}ms ease-in-out`;
+    animDot.setAttribute('cx', x);
+    animDot.setAttribute('cy', y);
+    await sleep(duration);
+  }
+
+  // 高亮正在执行的节点
+  function highlightActiveNode(node) {
+    Object.values(svgNodes).forEach(n => n.classList.remove('node-running'));
+    if (node) {
+      node.classList.add('node-running');
+    }
+  }
+
+  // 运行演示
+  async function runSimulation() {
+    if (isRunning) return;
+    isRunning = true;
+    stopRequested = false;
+    btnRun.disabled = true;
+    Object.keys(cards).forEach(k => cards[k].style.pointerEvents = 'none');
+
+    consoleLog.innerHTML = '';
+    log("▶️ 开始模拟程序运行...", "info");
+
+    try {
+      // 1. 开始
+      highlightActiveNode(svgNodes.start);
+      await moveDot(250, 35, 0);
+      await sleep(600);
+      if (stopRequested) return;
+
+      // 2. 初始化
+      log("1. 执行初始化：设定起点 i = 1000", "warning");
+      highlightActiveNode(svgNodes.init);
+      varDisplay.innerText = "i = 1000";
+      await moveDot(250, 115, 600);
+      await sleep(800);
+      if (stopRequested) return;
+
+      // 循环体模拟 (展示前2次和最后1次)
+      let currentI = 1000;
+      
+      for (let stepCount = 1; stepCount <= 2; stepCount++) {
+        // 3. 判断条件
+        log(`[第 ${currentI - 999} 轮] 判断条件：i <= 1100 ?`, "info");
+        highlightActiveNode(svgNodes.cond);
+        await moveDot(250, 230, 600);
+        await sleep(600);
+        log(`   👉 ${currentI} <= 1100 成立 (是)`, "success");
+        await sleep(400);
+        if (stopRequested) return;
+
+        // 4. 输出
+        log(`   执行循环体：输出当前值`, "info");
+        highlightActiveNode(svgNodes.print);
+        await moveDot(250, 342, 500);
+        log(`   📺 [屏幕输出] ${currentI}`, "success");
+        await sleep(600);
+        if (stopRequested) return;
+
+        // 5. 步长累加
+        let nextI = currentI + 1;
+        log(`   执行步长：i 增加 1 (i = ${currentI} + 1)`, "info");
+        highlightActiveNode(svgNodes.step);
+        await moveDot(250, 432, 500);
+        varDisplay.innerText = `i = ${nextI}`;
+        await sleep(800);
+        if (stopRequested) return;
+
+        // 6. 循环返回
+        log(`   返回条件判断...`, "info");
+        highlightActiveNode(null);
+        await moveDot(250, 490, 200);
+        await moveDot(80, 490, 300);
+        await moveDot(80, 162, 400);
+        await moveDot(250, 162, 300);
+        currentI = nextI;
+      }
+
+      // 快速跳过中间过程
+      log("⚡ 循环继续进行中 (1002...1099)...", "warning");
+      await sleep(1200);
+      if (stopRequested) return;
+
+      // 模拟最后一轮 (i = 1100)
+      currentI = 1100;
+      varDisplay.innerText = "i = 1100";
+      log(`⏭️ 快速跳转到终点前夕：i = 1100`, "warning");
+      
+      // 判断条件 (1100)
+      log(`[最后一轮] 判断条件：i <= 1100 ?`, "info");
+      highlightActiveNode(svgNodes.cond);
+      await moveDot(250, 230, 500);
+      await sleep(600);
+      log(`   👉 1100 <= 1100 成立 (是)`, "success");
+      await sleep(400);
+      if (stopRequested) return;
+
+      // 输出 (1100)
+      highlightActiveNode(svgNodes.print);
+      await moveDot(250, 342, 500);
+      log(`   📺 [屏幕输出] 1100`, "success");
+      await sleep(600);
+      if (stopRequested) return;
+
+      // 步长累加 (1101)
+      log(`   执行步长：i 增加 1 (i = 1100 + 1)`, "info");
+      highlightActiveNode(svgNodes.step);
+      await moveDot(250, 432, 500);
+      varDisplay.innerText = "i = 1101";
+      await sleep(800);
+      if (stopRequested) return;
+
+      // 返回判断
+      highlightActiveNode(null);
+      await moveDot(250, 490, 200);
+      await moveDot(80, 490, 300);
+      await moveDot(80, 162, 400);
+      await moveDot(250, 162, 300);
+
+      // 最终判断 (1101)
+      log(`[终点判断] 判断条件：i <= 1100 ?`, "info");
+      highlightActiveNode(svgNodes.cond);
+      await moveDot(250, 230, 500);
+      await sleep(800);
+      log(`   ❌ 1101 <= 1100 不成立 (否！)`, "error");
+      await sleep(600);
+      if (stopRequested) return;
+
+      // 结束
+      log("🏁 退出循环，程序结束！", "success");
+      highlightActiveNode(svgNodes.end);
+      await moveDot(445, 230, 600);
+      await sleep(800);
+
+    } catch (e) {
+      console.error(e);
+    } finally {
+      resetSimulationState();
+    }
+  }
+
+  // 停止并重置模拟状态
+  function resetSimulationState() {
+    isRunning = false;
+    stopRequested = true;
+    animDot.style.display = 'none';
+    highlightActiveNode(null);
+    Object.keys(cards).forEach(k => cards[k].style.pointerEvents = 'auto');
+    btnRun.disabled = !(state.init.revealed && state.cond.revealed && state.step.revealed);
+  }
+
+  // 重置所有
+  function resetAll() {
+    resetSimulationState();
+    
+    // 重置要素状态
+    Object.keys(state).forEach(type => {
+      state[type].revealed = false;
+      cards[type].classList.remove(`active-${type}`);
+      badges[type].innerText = "点击定位";
+      svgTexts[type].innerText = "？";
+      svgTexts[type].setAttribute('fill', '#64748b');
+      svgNodes[type].classList.remove(`highlight-${type}`);
+    });
+
+    varDisplay.innerText = "i = ?";
+    consoleLog.innerHTML = '<div class="log-line">[系统] 请先定位上方三个要素...</div>';
+    btnRun.disabled = true;
+  }
+
+  // 绑定控制按钮
+  btnRun.addEventListener('click', runSimulation);
+  btnReset.addEventListener('click', resetAll);
+</script>
+
+</body>
+</html>

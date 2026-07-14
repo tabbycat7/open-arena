@@ -1,0 +1,828 @@
+{
+  "id": "1f8a88fe-2e4e-4d19-8713-803a3df1048b",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "1.理解并掌握圆锥的体积计算公式,能正确运用公式计算圆锥的体积，解决简单的实际问题。2.通过实验操作、观察比较、合作交流，经历圆锥体积公式的推导过程。3.培养动手操作能力、空间想象能力和归纳推理能力。",
+  "student_profile": "2．学情分析六年级学生已经具备了一定的空间想象能力和动手操作能力，能够理解“底面积×高”这一体积计算的基本模型。学生在之前的学习中已经掌握了圆柱的体积公式，并能运用公式解决简单实际问题。但对于圆锥这一“尖端”的立体图形，学生的直观认识较为模糊，容易混淆圆锥与圆柱的体积关系。因此，本课需要通过实验操作，让学生亲身体验“等底等高的圆锥与圆柱体积之间的关系”，从而深刻理解圆锥体积是等底等高圆柱体积的三分之一”这一核心结论。\r\n",
+  "difficulty_analysis": "三、教学重难点重点：圆锥体积公式的推导与应用，难点：理解圆锥体积是等底等高圆柱体积的三分之一。",
+  "language_style": "启发引导",
+  "model_id": "claude-opus-4-6",
+  "duration_seconds": 923.05,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，看看屏幕上这些图片——斗笠、漏斗、建筑上的通风孔帽，它们的形状都是圆锥。我们之前已经认识了圆锥，也学会了计算圆柱的体积。那现在请你想一想：要算一个圆锥的体积，我们至少需要知道圆锥的哪些信息？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，我们先来看这几张图片，斗笠、漏斗、通风孔帽，这些都是生活中常见的圆锥形物体。之前我们已经认识了圆锥的特征，今天我们要来研究圆锥的体积。不过在研究新问题之前，咱们先回忆一下旧知识。谁来说说，圆锥有哪些基本的组成部分？对，圆锥有一个圆形的底面，有一个顶点，还有从顶点到底面圆心的距离，叫做圆锥的高。那我再问大家，圆柱的体积公式是什么？没错，V等于S乘h，也就是底面积乘高。现在请你想一想，圆锥也有底面积，也有高，那圆锥的体积该怎么算呢？我们能不能也用底面积和高来求？这个问题先放在心里，带着这个疑问，我们一起往下探究。\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"design_intent\": \"以旧知复习为起点，确保全班学生对圆锥结构要素和圆柱体积公式的认知处于激活状态，同时通过'圆锥体积怎么算'的设问自然引出探究需求，为后续实验做认知准备\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"圆柱的底面是圆，圆锥的底面也是圆。如果有一个圆锥和一个圆柱，它们的底面一样大、高也一样高，你猜圆锥的体积大概是圆柱体积的多少？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，刚才我们说到圆锥的体积可能跟底面积和高有关。课本上也提出了这样一个问题——圆锥的体积和圆柱的体积有没有关系呢？你们想想看，圆柱和圆锥都有圆形的底面，也都有高。如果把一个圆锥和一个圆柱放在一起比，底面一样大，高也一样高，你觉得圆锥的体积大概是圆柱的多少？是一半？三分之一？还是其他的比例？先不急着翻书，凭你的感觉和经验，大胆猜一猜，还要说说你为什么这么猜。有同学可能觉得圆锥看上去差不多是圆柱的一半，也有同学可能觉得更少一些。猜想不怕错，关键是我们接下来要想办法验证。那怎么验证呢？用什么方法能知道我们的猜想对不对？大家先在小组里讨论讨论。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.6, \"design_intent\": \"通过猜想活动激发学生的探究欲望，让学生带着自己的猜想进入实验环节，使后续实验结果对学生产生认知冲击（特别是猜1/2的学生），增强学习的主动性和深度\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"现在每个小组都有一个圆柱容器和一个圆锥容器，它们是等底等高的。请你用圆锥装满沙子往圆柱里倒，看看倒几次正好能把圆柱倒满？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"好，刚才大家做了各种各样的猜想，有猜二分之一的，有猜三分之一的，到底谁猜对了呢？光猜可不行，我们得动手试一试。现在请各小组拿出你们的实验材料——一个圆锥形容器和一个圆柱形容器。注意，这两个容器是等底等高的，也就是它们的底面一样大，高也一样高，这一点非常重要。接下来，请你们用圆锥装满沙子，把沙子倒进圆柱里。装的时候一定要装满、刮平，倒的时候小心一点，别洒出来。然后再装满一次，再倒进去。看看一共需要倒几次，才能正好把圆柱倒满。每个小组做完之后，把你们观察到的结果记下来。注意，是正好倒满，不是多出来也不是不够。好，开始实验吧。——同学们，你们的实验结果是什么？倒了几次？对，三次！用圆锥装满沙子往圆柱里倒，正好倒三次倒满。那这个结果说明了什么呢？我们下一步一起来分析。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"让学生通过亲身操作获得'三次倒满'的直观体验，为后续从现象到公式的归纳推理提供坚实的经验基础。实验的亲历性是学生理解1/3关系的关键，不能用讲授替代\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"三次正好倒满——这个实验结果用数学语言怎么说？圆锥的体积和等底等高的圆柱体积到底是什么关系？你能写出圆锥的体积公式吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，刚才实验的结果大家都看到了：用圆锥装满沙子往等底等高的圆柱里倒，正好倒了三次才倒满。三次倒满，意味着什么？一个圆柱的体积正好等于三个圆锥的体积，反过来说，一个圆锥的体积就是同它等底等高的圆柱体积的多少？对，三分之一。那圆柱的体积是V等于Sh，圆锥的体积就是三分之一Sh。谁来把这个公式完整地写一遍？V圆锥等于三分之一Sh。非常好。不过我要追问大家一个很关键的问题：是不是随便拿一个圆锥和一个圆柱，圆锥的体积都是圆柱的三分之一？想想看，我们做实验的时候，用的圆柱和圆锥有什么特别的要求？对，必须是等底等高的。如果底面不一样大，或者高不一样，这个三分之一的关系就不一定成立了。所以这个公式V等于三分之一Sh，用的时候一定要记住：S是圆锥自己的底面积，h是圆锥自己的高，前面还有一个三分之一，千万不能丢。\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"这是本课的核心建构环节，承载从实验现象到数学公式的关键跨越。通过引导学生经历'现象→关系→公式'的完整归纳过程，让学生真正理解公式的来源而非机械记忆。追问'等底等高'条件是培养学生条件意识和批判性思维的重要环节\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"课本上有这样一道题：一个圆锥形的零件，底面积是19平方厘米，高是12厘米。这个零件的体积是多少？请你用刚才推导出的公式算一算。\", \"question_type\": \"main\", \"lesson_presentation_script\": \"好，公式我们已经推导出来了，V等于三分之一Sh。光记住还不行，得会用。我们来试一试。课本做一做里有这样一道题：一个圆锥形零件，底面积是19平方厘米，高是12厘米，求它的体积。这道题已经直接告诉你底面积和高了，你只需要把数据代进公式里去算。请大家在练习本上写出完整的计算过程。写的时候特别注意一件事——公式里的三分之一可不能忘。有的同学一看到底面积乘高，手一快就写成19乘12等于228了，这就变成算圆柱体积了。圆锥的体积要在前面乘三分之一。好，算一下，V等于三分之一乘19乘12。19乘12等于228，228的三分之一是多少？228除以3等于76。所以这个零件的体积是76立方厘米。大家算对了吗？记住，以后每次算圆锥体积，第一步就先写三分之一，提醒自己别忘了。\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"在公式建构后立即进行最简单的直接应用，通过已知底面积和高的题型让学生专注于公式本身的正确使用，排除其他干扰因素，建立正确的计算习惯，特别是强化'不忘乘1/3'的意识\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"工地上有一堆沙子，形状近似于一个圆锥，底面直径是4米，高是1.5米。注意，这次题目给的不是底面积，而是底面直径。你能算出这堆沙子的体积吗？如果每立方米沙子大约重1.5吨，这堆沙子大约重多少吨？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，刚才那道题底面积是直接告诉你的，算起来很顺畅。但是在实际生活中，很多时候题目不会直接给你底面积，而是给你直径或者半径。比如课本上的这道例题：工地上有一堆圆锥形的沙子，底面直径4米，高1.5米。注意审题，题目给的是直径4米，不是半径。那我们第一步该做什么？对，先求半径，4除以2等于2米。第二步呢？求底面积，S等于π r²，也就是3.14乘2的平方，3.14乘4等于12.56平方米。第三步，求体积，V等于三分之一乘12.56乘1.5。大家先自己算一算。12.56乘1.5等于18.84，再乘三分之一，18.84除以3等于6.28立方米。题目还问了这堆沙子大约重多少吨，每立方米重1.5吨，所以6.28乘1.5等于9.42吨。大家看，这道题一共要经过好几步：直径除以2得半径，再求底面积，再求体积，最后求重量。每一步都不能跳。特别要注意，千万别把直径当成半径直接代进去。现在请大家独立完成课本做一做的第二题——铅锤那道题，底面直径4厘米，高6厘米，每立方厘米钢重7.9克，算算这个铅锤大约重多少克。\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"将公式应用置于真实情境中，训练学生的信息提取能力、多步骤规划能力和完整解题能力。通过沙堆和铅锤两个不同情境的题目，让学生体会圆锥体积公式在实际生活中的广泛应用\", \"design_rationale\": \"\"}, {\"id\": \"M7\", \"content\": \"今天这节课，我们从实验一步步推导出了圆锥的体积公式。现在我想请你回顾一下：圆锥的体积公式是什么？它是怎么得来的？用这个公式的时候最容易犯什么错误？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，这节课我们的收获可不少。我们先来回顾一下整个学习过程：一开始我们回顾了圆锥的特征和圆柱体积公式，然后大胆猜想圆锥体积和圆柱体积的关系，接着通过倒沙实验发现用圆锥往等底等高的圆柱里倒，正好三次倒满，由此得出圆锥体积等于三分之一Sh。最后我们用这个公式解决了好几道实际问题。那现在我来考考大家。有人说：圆锥的体积一定是圆柱体积的三分之一。这句话对吗？想一想。不对！必须加一个前提——等底等高。只有等底等高的圆锥和圆柱，圆锥的体积才是圆柱体积的三分之一。如果底面不一样大或者高不一样，这个关系就不成立了。再想想，用公式计算的时候，最容易犯的错误是什么？第一，忘记乘三分之一；第二，把直径当成半径。这两个坑，大家以后一定要绕开。最后给大家分享一个有趣的知识：课本上讲到蚁狮会挖出圆锥形的洞穴当陷阱来捕捉蚂蚁。如果你知道那个洞穴的底面直径和深度，你现在就能算出它的体积了。课后有兴趣的同学可以查一查蚁狮洞穴的数据，算一算哦。\", \"knowledge_points\": [\"KP3\", \"KP4\", \"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.8, \"design_intent\": \"通过总结反思帮助学生将零散的知识点整合为系统化的认知结构，通过易错辨析题暴露并纠正残存的认知偏差，特别是强化'等底等高'条件意识。趣味拓展为课后学习留下延伸空间\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"三角形的面积需要知道底和高，圆锥的体积也需要知道'底'和'高'。但圆锥的'底'和三角形的'底'一样吗？请你说说，圆锥的'底'到底指的是什么，它和三角形的'底'有什么不同？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.55, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过将圆锥与三角形并列，帮助学生区分平面图形面积要素和立体图形体积要素，强化对圆锥结构要素（底面积、高）的准确提取能力\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"小明量了一个圆锥形冰淇淋壳的四个数据：底面半径2厘米、底面直径4厘米、侧面的斜边长5厘米、高4.5厘米。如果要算这个冰淇淋壳的体积，这四个数据都要用上吗？哪些是必须的，哪些是多余的？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.58, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过信息冗余的情境，让学生主动筛选有用信息，深化对'求圆锥体积至少需要哪些量'的理解，避免死记公式而不知道公式里每个量的含义\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"有一个又矮又胖的圆锥，底面比旁边的圆柱大很多，但高只有圆柱的一半。这个圆锥的体积还会比圆柱小吗？你觉得比较圆锥和圆柱的体积，光看形状够不够？还需要什么前提条件？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.62, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"在猜想环节就制造认知冲突，让学生意识到'底面不同或高不同'时，圆锥和圆柱的体积关系不确定，为后续实验中强调'等底等高'条件做铺垫\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"甜筒冰淇淋的蛋筒是圆锥形的，杯装冰淇淋的杯子是圆柱形的。假如蛋筒和杯子的底面一样大、高也一样高，你觉得要把几个蛋筒里的冰淇淋合在一起，才能刚好装满一个杯子？说说你的理由。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.58, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"用学生日常接触的食品情境激发猜想兴趣，让学生从'装得多还是装得少'的生活直觉出发，自然产生对体积关系的好奇心，增强探究动机\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"刚才我们是用圆锥往圆柱里倒沙子。现在反过来想：如果用等底等高的圆柱装满一整杯沙子，往空的圆锥里倒，每次倒满一个圆锥就把沙子倒掉，你猜圆柱里的沙子够倒满几个圆锥？这和刚才的实验结果矛盾吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过反向操作让学生从不同角度确认三分之一的关系，同时训练学生将实验现象与数学关系双向对应的能力\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"隔壁小组做实验时，用圆锥装满沙子往圆柱里倒，只倒了两次圆柱就满了。他们说：'圆锥的体积是圆柱的二分之一。'你觉得他们的结论对吗？可能是什么原因导致只倒了两次就满了？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过错误实验的辨析，强化学生对'等底等高'这一实验前提的理解，培养学生的实验条件意识和批判性思维\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"一个圆锥底面积是6平方厘米、高是9厘米，旁边有一个圆柱底面积是9平方厘米、高也是9厘米。小红说：'圆锥的体积一定是圆柱体积的三分之一。'你同意吗？请你算一算，看看圆锥的体积到底是不是这个圆柱体积的三分之一。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过具体数值的反例，让学生亲自计算验证'不等底等高时三分之一关系不成立'，将条件意识从口头认知转化为数学确认\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"圆柱的体积公式是V=Sh，圆锥的体积公式是V=⅓Sh。这两个公式长得很像，只差了一个⅓。请你解释一下：这个⅓是从哪里来的？如果有人把圆锥的体积算成了V=Sh，他实际上算的是什么的体积？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过公式对比帮助学生建立圆锥与圆柱体积公式之间的结构性联系，深化对1/3来源的理解，防止将公式孤立记忆\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"一个圆锥形的沙堆，体积是76立方米，高是12米。请你用圆锥体积公式反过来算一算：这个沙堆的底面积是多少平方米？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过逆向求解，检验学生是否真正理解公式中三个量的关系，而不是只会'代入算体积'的单向操作\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"小华算一个圆锥的体积，底面积是15平方厘米，高是8厘米。他写的算式是：V=15×8=120立方厘米。小华的计算过程有没有问题？如果有，错在哪里？正确答案应该是多少？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"用找错的方式让学生主动辨析最常见的计算错误，比直接提醒'别忘乘1/3'更能形成深层记忆\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"一个冰淇淋蛋筒的形状近似圆锥，底面半径是2.5厘米，高是10厘米。这个蛋筒最多能装多少立方厘米的冰淇淋？注意看清楚，这次题目给的是半径还是直径？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过给半径而非直径，与主干题形成对照，帮助学生养成审题时先分辨'题目给的是半径还是直径'的习惯，减少混淆错误\", \"design_rationale\": \"\"}, {\"id\": \"V6-2\", \"content\": \"粮仓里有一堆圆锥形的麦子和一个圆柱形的粮桶，它们的底面直径都是3米，高都是2米。请你分别算出麦堆的体积和粮桶能装多少立方米的粮食。算完之后想一想：麦堆里的麦子能装满这个粮桶吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.82, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过同一情境中圆锥和圆柱的并列计算，让学生在实际操作中深刻体会两个公式的区别，同时巩固多步骤解题能力\", \"design_rationale\": \"\"}, {\"id\": \"V7-1\", \"content\": \"下面这句话对不对？'一个圆锥的体积等于一个圆柱体积的三分之一。'如果你觉得不对，请你把它改成一句正确的话，一个字都不能多，也不能少关键信息。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\", \"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.78, \"main_id\": \"M7\", \"parent_id\": \"M7\", \"variation_type\": \"\", \"design_intent\": \"通过判断典型错误说法，帮助学生在课堂结束前对本课核心易错点做一次系统性辨析，形成清晰的认知边界\", \"design_rationale\": \"\"}, {\"id\": \"V7-2\", \"content\": \"科学家观察到一只蚁狮挖的陷阱洞穴近似圆锥形，洞口直径大约是5厘米，深度大约是3厘米。请你用今天学的公式算一算，这个小陷阱的体积大约是多少立方厘米？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"main_id\": \"M7\", \"parent_id\": \"M7\", \"variation_type\": \"\", \"design_intent\": \"呼应课堂结尾的趣味拓展，用蚁狮洞穴的真实数据让学生体会数学在自然观察中的应用价值，同时作为本课公式应用的综合检验\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"同学们，圆柱有底面，有高；圆锥也有底面，也有高。你觉得圆柱和圆锥，哪些地方长得像？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.25, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生显性化圆柱和圆锥的共同结构要素（都有底面、都有高），为后续'等底等高比较'建立认知前提\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"圆柱的体积等于底面积乘高。现在圆锥也有底面积，也有高，那你觉得圆锥的体积会不会跟圆柱的体积有点关系？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"引导学生注意到圆锥也具备底面积和高这两个量，从而自然产生'能不能借助圆柱体积来研究圆锥体积'的想法，为M2的猜想活动做好铺垫\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"同学们，如果你想知道一个大杯子能装几个小杯子的水，你会怎么做？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.28, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生理解'验证倍数关系'可以通过装倒的方式来实现，降低从猜想到实验之间的认知跳跃\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"在开始倒沙子之前，我们先仔细看看这两个容器。你觉得，要让倒的次数能告诉我们体积的倍数关系，这两个容器在大小上需要满足什么特别的条件吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.32, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"在实验开始前，引导学生关注两个容器必须满足的特殊条件，确保学生理解实验设计的逻辑前提\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"你倒了三次才把圆柱装满。那换句话说，一个圆柱里面能装几个圆锥那么多的沙子？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生将'三次倒满'这个操作经验翻译成'一个圆柱的体积等于三个圆锥的体积'的数量关系，为公式推导搭建第一步\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"三个圆锥的体积合起来等于一个圆柱的体积。那反过来想，一个圆锥的体积是这个圆柱体积的几分之几？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生从'三个圆锥等于一个圆柱'反过来思考'一个圆锥等于圆柱的几分之几'，为写出公式中的1/3做好准备\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"公式V等于三分之一Sh里面有S和h。这道题告诉我们底面积是19平方厘米，高是12厘米。那S是多少？h是多少？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生逐一确认公式中S和h分别对应题目中的哪个已知数据，建立从公式到题目信息的对应关系\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果直接用19乘12，算出来的是圆柱的体积还是圆锥的体积？要算圆锥的体积，还需要怎么做？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"在学生动笔计算之前，专门提醒圆锥体积公式与圆柱体积公式的关键区别，强化'不忘乘1/3'的意识\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"同学们，这道题告诉我们的信息，和上一道题有什么不一样？上一题直接给了底面积，这一题给的是什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.28, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"引导学生主动发现新题与旧题在已知信息上的不同，意识到这道题需要多做一步转换\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"题目说底面直径是4米。那半径是多少？你是怎么从直径得到半径的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生回忆直径和半径的关系，确保学生在计算前能正确地从直径得到半径\", \"design_rationale\": \"\"}, {\"id\": \"S5-3\", \"content\": \"这道题最后要求沙子的重量。要算重量，我们首先需要知道什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"通过一个小问引导学生意识到'要求重量先求体积，要求体积先求底面积'，帮助学生找到第一步该做什么，降低多步骤规划的认知负荷\", \"design_rationale\": \"\"}, {\"id\": \"S6-1\", \"content\": \"同学们，我们的圆锥体积公式是通过什么活动发现的？当时我们用圆锥往圆柱里倒了几次沙子？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_id\": \"M6\", \"to_id\": \"M7\", \"from_main_id\": \"M6\", \"to_main_id\": \"M7\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生回到公式的来源，为M7的总结反思做好准备，让学生能说出公式是怎么得来的\", \"design_rationale\": \"\"}, {\"id\": \"S6-2\", \"content\": \"做实验的时候，我们用的圆柱和圆锥有一个很重要的要求。你还记得是什么要求吗？如果不满足这个要求，三分之一的关系还成立吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.32, \"from_id\": \"M6\", \"to_id\": \"M7\", \"from_main_id\": \"M6\", \"to_main_id\": \"M7\", \"bridge_function\": \"\", \"design_intent\": \"在进入总结环节前，再次引导学生关注'等底等高'条件，为M7中的易错辨析做好铺垫\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M6\", \"target\": \"M7\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M7\", \"target\": \"V7-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M7\", \"target\": \"V7-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"S5-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-3\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M6\", \"target\": \"S6-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S6-1\", \"target\": \"S6-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S6-2\", \"target\": \"M7\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-06 11:32:48",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，看看屏幕上这些图片——斗笠、漏斗、建筑上的通风孔帽，它们的形状都是圆锥。我们之前已经认识了圆锥，也学会了计算圆柱的体积。那现在请你想一想：要算一个圆锥的体积，我们至少需要知道圆锥的哪些信息？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，我们先来看这几张图片，斗笠、漏斗、通风孔帽，这些都是生活中常见的圆锥形物体。之前我们已经认识了圆锥的特征，今天我们要来研究圆锥的体积。不过在研究新问题之前，咱们先回忆一下旧知识。谁来说说，圆锥有哪些基本的组成部分？对，圆锥有一个圆形的底面，有一个顶点，还有从顶点到底面圆心的距离，叫做圆锥的高。那我再问大家，圆柱的体积公式是什么？没错，V等于S乘h，也就是底面积乘高。现在请你想一想，圆锥也有底面积，也有高，那圆锥的体积该怎么算呢？我们能不能也用底面积和高来求？这个问题先放在心里，带着这个疑问，我们一起往下探究。",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "design_intent": "以旧知复习为起点，确保全班学生对圆锥结构要素和圆柱体积公式的认知处于激活状态，同时通过'圆锥体积怎么算'的设问自然引出探究需求，为后续实验做认知准备",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "圆柱的底面是圆，圆锥的底面也是圆。如果有一个圆锥和一个圆柱，它们的底面一样大、高也一样高，你猜圆锥的体积大概是圆柱体积的多少？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，刚才我们说到圆锥的体积可能跟底面积和高有关。课本上也提出了这样一个问题——圆锥的体积和圆柱的体积有没有关系呢？你们想想看，圆柱和圆锥都有圆形的底面，也都有高。如果把一个圆锥和一个圆柱放在一起比，底面一样大，高也一样高，你觉得圆锥的体积大概是圆柱的多少？是一半？三分之一？还是其他的比例？先不急着翻书，凭你的感觉和经验，大胆猜一猜，还要说说你为什么这么猜。有同学可能觉得圆锥看上去差不多是圆柱的一半，也有同学可能觉得更少一些。猜想不怕错，关键是我们接下来要想办法验证。那怎么验证呢？用什么方法能知道我们的猜想对不对？大家先在小组里讨论讨论。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.6,
+        "design_intent": "通过猜想活动激发学生的探究欲望，让学生带着自己的猜想进入实验环节，使后续实验结果对学生产生认知冲击（特别是猜1/2的学生），增强学习的主动性和深度",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "现在每个小组都有一个圆柱容器和一个圆锥容器，它们是等底等高的。请你用圆锥装满沙子往圆柱里倒，看看倒几次正好能把圆柱倒满？",
+        "question_type": "main",
+        "lesson_presentation_script": "好，刚才大家做了各种各样的猜想，有猜二分之一的，有猜三分之一的，到底谁猜对了呢？光猜可不行，我们得动手试一试。现在请各小组拿出你们的实验材料——一个圆锥形容器和一个圆柱形容器。注意，这两个容器是等底等高的，也就是它们的底面一样大，高也一样高，这一点非常重要。接下来，请你们用圆锥装满沙子，把沙子倒进圆柱里。装的时候一定要装满、刮平，倒的时候小心一点，别洒出来。然后再装满一次，再倒进去。看看一共需要倒几次，才能正好把圆柱倒满。每个小组做完之后，把你们观察到的结果记下来。注意，是正好倒满，不是多出来也不是不够。好，开始实验吧。——同学们，你们的实验结果是什么？倒了几次？对，三次！用圆锥装满沙子往圆柱里倒，正好倒三次倒满。那这个结果说明了什么呢？我们下一步一起来分析。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "让学生通过亲身操作获得'三次倒满'的直观体验，为后续从现象到公式的归纳推理提供坚实的经验基础。实验的亲历性是学生理解1/3关系的关键，不能用讲授替代",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "三次正好倒满——这个实验结果用数学语言怎么说？圆锥的体积和等底等高的圆柱体积到底是什么关系？你能写出圆锥的体积公式吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，刚才实验的结果大家都看到了：用圆锥装满沙子往等底等高的圆柱里倒，正好倒了三次才倒满。三次倒满，意味着什么？一个圆柱的体积正好等于三个圆锥的体积，反过来说，一个圆锥的体积就是同它等底等高的圆柱体积的多少？对，三分之一。那圆柱的体积是V等于Sh，圆锥的体积就是三分之一Sh。谁来把这个公式完整地写一遍？V圆锥等于三分之一Sh。非常好。不过我要追问大家一个很关键的问题：是不是随便拿一个圆锥和一个圆柱，圆锥的体积都是圆柱的三分之一？想想看，我们做实验的时候，用的圆柱和圆锥有什么特别的要求？对，必须是等底等高的。如果底面不一样大，或者高不一样，这个三分之一的关系就不一定成立了。所以这个公式V等于三分之一Sh，用的时候一定要记住：S是圆锥自己的底面积，h是圆锥自己的高，前面还有一个三分之一，千万不能丢。",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "这是本课的核心建构环节，承载从实验现象到数学公式的关键跨越。通过引导学生经历'现象→关系→公式'的完整归纳过程，让学生真正理解公式的来源而非机械记忆。追问'等底等高'条件是培养学生条件意识和批判性思维的重要环节",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "课本上有这样一道题：一个圆锥形的零件，底面积是19平方厘米，高是12厘米。这个零件的体积是多少？请你用刚才推导出的公式算一算。",
+        "question_type": "main",
+        "lesson_presentation_script": "好，公式我们已经推导出来了，V等于三分之一Sh。光记住还不行，得会用。我们来试一试。课本做一做里有这样一道题：一个圆锥形零件，底面积是19平方厘米，高是12厘米，求它的体积。这道题已经直接告诉你底面积和高了，你只需要把数据代进公式里去算。请大家在练习本上写出完整的计算过程。写的时候特别注意一件事——公式里的三分之一可不能忘。有的同学一看到底面积乘高，手一快就写成19乘12等于228了，这就变成算圆柱体积了。圆锥的体积要在前面乘三分之一。好，算一下，V等于三分之一乘19乘12。19乘12等于228，228的三分之一是多少？228除以3等于76。所以这个零件的体积是76立方厘米。大家算对了吗？记住，以后每次算圆锥体积，第一步就先写三分之一，提醒自己别忘了。",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "在公式建构后立即进行最简单的直接应用，通过已知底面积和高的题型让学生专注于公式本身的正确使用，排除其他干扰因素，建立正确的计算习惯，特别是强化'不忘乘1/3'的意识",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "工地上有一堆沙子，形状近似于一个圆锥，底面直径是4米，高是1.5米。注意，这次题目给的不是底面积，而是底面直径。你能算出这堆沙子的体积吗？如果每立方米沙子大约重1.5吨，这堆沙子大约重多少吨？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，刚才那道题底面积是直接告诉你的，算起来很顺畅。但是在实际生活中，很多时候题目不会直接给你底面积，而是给你直径或者半径。比如课本上的这道例题：工地上有一堆圆锥形的沙子，底面直径4米，高1.5米。注意审题，题目给的是直径4米，不是半径。那我们第一步该做什么？对，先求半径，4除以2等于2米。第二步呢？求底面积，S等于π r²，也就是3.14乘2的平方，3.14乘4等于12.56平方米。第三步，求体积，V等于三分之一乘12.56乘1.5。大家先自己算一算。12.56乘1.5等于18.84，再乘三分之一，18.84除以3等于6.28立方米。题目还问了这堆沙子大约重多少吨，每立方米重1.5吨，所以6.28乘1.5等于9.42吨。大家看，这道题一共要经过好几步：直径除以2得半径，再求底面积，再求体积，最后求重量。每一步都不能跳。特别要注意，千万别把直径当成半径直接代进去。现在请大家独立完成课本做一做的第二题——铅锤那道题，底面直径4厘米，高6厘米，每立方厘米钢重7.9克，算算这个铅锤大约重多少克。",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "将公式应用置于真实情境中，训练学生的信息提取能力、多步骤规划能力和完整解题能力。通过沙堆和铅锤两个不同情境的题目，让学生体会圆锥体积公式在实际生活中的广泛应用",
+        "design_rationale": ""
+      },
+      {
+        "id": "M7",
+        "content": "今天这节课，我们从实验一步步推导出了圆锥的体积公式。现在我想请你回顾一下：圆锥的体积公式是什么？它是怎么得来的？用这个公式的时候最容易犯什么错误？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，这节课我们的收获可不少。我们先来回顾一下整个学习过程：一开始我们回顾了圆锥的特征和圆柱体积公式，然后大胆猜想圆锥体积和圆柱体积的关系，接着通过倒沙实验发现用圆锥往等底等高的圆柱里倒，正好三次倒满，由此得出圆锥体积等于三分之一Sh。最后我们用这个公式解决了好几道实际问题。那现在我来考考大家。有人说：圆锥的体积一定是圆柱体积的三分之一。这句话对吗？想一想。不对！必须加一个前提——等底等高。只有等底等高的圆锥和圆柱，圆锥的体积才是圆柱体积的三分之一。如果底面不一样大或者高不一样，这个关系就不成立了。再想想，用公式计算的时候，最容易犯的错误是什么？第一，忘记乘三分之一；第二，把直径当成半径。这两个坑，大家以后一定要绕开。最后给大家分享一个有趣的知识：课本上讲到蚁狮会挖出圆锥形的洞穴当陷阱来捕捉蚂蚁。如果你知道那个洞穴的底面直径和深度，你现在就能算出它的体积了。课后有兴趣的同学可以查一查蚁狮洞穴的数据，算一算哦。",
+        "knowledge_points": [
+          "KP3",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.8,
+        "design_intent": "通过总结反思帮助学生将零散的知识点整合为系统化的认知结构，通过易错辨析题暴露并纠正残存的认知偏差，特别是强化'等底等高'条件意识。趣味拓展为课后学习留下延伸空间",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "三角形的面积需要知道底和高，圆锥的体积也需要知道'底'和'高'。但圆锥的'底'和三角形的'底'一样吗？请你说说，圆锥的'底'到底指的是什么，它和三角形的'底'有什么不同？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.55,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过将圆锥与三角形并列，帮助学生区分平面图形面积要素和立体图形体积要素，强化对圆锥结构要素（底面积、高）的准确提取能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "小明量了一个圆锥形冰淇淋壳的四个数据：底面半径2厘米、底面直径4厘米、侧面的斜边长5厘米、高4.5厘米。如果要算这个冰淇淋壳的体积，这四个数据都要用上吗？哪些是必须的，哪些是多余的？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.58,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过信息冗余的情境，让学生主动筛选有用信息，深化对'求圆锥体积至少需要哪些量'的理解，避免死记公式而不知道公式里每个量的含义",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "有一个又矮又胖的圆锥，底面比旁边的圆柱大很多，但高只有圆柱的一半。这个圆锥的体积还会比圆柱小吗？你觉得比较圆锥和圆柱的体积，光看形状够不够？还需要什么前提条件？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.62,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "在猜想环节就制造认知冲突，让学生意识到'底面不同或高不同'时，圆锥和圆柱的体积关系不确定，为后续实验中强调'等底等高'条件做铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "甜筒冰淇淋的蛋筒是圆锥形的，杯装冰淇淋的杯子是圆柱形的。假如蛋筒和杯子的底面一样大、高也一样高，你觉得要把几个蛋筒里的冰淇淋合在一起，才能刚好装满一个杯子？说说你的理由。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.58,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "用学生日常接触的食品情境激发猜想兴趣，让学生从'装得多还是装得少'的生活直觉出发，自然产生对体积关系的好奇心，增强探究动机",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "刚才我们是用圆锥往圆柱里倒沙子。现在反过来想：如果用等底等高的圆柱装满一整杯沙子，往空的圆锥里倒，每次倒满一个圆锥就把沙子倒掉，你猜圆柱里的沙子够倒满几个圆锥？这和刚才的实验结果矛盾吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过反向操作让学生从不同角度确认三分之一的关系，同时训练学生将实验现象与数学关系双向对应的能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "隔壁小组做实验时，用圆锥装满沙子往圆柱里倒，只倒了两次圆柱就满了。他们说：'圆锥的体积是圆柱的二分之一。'你觉得他们的结论对吗？可能是什么原因导致只倒了两次就满了？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过错误实验的辨析，强化学生对'等底等高'这一实验前提的理解，培养学生的实验条件意识和批判性思维",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "一个圆锥底面积是6平方厘米、高是9厘米，旁边有一个圆柱底面积是9平方厘米、高也是9厘米。小红说：'圆锥的体积一定是圆柱体积的三分之一。'你同意吗？请你算一算，看看圆锥的体积到底是不是这个圆柱体积的三分之一。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过具体数值的反例，让学生亲自计算验证'不等底等高时三分之一关系不成立'，将条件意识从口头认知转化为数学确认",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "圆柱的体积公式是V=Sh，圆锥的体积公式是V=⅓Sh。这两个公式长得很像，只差了一个⅓。请你解释一下：这个⅓是从哪里来的？如果有人把圆锥的体积算成了V=Sh，他实际上算的是什么的体积？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过公式对比帮助学生建立圆锥与圆柱体积公式之间的结构性联系，深化对1/3来源的理解，防止将公式孤立记忆",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "一个圆锥形的沙堆，体积是76立方米，高是12米。请你用圆锥体积公式反过来算一算：这个沙堆的底面积是多少平方米？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过逆向求解，检验学生是否真正理解公式中三个量的关系，而不是只会'代入算体积'的单向操作",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "小华算一个圆锥的体积，底面积是15平方厘米，高是8厘米。他写的算式是：V=15×8=120立方厘米。小华的计算过程有没有问题？如果有，错在哪里？正确答案应该是多少？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "用找错的方式让学生主动辨析最常见的计算错误，比直接提醒'别忘乘1/3'更能形成深层记忆",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "一个冰淇淋蛋筒的形状近似圆锥，底面半径是2.5厘米，高是10厘米。这个蛋筒最多能装多少立方厘米的冰淇淋？注意看清楚，这次题目给的是半径还是直径？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过给半径而非直径，与主干题形成对照，帮助学生养成审题时先分辨'题目给的是半径还是直径'的习惯，减少混淆错误",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-2",
+        "content": "粮仓里有一堆圆锥形的麦子和一个圆柱形的粮桶，它们的底面直径都是3米，高都是2米。请你分别算出麦堆的体积和粮桶能装多少立方米的粮食。算完之后想一想：麦堆里的麦子能装满这个粮桶吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.82,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过同一情境中圆锥和圆柱的并列计算，让学生在实际操作中深刻体会两个公式的区别，同时巩固多步骤解题能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V7-1",
+        "content": "下面这句话对不对？'一个圆锥的体积等于一个圆柱体积的三分之一。'如果你觉得不对，请你把它改成一句正确的话，一个字都不能多，也不能少关键信息。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.78,
+        "main_id": "M7",
+        "parent_id": "M7",
+        "variation_type": "",
+        "design_intent": "通过判断典型错误说法，帮助学生在课堂结束前对本课核心易错点做一次系统性辨析，形成清晰的认知边界",
+        "design_rationale": ""
+      },
+      {
+        "id": "V7-2",
+        "content": "科学家观察到一只蚁狮挖的陷阱洞穴近似圆锥形，洞口直径大约是5厘米，深度大约是3厘米。请你用今天学的公式算一算，这个小陷阱的体积大约是多少立方厘米？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "main_id": "M7",
+        "parent_id": "M7",
+        "variation_type": "",
+        "design_intent": "呼应课堂结尾的趣味拓展，用蚁狮洞穴的真实数据让学生体会数学在自然观察中的应用价值，同时作为本课公式应用的综合检验",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "同学们，圆柱有底面，有高；圆锥也有底面，也有高。你觉得圆柱和圆锥，哪些地方长得像？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.25,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "帮助学生显性化圆柱和圆锥的共同结构要素（都有底面、都有高），为后续'等底等高比较'建立认知前提",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "圆柱的体积等于底面积乘高。现在圆锥也有底面积，也有高，那你觉得圆锥的体积会不会跟圆柱的体积有点关系？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "引导学生注意到圆锥也具备底面积和高这两个量，从而自然产生'能不能借助圆柱体积来研究圆锥体积'的想法，为M2的猜想活动做好铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "同学们，如果你想知道一个大杯子能装几个小杯子的水，你会怎么做？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.28,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "帮助学生理解'验证倍数关系'可以通过装倒的方式来实现，降低从猜想到实验之间的认知跳跃",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "在开始倒沙子之前，我们先仔细看看这两个容器。你觉得，要让倒的次数能告诉我们体积的倍数关系，这两个容器在大小上需要满足什么特别的条件吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.32,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "在实验开始前，引导学生关注两个容器必须满足的特殊条件，确保学生理解实验设计的逻辑前提",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "你倒了三次才把圆柱装满。那换句话说，一个圆柱里面能装几个圆锥那么多的沙子？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "帮助学生将'三次倒满'这个操作经验翻译成'一个圆柱的体积等于三个圆锥的体积'的数量关系，为公式推导搭建第一步",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "三个圆锥的体积合起来等于一个圆柱的体积。那反过来想，一个圆锥的体积是这个圆柱体积的几分之几？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生从'三个圆锥等于一个圆柱'反过来思考'一个圆锥等于圆柱的几分之几'，为写出公式中的1/3做好准备",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "公式V等于三分之一Sh里面有S和h。这道题告诉我们底面积是19平方厘米，高是12厘米。那S是多少？h是多少？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "帮助学生逐一确认公式中S和h分别对应题目中的哪个已知数据，建立从公式到题目信息的对应关系",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果直接用19乘12，算出来的是圆柱的体积还是圆锥的体积？要算圆锥的体积，还需要怎么做？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "在学生动笔计算之前，专门提醒圆锥体积公式与圆柱体积公式的关键区别，强化'不忘乘1/3'的意识",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "同学们，这道题告诉我们的信息，和上一道题有什么不一样？上一题直接给了底面积，这一题给的是什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.28,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "引导学生主动发现新题与旧题在已知信息上的不同，意识到这道题需要多做一步转换",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "题目说底面直径是4米。那半径是多少？你是怎么从直径得到半径的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "帮助学生回忆直径和半径的关系，确保学生在计算前能正确地从直径得到半径",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-3",
+        "content": "这道题最后要求沙子的重量。要算重量，我们首先需要知道什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "通过一个小问引导学生意识到'要求重量先求体积，要求体积先求底面积'，帮助学生找到第一步该做什么，降低多步骤规划的认知负荷",
+        "design_rationale": ""
+      },
+      {
+        "id": "S6-1",
+        "content": "同学们，我们的圆锥体积公式是通过什么活动发现的？当时我们用圆锥往圆柱里倒了几次沙子？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_id": "M6",
+        "to_id": "M7",
+        "from_main_id": "M6",
+        "to_main_id": "M7",
+        "bridge_function": "",
+        "design_intent": "帮助学生回到公式的来源，为M7的总结反思做好准备，让学生能说出公式是怎么得来的",
+        "design_rationale": ""
+      },
+      {
+        "id": "S6-2",
+        "content": "做实验的时候，我们用的圆柱和圆锥有一个很重要的要求。你还记得是什么要求吗？如果不满足这个要求，三分之一的关系还成立吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.32,
+        "from_id": "M6",
+        "to_id": "M7",
+        "from_main_id": "M6",
+        "to_main_id": "M7",
+        "bridge_function": "",
+        "design_intent": "在进入总结环节前，再次引导学生关注'等底等高'条件，为M7中的易错辨析做好铺垫",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M6",
+        "target": "M7",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M7",
+        "target": "V7-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M7",
+        "target": "V7-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "S5-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-3",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M6",
+        "target": "S6-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S6-1",
+        "target": "S6-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S6-2",
+        "target": "M7",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

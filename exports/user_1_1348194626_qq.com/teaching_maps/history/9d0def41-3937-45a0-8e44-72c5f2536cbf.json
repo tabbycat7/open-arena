@@ -1,0 +1,299 @@
+{
+  "id": "9d0def41-3937-45a0-8e44-72c5f2536cbf",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "让学生理解指数函数的定义，会用描点法画出图像， 掌握指数函数的单调性",
+  "student_profile": "班级整体数学基础中等偏上，学生思维较为活跃，具备一定的观察和分析能力。大部分学生已经掌握了函数的基本概念和表示方法，对一次函数、二次函数的图像和性质有一定了解，具备基本的作图能力，这为学习指数函数打下了良好基础。然而，学生对于新概念（尤其是具有抽象性质的指数函数定义）的接受速度存在差异，部分学生对指数运算（特别是负指数、分数指数幂）的熟练度还有待加强。\r\n\r\n从学生构成来看，班级中约有30%的学优生，他们思维敏捷，善于归纳总结，能够较快地从特殊例子中抽象出一般规律，并能尝试自主探究指数函数的性质。另有50%左右的中等水平学生，他们能紧跟课堂节奏，理解基本的定义和图像，但在运用单调性比较大小或解决变式问题时，可能会遇到困难，需要教师及时引导和点拨。剩余约20%的学困生，他们在函数定义的理解和代数运算上存在一定障碍，特别是将指数运算与函数性质结合时容易产生混淆，本节课需要通过直观的图像和分层次的练习帮助他们逐步建立信心。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"疫情初期，某地病毒数量每天翻倍，我们用y=2^x来模拟。你看这个模型，它符合我们刚学的指数函数定义吗？为什么偏偏底数是2而不是-2呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.55, \"design_rationale\": \"以真实情境‘病毒翻倍’为认知钩子，引导学生评价解析式y=2^x，自然触及底数a>0的核心条件。通过追问‘为什么不是-2’，激发学生辨析定义中的关键限制，从而深刻理解指数函数的形式本质。\"}, {\"id\": \"M2\", \"content\": \"如果让你们分组去探究指数函数图像的全貌，你会怎么选底数a？比如选a=3和a=1/3，你猜它们的图像会有什么不同？把你们的探究计划说说看。\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"create\", \"difficulty\": 0.65, \"design_rationale\": \"将画图任务从‘按要求操作’提升为‘自主规划探究’。要求学生创造性地选择有代表性的底数（a>1和0<a<1），并预测图像差异，从而主动建构起从列表计算到图像特征发现的完整研究路径。\"}, {\"id\": \"M3\", \"content\": \"我们得到了两类图像，一个上升，一个下降。有人说‘看图像趋势就知道单调性’，也有人说‘必须用定义证明才严谨’。这两种说法，你更信服哪一种？它们之间最大的不同在哪？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.75, \"design_rationale\": \"设置图像直观与代数证明的认知冲突，引导学生评价两种认识函数性质方法的优劣与适用性。促使学生思考数学结论的来源，理解归纳猜想与演绎证明的关系，深化对单调性本质的理解。\"}, {\"id\": \"M4\", \"content\": \"现在要比较3^{0.8}和3^{0.7}的大小，这很简单。但如果让你比较3^{0.8}和4^{0.5}呢？它们底数不同了，你打算怎么想办法？敢不敢设计一个解决这类问题的通用思路？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"create\", \"difficulty\": 0.8, \"design_rationale\": \"在单一性质应用基础上，设置底数不同的复杂情境，制造认知障碍。要求学生创造性地思考解决方法（如寻找中间值、转化底数等），并尝试抽象出通用策略，实现单调性知识的深度迁移和结构化应用。\"}, {\"id\": \"V1-1\", \"content\": \"这里有几个函数：y=(-2)^x， y=x^2， y=1^x， y=2*3^x。根据定义，你觉得哪些才是真正的指数函数？为什么其他的不算？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.45, \"parent_id\": \"M1\", \"variation_type\": \"正反对比\", \"design_rationale\": \"通过提供一组包含反例（底数为负、底数为1、形式不符）的解析式，让学生在对比辨析中，从不同角度深刻理解并巩固指数函数y=a^x (a>0, a≠1)的形式定义。\"}, {\"id\": \"V2-1\", \"content\": \"一个银行账户年利率5%，按复利计算，本息模型为y=(1.05)^x (x为年数)。请你动手，为这个“钱生钱”的模型画出它的图像。你觉得这条线代表了财富怎样的变化？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.6, \"parent_id\": \"M2\", \"variation_type\": \"情景替换\", \"design_rationale\": \"将抽象的数学画图任务置于“复利增长”的生活情境中，赋予图像实际意义，激发探究动机。学生在描点绘图过程中，直观感受并应用0<a<1（此模型中a=1.05>1，本质上仍属图像探究）增长模型的图像特征。\"}, {\"id\": \"V2-2\", \"content\": \"这里有函数y=0.5^x和y=3^x的几个点对，但被打乱了。你能通过分析数值的增长或衰减速度，把它们“认领”回各自的函数名下吗？说说你的判断依据。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.55, \"parent_id\": \"M2\", \"variation_type\": \"角度转换\", \"design_rationale\": \"将探究角度从‘根据已知函数画图’转换为‘根据数据点特征反推函数’。迫使学生关注数值变化的规律（增长/衰减的速度），从而更本质地理解不同底数对函数变化趋势的决定性影响，训练分析能力。\"}, {\"id\": \"V3-1\", \"content\": \"为什么定义要求底数a>0且a≠1？如果a=1，函数会怎样？a≤0呢？这些情况会如何破坏我们对单调性的讨论？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"条件变换\", \"design_rationale\": \"通过追问底数限制条件的必要性，引导学生从单调性结论“反溯”定义前提，分析边界情况（a=1时为常数函数，a≤0时定义域不连续或非实数），从而深刻理解数学定义和性质的严密性基础。\"}, {\"id\": \"V4-1\", \"content\": \"已知a>1，如何比较a^(2x+1)与a^(x^2)的大小？或者，你能利用单调性直接‘看’出方程2^(x^2)=16的解吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.75, \"parent_id\": \"M4\", \"variation_type\": \"迁移应用\", \"design_rationale\": \"将比较大小和求简单指数方程作为单调性的两个典型应用方向，将问题对象从具体数字提升为含参数的代数式或方程，要求学生灵活调用单调性进行推理或求解，完成知识从理解到应用的迁移。\"}, {\"id\": \"S1-1\", \"content\": \"除了2，还有哪些正数适合做底数？-2为什么不行？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"remember\", \"difficulty\": 0.35, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"此问题具体化并回顾了M1中关于底数a>0的核心条件，确保学生明确指数函数的有效定义域，为M2中自主选择底数进行探究做好概念准备。\", \"design_rationale\": \"通过直接、简单的提问，回顾底数取值范围这一关键记忆点，为学困生后续自主选择底数（如a=3，a=1/3）探究图像扫清概念障碍。\"}, {\"id\": \"S1-2\", \"content\": \"(1/3)的-1次方，结果是3还是-3？你是怎么算的？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"此问题聚焦于指数运算规则的理解，通过计算即将在M2中使用的典型底数（a=1/3）的幂值，帮助学生扫清数值计算障碍，使其能更顺畅地投入到M2的列表、描点、画图等探究活动中。\", \"design_rationale\": \"以学生在M2探究中实际会遇到的计算（如(1/3)^-1）为例，引导其理解负指数幂的运算规则，将抽象规则转化为具体计算过程，为自主探究做好运算技能准备。\"}, {\"id\": \"S2-1\", \"content\": \"所有指数函数图像都经过哪个共同的点？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"remember\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"此问题引导学生在完成M2的图像探究后，观察并提取多个图像的共性特征（过定点(0,1)），这是从具体图像（M2）过渡到抽象性质讨论（M3）的一个重要且稳定的观察切入点。\", \"design_rationale\": \"用简单直接的提问，引导学生从自己画出的多样图像中，聚焦并记住一个关键不变的特征，为后续从直观图像转向分析更复杂的性质（如单调性）搭建一个稳固的认知台阶。\"}, {\"id\": \"S2-2\", \"content\": \"图像上升时，对应的数学语言‘单调递增’是什么意思？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"此问题旨在帮助学生将M2中观察到的图像趋势（“上升”或“下降”），与M3即将讨论的严格数学概念“单调性”建立语义关联，理解图像直观描述与数学术语表达的对应关系。\", \"design_rationale\": \"通过将直观的视觉描述“上升”与抽象的数学术语“单调递增”进行连接，引导学困生理解数学语言是如何精确描述图像特征的，为M3中评价“图像看趋势”与“定义证明”两种方法的优劣铺设认知桥梁。\"}, {\"id\": \"S3-1\", \"content\": \"底数大于1时，函数值随指数如何变化？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"remember\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"此问题直接指向M3讨论后得出的单调性核心结论（a>1时递增，0<a<1时递减），要求学生回忆并复述，这是准确应用单调性解决M4中指数幂大小比较问题的必备前提。\", \"design_rationale\": \"在M3深入讨论了单调性的认识方法后，通过填空式的简单提问，帮助学困生巩固并快速提取出“a>1时函数递增”这一关键结论，确保其能带着正确的工具进入M4更复杂的应用情境。\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-20 20:57:01",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "疫情初期，某地病毒数量每天翻倍，我们用y=2^x来模拟。你看这个模型，它符合我们刚学的指数函数定义吗？为什么偏偏底数是2而不是-2呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.55,
+        "design_rationale": "以真实情境‘病毒翻倍’为认知钩子，引导学生评价解析式y=2^x，自然触及底数a>0的核心条件。通过追问‘为什么不是-2’，激发学生辨析定义中的关键限制，从而深刻理解指数函数的形式本质。"
+      },
+      {
+        "id": "M2",
+        "content": "如果让你们分组去探究指数函数图像的全貌，你会怎么选底数a？比如选a=3和a=1/3，你猜它们的图像会有什么不同？把你们的探究计划说说看。",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.65,
+        "design_rationale": "将画图任务从‘按要求操作’提升为‘自主规划探究’。要求学生创造性地选择有代表性的底数（a>1和0<a<1），并预测图像差异，从而主动建构起从列表计算到图像特征发现的完整研究路径。"
+      },
+      {
+        "id": "M3",
+        "content": "我们得到了两类图像，一个上升，一个下降。有人说‘看图像趋势就知道单调性’，也有人说‘必须用定义证明才严谨’。这两种说法，你更信服哪一种？它们之间最大的不同在哪？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.75,
+        "design_rationale": "设置图像直观与代数证明的认知冲突，引导学生评价两种认识函数性质方法的优劣与适用性。促使学生思考数学结论的来源，理解归纳猜想与演绎证明的关系，深化对单调性本质的理解。"
+      },
+      {
+        "id": "M4",
+        "content": "现在要比较3^{0.8}和3^{0.7}的大小，这很简单。但如果让你比较3^{0.8}和4^{0.5}呢？它们底数不同了，你打算怎么想办法？敢不敢设计一个解决这类问题的通用思路？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.8,
+        "design_rationale": "在单一性质应用基础上，设置底数不同的复杂情境，制造认知障碍。要求学生创造性地思考解决方法（如寻找中间值、转化底数等），并尝试抽象出通用策略，实现单调性知识的深度迁移和结构化应用。"
+      },
+      {
+        "id": "V1-1",
+        "content": "这里有几个函数：y=(-2)^x， y=x^2， y=1^x， y=2*3^x。根据定义，你觉得哪些才是真正的指数函数？为什么其他的不算？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.45,
+        "parent_id": "M1",
+        "variation_type": "正反对比",
+        "design_rationale": "通过提供一组包含反例（底数为负、底数为1、形式不符）的解析式，让学生在对比辨析中，从不同角度深刻理解并巩固指数函数y=a^x (a>0, a≠1)的形式定义。"
+      },
+      {
+        "id": "V2-1",
+        "content": "一个银行账户年利率5%，按复利计算，本息模型为y=(1.05)^x (x为年数)。请你动手，为这个“钱生钱”的模型画出它的图像。你觉得这条线代表了财富怎样的变化？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.6,
+        "parent_id": "M2",
+        "variation_type": "情景替换",
+        "design_rationale": "将抽象的数学画图任务置于“复利增长”的生活情境中，赋予图像实际意义，激发探究动机。学生在描点绘图过程中，直观感受并应用0<a<1（此模型中a=1.05>1，本质上仍属图像探究）增长模型的图像特征。"
+      },
+      {
+        "id": "V2-2",
+        "content": "这里有函数y=0.5^x和y=3^x的几个点对，但被打乱了。你能通过分析数值的增长或衰减速度，把它们“认领”回各自的函数名下吗？说说你的判断依据。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.55,
+        "parent_id": "M2",
+        "variation_type": "角度转换",
+        "design_rationale": "将探究角度从‘根据已知函数画图’转换为‘根据数据点特征反推函数’。迫使学生关注数值变化的规律（增长/衰减的速度），从而更本质地理解不同底数对函数变化趋势的决定性影响，训练分析能力。"
+      },
+      {
+        "id": "V3-1",
+        "content": "为什么定义要求底数a>0且a≠1？如果a=1，函数会怎样？a≤0呢？这些情况会如何破坏我们对单调性的讨论？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "条件变换",
+        "design_rationale": "通过追问底数限制条件的必要性，引导学生从单调性结论“反溯”定义前提，分析边界情况（a=1时为常数函数，a≤0时定义域不连续或非实数），从而深刻理解数学定义和性质的严密性基础。"
+      },
+      {
+        "id": "V4-1",
+        "content": "已知a>1，如何比较a^(2x+1)与a^(x^2)的大小？或者，你能利用单调性直接‘看’出方程2^(x^2)=16的解吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.75,
+        "parent_id": "M4",
+        "variation_type": "迁移应用",
+        "design_rationale": "将比较大小和求简单指数方程作为单调性的两个典型应用方向，将问题对象从具体数字提升为含参数的代数式或方程，要求学生灵活调用单调性进行推理或求解，完成知识从理解到应用的迁移。"
+      },
+      {
+        "id": "S1-1",
+        "content": "除了2，还有哪些正数适合做底数？-2为什么不行？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "remember",
+        "difficulty": 0.35,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "此问题具体化并回顾了M1中关于底数a>0的核心条件，确保学生明确指数函数的有效定义域，为M2中自主选择底数进行探究做好概念准备。",
+        "design_rationale": "通过直接、简单的提问，回顾底数取值范围这一关键记忆点，为学困生后续自主选择底数（如a=3，a=1/3）探究图像扫清概念障碍。"
+      },
+      {
+        "id": "S1-2",
+        "content": "(1/3)的-1次方，结果是3还是-3？你是怎么算的？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "此问题聚焦于指数运算规则的理解，通过计算即将在M2中使用的典型底数（a=1/3）的幂值，帮助学生扫清数值计算障碍，使其能更顺畅地投入到M2的列表、描点、画图等探究活动中。",
+        "design_rationale": "以学生在M2探究中实际会遇到的计算（如(1/3)^-1）为例，引导其理解负指数幂的运算规则，将抽象规则转化为具体计算过程，为自主探究做好运算技能准备。"
+      },
+      {
+        "id": "S2-1",
+        "content": "所有指数函数图像都经过哪个共同的点？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "remember",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "此问题引导学生在完成M2的图像探究后，观察并提取多个图像的共性特征（过定点(0,1)），这是从具体图像（M2）过渡到抽象性质讨论（M3）的一个重要且稳定的观察切入点。",
+        "design_rationale": "用简单直接的提问，引导学生从自己画出的多样图像中，聚焦并记住一个关键不变的特征，为后续从直观图像转向分析更复杂的性质（如单调性）搭建一个稳固的认知台阶。"
+      },
+      {
+        "id": "S2-2",
+        "content": "图像上升时，对应的数学语言‘单调递增’是什么意思？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "此问题旨在帮助学生将M2中观察到的图像趋势（“上升”或“下降”），与M3即将讨论的严格数学概念“单调性”建立语义关联，理解图像直观描述与数学术语表达的对应关系。",
+        "design_rationale": "通过将直观的视觉描述“上升”与抽象的数学术语“单调递增”进行连接，引导学困生理解数学语言是如何精确描述图像特征的，为M3中评价“图像看趋势”与“定义证明”两种方法的优劣铺设认知桥梁。"
+      },
+      {
+        "id": "S3-1",
+        "content": "底数大于1时，函数值随指数如何变化？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "remember",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "此问题直接指向M3讨论后得出的单调性核心结论（a>1时递增，0<a<1时递减），要求学生回忆并复述，这是准确应用单调性解决M4中指数幂大小比较问题的必备前提。",
+        "design_rationale": "在M3深入讨论了单调性的认识方法后，通过填空式的简单提问，帮助学困生巩固并快速提取出“a>1时函数递增”这一关键结论，确保其能带着正确的工具进入M4更复杂的应用情境。"
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

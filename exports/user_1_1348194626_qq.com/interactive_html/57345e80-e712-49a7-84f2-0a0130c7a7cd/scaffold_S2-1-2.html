@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法的顺序性</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #2ecc71;
+            --fail: #e74c3c;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .stage {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .box {
+            width: 30%;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.5s;
+        }
+        .step-item {
+            background: #eee;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: default;
+        }
+        #key-btn {
+            cursor: pointer;
+            transition: transform 0.8s;
+            fill: var(--primary);
+        }
+        #result-text {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            opacity: 0;
+        }
+        .trophy { fill: #ccc; transition: fill 0.5s; }
+        .active-trophy { fill: #f1c40f; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>算法步骤的先后顺序重要吗？</h3>
+    <div class="stage">
+        <div class="box" id="left-box">
+            <p>乱序步骤</p>
+            <div class="step-item" id="s1">1. 穿鞋子</div>
+            <div class="step-item" id="s2">2. 穿袜子</div>
+        </div>
+        
+        <svg width="100" height="100" viewBox="0 0 100 100" id="key-btn">
+            <path d="M50 20 C35 20 25 30 25 45 C25 60 35 70 50 70 C65 70 75 60 75 45 C75 30 65 20 50 20 Z M50 30 C58 30 65 37 65 45 C65 53 58 60 50 60 C42 60 35 53 35 45 C35 37 42 30 50 30 Z" />
+            <rect x="48" y="45" width="4" height="40" />
+            <rect x="40" y="75" width="20" height="5" />
+        </svg>
+
+        <div class="box" id="right-box">
+            <p>最终结果</p>
+            <svg width="60" height="60" viewBox="0 0 24 24" class="trophy" id="trophy">
+                <path d="M12 2L9 7H4v5l3 3-1 7 7-3 7 3-1-7 3-3V7h-5L12 2z"/>
+            </svg>
+        </div>
+    </div>
+    <div id="result-text">步骤的顺序决定了结果的正确性！</div>
+</div>
+
+<script>
+    const keyBtn = document.getElementById('key-btn');
+    const s1 = document.getElementById('s1');
+    const s2 = document.getElementById('s2');
+    const trophy = document.getElementById('trophy');
+    const resultText = document.getElementById('result-text');
+    let isSorted = false;
+
+    keyBtn.addEventListener('click', function() {
+        if (!isSorted) {
+            // 旋转钥匙
+            keyBtn.style.transform = 'rotate(360deg)';
+            
+            // 交换步骤
+            s1.innerText = '1. 穿袜子';
+            s2.innerText = '2. 穿鞋子';
+            s1.style.background = '#d4edda';
+            s2.style.background = '#d4edda';
+            
+            // 点亮奖杯
+            trophy.classList.add('active-trophy');
+            resultText.style.opacity = '1';
+            
+            isSorted = true;
+        } else {
+            // 重置
+            keyBtn.style.transform = 'rotate(0deg)';
+            s1.innerText = '1. 穿鞋子';
+            s2.innerText = '2. 穿袜子';
+            s1.style.background = '#eee';
+            s2.style.background = '#eee';
+            trophy.classList.remove('active-trophy');
+            resultText.style.opacity = '0';
+            isSorted = false;
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>计税基数对比可视化</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .visual-area {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .box {
+            width: 40%;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .box:hover { border-color: #3498db; }
+        .box.active-wrong { border-color: #e74c3c; background: #fdf2f2; }
+        .box.active-right { border-color: #27ae60; background: #f2fdf5; }
+        .result-text { font-size: 1.2em; font-weight: bold; margin-top: 10px; }
+        .status-icon { font-size: 2em; margin-top: 10px; }
+        .hint { text-align: center; color: #7f8c8d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>计税基数对比实验</h2>
+    <p style="text-align: center;">点击下方两种计算方式，观察结果差异：</p>
+    
+    <div class="visual-area">
+        <div id="wrong-method" class="box">
+            <h3>方式 A</h3>
+            <p>直接用总收入计算</p>
+            <div class="result-text">6000 × 5% = 300元</div>
+            <div class="status-icon" id="icon-a"></div>
+        </div>
+        
+        <div id="right-method" class="box">
+            <h3>方式 B</h3>
+            <p>扣除免税额(3000)后计算</p>
+            <div class="result-text">(6000-3000) × 5% = 150元</div>
+            <div class="status-icon" id="icon-b"></div>
+        </div>
+    </div>
+    
+    <div class="hint" id="hint-text">请点击上方卡片进行对比</div>
+</div>
+
+<script>
+    const wrongBox = document.getElementById('wrong-method');
+    const rightBox = document.getElementById('right-method');
+    const iconA = document.getElementById('icon-a');
+    const iconB = document.getElementById('icon-b');
+    const hint = document.getElementById('hint-text');
+
+    wrongBox.addEventListener('click', () => {
+        wrongBox.classList.add('active-wrong');
+        rightBox.classList.remove('active-right');
+        iconA.innerHTML = '⚠️';
+        iconB.innerHTML = '';
+        hint.innerHTML = '<strong>警示：</strong>直接用总收入计算会导致税额虚高，忽略了免税额度！';
+        hint.style.color = '#e74c3c';
+    });
+
+    rightBox.addEventListener('click', () => {
+        rightBox.classList.add('active-right');
+        wrongBox.classList.remove('active-wrong');
+        iconB.innerHTML = '✅';
+        iconA.innerHTML = '';
+        hint.innerHTML = '<strong>正确：</strong>应先扣除免税额，再计算应纳税额，这才是合理的计税基数。';
+        hint.style.color = '#27ae60';
+    });
+</script>
+
+</body>
+</html>

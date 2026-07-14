@@ -1,0 +1,379 @@
+{
+  "id": "f3326a78-6e92-43cb-80e2-af8e5f1b821d",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "化学",
+  "grade": "九年级",
+  "teaching_goals": "掌握二氧化碳的物理性质以及化学性质；",
+  "student_profile": "已有基础：学生已了解二氧化碳在日常中的用途，如光合作用、呼吸和灭火，并已掌握研究物质性质的方法，为探究二氧化碳性质奠定基础。学习特点：(1）好奇心强:学生对未知事物充满好奇，对二氧化碳的性质和用途有浓厚的探究兴趣。(2)实践能力较弱：虽然学生有实验操作的初步经验，但在设计实验、分析实验现象和得出结论方面仍需加强(3）思维发展：学生正处于从形象思维向抽象思维过渡的阶段对二氧化碳性质的探究需要借助实验和直观现象来辅助理解。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"我们常用二氧化碳来灭火，有人说是因为它隔绝了空气，也有人说是因为它密度比空气大，能下沉覆盖火焰。你们觉得哪种说法更有道理呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.65, \"design_intent\": \"从学生熟知的‘二氧化碳灭火器’切入，引导学生评价两种常见解释的合理性，暴露关于密度的前概念，并激发对‘如何证明密度大小’的探究欲。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"如果真像我们猜的，二氧化碳密度比空气大，那该怎么设计一个实验，让我们能像倒水一样‘看到’它被倒出来呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"design_intent\": \"要求学生基于M1的猜想，设计实验方案来直观证明‘二氧化碳密度比空气大’，将抽象性质转化为可操作、可观察的实验，完成核心建构。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"二氧化碳能使紫色石蕊试液变红。但使石蕊变红的，究竟是二氧化碳本身，还是它进入水里后变出来的‘新东西’呢？我们怎么用实验来分辨？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP6\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"通过实验现象引出认知冲突，驱动学生设计对比实验，深入分析现象本质，理解二氧化碳与水反应生成碳酸，以及碳酸的不稳定性。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"向澄清石灰水里持续通入二氧化碳，会先变浑浊，之后又慢慢变澄清。这一连串的变化，该怎么用我们刚才学到的反应来解释呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP4\", \"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.8, \"design_intent\": \"创设复杂情境，要求学生综合运用二氧化碳与石灰水反应、碳酸与沉淀反应等知识进行解释，培养分析复杂现象和知识迁移的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"舞台上，干冰升华产生白雾，它们总是沉沉地铺在舞台底部。这能让你推断出二氧化碳具有什么物理性质？若把干冰块放入一个充满空气的气球并扎紧，你觉得气球会下沉还是上浮？说说你的理由。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将主干问题的核心（比较密度）嵌入“舞台干冰造雾”的新奇情境，引导学生从现象推断性质，并迁移到预测气球沉浮，强化对密度决定物体沉浮的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"如果阶梯蜡烛实验中，我们将两支蜡烛的高度差调得更大，或者换用一只更短的集气瓶来倾倒二氧化碳，你预测蜡烛熄灭的顺序会改变吗？这会影响我们得出‘二氧化碳密度比空气大’的结论吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"在学生完成标准实验后，通过变换实验条件（高度差、容器尺寸），引导其分析实验现象的稳定性与结论的可靠性，深化对实验设计的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"设想一下，如果某位同学在做倾倒二氧化碳实验时，不小心将集气瓶口朝上倾倒（即瓶底高于瓶口），会发生什么现象？这个‘失败’的操作，能用来证明二氧化碳的密度比空气小吗？为什么？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.68, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过呈现一个违反正确操作的反例，引导学生评价错误操作与错误结论之间的逻辑关系，强化对“控制变量”和“操作正确性”重要性的认识。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"将变红的石蕊试液（由二氧化碳生成碳酸所致）和另一支变红的石蕊试液（滴入少量醋酸所致）同时加热。一支恢复紫色，另一支仍为红色。这个对比实验说明了碳酸和醋酸在性质上有什么根本不同？这对理解‘碳酸的不稳定性’有何帮助？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP6\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.78, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过加热后现象的鲜明对比，制造认知冲突，引导学生分析碳酸与醋酸（典型弱酸）在热稳定性上的本质差异，从而深刻建构“碳酸不稳定、易分解”这一核心概念。\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"打开一瓶可乐，立刻将燃着的木条伸入瓶口，火焰会熄灭。但把可乐敞开放置半天后再试，可能就不那么容易熄灭了。请结合本课所学，尝试解释这一有趣的变化。\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.73, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"将二氧化碳溶于水及逸出的知识迁移到学生熟悉的可乐场景，引导学生用“二氧化碳含量变化影响其灭火效果”来解释生活现象，实现知识的情景化应用。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"既然二氧化碳能使紫色石蕊试液变红，那么可以用石蕊试液来检验二氧化碳吗？与用澄清石灰水检验相比，你觉得这两种方法各有什么优点和缺点？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\", \"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.75, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"以“能否用石蕊检验”为反例追问，引导学生辨析“现象”与“专属检验”的区别，并综合评价两种常见检验方法的灵敏性、专一性和操作便利性。\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"野外山洞中有个‘死狗洞’，狗入洞则死，人站立无事。科学家发现洞底二氧化碳浓度极高。请结合二氧化碳的性质，解释动物死因，并分析为什么气体会聚集在洞底，以及洞底的石灰岩（CaCO3）可能发生什么变化？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP4\", \"KP6\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.82, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"创设一个融合物理性质（密度）、化学性质（与石灰水反应）及实际危害的复杂探险情境，驱动学生创造性地整合多个知识点，形成对二氧化碳性质的综合解释模型。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"我们想验证二氧化碳比空气‘重’，拿它和谁比最方便？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生将M1中的密度比较需求，聚焦到‘以空气为标准参照物’这一关键思路上，为M2设计‘对比空气’的实验建立明确目标。\", \"design_intent\": \"针对学困生可能无法从‘灭火’直接联想到‘设计密度实验’的断层。通过提问引导其回忆比较气体密度的一般思路（与空气对比）。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"收集比空气‘重’的气体时，集气瓶口应该朝上还是朝下？为什么？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"将M2的抽象实验设计，拆解并聚焦到“气体收集方法选择”这一具体规则的理解上，为‘如何获得一瓶可倾倒的二氧化碳’提供直接的操作依据。\", \"design_intent\": \"进一步拆解实验设计，提供具体操作选项（如收集CO2的方法），让学生选择并说明理由，将抽象设计具体化。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"二氧化碳除了密度比空气大，它还有一个大家熟悉的性质是什么？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"从M2的物理性质（密度）回忆并提取另一个关键物理性质（溶解性），为M3中二氧化碳‘进入水里’这一情境提供知识基础。\", \"design_intent\": \"明确回忆‘二氧化碳能溶于水’这一物理性质，建立从物理溶解到可能发生化学反应的连接点。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"当气体‘溶解’到水里，就像盐溶解一样，只是分散开吗？会不会也可能和水‘手拉手’变成新东西？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"通过比喻（盐溶解是物理变化，铁生锈是化学变化），引导学生在M2的‘溶解’基础上，猜想M3中‘进入水里’可能包含化学反应，指向‘新物质’的生成。\", \"design_intent\": \"通过类比引导猜想：二氧化碳溶于水后，可能不仅仅是单纯分散，还可能与水发生化学反应生成新物质。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"二氧化碳和水反应我们关注酸性，那它和石灰水反应，我们更看重它哪一点呢？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\", \"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"引导学生比较M3（性质探究）和即将进入的M4（检验应用）两个反应的不同目的，为理解后续复杂的连续反应现象做好思维铺垫。\", \"design_intent\": \"引导学生区分：与水的反应主要体现了二氧化碳的‘酸性’，但与石灰水的反应因其生成沉淀，现象独特，常用来‘检验’二氧化碳。明确学习新性质的不同目的。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果CO₂和Ca(OH)₂反应，可能会生成……（填空：_ 和 _）？生成的白色固体用什么符号表示？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"以填空形式引导学困生基于M3的碳酸知识，推测CO₂与Ca(OH)₂反应的核心产物，并聚焦理解‘沉淀符号’的意义，为解释M4的浑浊现象搭建符号基础。\", \"design_intent\": \"在探究石灰水反应前，提供反应物化学式，引导学生预测生成物（基于质量守恒和已学的碳酸），并尝试书写方程式，重点关注沉淀符号。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-22 22:45:51",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "我们常用二氧化碳来灭火，有人说是因为它隔绝了空气，也有人说是因为它密度比空气大，能下沉覆盖火焰。你们觉得哪种说法更有道理呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.65,
+        "design_intent": "从学生熟知的‘二氧化碳灭火器’切入，引导学生评价两种常见解释的合理性，暴露关于密度的前概念，并激发对‘如何证明密度大小’的探究欲。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "如果真像我们猜的，二氧化碳密度比空气大，那该怎么设计一个实验，让我们能像倒水一样‘看到’它被倒出来呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "design_intent": "要求学生基于M1的猜想，设计实验方案来直观证明‘二氧化碳密度比空气大’，将抽象性质转化为可操作、可观察的实验，完成核心建构。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "二氧化碳能使紫色石蕊试液变红。但使石蕊变红的，究竟是二氧化碳本身，还是它进入水里后变出来的‘新东西’呢？我们怎么用实验来分辨？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP6"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "通过实验现象引出认知冲突，驱动学生设计对比实验，深入分析现象本质，理解二氧化碳与水反应生成碳酸，以及碳酸的不稳定性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "向澄清石灰水里持续通入二氧化碳，会先变浑浊，之后又慢慢变澄清。这一连串的变化，该怎么用我们刚才学到的反应来解释呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP4",
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.8,
+        "design_intent": "创设复杂情境，要求学生综合运用二氧化碳与石灰水反应、碳酸与沉淀反应等知识进行解释，培养分析复杂现象和知识迁移的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "舞台上，干冰升华产生白雾，它们总是沉沉地铺在舞台底部。这能让你推断出二氧化碳具有什么物理性质？若把干冰块放入一个充满空气的气球并扎紧，你觉得气球会下沉还是上浮？说说你的理由。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将主干问题的核心（比较密度）嵌入“舞台干冰造雾”的新奇情境，引导学生从现象推断性质，并迁移到预测气球沉浮，强化对密度决定物体沉浮的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "如果阶梯蜡烛实验中，我们将两支蜡烛的高度差调得更大，或者换用一只更短的集气瓶来倾倒二氧化碳，你预测蜡烛熄灭的顺序会改变吗？这会影响我们得出‘二氧化碳密度比空气大’的结论吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "在学生完成标准实验后，通过变换实验条件（高度差、容器尺寸），引导其分析实验现象的稳定性与结论的可靠性，深化对实验设计的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "设想一下，如果某位同学在做倾倒二氧化碳实验时，不小心将集气瓶口朝上倾倒（即瓶底高于瓶口），会发生什么现象？这个‘失败’的操作，能用来证明二氧化碳的密度比空气小吗？为什么？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.68,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过呈现一个违反正确操作的反例，引导学生评价错误操作与错误结论之间的逻辑关系，强化对“控制变量”和“操作正确性”重要性的认识。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "将变红的石蕊试液（由二氧化碳生成碳酸所致）和另一支变红的石蕊试液（滴入少量醋酸所致）同时加热。一支恢复紫色，另一支仍为红色。这个对比实验说明了碳酸和醋酸在性质上有什么根本不同？这对理解‘碳酸的不稳定性’有何帮助？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP6"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.78,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过加热后现象的鲜明对比，制造认知冲突，引导学生分析碳酸与醋酸（典型弱酸）在热稳定性上的本质差异，从而深刻建构“碳酸不稳定、易分解”这一核心概念。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "打开一瓶可乐，立刻将燃着的木条伸入瓶口，火焰会熄灭。但把可乐敞开放置半天后再试，可能就不那么容易熄灭了。请结合本课所学，尝试解释这一有趣的变化。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.73,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "将二氧化碳溶于水及逸出的知识迁移到学生熟悉的可乐场景，引导学生用“二氧化碳含量变化影响其灭火效果”来解释生活现象，实现知识的情景化应用。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "既然二氧化碳能使紫色石蕊试液变红，那么可以用石蕊试液来检验二氧化碳吗？与用澄清石灰水检验相比，你觉得这两种方法各有什么优点和缺点？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4",
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.75,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "以“能否用石蕊检验”为反例追问，引导学生辨析“现象”与“专属检验”的区别，并综合评价两种常见检验方法的灵敏性、专一性和操作便利性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "野外山洞中有个‘死狗洞’，狗入洞则死，人站立无事。科学家发现洞底二氧化碳浓度极高。请结合二氧化碳的性质，解释动物死因，并分析为什么气体会聚集在洞底，以及洞底的石灰岩（CaCO3）可能发生什么变化？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP4",
+          "KP6"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.82,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "创设一个融合物理性质（密度）、化学性质（与石灰水反应）及实际危害的复杂探险情境，驱动学生创造性地整合多个知识点，形成对二氧化碳性质的综合解释模型。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "我们想验证二氧化碳比空气‘重’，拿它和谁比最方便？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生将M1中的密度比较需求，聚焦到‘以空气为标准参照物’这一关键思路上，为M2设计‘对比空气’的实验建立明确目标。",
+        "design_intent": "针对学困生可能无法从‘灭火’直接联想到‘设计密度实验’的断层。通过提问引导其回忆比较气体密度的一般思路（与空气对比）。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "收集比空气‘重’的气体时，集气瓶口应该朝上还是朝下？为什么？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "将M2的抽象实验设计，拆解并聚焦到“气体收集方法选择”这一具体规则的理解上，为‘如何获得一瓶可倾倒的二氧化碳’提供直接的操作依据。",
+        "design_intent": "进一步拆解实验设计，提供具体操作选项（如收集CO2的方法），让学生选择并说明理由，将抽象设计具体化。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "二氧化碳除了密度比空气大，它还有一个大家熟悉的性质是什么？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "从M2的物理性质（密度）回忆并提取另一个关键物理性质（溶解性），为M3中二氧化碳‘进入水里’这一情境提供知识基础。",
+        "design_intent": "明确回忆‘二氧化碳能溶于水’这一物理性质，建立从物理溶解到可能发生化学反应的连接点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "当气体‘溶解’到水里，就像盐溶解一样，只是分散开吗？会不会也可能和水‘手拉手’变成新东西？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "通过比喻（盐溶解是物理变化，铁生锈是化学变化），引导学生在M2的‘溶解’基础上，猜想M3中‘进入水里’可能包含化学反应，指向‘新物质’的生成。",
+        "design_intent": "通过类比引导猜想：二氧化碳溶于水后，可能不仅仅是单纯分散，还可能与水发生化学反应生成新物质。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "二氧化碳和水反应我们关注酸性，那它和石灰水反应，我们更看重它哪一点呢？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4",
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "引导学生比较M3（性质探究）和即将进入的M4（检验应用）两个反应的不同目的，为理解后续复杂的连续反应现象做好思维铺垫。",
+        "design_intent": "引导学生区分：与水的反应主要体现了二氧化碳的‘酸性’，但与石灰水的反应因其生成沉淀，现象独特，常用来‘检验’二氧化碳。明确学习新性质的不同目的。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果CO₂和Ca(OH)₂反应，可能会生成……（填空：_ 和 _）？生成的白色固体用什么符号表示？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "以填空形式引导学困生基于M3的碳酸知识，推测CO₂与Ca(OH)₂反应的核心产物，并聚焦理解‘沉淀符号’的意义，为解释M4的浑浊现象搭建符号基础。",
+        "design_intent": "在探究石灰水反应前，提供反应物化学式，引导学生预测生成物（基于质量守恒和已学的碳酸），并尝试书写方程式，重点关注沉淀符号。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

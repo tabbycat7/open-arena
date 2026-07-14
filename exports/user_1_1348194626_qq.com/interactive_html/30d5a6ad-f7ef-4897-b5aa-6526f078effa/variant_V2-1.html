@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI字迹克隆风险可视化</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 { margin: 10px 0; color: #2c3e50; }
+        .stage { display: flex; gap: 40px; margin-top: 20px; }
+        .box { border: 2px dashed #bdc3c7; padding: 15px; width: 250px; height: 300px; text-align: center; }
+        .controls { margin-top: 30px; display: flex; gap: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background: #3498db; color: white; border: none; border-radius: 5px; font-size: 16px; }
+        button:hover { background: #2980b9; }
+        .highlight-blue { stroke: #3498db; stroke-width: 2; fill: none; }
+        .risk-red { fill: #e74c3c; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        #watermark { display: none; font-size: 12px; color: #95a5a6; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI字迹克隆风险模拟</h2>
+    <div class="stage">
+        <div class="box" id="input-zone">
+            <p>用户上传的20个汉字</p>
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <text x="10" y="30" font-size="20">大 天 人 手 口</text>
+                <text x="10" y="60" font-size="20">日 月 水 火 土</text>
+                <path id="feature-path" d="M20 100 L180 100 M100 20 L100 180" stroke="#ccc" />
+            </svg>
+        </div>
+        <div class="box" id="output-zone">
+            <p>AI生成的合同签名</p>
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <rect x="20" y="100" width="160" height="40" fill="#f9f9f9" stroke="#333"/>
+                <text id="signature" x="40" y="130" font-size="24" opacity="0">张三</text>
+            </svg>
+            <div id="watermark">© AI辅助生成水印</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btn-clone">一键克隆</button>
+        <button id="btn-shield">安全防御开关</button>
+    </div>
+    <p style="font-size: 14px; color: #7f8c8d; margin-top: 20px;">思考：笔迹属于个人生物特征吗？协议中的“无偿使用”意味着什么？</p>
+</div>
+
+<script>
+    const btnClone = document.getElementById('btn-clone');
+    const btnShield = document.getElementById('btn-shield');
+    const featurePath = document.getElementById('feature-path');
+    const signature = document.getElementById('signature');
+    const watermark = document.getElementById('watermark');
+
+    let isShielded = false;
+
+    btnClone.addEventListener('click', () => {
+        // 高亮特征
+        featurePath.setAttribute('class', 'highlight-blue');
+        // 显示签名并添加风险样式
+        signature.setAttribute('opacity', '1');
+        if (!isShielded) {
+            signature.setAttribute('class', 'risk-red');
+        } else {
+            signature.setAttribute('class', '');
+        }
+    });
+
+    btnShield.addEventListener('click', () => {
+        isShielded = !isShielded;
+        if (isShielded) {
+            watermark.style.display = 'block';
+            signature.setAttribute('class', '');
+            btnShield.innerText = '防御已开启';
+            btnShield.style.backgroundColor = '#27ae60';
+        } else {
+            watermark.style.display = 'none';
+            btnShield.innerText = '安全防御开关';
+            btnShield.style.backgroundColor = '#3498db';
+        }
+    });
+</script>
+
+</body>
+</html>

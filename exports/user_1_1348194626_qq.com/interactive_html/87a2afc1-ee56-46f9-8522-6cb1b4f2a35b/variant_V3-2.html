@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纳税问题微课交互可视化</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --accent-color: #e67e22;
+            --gray-light: #f8f9fa;
+            --gray-dark: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 1024px;
+            height: 768px;
+            background-color: #ffffff;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部标题 */
+        .header {
+            background-color: var(--gray-dark);
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header .tag {
+            background-color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 主体内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 24px;
+            gap: 24px;
+            background-color: #fcfcfc;
+        }
+
+        /* 左侧可视化区域 */
+        .visual-panel {
+            flex: 1.2;
+            background: #ffffff;
+            border: 2px solid #eef2f5;
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+        }
+
+        /* 右侧控制与推导区域 */
+        .control-panel {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 题干展示区 */
+        .question-box {
+            background-color: #eef7fe;
+            border-left: 5px solid var(--primary-color);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+
+        .question-box strong {
+            color: var(--danger-color);
+        }
+
+        /* 交互步骤控制 */
+        .step-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--gray-dark);
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #edf2f7;
+            color: #4a5568;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn.active::after {
+            content: "●";
+            color: #fff;
+            font-size: 12px;
+        }
+
+        /* 动态算式展示区 */
+        .formula-box {
+            flex: 1;
+            background-color: #fffaf0;
+            border: 2px dashed #fbd38d;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .formula-line {
+            font-size: 18px;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 32px;
+        }
+
+        .formula-highlight {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .formula-result {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--success-color);
+            border-bottom: 3px double var(--success-color);
+            padding: 0 6px;
+            display: none;
+        }
+
+        /* SVG 动画样式 */
+        .bill-rect {
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .bill-text {
+            transition: all 0.6s ease;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .scissor-line {
+            stroke-dasharray: 8, 8;
+            transition: opacity 0.4s ease;
+        }
+
+        /* 底部重置按钮 */
+        .reset-btn {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background-color: #718096;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background-color: #4a5568;
+        }
+
+        /* 动画辅助类 */
+        .pulse {
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { filter: drop-shadow(0 0 2px rgba(230, 126, 34, 0.5)); }
+            50% { filter: drop-shadow(0 0 12px rgba(230, 126, 34, 0.8)); }
+            100% { filter: drop-shadow(0 0 2px rgba(230, 126, 34, 0.5)); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>百分数的实际应用：纳税问题</h1>
+        <span class="tag">六年级 · 数学</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：SVG 交互动画 -->
+        <div class="visual-panel">
+            <svg id="visual-svg" width="480" height="520" viewBox="0 0 480 520" style="background: transparent;">
+                <!-- 阴影定义 -->
+                <defs>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+
+                <!-- 账单背景大框 (10万元总额) -->
+                <g id="bill-group" filter="url(#shadow)">
+                    <!-- 10万总账单外框 -->
+                    <rect id="total-border" x="60" y="40" width="340" height="400" rx="16" fill="#ffffff" stroke="#cbd5e0" stroke-width="3" />
+                    
+                    <!-- 优惠券部分 (2万元) - 占高度的 20% (80px) -->
+                    <g id="coupon-block" class="bill-rect">
+                        <rect x="70" y="50" width="320" height="80" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" />
+                        <text x="230" y="95" text-anchor="middle" fill="#475569" font-size="18" class="bill-text">优惠券抵扣：2 万元</text>
+                        <text x="230" y="118" text-anchor="middle" fill="#94a3b8" font-size="13" class="bill-text">(免税部分)</text>
+                    </g>
+
+                    <!-- 现金部分 (8万元) - 占高度的 80% (300px) -->
+                    <g id="cash-block" class="bill-rect">
+                        <rect id="cash-rect" x="70" y="140" width="320" height="290" rx="10" fill="#fff3e0" stroke="#ffe0b2" stroke-width="2" />
+                        <text id="cash-title" x="230" y="270" text-anchor="middle" fill="#e67e22" font-size="22" class="bill-text">实际现金收入：8 万元</text>
+                        <text id="cash-subtitle" x="230" y="305" text-anchor="middle" fill="#f39c12" font-size="15" class="bill-text">（应纳税所得额）</text>
+                    </g>
+                </g>
+
+                <!-- 裁剪虚线与剪刀 -->
+                <g id="cut-line-group" style="opacity: 0;">
+                    <line x1="50" y1="135" x2="410" y2="135" stroke="#e74c3c" stroke-width="3" stroke-dasharray="8,8" class="scissor-line" />
+                    <!-- 剪刀图标 -->
+                    <g transform="translate(415, 120) scale(0.06)">
+                        <path d="M96 256c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm320 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zM256 300L152 196c-18.7-18.7-49.1-18.7-67.9 0s-18.7 49.1 0 67.9l104 104-104 104c-18.7 18.7-18.7 49.1 0 67.9s49.1 18.7 67.9 0l104-104 104 104c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9L256 300z" fill="#e74c3c"/>
+                    </g>
+                </g>
+
+                <!-- 免税印章 -->
+                <g id="tax-free-stamp" style="opacity: 0; transform: translate(230px, 90px) scale(3); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <circle cx="0" cy="0" r="35" fill="none" stroke="#e74c3c" stroke-width="3" stroke-dasharray="4,2" />
+                    <text x="0" y="6" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold" transform="rotate(-15)">免 税</text>
+                </g>
+
+                <!-- 税率提取动画层 (5%) -->
+                <g id="tax-rate-slice" style="opacity: 0; transition: all 0.6s ease;">
+                    <rect x="70" y="390" width="320" height="40" rx="6" fill="#2ecc71" opacity="0.9" />
+                    <text x="230" y="415" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="bold">提取 5% 作为税款</text>
+                </g>
+
+                <!-- 总额标注 -->
+                <g id="total-label" transform="translate(30, 240)">
+                    <path d="M 15 -190 L 5 -190 L 5 190 L 15 190" fill="none" stroke="#4a5568" stroke-width="2" />
+                    <text x="-10" y="5" text-anchor="middle" fill="#4a5568" font-size="18" font-weight="bold" transform="rotate(-90 -10 5)">总账单 10 万元</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 右侧：控制与算式 -->
+        <div class="control-panel">
+            <!-- 题干 -->
+            <div class="question-box">
+                <strong>思考题：</strong>
+                一家饭店十月份总账单 10 万元，其中 2 万元为优惠券抵扣（免税），其余 8 万元为实际现金收入。若按实际现金收入的 <strong>5%</strong> 缴纳税款，应纳税多少万元？
+            </div>
+
+            <!-- 交互步骤 -->
+            <div class="step-box">
+                <div class="step-title">
+                    <span>分析步骤</span>
+                    <span style="color: var(--primary-color); font-size: 14px;">请按顺序点击演示</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="btn-step1">1. 拆解账单组成</button>
+                    <button class="btn" id="btn-step2">2. 过滤免税项 (剪掉优惠券)</button>
+                    <button class="btn" id="btn-step3">3. 对应税率计算</button>
+                </div>
+            </div>
+
+            <!-- 算式推导 -->
+            <div class="formula-box">
+                <div class="step-title" style="border-bottom-color: #fbd38d;">数学思维推导</div>
+                
+                <div class="formula-line" id="formula-p1">
+                    <span>计税金额：</span>
+                    <span id="f-calc1" class="formula-highlight">--</span>
+                </div>
+                
+                <div class="formula-line" id="formula-p2">
+                    <span>应纳税额：</span>
+                    <span id="f-calc2" class="formula-highlight">--</span>
+                    <span id="f-result" class="formula-result">0.4 万元</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重置按钮 -->
+    <button class="reset-btn" id="btn-reset">重置演示</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 获取 DOM 元素
+        const btnStep1 = document.getElementById("btn-step1");
+        const btnStep2 = document.getElementById("btn-step2");
+        const btnStep3 = document.getElementById("btn-step3");
+        const btnReset = document.getElementById("btn-reset");
+
+        const couponBlock = document.getElementById("coupon-block");
+        const cashBlock = document.getElementById("cash-block");
+        const cashRect = document.getElementById("cash-rect");
+        const cashTitle = document.getElementById("cash-title");
+        const cashSubtitle = document.getElementById("cash-subtitle");
+        const cutLineGroup = document.getElementById("cut-line-group");
+        const taxFreeStamp = document.getElementById("tax-free-stamp");
+        const taxRateSlice = document.getElementById("tax-rate-slice");
+        const totalLabel = document.getElementById("total-label");
+
+        const fCalc1 = document.getElementById("f-calc1");
+        const fCalc2 = document.getElementById("f-calc2");
+        const fResult = document.getElementById("f-result");
+
+        // 初始状态
+        function resetAll() {
+            // 恢复按钮状态
+            btnStep1.classList.remove("active");
+            btnStep2.classList.remove("active");
+            btnStep3.classList.remove("active");
+            btnStep1.disabled = false;
+            btnStep2.disabled = true;
+            btnStep3.disabled = true;
+
+            // 恢复 SVG 元素
+            couponBlock.style.transform = "translateY(0px)";
+            couponBlock.style.opacity = "1";
+            
+            cashBlock.style.transform = "translateY(0px)";
+            cashBlock.classList.remove("pulse");
+            cashRect.setAttribute("fill", "#fff3e0");
+            cashRect.setAttribute("stroke", "#ffe0b2");
+            cashRect.setAttribute("stroke-width", "2");
+            cashTitle.textContent = "实际现金收入：8 万元";
+            cashTitle.setAttribute("fill", "#e67e22");
+            cashSubtitle.style.opacity = "1";
+
+            cutLineGroup.style.opacity = "0";
+            
+            taxFreeStamp.style.opacity = "0";
+            taxFreeStamp.style.transform = "translate(230px, 90px) scale(3)";
+
+            taxRateSlice.style.opacity = "0";
+            taxRateSlice.style.transform = "translateY(0px)";
+
+            totalLabel.style.opacity = "1";
+
+            // 恢复公式
+            fCalc1.textContent = "?? 万元";
+            fCalc1.style.color = "var(--accent-color)";
+            fCalc2.textContent = "?? × ??";
+            fCalc2.style.color = "var(--accent-color)";
+            fResult.style.display = "none";
+        }
+
+        // 步骤 1：拆解账单
+        function playStep1() {
+            btnStep1.classList.add("active");
+            btnStep1.disabled = true;
+            btnStep2.disabled = false;
+
+            // 账单产生轻微的分离动画，突出两部分
+            couponBlock.style.transform = "translateY(-10px)";
+            cashBlock.style.transform = "translateY(10px)";
+            
+            // 显示裁剪虚线
+            cutLineGroup.style.opacity = "1";
+
+            // 更新公式提示
+            fCalc1.innerHTML = "10 - 2 = <span style='color:var(--accent-color); font-size:26px;'>8</span> 万元 (现金部分)";
+        }
+
+        // 步骤 2：过滤免税项
+        function playStep2() {
+            btnStep2.classList.add("active");
+            btnStep2.disabled = true;
+            btnStep3.disabled = false;
+
+            // 优惠券部分淡出，并盖上免税印章
+            couponBlock.style.opacity = "0.3";
+            taxFreeStamp.style.opacity = "1";
+            taxFreeStamp.style.transform = "translate(230px, 90px) scale(1)";
+
+            // 现金部分高亮，并移到中心
+            cashBlock.style.transform = "translateY(-30px)";
+            cashRect.setAttribute("fill", "#ffe0b2");
+            cashRect.setAttribute("stroke", "#e67e22");
+            cashRect.setAttribute("stroke-width", "3");
+            cashBlock.classList.add("pulse");
+
+            // 隐藏总额标注和裁剪线
+            totalLabel.style.opacity = "0";
+            cutLineGroup.style.opacity = "0";
+
+            // 更新公式
+            fCalc1.innerHTML = "8 万元 <span style='color:var(--success-color); font-size:14px;'>(确认为计税依据)</span>";
+            fCalc2.textContent = "8 × 5%";
+        }
+
+        // 步骤 3：计算税率
+        function playStep3() {
+            btnStep3.classList.add("active");
+            btnStep3.disabled = true;
+
+            // 停止现金块脉冲，展示税率切片
+            cashBlock.classList.remove("pulse");
+            taxRateSlice.style.opacity = "1";
+            taxRateSlice.style.transform = "translateY(-30px)";
+
+            // 改变现金块文字，强调计算
+            cashTitle.textContent = "计税基数：8 万元";
+            cashSubtitle.style.opacity = "0";
+
+            // 动态展示算式结果
+            fCalc2.innerHTML = "8 × 5% = ";
+            fResult.style.display = "inline-block";
+        }
+
+        // 绑定事件
+        btnStep1.addEventListener("click", playStep1);
+        btnStep2.addEventListener("click", playStep2);
+        btnStep3.addEventListener("click", playStep3);
+        btnReset.addEventListener("click", resetAll);
+
+        // 初始化
+        resetAll();
+    });
+</script>
+
+</body>
+</html>

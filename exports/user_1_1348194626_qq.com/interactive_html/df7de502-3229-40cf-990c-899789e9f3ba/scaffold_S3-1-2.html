@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>午餐高峰期：效率与代价的权衡</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            max-width: 800px;
+            text-align: center;
+        }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        #balance-svg {
+            width: 100%;
+            height: auto;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-container { margin-top: 30px; }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+        #result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1c40f;
+            color: #000;
+            font-weight: bold;
+            border-radius: 10px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>午餐高峰期：效率与代价的权衡</h2>
+    
+    <svg id="balance-svg" viewBox="0 0 400 200">
+        <!-- 支架 -->
+        <path d="M200 180 L200 80 M150 180 L250 180" stroke="#333" stroke-width="4" fill="none"/>
+        <!-- 横梁 -->
+        <line id="beam" x1="100" y1="80" x2="300" y2="80" stroke="#333" stroke-width="6" />
+        <!-- 绳索 -->
+        <line x1="100" y1="80" x2="100" y2="120" stroke="#7f8c8d" stroke-width="2" />
+        <line x1="300" y1="80" x2="300" y2="120" stroke="#7f8c8d" stroke-width="2" />
+        <!-- 盘子 -->
+        <rect id="left-pan" x="70" y="120" width="60" height="20" fill="#bdc3c7" rx="5"/>
+        <rect id="right-pan" x="270" y="120" width="60" height="20" fill="#bdc3c7" rx="5"/>
+        <!-- 文字标签 -->
+        <text x="100" y="150" font-size="12" text-anchor="middle">代价: 10元电费</text>
+        <text x="300" y="150" font-size="12" text-anchor="middle">收益: 满意+100元</text>
+    </svg>
+
+    <div class="btn-container">
+        <button id="weigh-btn">点击进行“高峰期权衡”</button>
+    </div>
+    <div id="result-box">✅ 完全值得！高峰期效率的价值远超电费代价。</div>
+</div>
+
+<script>
+    const btn = document.getElementById('weigh-btn');
+    const beam = document.getElementById('beam');
+    const leftPan = document.getElementById('left-pan');
+    const rightPan = document.getElementById('right-pan');
+    const resultBox = document.getElementById('result-box');
+
+    btn.addEventListener('click', () => {
+        // 倾斜动画
+        beam.setAttribute('transform', 'rotate(15 200 80)');
+        leftPan.setAttribute('transform', 'rotate(15 200 80) translate(0 20)');
+        rightPan.setAttribute('transform', 'rotate(15 200 80) translate(0 -20)');
+        
+        // 显示结果
+        resultBox.style.opacity = '1';
+        resultBox.style.transform = 'scale(1)';
+        
+        // 禁用按钮
+        btn.disabled = true;
+        btn.style.backgroundColor = '#95a5a6';
+        btn.innerText = '权衡已完成';
+    });
+</script>
+
+</body>
+</html>

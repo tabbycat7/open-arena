@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI行为诊断器</title>
+    <style>
+        :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; color: var(--primary); margin: 0; padding: 20px; }
+        .container { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
+        h2 { text-align: center; margin-top: 0; }
+        .controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #eee; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #ddd; }
+        #svg-canvas { width: 100%; height: 350px; border: 1px solid #eee; border-radius: 8px; }
+        .matrix { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; font-size: 0.9em; }
+        .cell { padding: 10px; background: #f9f9f9; border-radius: 4px; text-align: center; border: 1px solid #ddd; }
+        .highlight-blue { stroke: var(--accent-blue); stroke-width: 3; fill: rgba(52, 152, 219, 0.1); }
+        .highlight-green { stroke: var(--accent-green); stroke-width: 3; fill: rgba(39, 174, 96, 0.1); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI行为诊断器：服务还是越界？</h2>
+    <div class="controls">
+        <button id="btn-purpose">分析：行为目的</button>
+        <button id="btn-data">分析：数据用途</button>
+    </div>
+
+    <svg id="svg-canvas" viewBox="0 0 800 350">
+        <!-- 场景1 -->
+        <rect x="50" y="50" width="300" height="200" rx="10" fill="#fff" stroke="#ccc"/>
+        <text x="200" y="80" text-anchor="middle" font-weight="bold">场景 A：推荐冰淇淋广告</text>
+        <text x="200" y="130" text-anchor="middle" id="txt-a-purpose">目的：增加销售额</text>
+        <text x="200" y="180" text-anchor="middle" id="txt-a-data">用途：分析聊天关键词</text>
+        <rect id="rect-a" x="60" y="100" width="280" height="120" rx="5" fill="none" class="hidden"/>
+
+        <!-- 场景2 -->
+        <rect x="450" y="50" width="300" height="200" rx="10" fill="#fff" stroke="#ccc"/>
+        <text x="600" y="80" text-anchor="middle" font-weight="bold">场景 B：提醒健康风险</text>
+        <text x="600" y="130" text-anchor="middle" id="txt-b-purpose">目的：保障用户健康</text>
+        <text x="600" y="180" text-anchor="middle" id="txt-b-data">用途：分析睡眠音频</text>
+        <rect id="rect-b" x="460" y="100" width="280" height="120" rx="5" fill="none" class="hidden"/>
+    </svg>
+
+    <div class="matrix">
+        <div class="cell">维度</div><div class="cell">冰淇淋广告</div><div class="cell">健康提醒</div>
+        <div class="cell">核心意图</div><div class="cell" id="res-a1">?</div><div class="cell" id="res-b1">?</div>
+        <div class="cell">用户感知</div><div class="cell">被动推销</div><div class="cell">主动关怀</div>
+    </div>
+</div>
+
+<script>
+    const btnPurpose = document.getElementById('btn-purpose');
+    const btnData = document.getElementById('btn-data');
+    const rectA = document.getElementById('rect-a');
+    const rectB = document.getElementById('rect-b');
+    const resA1 = document.getElementById('res-a1');
+    const resB1 = document.getElementById('res-b1');
+
+    btnPurpose.addEventListener('click', () => {
+        rectA.setAttribute('class', 'highlight-blue');
+        rectB.setAttribute('class', 'highlight-green');
+        resA1.textContent = "商业牟利";
+        resB1.textContent = "公益关怀";
+    });
+
+    btnData.addEventListener('click', () => {
+        rectA.setAttribute('class', 'highlight-blue');
+        rectB.setAttribute('class', 'highlight-green');
+        resA1.textContent = "未明确授权";
+        resB1.textContent = "安全保障";
+    });
+</script>
+
+</body>
+</html>

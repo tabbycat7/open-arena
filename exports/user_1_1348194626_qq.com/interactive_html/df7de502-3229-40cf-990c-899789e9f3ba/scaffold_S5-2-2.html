@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法评价体系：智慧城市之眼</title>
+    <style>
+        :root {
+            --color-eff: #3498db;
+            --color-cost: #27ae60;
+            --color-gen: #f39c12;
+            --bg: #fdfdfd;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg);
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 80vmin;
+            height: 60vmin;
+            position: relative;
+        }
+        .title {
+            font-size: 2.5vmin;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2vmin;
+            text-align: center;
+        }
+        .btn-group {
+            margin-top: 3vmin;
+            display: flex;
+            gap: 2vmin;
+        }
+        button {
+            padding: 1vmin 2vmin;
+            font-size: 1.8vmin;
+            cursor: pointer;
+            border: none;
+            border-radius: 0.5vmin;
+            background: #eee;
+            transition: all 0.3s;
+        }
+        button:hover { background: #ddd; }
+        .active-eff { background: var(--color-eff) !important; color: white; }
+        .active-cost { background: var(--color-cost) !important; color: white; }
+        .active-gen { background: var(--color-gen) !important; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="title">用算法之眼，发现智慧城市</div>
+    
+    <div id="canvas-container">
+        <svg viewBox="0 0 800 600" width="100%" height="100%">
+            <!-- 城市背景元素 -->
+            <g id="city-layer" opacity="0.3">
+                <rect x="100" y="400" width="100" height="150" fill="#ccc" />
+                <rect x="350" y="300" width="100" height="250" fill="#ccc" />
+                <rect x="600" y="350" width="100" height="200" fill="#ccc" />
+                <path d="M0 550 L800 550" stroke="#999" stroke-width="4" />
+            </g>
+
+            <!-- 尺子 -->
+            <g id="rulers">
+                <rect id="ruler-eff" x="150" y="50" width="100" height="20" rx="10" fill="#3498db" />
+                <text x="200" y="40" text-anchor="middle" font-size="16">效率尺</text>
+                
+                <rect id="ruler-cost" x="350" y="50" width="100" height="20" rx="10" fill="#27ae60" />
+                <text x="400" y="40" text-anchor="middle" font-size="16">代价尺</text>
+                
+                <rect id="ruler-gen" x="550" y="50" width="100" height="20" rx="10" fill="#f39c12" />
+                <text x="600" y="40" text-anchor="middle" font-size="16">通用性尺</text>
+            </g>
+
+            <!-- 汇聚光束 -->
+            <g id="beams" stroke-width="4" stroke-dasharray="10 5" opacity="0">
+                <line id="beam-eff" x1="200" y1="70" x2="150" y2="450" stroke="#3498db" />
+                <line id="beam-cost" x1="400" y1="70" x2="400" y2="450" stroke="#27ae60" />
+                <line id="beam-gen" x1="600" y1="70" x2="650" y2="450" stroke="#f39c12" />
+            </g>
+
+            <!-- 目标图标 -->
+            <g id="targets">
+                <circle cx="150" cy="450" r="20" fill="#3498db" />
+                <circle cx="400" cy="450" r="20" fill="#27ae60" />
+                <circle cx="650" cy="450" r="20" fill="#f39c12" />
+                <text x="150" y="500" text-anchor="middle" font-size="12">外卖骑手</text>
+                <text x="400" y="500" text-anchor="middle" font-size="12">智能红绿灯</text>
+                <text x="650" y="500" text-anchor="middle" font-size="12">快递分拣</text>
+            </g>
+        </svg>
+    </div>
+
+    <div class="btn-group">
+        <button id="btn-eff">效率</button>
+        <button id="btn-cost">代价</button>
+        <button id="btn-gen">通用性</button>
+        <button id="btn-all" style="background:#333; color:#fff;">全部点亮</button>
+    </div>
+
+    <script>
+        const beams = {
+            eff: document.getElementById('beam-eff'),
+            cost: document.getElementById('beam-cost'),
+            gen: document.getElementById('beam-gen')
+        };
+        const beamsGroup = document.getElementById('beams');
+
+        function toggleBeam(id, active) {
+            beams[id].style.opacity = active ? 1 : 0;
+            beamsGroup.style.opacity = 1;
+        }
+
+        document.getElementById('btn-eff').addEventListener('click', () => toggleBeam('eff', true));
+        document.getElementById('btn-cost').addEventListener('click', () => toggleBeam('cost', true));
+        document.getElementById('btn-gen').addEventListener('click', () => toggleBeam('gen', true));
+        
+        document.getElementById('btn-all').addEventListener('click', () => {
+            Object.values(beams).forEach(b => b.style.opacity = 1);
+            beamsGroup.style.opacity = 1;
+        });
+    </script>
+</body>
+</html>

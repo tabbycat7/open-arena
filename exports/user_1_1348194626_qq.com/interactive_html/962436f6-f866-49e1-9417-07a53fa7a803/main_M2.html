@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六年级数学微课：理解税率的本质</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #dbeafe;
+            --tax-color: #dc2626;
+            --tax-light: #fee2e2;
+            --rate-color: #059669;
+            --rate-light: #d1fae5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "📊";
+            font-size: 24px;
+        }
+
+        .question-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 15px;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        /* 主体布局 */
+        .main-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 20px;
+            padding: 20px 30px;
+            overflow: hidden;
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 公式展示区 */
+        .formula-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .formula-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        .numerator {
+            border-bottom: 3px solid var(--text-main);
+            padding: 0 15px 5px 15px;
+            color: var(--tax-color);
+        }
+
+        .denominator {
+            padding: 5px 15px 0 15px;
+            color: var(--primary-color);
+        }
+
+        .tax-rate-term {
+            color: var(--rate-color);
+            background-color: var(--rate-light);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* 动态算式 */
+        .dynamic-calc {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 控制区 */
+        .control-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-container {
+            margin: 10px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 选项卡切换 */
+        .tab-container {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 可视化展示区 */
+        .visual-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 模型1：百格图 */
+        .grid-model {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            width: 240px;
+            height: 240px;
+        }
+
+        .grid-cell {
+            border-radius: 2px;
+            transition: background-color 0.3s;
+            background-color: #cbd5e1;
+        }
+
+        .grid-cell.tax {
+            background-color: var(--tax-color);
+        }
+
+        .grid-cell.income {
+            background-color: var(--primary-light);
+            border: 1px solid #93c5fd;
+        }
+
+        /* 模型2：百元纳税 */
+        .bills-model {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .bill-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px;
+            background: #f8fafc;
+            width: 85px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .bill-income {
+            background: var(--primary-light);
+            border: 1.5px dashed var(--primary-color);
+            color: #1e40af;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .bill-tax {
+            background: var(--tax-light);
+            border: 1.5px solid var(--tax-color);
+            color: #991b1b;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 底部说明 */
+        .footer-info {
+            background-color: #ffffff;
+            padding: 12px 30px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* 辅助高亮类 */
+        .text-income { color: var(--primary-color); }
+        .text-tax { color: var(--tax-color); }
+        .text-rate { color: var(--rate-color); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部：问题引入 -->
+        <div class="header">
+            <h1>理解税率的数学本质</h1>
+            <div class="question-box">
+                <strong>思考问题：</strong>如果一家商店的营业税率是 <strong>10%</strong>，这 10% 具体告诉了我们什么信息？它和我们之前学的百分数有什么联系？
+            </div>
+        </div>
+
+        <!-- 主体：交互可视化 -->
+        <div class="main-layout">
+            <!-- 左侧：公式与控制 -->
+            <div class="panel">
+                <!-- 公式卡片 -->
+                <div class="card formula-card">
+                    <div class="card-title">📝 税率的数学定义</div>
+                    <div class="formula-wrapper">
+                        <span class="tax-rate-term">税率 (10%)</span>
+                        <span>&nbsp;=&nbsp;</span>
+                        <div class="fraction">
+                            <span class="numerator">应纳税额</span>
+                            <span class="denominator">计税收入</span>
+                        </div>
+                    </div>
+                    
+                    <div class="dynamic-calc">
+                        <span class="text-tax" id="calc-tax">100</span> 元 
+                        <span> = </span>
+                        <span class="text-income" id="calc-income">1000</span> 元 
+                        <span> × </span>
+                        <span class="text-rate">10%</span>
+                    </div>
+                </div>
+
+                <!-- 控制卡片 -->
+                <div class="card control-card">
+                    <div class="card-title">🎛️ 动态调节计税收入</div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>计税收入 (总额)</span>
+                            <span class="text-income"><strong id="slider-val">1000</strong> 元</span>
+                        </div>
+                        <input type="range" id="income-slider" class="range-slider" min="100" max="1000" step="100" value="500">
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; color: var(--text-muted);">
+                        💡 <strong>观察：</strong>拖动滑块改变<span class="text-income">计税收入</span>时，<span class="text-rate">税率 (10%)</span> 保持不变，而<span class="text-tax">应纳税额</span>会随之发生怎样的变化？
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：直观模型 -->
+            <div class="panel">
+                <div class="card visual-card">
+                    <!-- 视图切换 -->
+                    <div class="tab-container">
+                        <button class="tab-btn active" id="tab-grid">百格图模型 (部分与整体)</button>
+                        <button class="tab-btn" id="tab-bills">百元纳税模型 (每100元)</button>
+                    </div>
+
+                    <!-- 可视化内容 -->
+                    <div class="visual-content">
+                        <!-- 模型1：百格图 -->
+                        <div class="grid-model" id="grid-view">
+                            <!-- 由 JS 动态生成 100 个格子 -->
+                        </div>
+
+                        <!-- 模型2：百元纳税 -->
+                        <div class="bills-model hidden" id="bills-view">
+                            <!-- 由 JS 动态生成百元组 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部：图例与课堂引导 -->
+        <div class="footer-info">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: var(--primary-light); border: 1px solid #93c5fd;"></span>
+                    <span>计税收入 (<span id="legend-income">500</span>元)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: var(--tax-color);"></span>
+                    <span>应纳税额 (<span id="legend-tax">50</span>元)</span>
+                </div>
+            </div>
+            <div>
+                <span>🏫 六年级数学 · 百分数应用</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取 DOM 元素
+        const slider = document.getElementById('income-slider');
+        const sliderVal = document.getElementById('slider-val');
+        const calcIncome = document.getElementById('calc-income');
+        const calcTax = document.getElementById('calc-tax');
+        const legendIncome = document.getElementById('legend-income');
+        const legendTax = document.getElementById('legend-tax');
+        
+        const tabGrid = document.getElementById('tab-grid');
+        const tabBills = document.getElementById('tab-bills');
+        const gridView = document.getElementById('grid-view');
+        const billsView = document.getElementById('bills-view');
+
+        const TAX_RATE = 0.10; // 10% 税率
+
+        // 初始化百格图
+        function initGrid() {
+            gridView.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('grid-cell');
+                // 前10%（10个格子）代表税收
+                if (i < 10) {
+                    cell.classList.add('tax');
+                } else {
+                    cell.classList.add('income');
+                }
+                gridView.appendChild(cell);
+            }
+        }
+
+        // 更新百元纳税模型
+        function updateBillsView(income) {
+            billsView.innerHTML = '';
+            const hundredsCount = income / 100;
+            
+            for (let i = 0; i < hundredsCount; i++) {
+                const group = document.createElement('div');
+                group.classList.add('bill-group');
+                
+                const incomeBill = document.createElement('div');
+                incomeBill.classList.add('bill-income');
+                incomeBill.innerText = '收入 100元';
+                
+                const taxBill = document.createElement('div');
+                taxBill.classList.add('bill-tax');
+                taxBill.innerText = '税 10元';
+                
+                group.appendChild(incomeBill);
+                group.appendChild(taxBill);
+                billsView.appendChild(group);
+            }
+        }
+
+        // 核心更新函数
+        function update(income) {
+            const tax = income * TAX_RATE;
+
+            // 更新文本显示
+            sliderVal.innerText = income;
+            calcIncome.innerText = income;
+            calcTax.innerText = tax;
+            legendIncome.innerText = income;
+            legendTax.innerText = tax;
+
+            // 更新百元纳税模型
+            updateBillsView(income);
+        }
+
+        // 事件监听：滑块拖动
+        slider.addEventListener('input', (e) => {
+            const income = parseInt(e.target.value);
+            update(income);
+        });
+
+        // 事件监听：选项卡切换
+        tabGrid.addEventListener('click', () => {
+            tabGrid.classList.add('active');
+            tabBills.classList.remove('active');
+            gridView.classList.remove('hidden');
+            billsView.classList.add('hidden');
+        });
+
+        tabBills.addEventListener('click', () => {
+            tabBills.classList.add('active');
+            tabGrid.classList.remove('active');
+            billsView.classList.remove('hidden');
+            gridView.classList.add('hidden');
+        });
+
+        // 初始化执行
+        initGrid();
+        update(parseInt(slider.value));
+    </script>
+</body>
+</html>

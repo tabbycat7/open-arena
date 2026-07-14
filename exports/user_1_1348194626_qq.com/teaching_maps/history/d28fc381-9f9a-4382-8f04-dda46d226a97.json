@@ -1,0 +1,402 @@
+{
+  "id": "d28fc381-9f9a-4382-8f04-dda46d226a97",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "1.理解利率、利息的含义，掌握利息的计算公式：利息=本金×利率×存期。2.能够根据存款利率表计算不同存期的利息，并进行比较。\r\n",
+  "student_profile": "六年级学生已经掌握了百分数的基本概念、百分数与分数、小数的互化，能够进行简单的百分数计算。他们在日常生活中也接触过“利率”“存款”“利息”等词汇，具备一定的生活经验。然而，学生对银行利率的实际含义、不同理财方式的区别、利率变化的原因等缺乏系统认识，计算能力虽已具备，但在实际情境中灵活运用仍显不足。此外，六年级学生正处于抽象思维发展的关键期，能够通过具体情境理解数学概念，但仍需借助直观材料和实际操作来加深理解。因此，本课将采用任务驱动、探究学习、合作交流等多种教学方式，帮助学生在真实情境中建构知识。",
+  "difficulty_analysis": null,
+  "language_style": "生动活泼",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们过年都收了不少压岁钱吧？要是你把1000块压岁钱存进银行，到期取出来多了32块，有人说1000是赚的，有人说32是赚的，你觉得谁对？这两笔钱分别叫啥，作用有啥不一样？\", \"question_type\": \"main\", \"commentary\": \"大家说得太对啦！存进银行的1000块是本金，是我们拿来生钱的本钱，多出来的32块是银行给的利息，是存款的收益哦。哎，为啥同样存1000块，不同人拿到的利息不一样呢？接下来咱们就来找找衡量存款收益的标准哦。\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.62, \"design_intent\": \"从学生熟悉的压岁钱存银行的生活场景切入，加入对立观点干扰引导学生识别本金、利息的基本概念并区分二者作用，激活已有生活经验，建立学习锚点\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"奇了怪了，有人存1000一年得32块利息，有人存2000一年得64块，还有人存1000两年得75块，有人说拿64块利息的最赚，有人说存两年的最赚，你觉得用啥标准比才公平呀？\", \"question_type\": \"main\", \"commentary\": \"没错呀！光比利息的绝对数不公平，要比收益得看利率哦！利息是实际拿到的钱数是绝对额，利率是单位时间内利息占本金的百分比，是相对比率，这样不管本金存期差多少都能比收益啦。那本金、利率、存期三个要素怎么共同决定利息多少呢？咱们接着往下探究~\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"design_intent\": \"通过对比不同本金、不同存期的利息案例，设置观点对立场景引导学生抽象出利率的相对数概念，区分利息（绝对额）和利率（相对比率），攻克第一个易错点\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"咱们试试哦，要是利率固定，本金翻倍利息咋变？本金固定存期翻倍利息又咋变？你能试着总结出算利息的公式不？\", \"question_type\": \"main\", \"commentary\": \"太棒啦！大家都推导出利息=本金×利率×存期这个公式对吧？三个要素变任何一个，利息都会跟着变哦。不过大家发现没，咱们做题的时候利率是直接给的，现实中得去银行的利率表里找对应利率哦，咱们接下来就看看怎么认利率表~\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"design_intent\": \"通过多组变量控制的计算案例（固定两个要素，改变第三个要素看利息变化），引导学生自主推导利息计算公式，理解三个要素的逻辑关联\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"小明把1000块存3年定期，算利息的时候用了1年期的利率，算出来的利息比银行实际给的少好多哦，你知道他错在哪了吗？\", \"question_type\": \"main\", \"commentary\": \"对啦！银行利率表里不同存期对应不同的利率，存几年定期就要用对应年限的年利率，可不能随便拿其他存期的利率来算哦。那如果存期不是整年的，算的时候要注意啥呢？咱们来看下一个小例子~\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.76, \"design_intent\": \"抛出错误案例：小明存3年定期，却用1年期利率计算利息，结果比实际少很多，让学生查找错误原因，引导学生掌握利率表认读规则，攻克「误读不同存期对应利率」的易错点\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"小红存了1000块6个月的定期，年利率是2.1%，她直接乘6算出来利息居然有126块，这比存一年还多，这明显不对呀，问题出在哪啦？\", \"question_type\": \"main\", \"commentary\": \"太聪明啦！咱们用的是年利率的话，存期得按年算呀，6个月就是0.5年，可不能直接乘月份，要把存期和利率的单位统一才行哦。现在咱们会算利息了，那怎么选存期更划算呢？接下来给大家一个真实的小任务~\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"抛出第二个错误案例：小红存6个月定期，用年利率2.1%计算时直接乘6，结果远高于实际利息，让学生查找错误原因，攻克「存期与利率单位不匹配、漏乘存期」的易错点\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"要是你家有5万闲钱，1年后可能要拿2万出来用，你打算怎么存钱，能拿到最多的利息呀？\", \"question_type\": \"main\", \"commentary\": \"大家的方案都好棒呀！咱们可以灵活组合存期，比如2万存1年定期，剩下3万存更长期的，这样既满足1年后用钱的需求，又能拿到更高的利息哦，这就是咱们今天学的知识在生活里的实际用处啦。\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.85, \"design_intent\": \"给出家庭存款真实情境（5万元闲置资金，1年后可能需要用2万元），让学生对比不同存期组合的利息差异，设计最优存款方案，实现跨知识点综合应用与分层拓展\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"爸爸妈妈买了2万元国债，到期后除了拿回2万还多拿了1800元，这两笔钱分别叫什么呀？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"用购买国债的场景替换银行存款场景，引导学生识别本金、利息概念，巩固二者的区分\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"阿姨A存1000元1年得20元利息，阿姨B存2000元1年得38元利息，你觉得谁的存款收益更高？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.66, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过不同本金的利息对比，巩固利率的相对数属性，区分利息和利率的差异\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"有人说利息计算公式是「利息=本金+利率×存期」，你觉得这个说法对吗？为什么呀？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过错误公式辨析，强化利息计算公式的运算逻辑，加深对三要素关联的理解\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"老师给了你国有银行和地方商业银行两张利率表，你能找出两家3年期定期利率比比谁更高吗？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.74, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过认读不同银行的利率表，巩固不同存期对应不同利率的规则，掌握利率表认读方法\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"小丽存了1000元，存期是2年零3个月，年利率是2.6%，你能帮她算算到期能拿多少利息吗？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过非整年存期的利息计算，巩固利率与存期单位统一的规则，攻克易错点\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"你现在有3.8万压岁钱，3年后要交4万学费，你能设计存款方案算算到期能不能凑够学费吗？\", \"question_type\": \"variant\", \"commentary\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.83, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过真实学费储备场景，引导学生综合运用利息知识设计最优方案，实现知识迁移应用\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"我们存到银行的原始资金叫什么？到期后银行多给的钱叫什么？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP1\", \"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"巩固M1学到的本金、利息概念，为M2区分利息和利率做铺垫\", \"design_intent\": \"锚定学困生分不清本金和利息的认知断层，强化概念记忆\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"存100元1年得利息2元，存1元1年得多少利息？这个数就是年利率对吗？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"巩固M2学到的利率概念，为M3推导利息计算公式打基础\", \"design_intent\": \"锚定学困生混淆利息和利率的认知断层，用具体数值关联两个概念\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"咱们一起读3遍利息计算公式：利息=本金×利率×存期\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.32, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"巩固M3推导的利息公式，为M4运用公式计算利息做铺垫\", \"design_intent\": \"锚定学困生记不住利息公式的认知断层，强化公式记忆\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"看标了颜色的利率表，存2年定期要找哪一行的年利率呀？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"巩固M4学到的利率表认读规则，为M5解决存期单位匹配问题做铺垫\", \"design_intent\": \"锚定学困生找不到对应存期利率的认知断层，简化认读难度\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"年利率按1年计算哦，存6个月是多少年？计算时要乘0.5对吗？\", \"question_type\": \"scaffold\", \"commentary\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.38, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"巩固M5学到的存期单位匹配规则，为M6设计最优存款方案做铺垫\", \"design_intent\": \"锚定学困生存期和利率单位不匹配的认知断层，明确换算规则\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-01 17:21:41",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们过年都收了不少压岁钱吧？要是你把1000块压岁钱存进银行，到期取出来多了32块，有人说1000是赚的，有人说32是赚的，你觉得谁对？这两笔钱分别叫啥，作用有啥不一样？",
+        "question_type": "main",
+        "commentary": "大家说得太对啦！存进银行的1000块是本金，是我们拿来生钱的本钱，多出来的32块是银行给的利息，是存款的收益哦。哎，为啥同样存1000块，不同人拿到的利息不一样呢？接下来咱们就来找找衡量存款收益的标准哦。",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.62,
+        "design_intent": "从学生熟悉的压岁钱存银行的生活场景切入，加入对立观点干扰引导学生识别本金、利息的基本概念并区分二者作用，激活已有生活经验，建立学习锚点",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "奇了怪了，有人存1000一年得32块利息，有人存2000一年得64块，还有人存1000两年得75块，有人说拿64块利息的最赚，有人说存两年的最赚，你觉得用啥标准比才公平呀？",
+        "question_type": "main",
+        "commentary": "没错呀！光比利息的绝对数不公平，要比收益得看利率哦！利息是实际拿到的钱数是绝对额，利率是单位时间内利息占本金的百分比，是相对比率，这样不管本金存期差多少都能比收益啦。那本金、利率、存期三个要素怎么共同决定利息多少呢？咱们接着往下探究~",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "design_intent": "通过对比不同本金、不同存期的利息案例，设置观点对立场景引导学生抽象出利率的相对数概念，区分利息（绝对额）和利率（相对比率），攻克第一个易错点",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "咱们试试哦，要是利率固定，本金翻倍利息咋变？本金固定存期翻倍利息又咋变？你能试着总结出算利息的公式不？",
+        "question_type": "main",
+        "commentary": "太棒啦！大家都推导出利息=本金×利率×存期这个公式对吧？三个要素变任何一个，利息都会跟着变哦。不过大家发现没，咱们做题的时候利率是直接给的，现实中得去银行的利率表里找对应利率哦，咱们接下来就看看怎么认利率表~",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "design_intent": "通过多组变量控制的计算案例（固定两个要素，改变第三个要素看利息变化），引导学生自主推导利息计算公式，理解三个要素的逻辑关联",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "小明把1000块存3年定期，算利息的时候用了1年期的利率，算出来的利息比银行实际给的少好多哦，你知道他错在哪了吗？",
+        "question_type": "main",
+        "commentary": "对啦！银行利率表里不同存期对应不同的利率，存几年定期就要用对应年限的年利率，可不能随便拿其他存期的利率来算哦。那如果存期不是整年的，算的时候要注意啥呢？咱们来看下一个小例子~",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.76,
+        "design_intent": "抛出错误案例：小明存3年定期，却用1年期利率计算利息，结果比实际少很多，让学生查找错误原因，引导学生掌握利率表认读规则，攻克「误读不同存期对应利率」的易错点",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "小红存了1000块6个月的定期，年利率是2.1%，她直接乘6算出来利息居然有126块，这比存一年还多，这明显不对呀，问题出在哪啦？",
+        "question_type": "main",
+        "commentary": "太聪明啦！咱们用的是年利率的话，存期得按年算呀，6个月就是0.5年，可不能直接乘月份，要把存期和利率的单位统一才行哦。现在咱们会算利息了，那怎么选存期更划算呢？接下来给大家一个真实的小任务~",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "抛出第二个错误案例：小红存6个月定期，用年利率2.1%计算时直接乘6，结果远高于实际利息，让学生查找错误原因，攻克「存期与利率单位不匹配、漏乘存期」的易错点",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "要是你家有5万闲钱，1年后可能要拿2万出来用，你打算怎么存钱，能拿到最多的利息呀？",
+        "question_type": "main",
+        "commentary": "大家的方案都好棒呀！咱们可以灵活组合存期，比如2万存1年定期，剩下3万存更长期的，这样既满足1年后用钱的需求，又能拿到更高的利息哦，这就是咱们今天学的知识在生活里的实际用处啦。",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.85,
+        "design_intent": "给出家庭存款真实情境（5万元闲置资金，1年后可能需要用2万元），让学生对比不同存期组合的利息差异，设计最优存款方案，实现跨知识点综合应用与分层拓展",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "爸爸妈妈买了2万元国债，到期后除了拿回2万还多拿了1800元，这两笔钱分别叫什么呀？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "用购买国债的场景替换银行存款场景，引导学生识别本金、利息概念，巩固二者的区分",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "阿姨A存1000元1年得20元利息，阿姨B存2000元1年得38元利息，你觉得谁的存款收益更高？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.66,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过不同本金的利息对比，巩固利率的相对数属性，区分利息和利率的差异",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "有人说利息计算公式是「利息=本金+利率×存期」，你觉得这个说法对吗？为什么呀？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过错误公式辨析，强化利息计算公式的运算逻辑，加深对三要素关联的理解",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "老师给了你国有银行和地方商业银行两张利率表，你能找出两家3年期定期利率比比谁更高吗？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.74,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过认读不同银行的利率表，巩固不同存期对应不同利率的规则，掌握利率表认读方法",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "小丽存了1000元，存期是2年零3个月，年利率是2.6%，你能帮她算算到期能拿多少利息吗？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过非整年存期的利息计算，巩固利率与存期单位统一的规则，攻克易错点",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "你现在有3.8万压岁钱，3年后要交4万学费，你能设计存款方案算算到期能不能凑够学费吗？",
+        "question_type": "variant",
+        "commentary": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.83,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过真实学费储备场景，引导学生综合运用利息知识设计最优方案，实现知识迁移应用",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "我们存到银行的原始资金叫什么？到期后银行多给的钱叫什么？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP1",
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "巩固M1学到的本金、利息概念，为M2区分利息和利率做铺垫",
+        "design_intent": "锚定学困生分不清本金和利息的认知断层，强化概念记忆",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "存100元1年得利息2元，存1元1年得多少利息？这个数就是年利率对吗？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "巩固M2学到的利率概念，为M3推导利息计算公式打基础",
+        "design_intent": "锚定学困生混淆利息和利率的认知断层，用具体数值关联两个概念",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "咱们一起读3遍利息计算公式：利息=本金×利率×存期",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.32,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "巩固M3推导的利息公式，为M4运用公式计算利息做铺垫",
+        "design_intent": "锚定学困生记不住利息公式的认知断层，强化公式记忆",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "看标了颜色的利率表，存2年定期要找哪一行的年利率呀？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "巩固M4学到的利率表认读规则，为M5解决存期单位匹配问题做铺垫",
+        "design_intent": "锚定学困生找不到对应存期利率的认知断层，简化认读难度",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "年利率按1年计算哦，存6个月是多少年？计算时要乘0.5对吗？",
+        "question_type": "scaffold",
+        "commentary": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.38,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "巩固M5学到的存期单位匹配规则，为M6设计最优存款方案做铺垫",
+        "design_intent": "锚定学困生存期和利率单位不匹配的认知断层，明确换算规则",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

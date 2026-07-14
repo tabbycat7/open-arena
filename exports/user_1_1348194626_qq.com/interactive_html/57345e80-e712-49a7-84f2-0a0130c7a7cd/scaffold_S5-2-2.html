@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法步骤设计器</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #f5a623;
+            --bg: #f0f4f8;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #stage {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+        .sentence {
+            font-size: 32px;
+            margin-top: 50px;
+            color: #333;
+        }
+        .slot {
+            display: inline-block;
+            width: 120px;
+            height: 50px;
+            border-bottom: 3px dashed #ccc;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 50px;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .slot.filled {
+            border-bottom: 3px solid var(--success);
+            color: var(--success);
+            font-weight: bold;
+        }
+        .cards-container {
+            margin-top: 100px;
+            display: flex;
+            gap: 30px;
+        }
+        .card {
+            width: 140px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-size: 24px;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        #robot {
+            margin-top: 40px;
+            font-size: 60px;
+            opacity: 0.3;
+            transition: opacity 0.5s;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+            color: var(--success);
+            font-weight: bold;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="stage">
+    <div class="sentence">
+        倒入 <span class="slot" id="slot1"></span> 的热水，静置 <span class="slot" id="slot2"></span>。
+    </div>
+    
+    <div class="cards-container">
+        <div class="card" id="card1" draggable="true">85℃</div>
+        <div class="card" id="card2" draggable="true">3分钟</div>
+    </div>
+
+    <div id="robot">🤖</div>
+    <div id="message">恭喜！你已成功设计出一条高品质的合格算法步骤！</div>
+</div>
+
+<script>
+    const slots = document.querySelectorAll('.slot');
+    const cards = document.querySelectorAll('.card');
+    const robot = document.getElementById('robot');
+    const message = document.getElementById('message');
+    let filledCount = 0;
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        });
+    });
+
+    slots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => e.preventDefault());
+        slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const cardId = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(cardId);
+            
+            // 简单的逻辑校验：85℃对应slot1，3分钟对应slot2
+            if ((slot.id === 'slot1' && cardId === 'card1') || 
+                (slot.id === 'slot2' && cardId === 'card2')) {
+                
+                slot.textContent = card.textContent;
+                slot.classList.add('filled');
+                card.style.visibility = 'hidden';
+                filledCount++;
+
+                if (filledCount === 2) {
+                    completeTask();
+                }
+            }
+        });
+    });
+
+    function completeTask() {
+        document.querySelector('.sentence').style.color = '#d4af37';
+        robot.style.opacity = '1';
+        message.style.visibility = 'visible';
+        
+        // 模拟音效反馈
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        osc.connect(audioCtx.destination);
+        osc.frequency.value = 880;
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    }
+</script>
+
+</body>
+</html>

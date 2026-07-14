@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>科学谣言粉碎机 - 课堂教学可视化</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; --highlight: #f1c40f; }
+        body { font-family: sans-serif; background: #f4f7f6; color: var(--primary); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; padding: 20px; gap: 20px; box-sizing: border-box; }
+        
+        .article-panel { flex: 1; border: 2px solid #eee; padding: 15px; border-radius: 8px; overflow-y: auto; }
+        .tool-panel { width: 220px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .highlight { background: var(--highlight); cursor: help; padding: 2px 4px; border-radius: 4px; font-weight: bold; }
+        .tool { background: #3498db; color: white; padding: 12px; border-radius: 6px; cursor: grab; text-align: center; user-select: none; transition: transform 0.2s; }
+        .tool:hover { transform: scale(1.05); }
+        
+        .note { color: var(--accent); font-size: 0.9em; margin-top: 5px; display: none; border-left: 3px solid var(--accent); padding-left: 8px; }
+        #report { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 2px dashed #ccc; display: none; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="article-panel" id="article">
+        <h3>《为什么感冒时吃红薯能100%治愈：基于量子生物学的最新发现》</h3>
+        <p>近日，一项突破性研究指出，红薯中的淀粉分子在特定频率下会产生<span class="highlight" id="h1" data-msg="量子力学主要研究微观粒子，无法直接解释宏观食物的生物学疗效。">量子生物学</span>效应，与人体免疫细胞发生共振。</p>
+        <p>实验数据表明，该方法对各类流感病毒具有<span class="highlight" id="h2" data-msg="医学领域不存在绝对的100%治愈，任何疗法都有个体差异和局限性。">100%治愈</span>的奇效，且无需任何药物辅助。</p>
+        <div id="note1" class="note"></div>
+        <div id="note2" class="note"></div>
+    </div>
+
+    <div class="tool-panel">
+        <h4>验证工具箱</h4>
+        <div class="tool" draggable="true" data-target="h1">检索专业医学库</div>
+        <div class="tool" draggable="true" data-target="h2">核对常识逻辑</div>
+        <div class="tool" draggable="true" data-target="h1">检查作者资质</div>
+        <div id="report">
+            <strong>诊断结果：</strong><br>
+            该文章逻辑存在严重漏洞，属于典型的伪科学谣言。
+        </div>
+    </div>
+</div>
+
+<script>
+    const tools = document.querySelectorAll('.tool');
+    const highlights = document.querySelectorAll('.highlight');
+    let solvedCount = 0;
+
+    tools.forEach(tool => {
+        tool.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('target', e.target.getAttribute('data-target'));
+        });
+    });
+
+    highlights.forEach(h => {
+        h.addEventListener('dragover', (e) => e.preventDefault());
+        h.addEventListener('drop', (e) => {
+            const targetId = e.dataTransfer.getData('target');
+            if (h.id === targetId) {
+                const note = document.getElementById('note' + h.id.replace('h', ''));
+                if (note.style.display !== 'block') {
+                    note.innerText = h.getAttribute('data-msg');
+                    note.style.display = 'block';
+                    solvedCount++;
+                    checkCompletion();
+                }
+            }
+        });
+    });
+
+    function checkCompletion() {
+        if (solvedCount >= 2) {
+            document.getElementById('report').style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

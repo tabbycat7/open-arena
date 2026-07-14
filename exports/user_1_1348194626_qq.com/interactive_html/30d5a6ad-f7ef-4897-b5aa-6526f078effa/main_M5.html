@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI创作天平：探索创作边界</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            user-select: none;
+        }
+        #container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        h2 { text-align: center; color: #333; margin-top: 20px; }
+        .instruction { text-align: center; color: #666; font-size: 14px; margin-bottom: 10px; }
+        
+        #weights-area {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: #eef;
+            border-bottom: 2px solid #ddd;
+        }
+        .weight {
+            padding: 8px 12px;
+            background: #fff;
+            border: 2px solid #4a90e2;
+            border-radius: 5px;
+            cursor: grab;
+            font-size: 13px;
+            transition: transform 0.2s;
+        }
+        .weight:active { cursor: grabbing; }
+
+        #balance-svg { width: 100%; height: 350px; }
+        
+        #status-msg {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>AI创作天平：寻找合理边界</h2>
+    <div class="instruction">将下方的“行为砝码”拖入天平左右盘，观察创作的道德平衡。</div>
+    
+    <div id="weights-area">
+        <div class="weight" draggable="true" data-val="left" data-type="bad">一键生成</div>
+        <div class="weight" draggable="true" data-val="right" data-type="good">寻找灵感</div>
+        <div class="weight" draggable="true" data-val="right" data-type="good">自主修改</div>
+        <div class="weight" draggable="true" data-val="left" data-type="bad">直接署名</div>
+        <div class="weight" draggable="true" data-val="right" data-type="good">注明AI辅助</div>
+        <div class="weight" draggable="true" data-val="left" data-type="bad">完全替代手绘</div>
+    </div>
+
+    <svg id="balance-svg" viewBox="0 0 800 300">
+        <!-- 支架 -->
+        <line x1="400" y1="50" x2="400" y2="200" stroke="#555" stroke-width="8" />
+        <polygon points="380,250 420,250 400,200" fill="#555" />
+        <!-- 横梁 -->
+        <line id="beam" x1="200" y1="50" x2="600" y2="50" stroke="#333" stroke-width="6" transform-origin="400 50" />
+        <!-- 盘子 -->
+        <line x1="200" y1="50" x2="200" y2="150" stroke="#888" stroke-width="3" />
+        <line x1="600" y1="50" x2="600" y2="150" stroke="#888" stroke-width="3" />
+        <rect id="plate-left" x="150" y="150" width="100" height="20" fill="#ccc" />
+        <rect id="plate-right" x="550" y="150" width="100" height="20" fill="#ccc" />
+    </svg>
+
+    <div id="status-msg"></div>
+</div>
+
+<script>
+    const beam = document.getElementById('beam');
+    const statusMsg = document.getElementById('status-msg');
+    let leftWeight = 0;
+    let rightWeight = 0;
+
+    document.querySelectorAll('.weight').forEach(w => {
+        w.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('type', e.target.getAttribute('data-type'));
+            e.dataTransfer.setData('val', e.target.getAttribute('data-val'));
+            e.dataTransfer.setData('text', e.target.innerText);
+        });
+    });
+
+    const plates = [document.getElementById('plate-left'), document.getElementById('plate-right')];
+    
+    [document.getElementById('plate-left'), document.getElementById('plate-right')].forEach((plate, index) => {
+        plate.addEventListener('dragover', e => e.preventDefault());
+        plate.addEventListener('drop', e => {
+            const type = e.dataTransfer.getData('type');
+            const val = e.dataTransfer.getData('val');
+            
+            if (index === 0) leftWeight += (type === 'bad' ? 2 : -1);
+            else rightWeight += (type === 'bad' ? 2 : -1);
+            
+            updateBalance();
+        });
+    });
+
+    function updateBalance() {
+        const tilt = (rightWeight - leftWeight) * 10;
+        beam.style.transform = `rotate(${tilt}deg)`;
+        
+        if (leftWeight > rightWeight) {
+            statusMsg.innerText = "警告：创作行为偏向不诚信，请审视AI使用方式！";
+            statusMsg.style.color = "red";
+        } else if (rightWeight > leftWeight) {
+            statusMsg.innerText = "提示：创作行为符合诚信原则，体现了人机协作！";
+            statusMsg.style.color = "green";
+        } else {
+            statusMsg.innerText = "天平平衡：请继续添加行为砝码进行评估。";
+            statusMsg.style.color = "#333";
+        }
+    }
+</script>
+
+</body>
+</html>

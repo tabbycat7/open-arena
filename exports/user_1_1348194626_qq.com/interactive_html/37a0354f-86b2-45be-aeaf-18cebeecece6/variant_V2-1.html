@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百格图里的税率表征</title>
+  <style>
+    :root {
+      --primary-color: #10b981; /* 绿色代表税款 */
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --grid-inactive: #e2e8f0;
+      --grid-active: #10b981;
+      --accent-blue: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      background-color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--bg-color);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    /* 头部标题 */
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* 主内容区：左右分栏 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      gap: 24px;
+      min-height: 0; /* 允许子元素在flex中缩放 */
+    }
+
+    /* 左侧：百格图区域 */
+    .left-panel {
+      flex: 1.1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-wrapper {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1 / 1;
+    }
+
+    #tax-grid {
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid-cell {
+      fill: var(--grid-inactive);
+      transition: fill 0.2s ease, transform 0.1s ease;
+      cursor: pointer;
+    }
+
+    .grid-cell.active {
+      fill: var(--grid-active);
+    }
+
+    .grid-cell:hover {
+      transform: scale(1.05);
+      transform-origin: center;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .legend-color.green {
+      background-color: var(--grid-active);
+    }
+
+    .legend-color.gray {
+      background-color: var(--grid-inactive);
+    }
+
+    /* 右侧：控制与概念解析 */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 控制面板 */
+    .control-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+    }
+
+    .control-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rate-badge {
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    .slider-container {
+      margin-bottom: 16px;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #cbd5e1;
+      outline: none;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--grid-active);
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .preset-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .preset-btn {
+      flex: 1;
+      padding: 6px 0;
+      border: 1px solid #cbd5e1;
+      background: var(--card-bg);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      background-color: #f1f5f9;
+      border-color: var(--text-muted);
+    }
+
+    .preset-btn.active {
+      background-color: var(--grid-active);
+      color: white;
+      border-color: var(--grid-active);
+    }
+
+    /* 概念解析卡片 */
+    .concept-card {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .concept-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .concept-label {
+      font-size: 14px;
+      font-weight: bold;
+      width: 120px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .concept-label.total {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .concept-label.tax {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .concept-arrow {
+      margin: 0 8px;
+      color: var(--text-muted);
+      font-weight: bold;
+    }
+
+    .concept-text {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    /* 数量关系公式区 */
+    .formula-box {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 12px;
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    .formula-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .formula-math {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .formula-num {
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .formula-num.tax {
+      color: #047857;
+      background-color: #d1fae5;
+    }
+
+    .formula-num.total {
+      color: #0369a1;
+      background-color: #e0f2fe;
+    }
+
+    .formula-num.rate {
+      color: #b45309;
+      background-color: #fef3c7;
+    }
+
+    /* 提示信息 */
+    .tip-box {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 标题 -->
+    <div class="header">
+      <h1>百格图里的税率表征</h1>
+      <p>数形结合：直观理解“应纳税额”、“计税收入”与“税率”的关系</p>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+      <!-- 左侧：百格图 -->
+      <div class="left-panel">
+        <div class="grid-wrapper">
+          <svg id="tax-grid" viewBox="0 0 340 340">
+            <!-- JS 动态生成 10x10 单元格 -->
+          </svg>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-color green"></span>
+            <span>绿色：应纳税额 (<span id="legend-tax-count">5</span>格)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color gray"></span>
+            <span>灰色：税后留存 (<span id="legend-remain-count">95</span>格)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：交互与解析 -->
+      <div class="right-panel">
+        <!-- 控制器 -->
+        <div class="control-card">
+          <div class="control-title">
+            <span>调节绿色格子数量</span>
+            <span id="rate-badge" class="rate-badge">5 格 (5%)</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="rate-slider" class="slider" min="1" max="30" value="5">
+          </div>
+          <div class="preset-container">
+            <button class="preset-btn" data-value="3">3% (3格)</button>
+            <button class="preset-btn active" data-value="5">5% (5格)</button>
+            <button class="preset-btn" data-value="10">10% (10格)</button>
+            <button class="preset-btn" data-value="20">20% (20格)</button>
+          </div>
+        </div>
+
+        <!-- 概念解析 -->
+        <div class="concept-card">
+          <div>
+            <div class="concept-item">
+              <span class="concept-label total">整个正方形 (100格)</span>
+              <span class="concept-arrow">➔</span>
+              <span class="concept-text">总营业额（计税收入）</span>
+            </div>
+            <div class="concept-item">
+              <span class="concept-label tax">绿色部分 (<span id="concept-tax-count">5</span>格)</span>
+              <span class="concept-arrow">➔</span>
+              <span class="concept-text">应纳税额（向国家缴纳的税款）</span>
+            </div>
+          </div>
+
+          <!-- 数量关系 -->
+          <div class="formula-box">
+            <div class="formula-title">数量关系与税率计算：</div>
+            <div class="formula-math">
+              <span id="math-tax" class="formula-num tax">5</span>
+              <span>÷</span>
+              <span class="formula-num total">100</span>
+              <span>=</span>
+              <span id="math-rate" class="formula-num rate">5%</span>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            * 观察发现：税率就是“应纳税额”占“计税收入”的百分之几。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const svg = document.getElementById('tax-grid');
+      const slider = document.getElementById('rate-slider');
+      const presetBtns = document.querySelectorAll('.preset-btn');
+      
+      // 动态更新的文本元素
+      const legendTaxCount = document.getElementById('legend-tax-count');
+      const legendRemainCount = document.getElementById('legend-remain-count');
+      const rateBadge = document.getElementById('rate-badge');
+      const conceptTaxCount = document.getElementById('concept-tax-count');
+      const mathTax = document.getElementById('math-tax');
+      const mathRate = document.getElementById('math-rate');
+
+      const cellSize = 30;
+      const gap = 4;
+
+      // 1. 初始化 10x10 单元格
+      // 按照从左到右、从上到下的顺序生成
+      for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', col * (cellSize + gap));
+          rect.setAttribute('y', row * (cellSize + gap));
+          rect.setAttribute('width', cellSize);
+          rect.setAttribute('height', cellSize);
+          rect.setAttribute('rx', 4); // 圆角
+          rect.setAttribute('class', 'grid-cell');
+          
+          const index = row * 10 + col;
+          rect.setAttribute('data-index', index);
+          
+          svg.appendChild(rect);
+        }
+      }
+
+      const cells = document.querySelectorAll('.grid-cell');
+
+      // 2. 更新视图函数
+      function updateView(value) {
+        const taxValue = parseInt(value, 10);
+        const remainValue = 100 - taxValue;
+
+        // 更新格子颜色
+        cells.forEach(cell => {
+          const idx = parseInt(cell.getAttribute('data-index'), 10);
+          if (idx < taxValue) {
+            cell.classList.add('active');
+          } else {
+            cell.classList.remove('active');
+          }
+        });
+
+        // 更新文本显示
+        legendTaxCount.textContent = taxValue;
+        legendRemainCount.textContent = remainValue;
+        rateBadge.textContent = `${taxValue} 格 (${taxValue}%)`;
+        conceptTaxCount.textContent = taxValue;
+        mathTax.textContent = taxValue;
+        mathRate.textContent = `${taxValue}%`;
+
+        // 更新滑块值
+        slider.value = taxValue;
+
+        // 更新预设按钮的高亮状态
+        presetBtns.forEach(btn => {
+          if (parseInt(btn.getAttribute('data-value'), 10) === taxValue) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+
+      // 3. 事件监听
+      // 滑块拖动事件
+      slider.addEventListener('input', (e) => {
+        updateView(e.target.value);
+      });
+
+      // 预设按钮点击事件
+      presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.getAttribute('data-value');
+          updateView(val);
+        });
+      });
+
+      // 允许点击百格图中的格子直接跳转数值
+      cells.forEach(cell => {
+        cell.addEventListener('click', () => {
+          const idx = parseInt(cell.getAttribute('data-index'), 10);
+          // 点击第N个格子，代表设置税率为 N+1
+          updateView(idx + 1);
+        });
+      });
+
+      // 初始化默认值：5%（对应题干中的5个绿色格子）
+      updateView(5);
+    });
+  </script>
+</body>
+</html>

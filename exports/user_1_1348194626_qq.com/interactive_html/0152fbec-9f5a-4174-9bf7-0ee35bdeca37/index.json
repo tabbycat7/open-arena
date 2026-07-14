@@ -1,0 +1,239 @@
+{
+  "task_id": "0152fbec-9f5a-4174-9bf7-0ee35bdeca37",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，老师这里有5支铅笔和4个笔筒。请同桌两人一组动手试试：不管怎么摆放，你们发现一定会出现什么现象？还是可能有特别的情况？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "每个小组有7本书和3个抽屉。大家动手试试不同的放法，记录每次'最满抽屉的本数'。想想为什么这个数总是不小于3？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "假如10只鸽子要飞进9个鸽笼，如果每个笼子最多停1只鸽子，这能实现吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "看这三组题：10÷9=1...1→至少2只；7÷3=2...1→至少3本；6÷3=2→至少？本。为什么商都是2，至少数却不同？余数起什么作用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "13个同学分到4个小组，至少几人同组？如果再加1个同学呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "袋子里有红黄蓝三种颜色的球各10个，至少要摸几个才能保证有2个同色的？这个原理能解释为什么367人中总有2人同生日吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M1-V1",
+      "question_type": "variant",
+      "content": "6颗糖果分给5位小朋友，同桌合作尝试：无论怎么分配，一定会出现什么现象？有可能每人恰好1颗吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M1-V2",
+      "question_type": "variant",
+      "content": "有4支铅笔分给4个笔筒。小明说：“不管怎么放，总有一个笔筒至少有2支铅笔。”他说得对吗？请你举例说明理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2-V1",
+      "question_type": "variant",
+      "content": "要保证3个抽屉中总有一个抽屉至少有3本书，至少需要多少本书？用枚举法验证你的结论。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2-V2",
+      "question_type": "variant",
+      "content": "用枚举法研究“5本书放入2个抽屉”的所有放法。你发现了哪几种情况？放书最多的抽屉至少有几本书？如果书增加到6本，你能从规律中直接得出什么结论？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3-V1",
+      "question_type": "variant",
+      "content": "证明：“15只鸽子飞进12个笼子，总有一个笼子至少飞进3只。”小明的证明：假设每笼最多2只，12笼最多装24只>15，所以假设成立。他的证明错在哪里？正确证明需如何假设？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3-V2",
+      "question_type": "variant",
+      "content": "证明'10只鸽子飞进3个笼子，总有至少4只在同一个笼子'。小刚假设每笼最多3只，发现3×3=9<10，得出矛盾。他的证明有什么问题？应该怎么假设？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4-V1",
+      "question_type": "variant",
+      "content": "观察两组计算：A)11本书÷3抽屉=3...2→至少4本；B)12本书÷3抽屉=4...0→至少4本。为什么余数不同（2和0），但'至少数'相同？余数怎样影响计算结果？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4-V2",
+      "question_type": "variant",
+      "content": "计算两种分法：10本书分到3个抽屉（10÷3=3...1）和9本书分到3个抽屉（9÷3=3）。它们的至少数分别是多少？为什么余数会影响公式中的'+1'？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5-V1",
+      "question_type": "variant",
+      "content": "至少要多少只鸽子飞进6个笼子，才能保证总有一个笼子至少有4只？说说你的推理思路。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5-V2",
+      "question_type": "variant",
+      "content": "13封信用3个信箱投递。能否保证总有一个信箱至少有5封信？如果不能，至少需要增加几封信才能保证？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6-V1",
+      "question_type": "variant",
+      "content": "图书馆有科幻、历史、童话三类书各20本，至少借多少本才能保证有4本同类书？这里的'容器'是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6-V2",
+      "question_type": "variant",
+      "content": "身份证尾号有00-99共100种可能。至少需要多少人，才能保证有3人尾号相同？若只需保证2人尾号相同呢？这个原理如何提升密码锁安全性？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "图中有一个装了2支铅笔的笔筒，请圈出来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "有没有方法让所有笔筒的铅笔都不超过1支？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "如果每个抽屉最多放2本书，3个抽屉最多放几本？7本书够放吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "10只鸽子分9个笼：如果每笼最多1只，最多能住几只？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "6÷3=2表示每个笼子有2只，至少数是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "13个同学分4组：同学对应什么？小组对应什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "生日问题中：367人对应什么？366天对应什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "颜色球问题：颜色种类相当于几个抽屉？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

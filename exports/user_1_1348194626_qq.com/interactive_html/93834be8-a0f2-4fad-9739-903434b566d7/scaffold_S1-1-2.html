@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人脑 vs 计算机：算力大比拼</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .classroom-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border: 4px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #2980b9;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* 主体对比区域 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 120px 1fr;
+            padding: 24px;
+            gap: 16px;
+            align-items: center;
+            background-color: #fafbfc;
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .human-card {
+            border-color: #fbcfe8;
+            background: linear-gradient(to bottom, #ffffff, #fff5f5);
+        }
+
+        .computer-card {
+            border-color: #c6f6d5;
+            background: linear-gradient(to bottom, #ffffff, #f0fff4);
+        }
+
+        /* 角色头像与状态 */
+        .avatar-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 12px;
+        }
+
+        .avatar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .status-emoji {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            font-size: 32px;
+            background: white;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        /* 标题与描述 */
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .human-card .card-title { color: #b83280; }
+        .computer-card .card-title { color: #22543d; }
+
+        .card-desc {
+            font-size: 14px;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        /* 进度条区域 */
+        .progress-section {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #4a5568;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 24px;
+            background-color: #edf2f7;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #cbd5e0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+            border-radius: 12px;
+        }
+
+        .human-fill {
+            background: linear-gradient(90deg, #f6ad55, #e53e3e);
+        }
+
+        .computer-fill {
+            background: linear-gradient(90deg, #68d391, #38a169);
+        }
+
+        /* 计时器显示 */
+        .timer-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 16px;
+            background: #edf2f7;
+            padding: 6px 16px;
+            border-radius: 20px;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        /* 交互按钮 */
+        .action-btn {
+            padding: 12px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .human-btn {
+            background-color: #ed64a6;
+        }
+        .human-btn:hover {
+            background-color: #d53f8c;
+        }
+
+        .computer-btn {
+            background-color: #48bb78;
+        }
+        .computer-btn:hover {
+            background-color: #38a169;
+        }
+
+        .action-btn:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* 中间连接区域 */
+        .middle-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .task-badge {
+            background-color: #ebf8ff;
+            border: 2px dashed #4299e1;
+            color: #2b6cb0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            width: 110px;
+        }
+
+        .arrow-svg {
+            width: 80px;
+            height: 60px;
+        }
+
+        .arrow-path {
+            fill: none;
+            stroke: #4299e1;
+            stroke-width: 4;
+            stroke-dasharray: 8, 4;
+            animation: dash 1.5s infinite linear;
+        }
+
+        /* 底部控制栏 */
+        .footer-controls {
+            padding: 16px;
+            background-color: #edf2f7;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .control-btn {
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .control-btn:hover {
+            background-color: #2d3748;
+        }
+
+        /* 动画效果 */
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -12;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* 人脑眩晕抖动动画 */
+        .dizzy-shake {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* 计算机闪烁成功动画 */
+        .success-pulse {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+            100% { transform: scale(1.02); box-shadow: 0 10px 20px rgba(72, 187, 120, 0.2); border-color: #48bb78; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="classroom-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>算力大挑战：谁更擅长重复工作？</h1>
+            <p>任务：不吃不休，连续计算 1000 道完全相同的简单算术题</p>
+        </div>
+
+        <!-- 主体对比 -->
+        <div class="main-content">
+            <!-- 左侧：人脑 -->
+            <div class="card human-card" id="human-card">
+                <div class="avatar-container" id="human-avatar-box">
+                    <!-- 脑部 SVG -->
+                    <svg class="avatar-svg" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="#fed7e2" stroke="#fbb6ce" stroke-width="3"/>
+                        <!-- 脑部简笔画 -->
+                        <path d="M35,50 C30,45 30,35 40,35 C45,35 48,40 50,43 C52,40 55,35 60,35 C70,35 70,45 65,50 C70,55 70,65 60,65 C55,65 52,60 50,57 C48,60 45,65 40,65 C30,65 30,55 35,50 Z" fill="#f472b6" />
+                        <path d="M50,43 L50,57" stroke="#db2777" stroke-width="2"/>
+                    </svg>
+                    <div class="status-emoji" id="human-emoji">😃</div>
+                </div>
+                <div class="card-title">人类大脑</div>
+                <div class="card-desc">心算一个数需要 5 秒<br>需要极高的专注力，容易疲劳</div>
+                
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>计算进度</span>
+                        <span id="human-progress-text">0/1000</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill human-fill" id="human-progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="timer-display" id="human-timer">已用时: 0 秒</div>
+                <button class="action-btn human-btn" id="start-human-btn">开始心算</button>
+            </div>
+
+            <!-- 中间：任务与指向 -->
+            <div class="middle-connector">
+                <div class="task-badge">
+                    📋 任务类型<br>
+                    <strong>规则完全一样<br>拼命重复</strong>
+                </div>
+                <!-- 指向右侧的虚线箭头 -->
+                <svg class="arrow-svg" viewBox="0 0 80 60">
+                    <path class="arrow-path" d="M 10,30 L 70,30" />
+                    <polygon points="65,24 75,30 65,36" fill="#4299e1" />
+                </svg>
+                <div style="font-size: 12px; color: #4299e1; font-weight: bold; margin-top: 4px;">谁最拿手？</div>
+            </div>
+
+            <!-- 右侧：计算机 -->
+            <div class="card computer-card" id="computer-card">
+                <div class="avatar-container">
+                    <!-- 计算机 SVG -->
+                    <svg class="avatar-svg" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="#c6f6d5" stroke="#9ae6b4" stroke-width="3"/>
+                        <!-- 电脑简笔画 -->
+                        <rect x="25" y="30" width="50" height="35" rx="3" fill="#2f855a" />
+                        <rect x="29" y="34" width="42" height="27" fill="#ebf8ff" />
+                        <polygon points="45,65 55,65 60,75 40,75" fill="#2f855a" />
+                        <!-- 屏幕上的闪电 -->
+                        <path d="M52,38 L44,48 L49,48 L46,56 L56,46 L50,46 Z" fill="#ecc94b" />
+                    </svg>
+                    <div class="status-emoji" id="computer-emoji">💤</div>
+                </div>
+                <div class="card-title">计算机</div>
+                <div class="card-desc">执行指令极其快速<br>不知疲倦，不会出错</div>
+                
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>计算进度</span>
+                        <span id="computer-progress-text">0/1000</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill computer-fill" id="computer-progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="timer-display" id="computer-timer">已用时: 0 秒</div>
+                <button class="action-btn computer-btn" id="start-computer-btn">开始计算</button>
+            </div>
+        </div>
+
+        <!-- 底部控制 -->
+        <div class="footer-controls">
+            <button class="control-btn" id="reset-btn">重置对比</button>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const startHumanBtn = document.getElementById('start-human-btn');
+        const startComputerBtn = document.getElementById('start-computer-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        const humanProgressBar = document.getElementById('human-progress-bar');
+        const humanProgressText = document.getElementById('human-progress-text');
+        const humanTimer = document.getElementById('human-timer');
+        const humanEmoji = document.getElementById('human-emoji');
+        const humanCard = document.getElementById('human-card');
+        const humanAvatarBox = document.getElementById('human-avatar-box');
+
+        const computerProgressBar = document.getElementById('computer-progress-bar');
+        const computerProgressText = document.getElementById('computer-progress-text');
+        const computerTimer = document.getElementById('computer-timer');
+        const computerEmoji = document.getElementById('computer-emoji');
+        const computerCard = document.getElementById('computer-card');
+
+        let humanInterval = null;
+        let humanCount = 0;
+        let humanSeconds = 0;
+
+        // 人脑计算逻辑 (模拟加速展示，但体现出极慢且疲惫的过程)
+        function startHumanCalculation() {
+            startHumanBtn.disabled = true;
+            
+            // 模拟每 150 毫秒算完一个数（实际人脑需要5秒，这里为了课堂演示效果做等比加速）
+            // 并在界面上展示“实际模拟耗时”
+            humanInterval = setInterval(() => {
+                humanCount += 1;
+                humanSeconds += 5; // 每个人脑心算需要5秒
+
+                // 计算百分比
+                const percent = (humanCount / 1000) * 100;
+                humanProgressBar.style.width = `${percent}%`;
+                humanProgressText.innerText = `${humanCount}/1000`;
+                
+                // 格式化模拟时间显示
+                if (humanSeconds < 60) {
+                    humanTimer.innerText = `模拟耗时: ${humanSeconds} 秒`;
+                } else {
+                    const mins = Math.floor(humanSeconds / 60);
+                    const secs = humanSeconds % 60;
+                    humanTimer.innerText = `模拟耗时: ${mins}分${secs}秒`;
+                }
+
+                // 随着进度增加，人脑变得越来越疲劳
+                if (humanCount < 10) {
+                    humanEmoji.innerText = '😃';
+                } else if (humanCount < 30) {
+                    humanEmoji.innerText = '🤔';
+                } else if (humanCount < 60) {
+                    humanEmoji.innerText = '😰';
+                    humanAvatarBox.classList.add('dizzy-shake'); // 开始轻微抖动
+                } else if (humanCount < 90) {
+                    humanEmoji.innerText = '🥵';
+                } else {
+                    humanEmoji.innerText = '😵'; // 彻底头晕
+                }
+
+                // 课堂演示：为了不让学生等一个小时，我们在模拟到 100 个数（已经耗时500秒/8分钟）时，
+                // 弹窗或提示“人脑已经极度疲劳，无法继续坚持！”，以此形成强烈对比。
+                if (humanCount >= 120) {
+                    clearInterval(humanInterval);
+                    humanTimer.innerHTML = `已崩溃! 预计需: <span style="color:#e53e3e">1.4小时</span>`;
+                    startHumanBtn.innerText = "体力不支，罢工了！";
+                    startHumanBtn.disabled = true;
+                }
+            }, 80);
+        }
+
+        // 计算机计算逻辑 (瞬间完成)
+        function startComputerCalculation() {
+            startComputerBtn.disabled = true;
+            computerEmoji.innerText = '⚡';
+
+            // 稍微给一点点延迟(200ms)让学生能看到变化过程
+            setTimeout(() => {
+                computerProgressBar.style.width = '100%';
+                computerProgressText.innerText = '1000/1000';
+                computerTimer.innerHTML = `实际用时: <span style="color:#38a169; font-weight:bold;">0.001 秒</span>`;
+                computerEmoji.innerText = '😎';
+                computerCard.classList.add('success-pulse');
+                startComputerBtn.innerText = "轻松搞定！";
+            }, 300);
+        }
+
+        // 重置所有状态
+        function resetSimulation() {
+            // 清除定时器
+            clearInterval(humanInterval);
+            humanInterval = null;
+            humanCount = 0;
+            humanSeconds = 0;
+
+            // 重置人脑
+            humanProgressBar.style.width = '0%';
+            humanProgressText.innerText = '0/1000';
+            humanTimer.innerText = '已用时: 0 秒';
+            humanEmoji.innerText = '😃';
+            startHumanBtn.disabled = false;
+            startHumanBtn.innerText = "开始心算";
+            humanAvatarBox.classList.remove('dizzy-shake');
+
+            // 重置计算机
+            computerProgressBar.style.width = '0%';
+            computerProgressText.innerText = '0/1000';
+            computerTimer.innerText = '已用时: 0 秒';
+            computerEmoji.innerText = '💤';
+            startComputerBtn.disabled = false;
+            startComputerBtn.innerText = "开始计算";
+            computerCard.classList.remove('success-pulse');
+        }
+
+        // 绑定事件监听器
+        startHumanBtn.addEventListener('click', startHumanCalculation);
+        startComputerBtn.addEventListener('click', startComputerCalculation);
+        resetBtn.addEventListener('click', resetSimulation);
+    </script>
+</body>
+</html>

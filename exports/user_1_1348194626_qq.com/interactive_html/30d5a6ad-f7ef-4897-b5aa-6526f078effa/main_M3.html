@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>人机交互反馈环：文明与AI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        #btn-polite { background-color: #4CAF50; color: white; }
+        #btn-rude { background-color: #f44336; color: white; }
+        button:hover { transform: scale(1.05); }
+        .label { position: absolute; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container">
+        <canvas id="interactionCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="btn-polite">发送文明语言</button>
+        <button id="btn-rude">发送不文明语言</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('interactionCanvas');
+        const ctx = canvas.getContext('2d');
+        let civility = 100;
+        let aiCorruption = 0;
+        let particles = [];
+
+        function resize() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制用户
+            ctx.fillStyle = `rgb(${255 - civility}, 100, 100)`;
+            ctx.fillRect(50, 150, 100, 150);
+            ctx.fillText("用户", 85, 320);
+
+            // 绘制AI
+            ctx.fillStyle = `rgb(${100 + aiCorruption}, ${100 + aiCorruption}, ${200 - aiCorruption})`;
+            ctx.fillRect(canvas.width - 150, 150, 100, 150);
+            ctx.fillText("AI 机器人", canvas.width - 140, 320);
+
+            // 绘制文明度进度条
+            ctx.fillStyle = "#ddd";
+            ctx.fillRect(50, 50, 100, 20);
+            ctx.fillStyle = "#4CAF50";
+            ctx.fillRect(50, 50, civility, 20);
+            ctx.fillText("现实文明度", 50, 40);
+
+            // 粒子动画
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+                if (p.x > canvas.width - 150 || p.x < 150) particles.splice(index, 1);
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        function sendData(type) {
+            if (type === 'rude') {
+                civility = Math.max(0, civility - 10);
+                aiCorruption = Math.min(150, aiCorruption + 20);
+                particles.push({x: 150, y: 200, vx: 5, color: 'red'});
+            } else {
+                civility = Math.min(100, civility + 5);
+                aiCorruption = Math.max(0, aiCorruption - 10);
+                particles.push({x: 150, y: 200, vx: 5, color: 'green'});
+            }
+        }
+
+        document.getElementById('btn-polite').addEventListener('click', () => sendData('polite'));
+        document.getElementById('btn-rude').addEventListener('click', () => sendData('rude'));
+
+        draw();
+    </script>
+</body>
+</html>

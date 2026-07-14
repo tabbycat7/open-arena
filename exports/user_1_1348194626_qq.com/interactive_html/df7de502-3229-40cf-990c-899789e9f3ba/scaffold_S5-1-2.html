@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法效率对比可视化</title>
+    <style>
+        :root { --primary: #2563eb; --danger: #dc2626; --success: #16a34a; }
+        body { font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; background: #f8fafc; }
+        .container { width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1e293b; margin-top: 0; }
+        .canvas-area { display: flex; justify-content: space-between; gap: 20px; margin: 20px 0; }
+        .box { flex: 1; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; text-align: center; }
+        svg { width: 100%; height: 250px; }
+        .label { font-weight: bold; margin-bottom: 10px; display: block; }
+        .controls { text-align: center; margin-top: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 6px; }
+        .highlight { fill: none; stroke-width: 3; stroke-dasharray: 5; }
+        .warning { fill: var(--danger); font-weight: bold; opacity: 0; transition: opacity 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>外卖路线规划：算法效率对比</h2>
+    
+    <div class="canvas-area">
+        <div class="box">
+            <span class="label">糟糕算法 (空载折返)</span>
+            <svg id="bad-svg" viewBox="0 0 300 200">
+                <circle cx="50" cy="100" r="15" fill="#fbbf24" /> <!-- 店 -->
+                <circle cx="150" cy="50" r="10" fill="#60a5fa" /> <!-- A -->
+                <circle cx="250" cy="150" r="10" fill="#60a5fa" /> <!-- B -->
+                <path id="path-bad" d="M 50 100 L 150 50 M 150 50 L 50 100 M 50 100 L 250 150" stroke="#94a3b8" stroke-width="2" fill="none" />
+                <text x="150" y="30" class="warning" id="warn-text">超时！</text>
+            </svg>
+        </div>
+        <div class="box">
+            <span class="label">优化算法 (顺路配送)</span>
+            <svg id="good-svg" viewBox="0 0 300 200">
+                <circle cx="50" cy="100" r="15" fill="#fbbf24" />
+                <circle cx="150" cy="50" r="10" fill="#60a5fa" />
+                <circle cx="250" cy="150" r="10" fill="#60a5fa" />
+                <path d="M 50 100 L 150 50 L 250 150 L 50 100" stroke="#16a34a" stroke-width="3" fill="none" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="toggleBtn">演示配送过程</button>
+        <p style="font-size: 0.9em; color: #64748b; margin-top: 15px;">
+            提示：观察左侧骑手的路线，这与课堂上机器人搬运的哪种现象一致？
+        </p>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('toggleBtn');
+    const warnText = document.getElementById('warn-text');
+    const pathBad = document.getElementById('path-bad');
+    let isAnimating = false;
+
+    btn.addEventListener('click', () => {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        // 简单的动画逻辑
+        pathBad.style.stroke = '#dc2626';
+        pathBad.style.strokeWidth = '4';
+        warnText.style.opacity = '1';
+        
+        setTimeout(() => {
+            pathBad.style.stroke = '#94a3b8';
+            pathBad.style.strokeWidth = '2';
+            warnText.style.opacity = '0';
+            isAnimating = false;
+        }, 2000);
+    });
+</script>
+
+</body>
+</html>

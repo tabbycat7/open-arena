@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法与日记的对比</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--text);
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .card {
+            width: 45%;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content-box {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #666;
+            border: 2px dashed #ddd;
+            margin-bottom: 15px;
+            padding: 10px;
+            width: 90%;
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #d35400;
+            min-height: 1.5em;
+        }
+        h2 { font-size: 1.2em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>对比分析：这是算法吗？</h2>
+
+    <div class="container">
+        <div class="card" id="card-left">
+            <h3>指路指南</h3>
+            <div class="content-box">
+                1. 直走50米<br>2. 左转进入图书馆
+            </div>
+            <button id="btn-left">它的目的是什么？</button>
+            <div class="result" id="res-left"></div>
+        </div>
+
+        <div class="card" id="card-right">
+            <h3>小明的日记</h3>
+            <div class="content-box">
+                今天天气很好，<br>我去图书馆看了书，<br>心情很愉快。
+            </div>
+            <button id="btn-right">它的目的是什么？</button>
+            <div class="result" id="res-right"></div>
+        </div>
+    </div>
+
+    <script>
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+        const resLeft = document.getElementById('res-left');
+        const resRight = document.getElementById('res-right');
+
+        btnLeft.addEventListener('click', function() {
+            resLeft.textContent = "解决去图书馆的难题";
+            resLeft.style.color = "#27ae60";
+        });
+
+        btnRight.addEventListener('click', function() {
+            resRight.textContent = "记录自己的生活，不解决特定问题";
+            resRight.style.color = "#c0392b";
+        });
+    </script>
+</body>
+</html>

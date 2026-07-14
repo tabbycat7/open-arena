@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3-1-1 税收概念配对互动板</title>
+  <style>
+    /* 全局重置与课堂大屏自适应样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e1e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #1e293b;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例教学投影容器 */
+    .classroom-container {
+      width: 960px;
+      height: 720px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border: 4px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      position: relative;
+    }
+
+    /* 头部区域 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      color: #0f172a;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    /* 算式高亮展示区 */
+    .formula-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 12px 30px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #334155;
+      gap: 10px;
+    }
+
+    .formula-box span.highlight {
+      color: #2563eb;
+      background: #eff6ff;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #bfdbfe;
+    }
+
+    .instruction {
+      font-size: 18px;
+      color: #64748b;
+      margin-top: 12px;
+    }
+
+    /* 核心交互看板区 */
+    .game-board {
+      flex-grow: 1;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      margin: 20px 0;
+    }
+
+    /* SVG 连线画布层 */
+    #svg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 卡片列 */
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+      width: 240px;
+      z-index: 20;
+    }
+
+    /* 卡片基础样式 */
+    .card {
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    /* 悬浮与选中状态 */
+    .card:hover:not(.locked) {
+      transform: translateY(-3px);
+      border-color: #3b82f6;
+      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+    }
+
+    .card.selected {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
+    }
+
+    /* 结果状态 */
+    .card.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+      color: #065f46;
+      cursor: default;
+    }
+
+    .card.incorrect {
+      border-color: #ef4444;
+      background: #fef2f2;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    /* 连线锚点 */
+    .dot {
+      width: 16px;
+      height: 16px;
+      background: #94a3b8;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.2s ease;
+    }
+
+    .left-col .dot {
+      right: -10px;
+    }
+
+    .right-col .dot {
+      left: -10px;
+    }
+
+    /* 激活与完成状态的锚点 */
+    .card.selected .dot {
+      background: #2563eb;
+      transform: translateY(-50%) scale(1.3);
+    }
+
+    .card.correct .dot {
+      background: #10b981;
+    }
+
+    /* 控制与反馈区 */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid #f1f5f9;
+      padding-top: 20px;
+    }
+
+    .feedback-message {
+      font-size: 22px;
+      font-weight: 600;
+      min-height: 33px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-message.success {
+      color: #059669;
+    }
+
+    .feedback-message.error {
+      color: #dc2626;
+    }
+
+    .btn-reset {
+      background: #475569;
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #334155;
+    }
+
+    /* 抖动动画 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="classroom-container">
+    <!-- 头部：情境再现 -->
+    <div class="header">
+      <h1>税收概念配对互动板</h1>
+      <div class="formula-box">
+        <span class="highlight">100万元</span>
+        <span>×</span>
+        <span class="highlight">5%</span>
+        <span>=</span>
+        <span class="highlight">5万元</span>
+      </div>
+      <p class="instruction">请点击左侧的<b>数值卡片</b>，再点击右侧对应的<b>专业术语</b>进行连线配对。</p>
+    </div>
+
+    <!-- 中部：连线交互区 -->
+    <div class="game-board" id="game-board">
+      <svg id="svg-canvas"></svg>
+
+      <!-- 左侧：数值卡片 -->
+      <div class="column left-col">
+        <div class="card" id="val-100" data-side="left" data-match="term-income">
+          100万元
+          <div class="dot"></div>
+        </div>
+        <div class="card" id="val-5pct" data-side="left" data-match="term-rate">
+          5%
+          <div class="dot"></div>
+        </div>
+        <div class="card" id="val-5wan" data-side="left" data-match="term-tax">
+          5万元
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- 右侧：术语卡片（顺序打乱） -->
+      <div class="column right-col">
+        <div class="card" id="term-rate" data-side="right" data-match="val-5pct">
+          <div class="dot"></div>
+          税率
+        </div>
+        <div class="card" id="term-income" data-side="right" data-match="val-100">
+          <div class="dot"></div>
+          计税收入
+        </div>
+        <div class="card" id="term-tax" data-side="right" data-match="val-5wan">
+          <div class="dot"></div>
+          应纳税额
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部：控制与即时反馈 -->
+    <div class="footer">
+      <div class="feedback-message" id="feedback-text"></div>
+      <button class="btn-reset" id="btn-reset">重新挑战</button>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    let selectedLeft = null;
+    let selectedRight = null;
+    let matchedPairs = []; // 存储已成功配对的ID对：{leftId, rightId}
+    let isProcessing = false; // 防止动画期间重复点击
+
+    // DOM 元素
+    const svgCanvas = document.getElementById('svg-canvas');
+    const gameBoard = document.getElementById('game-board');
+    const feedbackText = document.getElementById('feedback-text');
+    const btnReset = document.getElementById('btn-reset');
+    const cards = document.querySelectorAll('.card');
+
+    // 初始化与事件绑定
+    function init() {
+      cards.forEach(card => {
+        card.addEventListener('click', handleCardClick);
+      });
+      btnReset.addEventListener('click', resetGame);
+      window.addEventListener('resize', drawAllLines);
+      
+      // 首次绘制
+      setTimeout(drawAllLines, 100);
+    }
+
+    // 处理卡片点击
+    function handleCardClick(e) {
+      if (isProcessing) return;
+      
+      const card = e.currentTarget;
+      
+      // 如果卡片已经成功配对，则不可点击
+      if (card.classList.contains('correct')) return;
+
+      const side = card.dataset.side;
+
+      if (side === 'left') {
+        // 切换左侧选择
+        if (selectedLeft) {
+          selectedLeft.classList.remove('selected');
+        }
+        if (selectedLeft === card) {
+          selectedLeft = null;
+        } else {
+          selectedLeft = card;
+          selectedLeft.classList.add('selected');
+        }
+      } else {
+        // 切换右侧选择
+        if (selectedRight) {
+          selectedRight.classList.remove('selected');
+        }
+        if (selectedRight === card) {
+          selectedRight = null;
+        } else {
+          selectedRight = card;
+          selectedRight.classList.add('selected');
+        }
+      }
+
+      // 触发连线绘制（临时预览线）
+      drawAllLines();
+
+      // 检查是否凑齐一对
+      if (selectedLeft && selectedRight) {
+        checkMatch();
+      }
+    }
+
+    // 检查配对结果
+    function checkMatch() {
+      isProcessing = true;
+      const leftId = selectedLeft.id;
+      const rightId = selectedRight.id;
+      const expectedMatch = selectedLeft.dataset.match;
+
+      if (rightId === expectedMatch) {
+        // 配对正确
+        selectedLeft.classList.remove('selected');
+        selectedRight.classList.remove('selected');
+        selectedLeft.classList.add('correct');
+        selectedRight.classList.add('correct');
+
+        matchedPairs.push({ leftId, rightId });
+        
+        showFeedback('正确！完美契合。', 'success');
+        
+        selectedLeft = null;
+        selectedRight = null;
+        isProcessing = false;
+        
+        drawAllLines();
+        checkGameComplete();
+      } else {
+        // 配对错误
+        selectedLeft.classList.add('incorrect');
+        selectedRight.classList.add('incorrect');
+        
+        // 绘制一条临时的红色错误线
+        drawTemporaryErrorLine(selectedLeft, selectedRight);
+        showFeedback('配对不正确，再试一次哦！', 'error');
+
+        setTimeout(() => {
+          selectedLeft.classList.remove('selected', 'incorrect');
+          selectedRight.classList.remove('selected', 'incorrect');
+          selectedLeft = null;
+          selectedRight = null;
+          isProcessing = false;
+          drawAllLines();
+        }, 1000);
+      }
+    }
+
+    // 检查是否全部完成
+    function checkGameComplete() {
+      if (matchedPairs.length === 3) {
+        setTimeout(() => {
+          showFeedback('🎉 太棒了！你已经成功将所有数值与专业术语精准绑定！', 'success');
+        }, 300);
+      }
+    }
+
+    // 获取锚点的绝对坐标（相对于SVG画布）
+    function getDotCoords(cardEl) {
+      const dot = cardEl.querySelector('.dot');
+      const dotRect = dot.getBoundingClientRect();
+      const canvasRect = svgCanvas.getBoundingClientRect();
+
+      return {
+        x: dotRect.left - canvasRect.left + dotRect.width / 2,
+        y: dotRect.top - canvasRect.top + dotRect.height / 2
+      };
+    }
+
+    // 绘制贝塞尔曲线
+    function createBezierPath(x1, y1, x2, y2) {
+      const controlOffset = Math.abs(x2 - x1) * 0.5;
+      return `M ${x1} ${y1} C ${x1 + controlOffset} ${y1}, ${x2 - controlOffset} ${y2}, ${x2} ${y2}`;
+    }
+
+    // 绘制所有确定的连线和当前选择的预览线
+    function drawAllLines() {
+      // 清空画布
+      svgCanvas.innerHTML = '';
+
+      // 1. 绘制已确定的正确连线
+      matchedPairs.forEach(pair => {
+        const leftEl = document.getElementById(pair.leftId);
+        const rightEl = document.getElementById(pair.rightId);
+        if (leftEl && rightEl) {
+          const p1 = getDotCoords(leftEl);
+          const p2 = getDotCoords(rightEl);
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', createBezierPath(p1.x, p1.y, p2.x, p2.y));
+          path.setAttribute('stroke', '#10b981');
+          path.setAttribute('stroke-width', '4');
+          path.setAttribute('fill', 'none');
+          svgCanvas.appendChild(path);
+        }
+      });
+
+      // 2. 绘制选择过程中的蓝色引导线
+      if (selectedLeft && !selectedRight) {
+        // 只有左侧选中，不画完整线，可扩展为随鼠标移动，此处保持简洁，不画线
+      } else if (!selectedLeft && selectedRight) {
+        // 同上
+      }
+    }
+
+    // 绘制临时错误红线
+    function drawTemporaryErrorLine(leftEl, rightEl) {
+      const p1 = getDotCoords(leftEl);
+      const p2 = getDotCoords(rightEl);
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', createBezierPath(p1.x, p1.y, p2.x, p2.y));
+      path.setAttribute('stroke', '#ef4444');
+      path.setAttribute('stroke-width', '4');
+      path.setAttribute('stroke-dasharray', '8,4');
+      path.setAttribute('fill', 'none');
+      svgCanvas.appendChild(path);
+    }
+
+    // 显示反馈信息
+    function showFeedback(msg, type) {
+      feedbackText.textContent = msg;
+      feedbackText.className = 'feedback-message ' + type;
+    }
+
+    // 重置游戏
+    function resetGame() {
+      selectedLeft = null;
+      selectedRight = null;
+      matchedPairs = [];
+      isProcessing = false;
+      
+      cards.forEach(card => {
+        card.className = 'card';
+      });
+
+      feedbackText.textContent = '';
+      feedbackText.className = 'feedback-message';
+      
+      drawAllLines();
+    }
+
+    // 执行初始化
+    init();
+  </script>
+</body>
+</html>

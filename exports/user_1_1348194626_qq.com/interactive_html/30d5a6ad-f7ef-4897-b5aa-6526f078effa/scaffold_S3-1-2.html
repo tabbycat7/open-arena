@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI写诗测试仪</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #app {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        .question-box {
+            background: #eef;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 2px solid #ccd;
+        }
+        #canvas-area {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        .controls { margin-top: 20px; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        #btn-ask { background: #4a90e2; color: white; }
+        #btn-check { background: #e67e22; color: white; display: none; }
+        #ai-output {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+            text-align: center;
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>AI写诗测试仪</h2>
+    <div class="question-box">问：李白在2024年用手机写了哪首唐诗？</div>
+    
+    <div id="canvas-area">
+        <svg width="100%" height="100%" viewBox="0 0 800 300">
+            <!-- AI Robot -->
+            <g id="ai-robot">
+                <circle cx="100" cy="150" r="40" fill="#bdc3c7" />
+                <rect x="70" y="190" width="60" height="80" rx="10" fill="#95a5a6" />
+                <text id="ai-face" x="85" y="160" font-size="30">🤖</text>
+            </g>
+            <!-- Li Bai & Phone -->
+            <g id="li-bai-group" style="display:none;">
+                <text x="600" y="150" font-size="60">👨‍🏫</text>
+                <text x="650" y="150" font-size="40">📱</text>
+                <line x1="580" y1="100" x2="720" y2="200" stroke="red" stroke-width="10" />
+                <line x1="720" y1="100" x2="580" y2="200" stroke="red" stroke-width="10" />
+            </g>
+        </svg>
+    </div>
+
+    <div id="ai-output"></div>
+
+    <div class="controls">
+        <button id="btn-ask">让AI回答</button>
+        <button id="btn-check">指出常识错误</button>
+    </div>
+</div>
+
+<script>
+    const btnAsk = document.getElementById('btn-ask');
+    const btnCheck = document.getElementById('btn-check');
+    const aiOutput = document.getElementById('ai-output');
+    const aiFace = document.getElementById('ai-face');
+    const liBaiGroup = document.getElementById('li-bai-group');
+
+    btnAsk.addEventListener('click', () => {
+        aiOutput.innerText = "AI正在思考：李白...2024年...手机...有了！\n《云端望月》：屏幕映照千古月，指尖轻点传诗篇。";
+        aiFace.innerText = "😊";
+        btnAsk.style.display = 'none';
+        btnCheck.style.display = 'inline-block';
+    });
+
+    btnCheck.addEventListener('click', () => {
+        liBaiGroup.style.display = 'block';
+        aiFace.innerText = "😰";
+        aiOutput.innerHTML = "<strong style='color:red;'>警惕！</strong>AI为了完成任务，经常会顺着错误的问题编造谎言。这被称为“幻觉”。";
+        btnCheck.disabled = true;
+        btnCheck.style.opacity = '0.5';
+    });
+</script>
+
+</body>
+</html>

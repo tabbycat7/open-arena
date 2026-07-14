@@ -1,0 +1,365 @@
+{
+  "task_id": "08284a93-396e-440c-8074-1c204261bcf4",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "4支铅笔放进3个笔筒，动手摆一摆，是不是不管怎么放，总有一个笔筒里至少有2支铅笔？你发现了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "有同学说'总有'就是'可能会有'，'至少2支'就是'恰好2支'，这样理解对吗？能不能举个例子说明？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们刚才都试了几种摆法，结论都对。但'不管怎么放'有无数种可能，我们试不完。有没有什么办法，不用把所有摆法都试一遍，就能让大家百分之百相信这个结论？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "数字变大时，摆来摆去太麻烦了。想想看，7本书放进3个抽屉，能不能用一个除法算式来表示这个分配过程？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "7÷3余1至少数是3，8÷3余2至少数怎么还是3？10÷3余1至少数是4。余数变了，为什么至少数的变化不一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "11只鸽子飞进4个鸽笼，总有一个鸽笼至少飞进几只？扑克牌魔术里，52张牌9人抽，为什么至少3张同花色？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M7",
+      "question_type": "main",
+      "content": "生活中还有哪些现象藏着鸽巢原理？请当'数学侦探'，设计一个实际问题来考考你的伙伴。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "5只鸽子飞进4个鸽巢，不管怎么飞，总有一个鸽巢里至少有2只鸽子。你能用画图或列举的方法验证吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "从4支铅笔到7本书，'至少数'从2变成了3。你发现物体数量、抽屉数量和'至少数'之间有什么关系吗？试着猜一猜。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-3",
+      "question_type": "variant",
+      "content": "班上有13名同学，至少有2人是同一个月出生的。这个结论对吗？你能用今天的原理解释吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "5支铅笔放进3个笔筒，'总有1个笔筒至少有2支'还成立吗？那'总有'和'至少'的意思变了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "把5个苹果分给3个小朋友，'总有1人至少分到2个'是什么意思？'至少'能换成'恰好'吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-3",
+      "question_type": "variant",
+      "content": "如果只有2支铅笔要放进3个笔筒，'总有一个笔筒至少有2支'还成立吗？这时'总有'和'至少'还能用吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "5只鸽子飞进4个鸽巢，假设每个鸽巢最多1只，最多住几只？实际有5只，这个矛盾说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "100支铅笔放进99个笔筒，用枚举法好还是假设法好？数字很大时，哪种方法更有说服力？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-3",
+      "question_type": "variant",
+      "content": "枚举时如果漏掉了（1,1,2）这种分法，结论还成立吗？这说明枚举法要注意什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "班级有25个同学分成4个小组，至少有一个小组不少于几人？用除法算式表示，并说说每个数的意思。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "8本书放3个抽屉，列式8÷3=2...2。这里的'2本'和'余下的2本'意思一样吗？分别表示什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-3",
+      "question_type": "variant",
+      "content": "19颗糖分给6个小朋友，怎样列式能让每人分到的尽可能少？有余数怎么办？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "8÷3余2，有同学认为至少数应该是2+2=4。你觉得对吗？用'尽量平均分'的思路说说道理。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "14÷4余2，小华认为'至少数=3+2=5'。你能举出一个分法说明他错了吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-3",
+      "question_type": "variant",
+      "content": "11只鸽子飞入4个鸽巢，总有一个鸽巢至少飞进几只？请直接用'商+1'的规律快速得出答案。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "9人各抽1张扑克牌，为什么至少有3人同花色？识别'物体'与'抽屉'，并对比鸽子入笼问题，关键步骤有何不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "13位老师中，至少有2人同属相。这个问题隐藏的'抽屉'是什么？你是怎么识别的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-3",
+      "question_type": "variant",
+      "content": "367人中至少有2人同一天生日，这结论可靠吗？请评价鸽巢原理的适用范围。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "“总有”和“可能会有”意思一样吗？哪句更确定？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "'至少2支'的意思，可能是3支吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "'总有'和'一定有'意思一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "如果结论不对，每个笔筒最多放几支？4支铅笔够分吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "能不能先假设结论不对？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "如果每个笔筒最多1支，4支铅笔放得下吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "怎么分，才能让每个笔筒里的铅笔都尽可能少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "尽量平均分后，每份是2本，这和除法里的哪个数一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "7÷3=2...1，哪个数表示剩下的书？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "余数从1变成2，至少数为什么没变？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "余数是2，至少数就要加2吗？说说你的想法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "多余的2支，为什么不能给同一个抽屉？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "11只鸽子飞进4个鸽笼，谁是'物体'，谁是'抽屉'？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "算出11÷4后，商和余数分别告诉我们什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3",
+      "question_type": "scaffold",
+      "content": "扑克牌问题，能转化成'把书放进抽屉'吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

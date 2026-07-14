@@ -1,0 +1,140 @@
+{
+  "task_id": "49d18e61-74e8-4171-9a2b-cd42f6d0a99f",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，这里有4支铅笔和3个笔筒。请大家动手摆一摆，看能不能找到一种放法，让每个笔筒里的铅笔都少于2支？试完后说说你们的发现。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "刚才大家发现不管怎么放，总有一个笔筒至少有2支。如果换成100支笔放进30个笔筒，还要一支支摆吗？有没有一种像魔法一样的计算方法，能直接算出那个“至少数”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "请大家算一算：把7支笔放3个筒，10支笔放4个筒。观察算式中的商、余数和结果，你们发现“至少数”是怎么来的？能总结出一个公式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "大家发现了“商+1”的规律。但如果8支铅笔放进4个笔筒，商是2没有余数，还要加1吗？请运用“平均分”的道理来解释，这时候到底该怎么放才最合理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "一副牌去掉大小王剩52张，随便抽5张，我敢打赌至少有2张同花色。你们信吗？请用鸽巢原理解释，这里谁是“鸽子”，谁是“鸽巢”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果有4只鸽子飞进3个鸽笼，会不会出现每个鸽笼都少于2只鸽子的情况？动手画一画，看你能发现什么秘密。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "对比一下：5支笔放3个筒和放4个筒，结论都是“至少有2支”吗？动脑想想，笔筒变多了，为什么“至少数”可能不变？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "试试你的“魔法公式”：7支笔放2个筒，15支笔放4个筒，结果分别是多少？算完对比一下，你的公式灵验吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "有同学说：“算出商2余1，结果就是商2，因为剩下的1支不够再分。”你同意吗？请用“平均分”的道理反驳他。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "换个角度想：如果有2个笔筒，要保证“总有一个笔筒至少有3支”，至少需要准备几支铅笔？你是怎么推算的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "如果想让每个笔筒都少于2支，最多能放几支笔？这和我们的4支笔比，说明了什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "4÷3的结果是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "平均分后，每个笔筒先放（ ）支，剩下的（ ）支无论放进哪个笔筒，都会让那个笔筒至少有（ ）支。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "面对这么大的数，怎么分能最快帮我们找到那个“至少数”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "算算7÷3和8÷4，对比商和余数，看看“至少数”有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

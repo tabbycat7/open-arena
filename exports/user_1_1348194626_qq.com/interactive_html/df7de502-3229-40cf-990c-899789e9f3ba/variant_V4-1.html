@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>智能充电决策器</title>
+    <style>
+        :root { --bg: #f0f4f8; --card: #ffffff; --primary: #3498db; --danger: #e74c3c; --success: #27ae60; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: var(--card); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        h2 { text-align: center; color: #2c3e50; margin: 0 0 20px 0; }
+        .container { display: flex; flex: 1; gap: 20px; }
+        .panel { flex: 1; border: 2px dashed #bdc3c7; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .card { width: 160px; height: 120px; background: #fff; border: 2px solid #3498db; border-radius: 10px; margin: 10px; cursor: grab; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: transform 0.2s; user-select: none; }
+        .scene { width: 220px; height: 180px; background: #f9f9f9; border-radius: 10px; margin: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+        .feedback { margin-top: 10px; font-weight: bold; height: 40px; color: #555; text-align: center; }
+        .icon { font-size: 30px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>智能充电决策器：权衡效率与代价</h2>
+    <div class="container">
+        <div class="panel" id="source">
+            <h3>充电模式</h3>
+            <div class="card" id="fast" draggable="true">
+                <div class="icon">⚡</div>
+                <div>超级快充</div>
+            </div>
+            <div class="card" id="slow" draggable="true">
+                <div class="icon">🍃</div>
+                <div>普通慢充</div>
+            </div>
+        </div>
+        <div class="panel">
+            <h3>场景选择</h3>
+            <div class="scene" id="scene-out" data-type="out">
+                <div class="icon">🏃</div>
+                <div>急着出门</div>
+                <small>(剩余5%电量)</small>
+            </div>
+            <div class="scene" id="scene-sleep" data-type="sleep">
+                <div class="icon">🌙</div>
+                <div>晚间安睡</div>
+                <small>(充足时间)</small>
+            </div>
+            <div class="feedback" id="feedback">请将模式拖入场景中</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.card');
+    const scenes = document.querySelectorAll('.scene');
+    const feedback = document.getElementById('feedback');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        });
+    });
+
+    scenes.forEach(scene => {
+        scene.addEventListener('dragover', (e) => e.preventDefault());
+        scene.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const mode = e.dataTransfer.getData('text/plain');
+            const sceneType = scene.getAttribute('data-type');
+            
+            if (sceneType === 'out') {
+                if (mode === 'fast') {
+                    feedback.innerText = "✅ 决策合理：利用快充迅速补充电量，满足出门需求。";
+                    feedback.style.color = "var(--success)";
+                } else {
+                    feedback.innerText = "❌ 决策失败：慢充速度太慢，出门时手机电量不足，关机！";
+                    feedback.style.color = "var(--danger)";
+                }
+            } else {
+                if (mode === 'fast') {
+                    feedback.innerText = "⚠️ 不推荐：睡觉时间充裕，快充会导致电池发热，损伤寿命。";
+                    feedback.style.color = "var(--danger)";
+                } else {
+                    feedback.innerText = "✅ 决策合理：慢充保护电池健康，且利用睡眠时间完成充电。";
+                    feedback.style.color = "var(--success)";
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

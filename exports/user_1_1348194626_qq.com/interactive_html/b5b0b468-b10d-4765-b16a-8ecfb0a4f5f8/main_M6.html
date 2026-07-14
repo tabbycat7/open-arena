@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从特殊到一般：绝对值方程的分类决策树</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #dbeafe;
+            --success-color: #16a34a;
+            --success-light: #f0fdf4;
+            --warning-color: #ea580c;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-canvas: #f8fafc;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例课堂投屏容器 */
+        .presentation-container {
+            width: 1024px;
+            height: 768px;
+            background-color: #ffffff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* 头部区域 */
+        header {
+            border-bottom: 2px solid var(--bg-canvas);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* 主布局：左右分栏 */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            min-height: 0; /* 允许子元素缩放 */
+        }
+
+        .left-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .right-panel {
+            flex: 0.8;
+            background-color: var(--bg-canvas);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 动态数轴区域 */
+        .axis-container {
+            background-color: #1e293b;
+            border-radius: 8px;
+            padding: 10px;
+            position: relative;
+            height: 110px;
+        }
+
+        .axis-title {
+            color: #94a3b8;
+            font-size: 12px;
+            position: absolute;
+            top: 8px;
+            left: 12px;
+        }
+
+        /* 决策树对比区域 */
+        .trees-container {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            min-height: 0;
+        }
+
+        .tree-box {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+        }
+
+        .tree-box.active {
+            border-color: var(--success-color);
+            box-shadow: 0 0 12px rgba(22, 163, 74, 0.15);
+        }
+
+        .tree-header {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .tree-svg-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .tree-svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 交互输入框样式 */
+        .input-placeholder {
+            padding: 2px 6px;
+            border: 2px solid var(--warning-color);
+            border-radius: 4px;
+            font-size: 13px;
+            width: 75px;
+            text-align: center;
+            outline: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            background-color: #fffbeb;
+        }
+
+        .input-placeholder:focus {
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+        }
+
+        .input-placeholder.correct {
+            border-color: var(--success-color);
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+
+        /* 映射表格 */
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: auto;
+        }
+
+        .mapping-table th, .mapping-table td {
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            text-align: center;
+        }
+
+        .mapping-table th {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* 右侧引导面板 */
+        .guide-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0f172a;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        .question-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .formula-highlight {
+            background-color: #fef08a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .interactive-tips {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 13px;
+            color: #1e40af;
+        }
+
+        .interactive-tips ul {
+            margin-left: 18px;
+            margin-top: 5px;
+        }
+
+        /* 验证控制区 */
+        .control-panel {
+            margin-top: auto;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .slider-group label {
+            width: 80px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .slider-group input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .value-display {
+            width: 40px;
+            text-align: right;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        /* 状态指示灯 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: white;
+            background-color: #64748b;
+        }
+
+        .badge.active {
+            background-color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <!-- 头部 -->
+    <header>
+        <span class="tag">高一数学 · 核心素养微专题</span>
+        <h1>从特殊走向一般：绝对值方程的分类决策树</h1>
+        <div class="subtitle">探索方程 <span class="formula-highlight">|x - p| + |x - q| = a (p < q)</span> 的解的个数与临界特征</div>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="main-layout">
+        <!-- 左侧：可视化对比与数轴 -->
+        <div class="left-panel">
+            <!-- 动态数轴 -->
+            <div class="axis-container">
+                <div class="axis-title">💡 动态数轴验证（拖动下方滑块改变 p, q, a 的值）</div>
+                <svg id="axisSvg" width="100%" height="100%" viewBox="0 0 560 80">
+                    <!-- 数轴线 -->
+                    <line x1="30" y1="45" x2="530" y2="45" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+                        </marker>
+                    </defs>
+                    
+                    <!-- 动态区间 [p, q] 覆盖高亮 -->
+                    <rect id="intervalHighlight" x="150" y="40" width="200" height="10" fill="#2563eb" fill-opacity="0.2" />
+                    
+                    <!-- 刻度与标签 -->
+                    <!-- p 点 -->
+                    <circle id="pointP" cx="150" cy="45" r="6" fill="#2563eb" />
+                    <text id="labelP" x="150" y="30" text-anchor="middle" fill="#38bdf8" font-weight="bold" font-size="13">p (-1.0)</text>
+                    
+                    <!-- q 点 -->
+                    <circle id="pointQ" cx="350" cy="45" r="6" fill="#2563eb" />
+                    <text id="labelQ" x="350" y="30" text-anchor="middle" fill="#38bdf8" font-weight="bold" font-size="13">q (3.0)</text>
+
+                    <!-- 距离标注 q-p -->
+                    <path id="distPath" d="M 150 55 Q 250 70 350 55" fill="none" stroke="#38bdf8" stroke-dasharray="4" stroke-width="1.5" />
+                    <text id="labelDist" x="250" y="75" text-anchor="middle" fill="#38bdf8" font-size="11">距离 q - p = 4.0</text>
+
+                    <!-- 动态 x 点 (演示用) -->
+                    <circle id="pointX" cx="250" cy="45" r="4" fill="#ef4444" />
+                    <text id="labelX" x="250" y="25" text-anchor="middle" fill="#f87171" font-size="11">x</text>
+                </svg>
+            </div>
+
+            <!-- 决策树对比 -->
+            <div class="trees-container">
+                <!-- 特殊决策树 -->
+                <div class="tree-box">
+                    <div class="tree-header">特殊：|x - 1| + |x + 1| = a</div>
+                    <div class="tree-svg-container">
+                        <svg viewBox="0 0 240 200">
+                            <!-- 连线 -->
+                            <line x1="120" y1="30" x2="60" y2="90" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="120" y1="30" x2="120" y2="90" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="120" y1="30" x2="180" y2="90" stroke="#cbd5e1" stroke-width="2" />
+                            
+                            <!-- 根节点 -->
+                            <rect x="70" y="5" width="100" height="26" rx="4" fill="#f1f5f9" stroke="#94a3b8" />
+                            <text x="120" y="22" text-anchor="middle" font-size="11" font-weight="bold">比较 a 与 2 的大小</text>
+                            
+                            <!-- 分支条件 -->
+                            <text x="75" y="60" text-anchor="middle" font-size="10" fill="#64748b">a < 2</text>
+                            <text x="135" y="60" text-anchor="middle" font-size="10" fill="#64748b">a = 2</text>
+                            <text x="195" y="60" text-anchor="middle" font-size="10" fill="#64748b">a > 2</text>
+
+                            <!-- 叶子节点 -->
+                            <!-- 无解 -->
+                            <rect x="25" y="90" width="70" height="35" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+                            <text x="60" y="105" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">无解</text>
+                            <text x="60" y="120" text-anchor="middle" font-size="9" fill="#991b1b">0个解</text>
+
+                            <!-- 无数解 -->
+                            <rect x="100" y="90" width="40" height="35" rx="4" fill="#fef3c7" stroke="#fcd34d" />
+                            <text x="120" y="105" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">无数解</text>
+                            <text x="120" y="120" text-anchor="middle" font-size="9" fill="#92400e">[-1, 1]</text>
+
+                            <!-- 两个解 -->
+                            <rect x="145" y="90" width="70" height="35" rx="4" fill="#dcfce7" stroke="#86efac" />
+                            <text x="180" y="105" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">2个解</text>
+                            <text x="180" y="120" text-anchor="middle" font-size="9" fill="#166534">对称分布两端</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 一般决策树（待填空） -->
+                <div id="generalTreeBox" class="tree-box">
+                    <div class="tree-header">一般：|x - p| + |x - q| = a</div>
+                    <div class="tree-svg-container" style="position: relative;">
+                        <!-- HTML 绝对定位的输入框，精准覆盖在 SVG 决策节点位置 -->
+                        <div style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%;">
+                            <div style="font-size: 11px; margin-bottom: 4px; color: var(--text-muted); font-weight: bold;">比较 a 与临界值的大小</div>
+                            <input type="text" id="targetInput" class="input-placeholder" placeholder="输入临界值" title="请输入代数式，例如 q-p">
+                        </div>
+
+                        <svg viewBox="0 0 240 200" style="margin-top: 20px;">
+                            <!-- 连线 -->
+                            <line x1="120" y1="35" x2="60" y2="95" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="120" y1="35" x2="120" y2="95" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="120" y1="35" x2="180" y2="95" stroke="#cbd5e1" stroke-width="2" />
+                            
+                            <!-- 分支条件 -->
+                            <text x="70" y="65" text-anchor="middle" font-size="10" fill="#64748b" class="gen-cond-less">a < ?</text>
+                            <text x="120" y="65" text-anchor="middle" font-size="10" fill="#64748b" class="gen-cond-equal">a = ?</text>
+                            <text x="170" y="65" text-anchor="middle" font-size="10" fill="#64748b" class="gen-cond-greater">a > ?</text>
+
+                            <!-- 叶子节点 -->
+                            <g class="leaf-node" opacity="0.4" id="leafNo">
+                                <rect x="25" y="95" width="70" height="35" rx="4" fill="#fee2e2" stroke="#fca5a5" />
+                                <text x="60" y="110" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">无解</text>
+                                <text x="60" y="125" text-anchor="middle" font-size="9" fill="#991b1b">0个解</text>
+                            </g>
+
+                            <g class="leaf-node" opacity="0.4" id="leafInf">
+                                <rect x="100" y="95" width="40" height="35" rx="4" fill="#fef3c7" stroke="#fcd34d" />
+                                <text x="120" y="110" text-anchor="middle" font-size="11" fill="#92400e" font-weight="bold">无数解</text>
+                                <text id="labelInfRange" x="120" y="125" text-anchor="middle" font-size="9" fill="#92400e">[p, q]</text>
+                            </g>
+
+                            <g class="leaf-node" opacity="0.4" id="leafTwo">
+                                <rect x="145" y="95" width="70" height="35" rx="4" fill="#dcfce7" stroke="#86efac" />
+                                <text x="180" y="110" text-anchor="middle" font-size="11" fill="#166534" font-weight="bold">2个解</text>
+                                <text x="180" y="125" text-anchor="middle" font-size="9" fill="#166534">对称分布两端</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：引导、探究与动态控制 -->
+        <div class="right-panel">
+            <div class="guide-title">思考与迁移</div>
+            <p class="question-text">
+                在特殊方程中，定点为 <span class="formula-highlight">-1</span> 和 <span class="formula-highlight">1</span>，它们之间的距离是 <span class="formula-highlight">2</span>。
+                <br><br>
+                当我们推广到一般化方程时，定点变成了 <span class="formula-highlight">p</span> 和 <span class="formula-highlight">q</span>。请在左侧黄色框中输入<b>决定解的个数的“临界值”代数式</b>（用 p 和 q 表示）。
+            </p>
+
+            <!-- 映射表格 -->
+            <table class="mapping-table">
+                <thead>
+                    <tr>
+                        <th>要素</th>
+                        <th>特殊情况</th>
+                        <th>一般情况 (p < q)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>关键定点</td>
+                        <td>-1 与 1</td>
+                        <td style="color: var(--primary-color); font-weight: bold;">p 与 q</td>
+                    </tr>
+                    <tr>
+                        <td>临界特征值</td>
+                        <td>2</td>
+                        <td style="color: var(--warning-color); font-weight: bold;">? (待填)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="interactive-tips">
+                <strong>💡 提示：</strong>
+                <ul>
+                    <li>利用绝对值的几何意义：两点间的距离。</li>
+                    <li>尝试输入：<code style="background:#fff; padding:1px 4px; border-radius:3px;">q-p</code> 或 <code style="background:#fff; padding:1px 4px; border-radius:3px;">q - p</code></li>
+                </ul>
+            </div>
+
+            <!-- 动态验证控制面板 -->
+            <div class="control-panel">
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: var(--text-main);">
+                    🛠️ 动态参数调节（验证一般规律）
+                </div>
+                <div class="slider-group">
+                    <label>定点 p：</label>
+                    <input type="range" id="sliderP" min="-5" max="1" step="0.5" value="-1">
+                    <span class="value-display" id="valP">-1.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>定点 q：</label>
+                    <input type="range" id="sliderQ" min="2" max="8" step="0.5" value="3">
+                    <span class="value-display" id="valQ">3.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>常数 a：</label>
+                    <input type="range" id="sliderA" min="1" max="10" step="0.5" value="4">
+                    <span class="value-display" id="valA">4.0</span>
+                </div>
+
+                <div class="status-bar">
+                    <span>当前方程解的个数：</span>
+                    <span id="solutionStatus" class="badge">未激活</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const targetInput = document.getElementById('targetInput');
+    const generalTreeBox = document.getElementById('generalTreeBox');
+    const leafNo = document.getElementById('leafNo');
+    const leafInf = document.getElementById('leafInf');
+    const leafTwo = document.getElementById('leafTwo');
+    
+    const condLess = document.querySelector('.gen-cond-less');
+    const condEqual = document.querySelector('.gen-cond-equal');
+    const condGreater = document.querySelector('.gen-cond-greater');
+
+    const sliderP = document.getElementById('sliderP');
+    const sliderQ = document.getElementById('sliderQ');
+    const sliderA = document.getElementById('sliderA');
+    
+    const valP = document.getElementById('valP');
+    const valQ = document.getElementById('valQ');
+    const valA = document.getElementById('valA');
+
+    const pointP = document.getElementById('pointP');
+    const pointQ = document.getElementById('pointQ');
+    const labelP = document.getElementById('labelP');
+    const labelQ = document.getElementById('labelQ');
+    const intervalHighlight = document.getElementById('intervalHighlight');
+    const distPath = document.getElementById('distPath');
+    const labelDist = document.getElementById('labelDist');
+    const solutionStatus = document.getElementById('solutionStatus');
+
+    let isUnlocked = false;
+
+    // 检查输入是否正确
+    targetInput.addEventListener('input', function() {
+        const value = this.value.trim().replace(/\s+/g, '').toLowerCase();
+        if (value === 'q-p' || value === 'q-p' || value === '|q-p|' || value === '|p-q|') {
+            this.classList.add('correct');
+            generalTreeBox.classList.add('active');
+            isUnlocked = true;
+            
+            // 激活决策树分支
+            condLess.textContent = 'a < q - p';
+            condEqual.textContent = 'a = q - p';
+            condGreater.textContent = 'a > q - p';
+            condLess.setAttribute('fill', '#ef4444');
+            condEqual.setAttribute('fill', '#f59e0b');
+            condGreater.setAttribute('fill', '#10b981');
+            
+            updateVisualization();
+        } else {
+            this.classList.remove('correct');
+            generalTreeBox.classList.remove('active');
+            isUnlocked = false;
+            
+            // 重置分支
+            condLess.textContent = 'a < ?';
+            condEqual.textContent = 'a = ?';
+            condGreater.textContent = 'a > ?';
+            condLess.setAttribute('fill', '#64748b');
+            condEqual.setAttribute('fill', '#64748b');
+            condGreater.setAttribute('fill', '#64748b');
+            
+            leafNo.setAttribute('opacity', '0.3');
+            leafInf.setAttribute('opacity', '0.3');
+            leafTwo.setAttribute('opacity', '0.3');
+            
+            solutionStatus.textContent = '未激活决策树';
+            solutionStatus.className = 'badge';
+        }
+    });
+
+    // 动态更新数轴与验证状态
+    function updateVisualization() {
+        const p = parseFloat(sliderP.value);
+        const q = parseFloat(sliderQ.value);
+        const a = parseFloat(sliderA.value);
+
+        // 更新数值显示
+        valP.textContent = p.toFixed(1);
+        valQ.textContent = q.toFixed(1);
+        valA.textContent = a.toFixed(1);
+
+        // 映射数轴坐标 (数轴物理范围 30px 到 530px，对应数值 -6 到 9)
+        const minVal = -6;
+        const maxVal = 9;
+        const scale = (val) => 30 + ((val - minVal) / (maxVal - minVal)) * 500;
+
+        const cxP = scale(p);
+        const cxQ = scale(q);
+
+        // 更新数轴图形
+        pointP.setAttribute('cx', cxP);
+        pointQ.setAttribute('cx', cxQ);
+        labelP.setAttribute('x', cxP);
+        labelP.textContent = `p (${p.toFixed(1)})`;
+        labelQ.setAttribute('x', cxQ);
+        labelQ.textContent = `q (${q.toFixed(1)})`;
+
+        // 更新区间高亮
+        intervalHighlight.setAttribute('x', cxP);
+        intervalHighlight.setAttribute('width', cxQ - cxP);
+
+        // 更新距离弧线与文本
+        distPath.setAttribute('d', `M ${cxP} 55 Q ${(cxP + cxQ)/2} 72 L ${cxQ} 55`);
+        const distance = q - p;
+        labelDist.setAttribute('x', (cxP + cxQ)/2);
+        labelDist.textContent = `距离 q - p = ${distance.toFixed(1)}`;
+
+        // 更新区间 [p, q] 文本
+        document.getElementById('labelInfRange').textContent = `[${p.toFixed(1)}, ${q.toFixed(1)}]`;
+
+        if (!isUnlocked) return;
+
+        // 核心逻辑：根据 a 与 q-p 的关系，高亮决策树分支与叶子
+        leafNo.setAttribute('opacity', '0.2');
+        leafInf.setAttribute('opacity', '0.2');
+        leafTwo.setAttribute('opacity', '0.2');
+
+        if (a < distance) {
+            leafNo.setAttribute('opacity', '1');
+            solutionStatus.textContent = '0 个解 (无解)';
+            solutionStatus.className = 'badge';
+            solutionStatus.style.backgroundColor = '#ef4444';
+        } else if (Math.abs(a - distance) < 0.01) {
+            leafInf.setAttribute('opacity', '1');
+            solutionStatus.textContent = '无数个解';
+            solutionStatus.className = 'badge';
+            solutionStatus.style.backgroundColor = '#f59e0b';
+        } else {
+            leafTwo.setAttribute('opacity', '1');
+            solutionStatus.textContent = '2 个解';
+            solutionStatus.className = 'badge';
+            solutionStatus.style.backgroundColor = '#10b981';
+        }
+    }
+
+    // 监听滑块事件
+    sliderP.addEventListener('input', () => {
+        // 确保 p < q
+        if (parseFloat(sliderP.value) >= parseFloat(sliderQ.value)) {
+            sliderP.value = parseFloat(sliderQ.value) - 0.5;
+        }
+        updateVisualization();
+    });
+
+    sliderQ.addEventListener('input', () => {
+        // 确保 p < q
+        if (parseFloat(sliderQ.value) <= parseFloat(sliderP.value)) {
+            sliderQ.value = parseFloat(sliderP.value) + 0.5;
+        }
+        updateVisualization();
+    });
+
+    sliderA.addEventListener('input', updateVisualization);
+
+    // 初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

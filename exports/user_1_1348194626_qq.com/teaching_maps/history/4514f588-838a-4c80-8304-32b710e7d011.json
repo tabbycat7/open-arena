@@ -1,0 +1,441 @@
+{
+  "id": "4514f588-838a-4c80-8304-32b710e7d011",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "物理",
+  "grade": "八年级",
+  "teaching_goals": "1．物理观念:(1)认识重力，知道重力是如何产生的。(2)了解重力的大小与质量的关系，正确书写关系式G=mg，能进行简单运算。\r\n2．科学思维:(1)通过举例生活中的现象与观察课堂实验，证明重力的存在。(2)通过收集到的实验数据并对其进行分析,总结出重力的大小与质量成正比。\r\n3．科学探究:(1)经历探究重力大小与什么因素有关的实验过程,培养动手操作与收集数据的能力。\r\n4．科学态度与责任:(1)通过身边的小实验以及观察生活中重力的应用,感受物理就在身边，激发学生探究科学知识的兴趣",
+  "student_profile": "学情描述：知识基础： 八年级学生在生活中对“重力”现象有丰富的感性认识（如水往低处流、物体下落），且在前一节已经学习了“力”和“质量”的概念，具备了学习重力的前置知识。能力水平： 学生具备初步的观察能力和实验操作能力，但将生活经验转化为物理概念（如区分质量与重力）仍有难度，尤其在处理 $G=mg$ 的实验数据归纳时，逻辑推理能力尚需引导。心理特征： 该阶段学生好奇心强，乐于参与动手实验，但注意力容易被有趣的现象分散，需要教师通过任务驱动引导其深度思考。群体分布： 班级整体学习氛围良好。**优生（约25%）**思维活跃，能独立完成实验并尝试推导 $g$ 的含义；**中等生（约55%）**能完成基础操作，但在定量分析上依赖教材；**学困生（约20%）**对“质量”与“重力”的概念极易混淆，需重点指导单位换算。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"水往低处流、苹果掉落，这个让所有东西都向下掉的‘幕后推手’是谁？它推的方向有什么共同特点？\", \"question_type\": \"main\", \"knowledge_points\": [\"重力的定义与产生\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"design_intent\": \"从多个生活现象切入，引导学生归纳共性，主动识别出地球是施力物体，并初步感知‘向下’的方向特征，为引出重力概念设置认知台阶，增强归纳思考的挑战性。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"空间站里笔能飘在空中，这和我们的经验完全不同。这让你对重力的‘方向’和它存在的地方，有了什么新想法或疑问？\", \"question_type\": \"main\", \"knowledge_points\": [\"重力的方向（竖直向下）\", \"重力的存在（地球附近一切物体）\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.5, \"design_intent\": \"通过‘失重’极端情景对比，制造认知冲突，引导学生质疑重力作用条件，并为理解其‘指向地心’的核心方向特性埋下思考线索。此节点整合了原M2与M3的功能。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"地球对这本书和这支笔都有吸引力。你觉得它吸引它们的‘力道’大小会一样吗？重力大小最可能跟物体本身的哪个特点有关？\", \"question_type\": \"main\", \"knowledge_points\": [\"重力大小与质量的关系（定性）\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.55, \"design_intent\": \"承接对重力本质的讨论，自然转向对其大小的思考。通过对比不同物体，引导学生聚焦‘质量’这一关键变量并提出猜想，为实验探究明确目标。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"动手验证一下！用弹簧测力计测不同钩码的重力。请把质量和对应的重力记录在表格里。当钩码质量翻倍时，重力的读数是怎么变的？\", \"question_type\": \"main\", \"knowledge_points\": [\"G=mg的实验探究过程\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"下达清晰的定量探究任务，引导学生动手操作并关注数据记录。问题直接指向数据变化趋势（翻倍），引导他们从自己的数据中描述和发现关系。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"各组数据都显示重力跟着质量变，但算出来的比值却不太一样。如果我们想用一个统一的标准来算重力，该怎么做？有同学说‘我的重力是50kg’，这说法对吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"重力与质量的定量关系式 G=mg\", \"g 的含义与取值\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"基于实验数据，通过指出比值差异引出引入公认比例系数的必要性。结合常见错误表述，引导学生在辨析中‘创造’公式模型，并理解g作为换算系数的含义，针对核心易错点进行深化。\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"假如一个包裹在地球上重9.8N，送到月球上，那里的重力系数g变小了。你认为它在月球上称出的‘重力’会变吗？它本身的质量会变吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"重力与质量的定量关系式 G=mg\", \"g 的含义与取值\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"设计一个简洁的情景问题，要求学生迁移应用G=mg，并理解g值可变而质量不变的物理内涵。聚焦于核心概念的辨析与应用，实现知识整合。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"常说‘物体都有重量’，但你把文具盒从桌上轻轻推向空中，它好像一瞬间‘没重量’了。这短暂的‘没重量’说明，真正持续作用的那个‘推手’是谁？它到底让物体往哪去？\", \"question_type\": \"variant\", \"knowledge_points\": [\"重力的定义与产生\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将“掉落的苹果”替换为“被抛出的文具盒”，聚焦其上升过程与下落转折，以更动态、短暂的现象触发学生思考：持续作用的力是谁？从而巩固重力始终存在且方向竖直向下的概念。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"游泳圈总浮在水面，我们说是水有‘浮力’。但在泳池里，你觉得重力是把游泳圈往哪个方向‘拉’的？当重力存在时，浮力才会显现，这让你怎么理解重力‘方向’的普遍性？\", \"question_type\": \"variant\", \"knowledge_points\": [\"重力的方向（竖直向下）\", \"重力的存在（地球附近一切物体）\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.5, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"用“游泳圈受浮力”这一学生熟悉的现象，与“重力”进行对比分析。旨在引导学生认识：浮力的存在恰恰证明并依赖于重力始终向下作用于物体，从而深化对重力方向“竖直向下”普适性的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"一个篮球和一个乒乓球静止在地面。篮球压扁地面更明显，是因为地球对它的‘吸引力’更大吗？如果要公平地比较地球吸引它们的‘力道’，我们应该关注这两个球本身的哪个相同或不同的特征？\", \"question_type\": \"variant\", \"knowledge_points\": [\"重力大小与质量的关系（定性）\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.55, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过“压扁地面程度不同”这一视觉结果，暗示重力大小可能不同，触发学生对重力影响因素的思考。引导学生从“效果”反推“原因”，并聚焦于“质量”这一内在属性，为猜想建立直观支撑。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"小实验家小明测了几个不同大小苹果的重力。他发现苹果越重（质量越大），测力计拉伸就越长。如果他手头有两个一模一样的苹果，把它们并在一起测，你觉得拉伸长度会是单个苹果时的几倍？\", \"question_type\": \"variant\", \"knowledge_points\": [\"G=mg的实验探究过程\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"将实验器材“钩码”替换为学生更熟悉的“苹果”，并将“翻倍”的抽象关系转化为“并在一起”的具象操作。引导学生在生活化情境中，依据初步的观察（质量越大，重力越大），对数据关系进行预测性应用。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"小刚根据数据得出结论：‘在地球上，物体的重力就是它质量的9.8倍’。所以他说‘我的重力是50kg的9.8倍’。你觉得他的表述和计算过程清晰、准确吗？我们该如何更严谨地表达这种关系？\", \"question_type\": \"variant\", \"knowledge_points\": [\"重力与质量的定量关系式 G=mg\", \"g 的含义与取值\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过呈现学生可能出现的“重力是质量的倍数”这一不严谨甚至错误的表述，制造辨析冲突。引导学生发现表述中物理量、单位、因果关系的问题，从而主动建构起“G=mg”这一包含比例系数g的精确公式模型，深化理解。\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"火星的g值约为地球的0.38倍。新闻报道常说‘祝融号在火星上变轻了’。你觉得这里说的‘轻’，主要是指它哪个物理量变了？你能用我们刚学的G=mg关系式，解释为什么这个量会变吗？而在从地球飞往火星的旅程中，祝融号本身的哪个属性（比如‘东西的多少’）是始终保持不变的？\", \"question_type\": \"variant\", \"knowledge_points\": [\"重力与质量的定量关系式 G=mg\", \"g 的含义与取值\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.6, \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"利用‘祝融号火星探测’这一前沿情景，但将问题从直接计算转变为对概念表述的深度辨析。通过追问‘变轻了’的含义，引导学生主动应用G=mg解释重力随g变化的原因，并强化‘质量是物体属性，不随位置改变’的核心理解。实现从公式套用到意义理解的高阶迁移。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"苹果掉落的‘下’，是朝着哪里的方向呢？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"重力的方向\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.25, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"将M1对‘向下’的直观感知，具体化为对一个确定参考方向（地面）的观察，为M2讨论失重时‘方向’的变化做铺垫。\", \"design_intent\": \"引导学生将模糊的‘向下’与具体的‘地面’方向建立固定联系，为后续认知冲突（空间站中失去这个参考）打下基础。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"如果地面不是平的，‘下’还是同一个方向吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"重力的方向\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"引导学生质疑“向下”的绝对性，思考其参照系（指向地心），自然过渡到M2在失重环境中对重力方向本质的探讨。\", \"design_intent\": \"通过改变地面的情景，温和地挑战M1建立的‘固定向下’认知，激发对重力方向本质的疑问，为进入M2的极端对比做心理准备。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"弹簧测力计测的是什么力？用它测重力时，钩码要怎么挂？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"力的测量\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"回忆测量工具（弹簧测力计）的用途和基本操作方法，为M4的动手探究做好工具和操作上的准备。\", \"design_intent\": \"帮助学困生明确实验的核心工具和关键操作，减少因仪器不熟导致的探究障碍，使其能顺利投入M4的数据收集。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"要比较‘力道’和物体本身特点的关系，我们得同时知道哪两个信息？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"实验中的变量\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"将M3的定性猜想（重力大小可能与质量有关）转化为实验探究中需要收集的两种具体数据：重力（读数）和质量，直接指向M4的表格设计。\", \"design_intent\": \"引导学困生将抽象的“猜想关系”具体化为可测量的“两个数据”，明确实验目的，理解记录表格的意义，架起猜想与验证之间的桥梁。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"算算每个钩码的重力与质量的比值，它们接近吗？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"数据处理\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"引导学生对M4的实验数据进行简单计算（求比值），亲身发现数据间存在的近似比例关系，为M5讨论比值差异和引入g做好铺垫。\", \"design_intent\": \"让学困生通过亲手计算，从‘数据变化’感性认识上升到‘比值恒定’的理性发现，体验从数据到规律的归纳过程。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果用一个数代表这个比值，你觉得多少比较合适？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"比例系数\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"基于S3-1的计算，引导学生思考如何用一个公认的数值来概括实验发现的近似关系，自然引出对比例系数（g）的需要。\", \"design_intent\": \"帮助学生理解从‘实验得出的近似比值’到‘公认的比例系数’的抽象过程，理解引入g是为了计算更方便、更统一。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"‘我的重力是50kg’这句话，哪里说得不对？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"重力与质量的差异\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"针对M5中提到的常见错误，直接辨析，强化重力与质量是不同的物理量，为M6中区分“重力变”而“质量不变”扫清概念障碍。\", \"design_intent\": \"以纠错形式，用最直接的方式帮助学困生澄清核心易混点，确保他们在应用公式G=mg前，对G和m有清晰区分。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"公式G=mg中，去月球的话，哪个字母会变？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"g值的含义\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.5, \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"将M5学到的公式模型，应用于M6预设的月球新情境中，引导学生识别出情境变化时公式中对应的变量（g），实现知识的初步迁移。\", \"design_intent\": \"提供一个极其具体的情境代入任务，帮助学困生将公式中的字母与实际物理量（地理位置影响g）联系起来，降低直接回答M6的思维跨度。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-22 18:33:55",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "水往低处流、苹果掉落，这个让所有东西都向下掉的‘幕后推手’是谁？它推的方向有什么共同特点？",
+        "question_type": "main",
+        "knowledge_points": [
+          "重力的定义与产生"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "design_intent": "从多个生活现象切入，引导学生归纳共性，主动识别出地球是施力物体，并初步感知‘向下’的方向特征，为引出重力概念设置认知台阶，增强归纳思考的挑战性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "空间站里笔能飘在空中，这和我们的经验完全不同。这让你对重力的‘方向’和它存在的地方，有了什么新想法或疑问？",
+        "question_type": "main",
+        "knowledge_points": [
+          "重力的方向（竖直向下）",
+          "重力的存在（地球附近一切物体）"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.5,
+        "design_intent": "通过‘失重’极端情景对比，制造认知冲突，引导学生质疑重力作用条件，并为理解其‘指向地心’的核心方向特性埋下思考线索。此节点整合了原M2与M3的功能。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "地球对这本书和这支笔都有吸引力。你觉得它吸引它们的‘力道’大小会一样吗？重力大小最可能跟物体本身的哪个特点有关？",
+        "question_type": "main",
+        "knowledge_points": [
+          "重力大小与质量的关系（定性）"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.55,
+        "design_intent": "承接对重力本质的讨论，自然转向对其大小的思考。通过对比不同物体，引导学生聚焦‘质量’这一关键变量并提出猜想，为实验探究明确目标。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "动手验证一下！用弹簧测力计测不同钩码的重力。请把质量和对应的重力记录在表格里。当钩码质量翻倍时，重力的读数是怎么变的？",
+        "question_type": "main",
+        "knowledge_points": [
+          "G=mg的实验探究过程"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "下达清晰的定量探究任务，引导学生动手操作并关注数据记录。问题直接指向数据变化趋势（翻倍），引导他们从自己的数据中描述和发现关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "各组数据都显示重力跟着质量变，但算出来的比值却不太一样。如果我们想用一个统一的标准来算重力，该怎么做？有同学说‘我的重力是50kg’，这说法对吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "重力与质量的定量关系式 G=mg",
+          "g 的含义与取值"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "基于实验数据，通过指出比值差异引出引入公认比例系数的必要性。结合常见错误表述，引导学生在辨析中‘创造’公式模型，并理解g作为换算系数的含义，针对核心易错点进行深化。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "假如一个包裹在地球上重9.8N，送到月球上，那里的重力系数g变小了。你认为它在月球上称出的‘重力’会变吗？它本身的质量会变吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "重力与质量的定量关系式 G=mg",
+          "g 的含义与取值"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "设计一个简洁的情景问题，要求学生迁移应用G=mg，并理解g值可变而质量不变的物理内涵。聚焦于核心概念的辨析与应用，实现知识整合。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "常说‘物体都有重量’，但你把文具盒从桌上轻轻推向空中，它好像一瞬间‘没重量’了。这短暂的‘没重量’说明，真正持续作用的那个‘推手’是谁？它到底让物体往哪去？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "重力的定义与产生"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将“掉落的苹果”替换为“被抛出的文具盒”，聚焦其上升过程与下落转折，以更动态、短暂的现象触发学生思考：持续作用的力是谁？从而巩固重力始终存在且方向竖直向下的概念。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "游泳圈总浮在水面，我们说是水有‘浮力’。但在泳池里，你觉得重力是把游泳圈往哪个方向‘拉’的？当重力存在时，浮力才会显现，这让你怎么理解重力‘方向’的普遍性？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "重力的方向（竖直向下）",
+          "重力的存在（地球附近一切物体）"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.5,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "用“游泳圈受浮力”这一学生熟悉的现象，与“重力”进行对比分析。旨在引导学生认识：浮力的存在恰恰证明并依赖于重力始终向下作用于物体，从而深化对重力方向“竖直向下”普适性的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "一个篮球和一个乒乓球静止在地面。篮球压扁地面更明显，是因为地球对它的‘吸引力’更大吗？如果要公平地比较地球吸引它们的‘力道’，我们应该关注这两个球本身的哪个相同或不同的特征？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "重力大小与质量的关系（定性）"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.55,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过“压扁地面程度不同”这一视觉结果，暗示重力大小可能不同，触发学生对重力影响因素的思考。引导学生从“效果”反推“原因”，并聚焦于“质量”这一内在属性，为猜想建立直观支撑。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "小实验家小明测了几个不同大小苹果的重力。他发现苹果越重（质量越大），测力计拉伸就越长。如果他手头有两个一模一样的苹果，把它们并在一起测，你觉得拉伸长度会是单个苹果时的几倍？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "G=mg的实验探究过程"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "将实验器材“钩码”替换为学生更熟悉的“苹果”，并将“翻倍”的抽象关系转化为“并在一起”的具象操作。引导学生在生活化情境中，依据初步的观察（质量越大，重力越大），对数据关系进行预测性应用。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "小刚根据数据得出结论：‘在地球上，物体的重力就是它质量的9.8倍’。所以他说‘我的重力是50kg的9.8倍’。你觉得他的表述和计算过程清晰、准确吗？我们该如何更严谨地表达这种关系？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "重力与质量的定量关系式 G=mg",
+          "g 的含义与取值"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过呈现学生可能出现的“重力是质量的倍数”这一不严谨甚至错误的表述，制造辨析冲突。引导学生发现表述中物理量、单位、因果关系的问题，从而主动建构起“G=mg”这一包含比例系数g的精确公式模型，深化理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "火星的g值约为地球的0.38倍。新闻报道常说‘祝融号在火星上变轻了’。你觉得这里说的‘轻’，主要是指它哪个物理量变了？你能用我们刚学的G=mg关系式，解释为什么这个量会变吗？而在从地球飞往火星的旅程中，祝融号本身的哪个属性（比如‘东西的多少’）是始终保持不变的？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "重力与质量的定量关系式 G=mg",
+          "g 的含义与取值"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.6,
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "利用‘祝融号火星探测’这一前沿情景，但将问题从直接计算转变为对概念表述的深度辨析。通过追问‘变轻了’的含义，引导学生主动应用G=mg解释重力随g变化的原因，并强化‘质量是物体属性，不随位置改变’的核心理解。实现从公式套用到意义理解的高阶迁移。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "苹果掉落的‘下’，是朝着哪里的方向呢？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "重力的方向"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.25,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "将M1对‘向下’的直观感知，具体化为对一个确定参考方向（地面）的观察，为M2讨论失重时‘方向’的变化做铺垫。",
+        "design_intent": "引导学生将模糊的‘向下’与具体的‘地面’方向建立固定联系，为后续认知冲突（空间站中失去这个参考）打下基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "如果地面不是平的，‘下’还是同一个方向吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "重力的方向"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "引导学生质疑“向下”的绝对性，思考其参照系（指向地心），自然过渡到M2在失重环境中对重力方向本质的探讨。",
+        "design_intent": "通过改变地面的情景，温和地挑战M1建立的‘固定向下’认知，激发对重力方向本质的疑问，为进入M2的极端对比做心理准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "弹簧测力计测的是什么力？用它测重力时，钩码要怎么挂？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "力的测量"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "回忆测量工具（弹簧测力计）的用途和基本操作方法，为M4的动手探究做好工具和操作上的准备。",
+        "design_intent": "帮助学困生明确实验的核心工具和关键操作，减少因仪器不熟导致的探究障碍，使其能顺利投入M4的数据收集。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "要比较‘力道’和物体本身特点的关系，我们得同时知道哪两个信息？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "实验中的变量"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "将M3的定性猜想（重力大小可能与质量有关）转化为实验探究中需要收集的两种具体数据：重力（读数）和质量，直接指向M4的表格设计。",
+        "design_intent": "引导学困生将抽象的“猜想关系”具体化为可测量的“两个数据”，明确实验目的，理解记录表格的意义，架起猜想与验证之间的桥梁。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "算算每个钩码的重力与质量的比值，它们接近吗？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "数据处理"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "引导学生对M4的实验数据进行简单计算（求比值），亲身发现数据间存在的近似比例关系，为M5讨论比值差异和引入g做好铺垫。",
+        "design_intent": "让学困生通过亲手计算，从‘数据变化’感性认识上升到‘比值恒定’的理性发现，体验从数据到规律的归纳过程。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果用一个数代表这个比值，你觉得多少比较合适？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "比例系数"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "基于S3-1的计算，引导学生思考如何用一个公认的数值来概括实验发现的近似关系，自然引出对比例系数（g）的需要。",
+        "design_intent": "帮助学生理解从‘实验得出的近似比值’到‘公认的比例系数’的抽象过程，理解引入g是为了计算更方便、更统一。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "‘我的重力是50kg’这句话，哪里说得不对？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "重力与质量的差异"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "针对M5中提到的常见错误，直接辨析，强化重力与质量是不同的物理量，为M6中区分“重力变”而“质量不变”扫清概念障碍。",
+        "design_intent": "以纠错形式，用最直接的方式帮助学困生澄清核心易混点，确保他们在应用公式G=mg前，对G和m有清晰区分。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "公式G=mg中，去月球的话，哪个字母会变？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "g值的含义"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.5,
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "将M5学到的公式模型，应用于M6预设的月球新情境中，引导学生识别出情境变化时公式中对应的变量（g），实现知识的初步迁移。",
+        "design_intent": "提供一个极其具体的情境代入任务，帮助学困生将公式中的字母与实际物理量（地理位置影响g）联系起来，降低直接回答M6的思维跨度。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

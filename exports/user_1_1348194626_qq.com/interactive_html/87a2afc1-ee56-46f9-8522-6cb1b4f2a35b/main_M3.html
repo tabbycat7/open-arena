@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年级数学：纳税问题微课件</title>
+  <style>
+    :root {
+      --primary-color: #2b6cb0;
+      --primary-light: #ebf8ff;
+      --accent-color: #dd6b20;
+      --accent-light: #fffaf0;
+      --success-color: #38a169;
+      --success-light: #f0fff4;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+      --bg-main: #f7fafc;
+      --border-color: #cbd5e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* 4:3 比例自适应容器 */
+    .canvas-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background-color: var(--bg-main);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      border: 4px solid #fff;
+    }
+
+    /* 头部导航 */
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header .subtitle {
+      font-size: 0.9rem;
+      font-weight: normal;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* 教学内容区域 */
+    .content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    /* 题干展示 */
+    .problem-card {
+      background-color: white;
+      border-left: 5px solid var(--primary-color);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+    }
+
+    .problem-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .highlight-blue {
+      color: var(--primary-color);
+      font-weight: bold;
+      border-bottom: 2px dashed var(--primary-color);
+      padding: 0 4px;
+    }
+
+    .highlight-orange {
+      color: var(--accent-color);
+      font-weight: bold;
+      border-bottom: 2px dashed var(--accent-color);
+      padding: 0 4px;
+    }
+
+    /* 拖拽卡片区 */
+    .drag-section {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 10px 0;
+      min-height: 50px;
+    }
+
+    .drag-card {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: grab;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drag-card:active {
+      cursor: grabbing;
+      transform: scale(1.05);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    .card-revenue {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+
+    .card-rate {
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      border: 2px solid var(--accent-color);
+    }
+
+    /* 公式构建区 */
+    .formula-section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .formula-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .drop-zone {
+      width: 140px;
+      height: 50px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fafafa;
+      transition: all 0.3s;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .drop-zone.drag-over {
+      background-color: #edf2f7;
+      border-color: #4a5568;
+      transform: scale(1.02);
+    }
+
+    .drop-zone.filled {
+      border-style: solid;
+      background-color: white;
+    }
+
+    /* 动态推导与数轴区 */
+    .derivation-section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      opacity: 0.3;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+
+    .derivation-section.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* 数轴 SVG */
+    .axis-container {
+      position: relative;
+      margin: 10px 0;
+    }
+
+    #number-line {
+      width: 100%;
+      height: 85px;
+    }
+
+    /* 滑块控制 */
+    .slider-control {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 5px;
+    }
+
+    .slider-control input[type="range"] {
+      flex: 1;
+      height: 8px;
+      border-radius: 4px;
+      outline: none;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .slider-tips {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      min-width: 180px;
+      text-align: right;
+    }
+
+    /* 最终计算区 */
+    .calc-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--success-light);
+      border: 2px solid var(--success-color);
+      border-radius: 8px;
+      padding: 12px 20px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s;
+    }
+
+    .calc-section.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .calc-expr {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--success-color);
+    }
+
+    .calc-input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .calc-input {
+      width: 80px;
+      height: 36px;
+      font-size: 1.2rem;
+      text-align: center;
+      border: 2px solid var(--success-color);
+      border-radius: 6px;
+      outline: none;
+      font-weight: bold;
+    }
+
+    .calc-btn {
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .calc-btn:hover {
+      background-color: #2f855a;
+    }
+
+    /* 提示与重置 */
+    .feedback-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .feedback-success {
+      background-color: var(--success-light);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+    }
+
+    .feedback-error {
+      background-color: #fff5f5;
+      color: #e53e3e;
+      border: 1px solid #e53e3e;
+    }
+
+    .reset-btn {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background-color: white;
+      color: var(--primary-color);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    <!-- 导航栏 -->
+    <div class="header">
+      <span>纳税计算模型构建</span>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="subtitle">六年级 · 百分数应用</span>
+        <button class="reset-btn" id="reset-btn">重置探究</button>
+      </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="content">
+      <!-- 题干 -->
+      <div class="problem-card">
+        <p class="problem-text">
+          <strong>例题：</strong>一家大饭店十月份的营业额是<span class="highlight-blue">30万元</span>，如果按营业额的<span class="highlight-orange">5%</span>缴纳营业税。这个月应该往国库里交多少万的税？
+        </p>
+      </div>
+
+      <!-- 备选拖拽卡片 -->
+      <div class="drag-section" id="drag-source-container">
+        <div class="drag-card card-revenue" id="card-revenue" draggable="true" data-type="revenue">30万元 (营业额)</div>
+        <div class="drag-card card-rate" id="card-rate" draggable="true" data-type="rate">5% (税率)</div>
+      </div>
+
+      <!-- 步骤一：公式构建 -->
+      <div class="formula-section">
+        <div class="section-title">第一步：拖拽数据构建纳税数学模型</div>
+        <div class="formula-row">
+          <span style="color: var(--success-color);">应纳税额</span>
+          <span>=</span>
+          <div class="drop-zone" id="zone-revenue" data-expect="revenue">计税收入</div>
+          <span>×</span>
+          <div class="drop-zone" id="zone-rate" data-expect="rate">税率</div>
+        </div>
+      </div>
+
+      <!-- 步骤二：百分数转化数轴 -->
+      <div class="derivation-section" id="derivation-section">
+        <div class="section-title">第二步：拖动滑块观察百分数与小数的转化关系</div>
+        <div class="axis-container">
+          <svg id="number-line" viewBox="0 0 720 85">
+            <!-- JS 动态绘制数轴刻度 -->
+          </svg>
+        </div>
+        <div class="slider-control">
+          <input type="range" id="rate-slider" min="0" max="10" value="0" step="1">
+          <div class="slider-tips" id="slider-tips">当前税率: 0% = 0</div>
+        </div>
+      </div>
+
+      <!-- 步骤三：列式计算 -->
+      <div class="calc-section" id="calc-section">
+        <div class="calc-expr">
+          计算：30 × <span id="expr-rate-dec" style="color: var(--accent-color);">?</span> =
+        </div>
+        <div class="calc-input-area">
+          <input type="number" class="calc-input" id="calc-input" placeholder="?" step="0.1">
+          <span style="font-size: 1.2rem; font-weight: bold;">万元</span>
+          <button class="calc-btn" id="calc-btn">验证答案</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 浮动反馈提示 -->
+    <div class="feedback-overlay" id="feedback"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 元素获取
+      const cards = document.querySelectorAll('.drag-card');
+      const zones = document.querySelectorAll('.drop-zone');
+      const derivationSection = document.getElementById('derivation-section');
+      const rateSlider = document.getElementById('rate-slider');
+      const sliderTips = document.getElementById('slider-tips');
+      const calcSection = document.getElementById('calc-section');
+      const exprRateDec = document.getElementById('expr-rate-dec');
+      const calcInput = document.getElementById('calc-input');
+      const calcBtn = document.getElementById('calc-btn');
+      const feedback = document.getElementById('feedback');
+      const resetBtn = document.getElementById('reset-btn');
+      const svg = document.getElementById('number-line');
+
+      let draggedElement = null;
+      let matchedCount = 0;
+
+      // 初始化数轴
+      function initNumberLine() {
+        svg.innerHTML = ''; // 清空
+        // 绘制主轴线
+        const mainLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        mainLine.setAttribute("x1", "40");
+        mainLine.setAttribute("y1", "45");
+        mainLine.setAttribute("x2", "680");
+        mainLine.setAttribute("y2", "45");
+        mainLine.setAttribute("stroke", "#718096");
+        mainLine.setAttribute("stroke-width", "3");
+        mainLine.setAttribute("stroke-linecap", "round");
+        svg.appendChild(mainLine);
+
+        // 绘制刻度 (0% 到 10%)
+        for (let i = 0; i <= 10; i++) {
+          const x = 40 + i * 64;
+          const isTarget = (i === 5);
+
+          // 刻度线
+          const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          tick.setAttribute("x1", x);
+          tick.setAttribute("y1", isTarget ? "33" : "38");
+          tick.setAttribute("x2", x);
+          tick.setAttribute("y2", isTarget ? "57" : "52");
+          tick.setAttribute("stroke", isTarget ? "var(--accent-color)" : "#a0aec0");
+          tick.setAttribute("stroke-width", isTarget ? "3" : "1.5");
+          svg.appendChild(tick);
+
+          // 百分数标签
+          const textPct = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          textPct.setAttribute("x", x);
+          textPct.setAttribute("y", "24");
+          textPct.setAttribute("text-anchor", "middle");
+          textPct.setAttribute("font-size", isTarget ? "13" : "11");
+          textPct.setAttribute("font-weight", isTarget ? "bold" : "normal");
+          textPct.setAttribute("fill", isTarget ? "var(--accent-color)" : "#4a5568");
+          textPct.textContent = `${i}%`;
+          svg.appendChild(textPct);
+
+          // 小数标签
+          const textDec = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          textDec.setAttribute("x", x);
+          textDec.setAttribute("y", "72");
+          textDec.setAttribute("text-anchor", "middle");
+          textDec.setAttribute("font-size", isTarget ? "13" : "11");
+          textDec.setAttribute("font-weight", isTarget ? "bold" : "normal");
+          textDec.setAttribute("fill", isTarget ? "var(--accent-color)" : "#718096");
+          textDec.textContent = (i / 100).toFixed(2);
+          svg.appendChild(textDec);
+        }
+
+        // 动态游标指示器
+        const cursorGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        cursorGroup.setAttribute("id", "svg-cursor");
+        cursorGroup.setAttribute("transform", "translate(40, 0)");
+
+        const cursorCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        cursorCircle.setAttribute("cx", "0");
+        cursorCircle.setAttribute("cy", "45");
+        cursorCircle.setAttribute("r", "8");
+        cursorCircle.setAttribute("fill", "var(--accent-color)");
+        cursorCircle.setAttribute("stroke", "#fff");
+        cursorCircle.setAttribute("stroke-width", "2");
+
+        const cursorLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        cursorLine.setAttribute("x1", "0");
+        cursorLine.setAttribute("y1", "45");
+        cursorLine.setAttribute("x2", "0");
+        cursorLine.setAttribute("y2", "85");
+        cursorLine.setAttribute("stroke", "var(--accent-color)");
+        cursorLine.setAttribute("stroke-width", "1.5");
+        cursorLine.setAttribute("stroke-dasharray", "3,3");
+
+        cursorGroup.appendChild(cursorLine);
+        cursorGroup.appendChild(cursorCircle);
+        svg.appendChild(cursorGroup);
+      }
+
+      // 更新游标位置
+      function updateCursor(val) {
+        const x = 40 + val * 64;
+        const cursor = document.getElementById('svg-cursor');
+        if (cursor) {
+          cursor.setAttribute("transform", `translate(${x}, 0)`);
+        }
+        const decVal = (val / 100).toFixed(2);
+        sliderTips.textContent = `当前税率: ${val}% = ${decVal}`;
+
+        // 触发第三步
+        if (val === 5) {
+          exprRateDec.textContent = "0.05";
+          calcSection.classList.add('active');
+          showFeedback("非常好！5% 成功转化为小数 0.05。现在请在下方输入最终计算结果！", "success");
+        } else {
+          calcSection.classList.remove('active');
+        }
+      }
+
+      // 拖拽逻辑 (兼容触屏的 Pointer Events 模拟)
+      let activePointer = null;
+      let initialOffset = { x: 0, y: 0 };
+
+      cards.forEach(card => {
+        card.addEventListener('pointerdown', onPointerDown);
+      });
+
+      function onPointerDown(e) {
+        e.preventDefault();
+        draggedElement = e.currentTarget;
+        draggedElement.style.zIndex = "1000";
+        draggedElement.style.position = "relative";
+        
+        const rect = draggedElement.getBoundingClientRect();
+        initialOffset = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
+
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', onPointerUp);
+      }
+
+      function onPointerMove(e) {
+        if (!draggedElement) return;
+        const containerRect = document.querySelector('.canvas-container').getBoundingClientRect();
+        const x = e.clientX - containerRect.left - initialOffset.x;
+        const y = e.clientY - containerRect.top - initialOffset.y;
+        
+        draggedElement.style.position = 'absolute';
+        draggedElement.style.left = `${x}px`;
+        draggedElement.style.top = `${y}px`;
+
+        // 碰撞检测高亮
+        zones.forEach(zone => {
+          const zoneRect = zone.getBoundingClientRect();
+          const isOver = (e.clientX >= zoneRect.left && e.clientX <= zoneRect.right &&
+                          e.clientY >= zoneRect.top && e.clientY <= zoneRect.bottom);
+          if (isOver && zone.dataset.expect === draggedElement.dataset.type) {
+            zone.classList.add('drag-over');
+          } else {
+            zone.classList.remove('drag-over');
+          }
+        });
+      }
+
+      function onPointerUp(e) {
+        if (!draggedElement) return;
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
+
+        let matched = false;
+        zones.forEach(zone => {
+          const zoneRect = zone.getBoundingClientRect();
+          const isOver = (e.clientX >= zoneRect.left && e.clientX <= zoneRect.right &&
+                          e.clientY >= zoneRect.top && e.clientY <= zoneRect.bottom);
+          
+          if (isOver && zone.dataset.expect === draggedElement.dataset.type) {
+            // 放置成功
+            zone.innerHTML = '';
+            zone.appendChild(draggedElement);
+            draggedElement.style.position = 'static';
+            draggedElement.style.left = 'auto';
+            draggedElement.style.top = 'auto';
+            draggedElement.style.cursor = 'default';
+            draggedElement.removeEventListener('pointerdown', onPointerDown);
+            zone.classList.add('filled');
+            zone.classList.remove('drag-over');
+            matched = true;
+            matchedCount++;
+          } else {
+            zone.classList.remove('drag-over');
+          }
+        });
+
+        if (!matched) {
+          // 归位
+          draggedElement.style.position = 'static';
+          draggedElement.style.left = 'auto';
+          draggedElement.style.top = 'auto';
+          draggedElement.style.zIndex = 'auto';
+        }
+
+        draggedElement = null;
+        checkStepOneComplete();
+      }
+
+      // 检查第一步是否完成
+      function checkStepOneComplete() {
+        if (matchedCount === 2) {
+          derivationSection.classList.add('active');
+          showFeedback("模型构建正确！请在第二步中拖动滑块，将百分数税率转化为小数。", "success");
+        }
+      }
+
+      // 滑块事件
+      rateSlider.addEventListener('input', (e) => {
+        updateCursor(parseInt(e.target.value));
+      });
+
+      // 验证最终答案
+      calcBtn.addEventListener('click', () => {
+        const val = parseFloat(calcInput.value);
+        if (val === 1.5) {
+          showFeedback("🎉 太棒了！计算完全正确。30 × 5% = 30 × 0.05 = 1.5 万元。", "success");
+        } else {
+          showFeedback("计算结果不太对哦，请再仔细算算。提示：30 × 5 = 150，再缩小100倍。", "error");
+        }
+      });
+
+      // 提示信息展示
+      function showFeedback(msg, type) {
+        feedback.textContent = msg;
+        feedback.className = `feedback-overlay feedback-${type}`;
+        feedback.style.display = 'block';
+        setTimeout(() => {
+          feedback.style.display = 'none';
+        }, 6000);
+      }
+
+      // 重置探究
+      resetBtn.addEventListener('click', () => {
+        location.reload();
+      });
+
+      // 初始化
+      initNumberLine();
+    });
+  </script>
+</body>
+</html>

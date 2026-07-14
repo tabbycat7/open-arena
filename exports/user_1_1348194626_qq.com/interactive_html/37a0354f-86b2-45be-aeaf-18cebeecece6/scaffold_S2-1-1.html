@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百分数乘法基础应用可视化教学</title>
+  <style>
+    /* 全局重置与黑板/教室风格底色 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      background-color: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .canvas-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部标题区 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 12px;
+    }
+    .tag {
+      background-color: #e1f5fe;
+      color: #0288d1;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    /* 题干展示区 */
+    .question-box {
+      background-color: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #475569;
+      margin-top: 8px;
+    }
+    .question-box strong {
+      color: #1e293b;
+    }
+
+    /* 主可视化区域：左图右式 */
+    .visual-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin: 16px 0;
+      gap: 20px;
+    }
+
+    /* 左侧：百格图直观展示 */
+    .grid-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid-title {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      gap: 2px;
+      width: 180px;
+      height: 180px;
+      background-color: #e2e8f0;
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .grid-cell {
+      background-color: #ffffff;
+      border-radius: 1px;
+      transition: all 0.3s ease;
+    }
+
+    /* 右侧：算式卡片 */
+    .formula-card {
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 320px;
+    }
+    .formula-title {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+    .formula-display {
+      display: flex;
+      align-items: center;
+      font-size: 36px;
+      font-weight: bold;
+      font-family: "Courier New", Courier, monospace;
+      gap: 8px;
+    }
+    .formula-part {
+      padding: 4px 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+    .formula-op {
+      color: #94a3b8;
+    }
+    .formula-unit {
+      font-size: 20px;
+      color: #64748b;
+      margin-left: 4px;
+    }
+
+    /* 交互高亮样式 */
+    /* 1. 总钱数：红色系 */
+    .active-total {
+      color: #ef4444 !important;
+      background-color: #fee2e2 !important;
+      border-color: #fca5a5 !important;
+      transform: scale(1.15);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+      animation: pulse 1s infinite alternate;
+    }
+    /* 2. 百分比：黄色系 */
+    .active-percent {
+      color: #f59e0b !important;
+      background-color: #fef3c7 !important;
+      border-color: #fcd34d !important;
+      transform: scale(1.15);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+      animation: pulse 1s infinite alternate;
+    }
+    /* 3. 结果：绿色系 */
+    .active-result {
+      color: #10b981 !important;
+      background-color: #d1fae5 !important;
+      border-color: #6ee7b7 !important;
+      transform: scale(1.15);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+      animation: pulse 1s infinite alternate;
+    }
+
+    /* 百格图对应高亮 */
+    .grid-cell.highlight-total {
+      background-color: #fca5a5;
+    }
+    .grid-cell.highlight-percent {
+      background-color: #fcd34d;
+    }
+    .grid-cell.highlight-result {
+      background-color: #6ee7b7;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1.1); }
+      100% { transform: scale(1.18); }
+    }
+
+    /* 底部控制区：三个交互标签按钮 */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-subtext {
+      font-size: 12px;
+      font-weight: normal;
+      color: #64748b;
+    }
+
+    /* 按钮悬停与激活状态 */
+    .btn-total:hover, .btn-total.active {
+      border-color: #ef4444;
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    .btn-percent:hover, .btn-percent.active {
+      border-color: #f59e0b;
+      background-color: #fef3c7;
+      color: #b45309;
+    }
+    .btn-result:hover, .btn-result.active {
+      border-color: #10b981;
+      background-color: #d1fae5;
+      color: #047857;
+    }
+
+    /* 动态解释说明文字 */
+    .explanation-panel {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 15px;
+      color: #334155;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    <!-- 头部 -->
+    <div class="header">
+      <span class="title">求一个数的百分之几是多少</span>
+      <span class="tag">数学 · 六年级</span>
+    </div>
+
+    <!-- 题干 -->
+    <div class="question-box">
+      <strong>情境：</strong>小明有 <strong>100元</strong> 压岁钱，他准备把其中的 <strong>5%</strong> 捐给灾区。求他捐了多少元？
+    </div>
+
+    <!-- 主可视化区 -->
+    <div class="visual-area">
+      <!-- 左侧：百格图 -->
+      <div class="grid-wrapper">
+        <div class="grid-title" id="grid-title-text">压岁钱总量 (100份)</div>
+        <div class="grid-container" id="gridContainer">
+          <!-- 100个格子由JS动态生成 -->
+        </div>
+      </div>
+
+      <!-- 右侧：算式卡片 -->
+      <div class="formula-card">
+        <div class="formula-title">点击下方标签，观察算式结构</div>
+        <div class="formula-display">
+          <span class="formula-part" id="part-total">100</span>
+          <span class="formula-op">×</span>
+          <span class="formula-part" id="part-percent">5%</span>
+          <span class="formula-op">=</span>
+          <span class="formula-part" id="part-result">5</span>
+          <span class="formula-unit">元</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 动态解释说明 -->
+    <div class="explanation-panel" id="explanation-text">
+      点击下方的教学标签，建立“总量、占比、部分量”的数学联系。
+    </div>
+
+    <!-- 底部控制按钮 -->
+    <div class="controls">
+      <button class="btn btn-total" id="btn-total">
+        <span>总钱数</span>
+        <span class="btn-subtext">单位“1”</span>
+      </button>
+      <button class="btn btn-percent" id="btn-percent">
+        <span>捐款比例</span>
+        <span class="btn-subtext">百分率</span>
+      </button>
+      <button class="btn btn-result" id="btn-result">
+        <span>捐款金额</span>
+        <span class="btn-subtext">求出的部分量</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 初始化百格图
+    const gridContainer = document.getElementById('gridContainer');
+    const totalCells = 100;
+    const cells = [];
+
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('grid-cell');
+      gridContainer.appendChild(cell);
+      cells.push(cell);
+    }
+
+    // 获取DOM元素
+    const btnTotal = document.getElementById('btn-total');
+    const btnPercent = document.getElementById('btn-percent');
+    const btnResult = document.getElementById('btn-result');
+
+    const partTotal = document.getElementById('part-total');
+    const partPercent = document.getElementById('part-percent');
+    const partResult = document.getElementById('part-result');
+
+    const explanationText = document.getElementById('explanation-text');
+    const gridTitleText = document.getElementById('grid-title-text');
+
+    // 重置所有状态
+    function resetAll() {
+      // 移除按钮激活样式
+      btnTotal.classList.remove('active');
+      btnPercent.classList.remove('active');
+      btnResult.classList.remove('active');
+
+      // 移除公式高亮样式
+      partTotal.classList.remove('active-total');
+      partPercent.classList.remove('active-percent');
+      partResult.classList.remove('active-result');
+
+      // 重置百格图颜色
+      cells.forEach(cell => {
+        cell.className = 'grid-cell';
+      });
+    }
+
+    // 激活“总钱数”
+    function activateTotal() {
+      resetAll();
+      btnTotal.classList.add('active');
+      partTotal.classList.add('active-total');
+      
+      // 百格图全部变红，代表整体100元
+      cells.forEach(cell => {
+        cell.classList.add('highlight-total');
+      });
+
+      gridTitleText.textContent = "总钱数：100元 (全部100份)";
+      explanationText.innerHTML = "<strong>100</strong> 是<strong>总钱数（单位“1”）</strong>，表示被平均分成的100份整体。";
+    }
+
+    // 激活“捐款比例”
+    function activatePercent() {
+      resetAll();
+      btnPercent.classList.add('active');
+      partPercent.classList.add('active-percent');
+
+      // 百格图前5个变黄，代表5%
+      for (let i = 0; i < 5; i++) {
+        cells[i].classList.add('highlight-percent');
+      }
+
+      gridTitleText.textContent = "捐款比例：5% (占其中的5份)";
+      explanationText.innerHTML = "<strong>5%</strong> 是<strong>捐款比例</strong>，表示要捐出其中的 5 份（每100份占5份）。";
+    }
+
+    // 激活“捐款金额”
+    function activateResult() {
+      resetAll();
+      btnResult.classList.add('active');
+      partResult.classList.add('active-result');
+
+      // 百格图前5个变绿，代表求出的具体金额
+      for (let i = 0; i < 5; i++) {
+        cells[i].classList.add('highlight-result');
+      }
+
+      gridTitleText.textContent = "捐款金额：5元 (绿色部分)";
+      explanationText.innerHTML = "<strong>5</strong> 是求得的<strong>捐款金额</strong>。求一个数的百分之几是多少，用<strong>乘法</strong>计算：100 × 5% = 5。";
+    }
+
+    // 绑定事件监听器
+    btnTotal.addEventListener('click', activateTotal);
+    btnPercent.addEventListener('click', activatePercent);
+    btnResult.addEventListener('click', activateResult);
+
+    // 允许点击公式中的数字进行交互
+    partTotal.addEventListener('click', activateTotal);
+    partPercent.addEventListener('click', activatePercent);
+    partResult.addEventListener('click', activateResult);
+
+    // 默认展示“总钱数”状态，引导学生观察
+    activateTotal();
+  </script>
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应纳税额计算模型探索</title>
+    <style>
+        :root {
+            --primary-color: #2b5c8f;
+            --primary-light: #eef5fc;
+            --accent-color: #e67e22;
+            --success-color: #27ae60;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+            --bg-color: #f8f9fa;
+            --step-bg: #ffffff;
+            --step-active-bg: #fff9e6;
+            --step-active-border: #f39c12;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #d0d7de;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid var(--primary-color);
+        }
+
+        /* 头部样式 */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 15px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        /* 左侧控制面板 */
+        .control-panel {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: right;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        .unit {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #555;
+            width: 30px;
+        }
+
+        /* 预设按钮 */
+        .preset-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .preset-btn {
+            background-color: var(--primary-light);
+            border: 1px solid #b3d4fc;
+            color: var(--primary-color);
+            padding: 6px 4px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .preset-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* 税率选择器 */
+        .rate-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .rate-btn {
+            background-color: #f1f2f6;
+            border: 2px solid var(--border-color);
+            padding: 10px 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .rate-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* 演示控制按钮 */
+        .action-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #219653;
+        }
+
+        .btn-secondary {
+            background-color: #7f8c8d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #95a5a6;
+        }
+
+        /* 右侧可视化面板 */
+        .visualization-panel {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+
+        /* 步骤展示区域 */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .step-card {
+            background-color: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 0.3;
+            transform: scale(0.98);
+        }
+
+        .step-card.active {
+            opacity: 1;
+            transform: scale(1);
+            background-color: var(--step-active-bg);
+            border-color: var(--step-active-border);
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.15);
+        }
+
+        .step-card.completed {
+            opacity: 0.85;
+            transform: scale(1);
+            background-color: #f0f9eb;
+            border-color: #c2e7b0;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .step-card.active .step-header {
+            color: var(--accent-color);
+        }
+
+        .step-card.completed .step-header {
+            color: var(--success-color);
+        }
+
+        .step-body {
+            font-size: 1.35rem;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 0.5px;
+        }
+
+        /* 箭头指示器 */
+        .step-arrow {
+            text-align: center;
+            color: var(--border-color);
+            font-size: 1.2rem;
+            margin: -6px 0;
+            line-height: 1;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .step-arrow.active {
+            color: var(--accent-color);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* 高亮文本 */
+        .hl-income { color: #2980b9; }
+        .hl-rate { color: #e67e22; }
+        .hl-rate-dec { color: #9b59b6; }
+        .hl-result { color: #27ae60; font-size: 1.5rem; }
+
+        /* 底部控制栏 */
+        .step-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .step-indicator {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        /* 遮罩提示，引导开始 */
+        .guide-overlay {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        .guide-overlay svg {
+            width: 64px;
+            height: 64px;
+            fill: var(--primary-color);
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .guide-overlay p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <header>
+            <h1>应纳税额计算模型探索</h1>
+            <p>应纳税额 = 计税收入 × 税率</p>
+        </header>
+
+        <!-- 主体 -->
+        <div class="main-content">
+            <!-- 左侧：输入与控制 -->
+            <div class="control-panel">
+                <div>
+                    <div class="section-title">第一步：输入计税收入</div>
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <input type="number" id="income-input" value="10000" min="0" step="100" placeholder="请输入金额">
+                            <span class="unit">元</span>
+                        </div>
+                        <div class="preset-container">
+                            <button class="preset-btn" data-val="5000">5000 元</button>
+                            <button class="preset-btn" data-val="10000">10000 元</button>
+                            <button class="preset-btn" data-val="50000">50000 元</button>
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 20px;">第二步：选择税率</div>
+                    <div class="input-group">
+                        <div class="rate-selector">
+                            <button class="rate-btn active" data-rate="3">3%</button>
+                            <button class="rate-btn" data-rate="5">5%</button>
+                            <button class="rate-btn" data-rate="10">10%</button>
+                            <button class="rate-btn" data-rate="20">20%</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-container">
+                    <button class="btn btn-primary" id="start-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        开始分步演示
+                    </button>
+                    <button class="btn btn-secondary" id="reset-btn">重置演示</button>
+                </div>
+            </div>
+
+            <!-- 右侧：可视化展示 -->
+            <div class="visualization-panel">
+                <!-- 初始引导界面 -->
+                <div class="guide-overlay" id="guide-view">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/>
+                    </svg>
+                    <p>请在左侧设置<b>计税收入</b>和<b>税率</b></p>
+                    <p style="font-size: 0.9rem; color: #95a5a6;">点击“开始分步演示”观察数学模型的建立过程</p>
+                </div>
+
+                <!-- 步骤展示界面 -->
+                <div class="steps-container hidden" id="steps-view">
+                    <!-- 步骤 1 -->
+                    <div class="step-card" id="step-1">
+                        <div class="step-header">
+                            <span>步骤 1：抽象数学模型</span>
+                            <span>公式构建</span>
+                        </div>
+                        <div class="step-body">
+                            应纳税额 = <span class="hl-income">计税收入</span> × <span class="hl-rate">税率</span>
+                        </div>
+                    </div>
+
+                    <div class="step-arrow" id="arrow-1">↓</div>
+
+                    <!-- 步骤 2 -->
+                    <div class="step-card" id="step-2">
+                        <div class="step-header">
+                            <span>步骤 2：代入具体数据</span>
+                            <span>数值替换</span>
+                        </div>
+                        <div class="step-body">
+                            应纳税额 = <span class="hl-income" id="step2-income">10000</span> × <span class="hl-rate" id="step2-rate">3%</span>
+                        </div>
+                    </div>
+
+                    <div class="step-arrow" id="arrow-2">↓</div>
+
+                    <!-- 步骤 3 -->
+                    <div class="step-card" id="step-3">
+                        <div class="step-header">
+                            <span>步骤 3：百分数化为小数</span>
+                            <span>算理转换</span>
+                        </div>
+                        <div class="step-body">
+                            应纳税额 = <span class="hl-income" id="step3-income">10000</span> × <span class="hl-rate-dec" id="step3-rate-dec">0.03</span>
+                        </div>
+                    </div>
+
+                    <div class="step-arrow" id="arrow-3">↓</div>
+
+                    <!-- 步骤 4 -->
+                    <div class="step-card" id="step-4">
+                        <div class="step-header">
+                            <span>步骤 4：计算得出结果</span>
+                            <span>模型输出</span>
+                        </div>
+                        <div class="step-body">
+                            应纳税额 = <span class="hl-result" id="step4-result">300</span> <span class="hl-result" style="font-size:1.1rem;">元</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部导航 -->
+                <div class="step-navigation hidden" id="nav-view">
+                    <button class="nav-btn" id="prev-btn" disabled>上一步</button>
+                    <span class="step-indicator" id="step-indicator">步骤: 0 / 4</span>
+                    <button class="nav-btn" id="next-btn">下一步</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM 元素获取
+            const incomeInput = document.getElementById('income-input');
+            const presetBtns = document.querySelectorAll('.preset-btn');
+            const rateBtns = document.querySelectorAll('.rate-btn');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            const guideView = document.getElementById('guide-view');
+            const stepsView = document.getElementById('steps-view');
+            const navView = document.getElementById('nav-view');
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const stepIndicator = document.getElementById('step-indicator');
+
+            // 步骤卡片与箭头
+            const steps = [
+                { card: document.getElementById('step-1'), arrow: null },
+                { card: document.getElementById('step-2'), arrow: document.getElementById('arrow-1') },
+                { card: document.getElementById('step-3'), arrow: document.getElementById('arrow-2') },
+                { card: document.getElementById('step-4'), arrow: document.getElementById('arrow-3') }
+            ];
+
+            // 动态数据展示元素
+            const step2Income = document.getElementById('step2-income');
+            const step2Rate = document.getElementById('step2-rate');
+            const step3Income = document.getElementById('step3-income');
+            const step3RateDec = document.getElementById('step3-rate-dec');
+            const step4Result = document.getElementById('step4-result');
+
+            // 当前状态变量
+            let currentStep = 0; // 0 表示未开始，1-4 表示对应步骤
+            let selectedRate = 3; // 默认 3%
+
+            // 1. 税率选择交互
+            rateBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    rateBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedRate = parseInt(btn.getAttribute('data-rate'), 10);
+                    resetToInitial(); // 修改输入后重置演示状态
+                });
+            });
+
+            // 2. 预设金额按钮交互
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    incomeInput.value = btn.getAttribute('data-val');
+                    resetToInitial(); // 修改输入后重置演示状态
+                });
+            });
+
+            // 输入框变动时重置演示
+            incomeInput.addEventListener('input', () => {
+                resetToInitial();
+            });
+
+            // 3. 开始演示
+            startBtn.addEventListener('click', () => {
+                const income = parseFloat(incomeInput.value);
+                if (isNaN(income) || income <= 0) {
+                    alert('请输入有效的计税收入！');
+                    return;
+                }
+
+                // 计算并更新各步骤的数值
+                updateFormulaValues(income, selectedRate);
+
+                // 切换视图
+                guideView.classList.add('hidden');
+                stepsView.classList.remove('hidden');
+                navView.classList.remove('hidden');
+
+                // 激活第一步
+                goToStep(1);
+            });
+
+            // 4. 重置按钮
+            resetBtn.addEventListener('click', () => {
+                resetToInitial();
+            });
+
+            // 5. 步骤导航控制
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    goToStep(currentStep - 1);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < 4) {
+                    goToStep(currentStep + 1);
+                }
+            });
+
+            // 更新公式中的数值
+            function updateFormulaValues(income, ratePercent) {
+                const rateDecimal = ratePercent / 100;
+                const result = income * rateDecimal;
+
+                // 格式化输出，保留必要的小数位
+                const formattedIncome = formatNumber(income);
+                const formattedResult = formatNumber(result);
+
+                // 填充到 DOM
+                step2Income.textContent = formattedIncome;
+                step2Rate.textContent = ratePercent + '%';
+                
+                step3Income.textContent = formattedIncome;
+                step3RateDec.textContent = rateDecimal.toString();
+                
+                step4Result.textContent = formattedResult;
+            }
+
+            // 格式化数字，防止出现超长小数
+            function formatNumber(num) {
+                if (Number.isInteger(num)) {
+                    return num.toLocaleString('zh-CN');
+                }
+                return parseFloat(num.toFixed(2)).toLocaleString('zh-CN');
+            }
+
+            // 跳转到指定步骤
+            function goToStep(stepNum) {
+                currentStep = stepNum;
+
+                // 更新步骤卡片状态
+                steps.forEach((step, index) => {
+                    const idx = index + 1;
+                    if (idx < stepNum) {
+                        // 已完成的步骤
+                        step.card.className = 'step-card completed';
+                        if (step.arrow) step.arrow.className = 'step-arrow active';
+                    } else if (idx === stepNum) {
+                        // 当前活跃步骤
+                        step.card.className = 'step-card active';
+                        if (step.arrow) step.arrow.className = 'step-arrow active';
+                        // 滚动到当前活跃卡片
+                        step.card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        // 未到达的步骤
+                        step.card.className = 'step-card';
+                        if (step.arrow) step.arrow.className = 'step-arrow';
+                    }
+                });
+
+                // 更新导航按钮状态
+                prevBtn.disabled = (currentStep === 1);
+                nextBtn.disabled = (currentStep === 4);
+                
+                if (currentStep === 4) {
+                    nextBtn.textContent = '演示完毕';
+                    nextBtn.style.backgroundColor = 'var(--success-color)';
+                    nextBtn.style.color = 'white';
+                } else {
+                    nextBtn.textContent = '下一步';
+                    nextBtn.style.backgroundColor = '';
+                    nextBtn.style.color = '';
+                }
+
+                stepIndicator.textContent = `步骤: ${currentStep} / 4`;
+            }
+
+            // 重置为初始未演示状态
+            function resetToInitial() {
+                currentStep = 0;
+                guideView.classList.remove('hidden');
+                stepsView.classList.add('hidden');
+                navView.classList.add('hidden');
+                
+                // 重置所有卡片样式
+                steps.forEach(step => {
+                    step.card.className = 'step-card';
+                    if (step.arrow) step.arrow.className = 'step-arrow';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

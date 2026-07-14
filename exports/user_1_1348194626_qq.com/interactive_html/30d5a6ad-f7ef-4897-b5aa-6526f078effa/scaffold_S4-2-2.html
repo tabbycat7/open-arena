@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI使用行为分类练习</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        .cards-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            height: 120px;
+        }
+        .card {
+            width: 180px;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            cursor: grab;
+            user-select: none;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .drop-zones {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            justify-content: center;
+        }
+        .zone {
+            width: 250px;
+            height: 150px;
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            text-align: center;
+            padding: 10px;
+        }
+        .zone.hover { border-color: var(--primary); background: #f0f7ff; }
+        .zone.correct { border-color: var(--success); background: #e8f8f0; }
+        .zone.wrong { border-color: var(--error); background: #fdeaea; }
+        #message { margin-top: 20px; font-weight: bold; height: 24px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI 辅助写作行为分类</h2>
+    <div class="cards-area" id="cards">
+        <div class="card" draggable="true" id="cardA" data-type="helper">小红：让AI列大纲，自己写正文</div>
+        <div class="card" draggable="true" id="cardB" data-type="replace">小明：让AI写好全文，自己复制粘贴</div>
+    </div>
+    
+    <div class="drop-zones">
+        <div class="zone" id="zone-helper" data-accept="helper">合理使用<br>(灵感助手)</div>
+        <div class="zone" id="zone-replace" data-accept="replace">违规使用<br>(替代创作)</div>
+    </div>
+    <div id="message"></div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.card');
+    const zones = document.querySelectorAll('.zone');
+    const message = document.getElementById('message');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        });
+    });
+
+    zones.forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+        
+        zone.addEventListener('dragenter', () => zone.classList.add('hover'));
+        zone.addEventListener('dragleave', () => zone.classList.remove('hover'));
+        
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('hover');
+            const cardId = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(cardId);
+            const cardType = card.getAttribute('data-type');
+            const zoneType = zone.getAttribute('data-accept');
+
+            if (cardType === zoneType) {
+                zone.classList.add('correct');
+                message.textContent = "正确！AI应作为你的思维伙伴，而非代笔者。";
+                message.style.color = "var(--success)";
+                card.style.opacity = "0.5";
+                card.setAttribute('draggable', 'false');
+            } else {
+                zone.classList.add('wrong');
+                message.textContent = "再想想，这个行为是否完全由AI完成了创作？";
+                message.style.color = "var(--error)";
+                setTimeout(() => zone.classList.remove('wrong'), 1000);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

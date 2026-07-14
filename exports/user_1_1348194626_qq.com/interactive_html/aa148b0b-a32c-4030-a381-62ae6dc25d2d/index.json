@@ -1,0 +1,122 @@
+{
+  "task_id": "aa148b0b-a32c-4030-a381-62ae6dc25d2d",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看课本上展示的这些医院、学校和国防设施的图片，如果没有我们每个人缴纳的税款，这些公共设施还能像现在这样正常运转吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果国家规定某种商品的税率是5%，这到底意味着我们要把销售额的多少交给国家呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看着这份工资条，如果总收入里有一部分是国家规定的‘扣除标准’，我们该如何判断哪一部分钱才是真正需要计算税款的‘计税基数’呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "想象一下，如果国家宣布取消所有税收，虽然大家口袋里的钱变多了，但我们的社区会发生什么变化？请从交通、绿化或安全这三个方面中选一个，描述一下没有税收投入时，它们可能会变成什么样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果把国家比作一个大家庭，我们每个人都是家庭成员。当你长大后，通过劳动获得收入并缴纳税款时，你会觉得这笔钱是在‘变少’，还是在‘转化’？你是如何看待这种个人收入与公共建设之间的关系的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果已知一家书店上个月缴纳的税款是2500元，税率也是5%，你们能倒推出来这家书店上个月的销售额是多少吗？列式算一算，并说说你是怎么利用这个5%的百分数来还原出总额的。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "现在有两家商店，销售额都是10万元，但甲店税率是3%，乙店税率是5%。不需要算出具体金额，请直接比较哪家店缴的税更多？如果两家店缴的税一样多，那它们的销售额会有什么不同？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "在新的工资条里，除了基础工资，还有一项‘高温补贴’和‘全勤奖’。根据规定，高温补贴是不计税的，而全勤奖需要计税。如果你的月收入是8000元，扣除标准是5000元，你会把哪一部分钱作为‘计税基数’来计算税款呢？请说明你的分类理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "小明认为：‘只要我有收入，拿总数乘以税率准没错。’如果他拿到了10000元的月薪，免税额度是5000元，他按10000元直接计算税额，和他按（10000-5000）元计算税额，这两种做法在结果上有什么不同？为什么小明的做法会产生错误？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "如果把我们缴纳的税款看作是国家建设经费的一小部分，那么这部分钱的多少，通常是根据什么来决定的呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果税率是5%，你能用自己的话解释一下，这就意味着我们要从每一百元的收入中拿出来多少钱交给国家吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "刚才我们用总金额乘以税率算出了税额。但如果国家规定有一部分钱不需要纳税，你觉得直接拿全部收入去计算还准确吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "请观察这张工资条，哪些部分是国家明确规定不用交税的‘扣除标准’？把它们找出来，剩下的那部分钱我们给它起个名字叫‘计税基数’，你觉得这部分钱和总收入比起来，是变多了还是变少了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

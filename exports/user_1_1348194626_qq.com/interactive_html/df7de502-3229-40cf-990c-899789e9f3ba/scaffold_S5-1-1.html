@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>外卖骑手的“顺路”智慧</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f7ff;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 { color: #333; margin-bottom: 10px; }
+        #canvas-area {
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
+            background: #fafafa;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #0056b3; }
+        #rider { transition: all 2s linear; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>生活中的“顺路”智慧</h2>
+    <div id="canvas-area">
+        <svg width="100%" height="100%" viewBox="0 0 600 400">
+            <!-- 地图路径 -->
+            <path id="route" d="M 100 200 Q 300 50 500 200 T 300 350" fill="none" stroke="#ccc" stroke-width="4" stroke-dasharray="10 10"/>
+            
+            <!-- 配送点 -->
+            <circle cx="100" cy="200" r="15" fill="#ff4d4f" />
+            <text x="85" y="240" font-size="14">A点</text>
+            <circle cx="300" cy="120" r="15" fill="#ffa940" />
+            <text x="285" y="160" font-size="14">B点</text>
+            <circle cx="500" cy="200" r="15" fill="#52c41a" />
+            <text x="485" y="240" font-size="14">C点</text>
+
+            <!-- 骑手 -->
+            <g id="rider">
+                <rect x="-20" y="-20" width="40" height="40" rx="5" fill="#1890ff" />
+                <text x="-12" y="5" fill="white" font-size="12">骑手</text>
+            </g>
+        </svg>
+    </div>
+    <div class="controls">
+        <button id="btn-start">开始“顺路”配送</button>
+        <button id="btn-reset">重置</button>
+    </div>
+</div>
+
+<script>
+    const rider = document.getElementById('rider');
+    const btnStart = document.getElementById('btn-start');
+    const btnReset = document.getElementById('btn-reset');
+    
+    // 简单的路径坐标点
+    const points = [
+        {x: 100, y: 200},
+        {x: 300, y: 120},
+        {x: 500, y: 200},
+        {x: 300, y: 350},
+        {x: 100, y: 200}
+    ];
+
+    let step = 0;
+
+    function moveRider() {
+        if (step < points.length) {
+            rider.style.transform = `translate(${points[step].x}px, ${points[step].y}px)`;
+            step++;
+            setTimeout(moveRider, 1500);
+        }
+    }
+
+    btnStart.addEventListener('click', () => {
+        step = 0;
+        moveRider();
+    });
+
+    btnReset.addEventListener('click', () => {
+        step = 0;
+        rider.style.transform = `translate(100px, 200px)`;
+    });
+
+    // 初始化位置
+    rider.style.transform = `translate(100px, 200px)`;
+</script>
+
+</body>
+</html>

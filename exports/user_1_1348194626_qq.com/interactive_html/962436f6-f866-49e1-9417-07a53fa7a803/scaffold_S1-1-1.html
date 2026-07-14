@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S1-1-1 税收规则探究</title>
+  <style>
+    /* 基础样式与大屏投影优化 */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例容器，确保投影仪展示不失真 */
+    .app-container {
+      width: 800px;
+      height: 600px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      box-sizing: border-box;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* 头部标题与题干 */
+    .header {
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 12px;
+    }
+
+    .title {
+      font-size: 22px;
+      color: #1a202c;
+      margin: 0 0 8px 0;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 22px;
+      background-color: #3182ce;
+      border-radius: 3px;
+    }
+
+    .question {
+      font-size: 16px;
+      color: #4a5568;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* 主交互区域 */
+    .main-stage {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    /* 居民卡片 */
+    .resident-card {
+      width: 260px;
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .resident-card.active-a {
+      border-color: #4299e1;
+      background: #ebf8ff;
+    }
+
+    .resident-card.active-b {
+      border-color: #ed8936;
+      background: #fffaf0;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 12px;
+    }
+
+    /* 角色与钱袋的容器 */
+    .visual-pair {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      width: 100%;
+      height: 140px;
+      margin-bottom: 16px;
+      border-bottom: 1px dashed #cbd5e0;
+      padding-bottom: 10px;
+    }
+
+    .visual-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .label-tag {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      font-weight: bold;
+    }
+
+    .income-tag {
+      background-color: #e2e8f0;
+      color: #4a5568;
+    }
+
+    .tax-tag {
+      background-color: #feebc8;
+      color: #c05621;
+    }
+
+    /* 滑块控制区 */
+    .control-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-label {
+      font-size: 13px;
+      color: #4a5568;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #cbd5e0;
+      outline: none;
+      margin: 8px 0;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    #sliderA::-webkit-slider-thumb {
+      background: #3182ce;
+    }
+    #sliderB::-webkit-slider-thumb {
+      background: #dd6b20;
+    }
+
+    #sliderA::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    #sliderB::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* 规则切换与启发区域 */
+    .rule-panel {
+      background: #edf2f7;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      color: #4a5568;
+      border: 1px solid #cbd5e0;
+    }
+
+    .btn-secondary.active {
+      background-color: #3182ce;
+      color: #ffffff;
+      border-color: #3182ce;
+      box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+    }
+
+    .btn-primary {
+      background-color: #319795;
+      color: white;
+      box-shadow: 0 4px 12px rgba(49, 151, 149, 0.2);
+    }
+
+    .btn-primary:hover {
+      background-color: #2c7a7b;
+    }
+
+    /* 启发式提示框 */
+    .prompt-box {
+      background-color: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      color: #2b6cb0;
+      line-height: 1.5;
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1 class="title">探究：税收的分配规则</h1>
+      <p class="question">
+        我们刚才提到了税收是用来修路、建校的。那么你觉得，每个人交的钱应该是一样多，还是按照某种规则来定呢？请在下方尝试不同的规则。
+      </p>
+    </div>
+
+    <!-- 主交互舞台 -->
+    <div class="main-stage">
+      
+      <!-- 居民 A (低/中收入) -->
+      <div class="resident-card active-a" id="cardA">
+        <div class="card-title">居民 A</div>
+        <div class="visual-pair">
+          <!-- 人物 A -->
+          <div class="visual-item" id="personContainerA">
+            <svg width="60" height="90" viewBox="0 0 60 90" id="personA">
+              <!-- 头部 -->
+              <circle cx="30" cy="25" r="15" fill="#3182ce" />
+              <!-- 身体 -->
+              <path d="M15 50 C15 40, 45 40, 45 50 L40 85 L20 85 Z" fill="#3182ce" />
+              <!-- 装饰衣服细节 -->
+              <circle cx="30" cy="52" r="3" fill="#ffffff" />
+              <circle cx="30" cy="62" r="3" fill="#ffffff" />
+            </svg>
+            <span class="label-tag income-tag" id="incomeLabelA">收入: 3000</span>
+          </div>
+          
+          <!-- 钱袋 A -->
+          <div class="visual-item" id="bagContainerA">
+            <svg width="60" height="70" viewBox="0 0 60 70" id="bagA">
+              <!-- 绳子 -->
+              <ellipse cx="30" cy="22" rx="12" ry="4" fill="#b7791f" />
+              <!-- 袋体 -->
+              <path d="M18 22 C10 35, 8 65, 30 65 C52 65, 50 35, 42 22 Z" fill="#ecc94b" stroke="#d69e2e" stroke-width="2"/>
+              <!-- 钱币符号 -->
+              <text x="30" y="48" font-size="18" font-weight="bold" fill="#b7791f" text-anchor="middle">¥</text>
+            </svg>
+            <span class="label-tag tax-tag" id="taxLabelA">税收: 300</span>
+          </div>
+        </div>
+
+        <!-- 控制滑块 -->
+        <div class="control-group">
+          <div class="slider-label">
+            <span>调整 A 的收入</span>
+            <strong id="valDispA">3k</strong>
+          </div>
+          <input type="range" min="1" max="10" value="3" class="slider" id="sliderA">
+        </div>
+      </div>
+
+      <!-- 居民 B (高收入) -->
+      <div class="resident-card active-b" id="cardB">
+        <div class="card-title">居民 B</div>
+        <div class="visual-pair">
+          <!-- 人物 B -->
+          <div class="visual-item" id="personContainerB">
+            <svg width="60" height="90" viewBox="0 0 60 90" id="personB">
+              <!-- 头部 -->
+              <circle cx="30" cy="25" r="15" fill="#dd6b20" />
+              <!-- 身体 -->
+              <path d="M15 50 C15 40, 45 40, 45 50 L40 85 L20 85 Z" fill="#dd6b20" />
+              <!-- 装饰衣服细节 -->
+              <circle cx="30" cy="52" r="3" fill="#ffffff" />
+              <circle cx="30" cy="62" r="3" fill="#ffffff" />
+            </svg>
+            <span class="label-tag income-tag" id="incomeLabelB">收入: 8000</span>
+          </div>
+          
+          <!-- 钱袋 B -->
+          <div class="visual-item" id="bagContainerB">
+            <svg width="60" height="70" viewBox="0 0 60 70" id="bagB">
+              <!-- 绳子 -->
+              <ellipse cx="30" cy="22" rx="12" ry="4" fill="#b7791f" />
+              <!-- 袋体 -->
+              <path d="M18 22 C10 35, 8 65, 30 65 C52 65, 50 35, 42 22 Z" fill="#ecc94b" stroke="#d69e2e" stroke-width="2"/>
+              <!-- 钱币符号 -->
+              <text x="30" y="48" font-size="18" font-weight="bold" fill="#b7791f" text-anchor="middle">¥</text>
+            </svg>
+            <span class="label-tag tax-tag" id="taxLabelB">税收: 800</span>
+          </div>
+        </div>
+
+        <!-- 控制滑块 -->
+        <div class="control-group">
+          <div class="slider-label">
+            <span>调整 B 的收入</span>
+            <strong id="valDispB">8k</strong>
+          </div>
+          <input type="range" min="1" max="10" value="8" class="slider" id="sliderB">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 规则控制面板 -->
+    <div class="rule-panel">
+      <div class="button-group">
+        <button class="btn btn-secondary active" id="btnRuleEqual">规则一：每人交一样多</button>
+        <button class="btn btn-secondary" id="btnRuleRatio">规则二：按收入比例交</button>
+        <button class="btn btn-primary" id="btnThink">启发思考</button>
+      </div>
+      
+      <!-- 动态提示 -->
+      <div class="prompt-box" id="promptBox">
+        <strong>💡 思考引导：</strong><br>
+        <span id="promptText">贡献与收入有关吗？如果收入低的人和收入高的人交一样多的税，会发生什么？</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const sliderA = document.getElementById('sliderA');
+    const sliderB = document.getElementById('sliderB');
+    const valDispA = document.getElementById('valDispA');
+    const valDispB = document.getElementById('valDispB');
+    
+    const incomeLabelA = document.getElementById('incomeLabelA');
+    const incomeLabelB = document.getElementById('incomeLabelB');
+    const taxLabelA = document.getElementById('taxLabelA');
+    const taxLabelB = document.getElementById('taxLabelB');
+
+    const personContainerA = document.getElementById('personContainerA');
+    const personContainerB = document.getElementById('personContainerB');
+    const bagContainerA = document.getElementById('bagContainerA');
+    const bagContainerB = document.getElementById('bagContainerB');
+
+    const btnRuleEqual = document.getElementById('btnRuleEqual');
+    const btnRuleRatio = document.getElementById('btnRuleRatio');
+    const btnThink = document.getElementById('btnThink');
+    const promptBox = document.getElementById('promptBox');
+    const promptText = document.getElementById('promptText');
+
+    // 当前规则状态：'equal' 或 'ratio'
+    let currentRule = 'equal';
+
+    // 更新视图函数
+    function updateVisualization() {
+      const incA = parseInt(sliderA.value);
+      const incB = parseInt(sliderB.value);
+
+      // 1. 更新收入文本显示
+      valDispA.textContent = incA + 'k';
+      valDispB.textContent = incB + 'k';
+      incomeLabelA.textContent = `收入: ${incA * 1000}`;
+      incomeLabelB.textContent = `收入: ${incB * 1000}`;
+
+      // 2. 根据收入缩放人物大小 (基础比例 0.7 + 收入影响)
+      const scalePersonA = 0.7 + (incA / 10) * 0.5;
+      const scalePersonB = 0.7 + (incB / 10) * 0.5;
+      personContainerA.style.transform = `scale(${scalePersonA})`;
+      personContainerB.style.transform = `scale(${scalePersonB})`;
+
+      // 3. 计算税收
+      let taxA, taxB;
+      if (currentRule === 'equal') {
+        // 规则一：一样多，固定为 500 元
+        taxA = 500;
+        taxB = 500;
+      } else {
+        // 规则二：按比例，假设税率为 10%
+        taxA = incA * 100;
+        taxB = incB * 100;
+      }
+
+      // 4. 更新税收文本
+      taxLabelA.textContent = `税收: ${taxA}`;
+      taxLabelB.textContent = `税收: ${taxB}`;
+
+      // 5. 根据税收缩放钱袋大小
+      // 设定一个合理的缩放范围
+      const scaleBagA = 0.6 + (taxA / 1000) * 0.7;
+      const scaleBagB = 0.6 + (taxB / 1000) * 0.7;
+      bagContainerA.style.transform = `scale(${scaleBagA})`;
+      bagContainerB.style.transform = `scale(${scaleBagB})`;
+    }
+
+    // 规则一点击事件
+    btnRuleEqual.addEventListener('click', () => {
+      currentRule = 'equal';
+      btnRuleEqual.classList.add('active');
+      btnRuleRatio.classList.remove('active');
+      updateVisualization();
+      
+      if (promptBox.style.display === 'block') {
+        promptText.innerHTML = "<b>规则一（等额税）：</b>无论收入高低，大家都交 500 元。对于收入只有 1000 元的居民 A 来说，这合理吗？";
+      }
+    });
+
+    // 规则二点击事件
+    btnRuleRatio.addEventListener('click', () => {
+      currentRule = 'ratio';
+      btnRuleRatio.classList.add('active');
+      btnRuleEqual.classList.remove('active');
+      updateVisualization();
+
+      if (promptBox.style.display === 'block') {
+        promptText.innerHTML = "<b>规则二（比例税）：</b>大家都拿出自己收入的 10% 来支持公共建设。收入越高，贡献的金额越多。这种规则是不是更公平一些？";
+      }
+    });
+
+    // 启发思考按钮
+    btnThink.addEventListener('click', () => {
+      promptBox.style.display = 'block';
+      if (currentRule === 'equal') {
+        promptText.innerHTML = "<b>思考：</b>在“一样多”的规则下，收入低的居民 A 几乎要交出大部分收入，而富裕的居民 B 却觉得微不足道。这公平吗？";
+      } else {
+        promptText.innerHTML = "<b>思考：</b>在“按比例”的规则下，每个人根据自己的能力来做贡献。这是否能更好地平衡公共建设与个人生活？";
+      }
+    });
+
+    // 绑定滑块事件
+    sliderA.addEventListener('input', updateVisualization);
+    sliderB.addEventListener('input', updateVisualization);
+
+    // 初始化
+    updateVisualization();
+  </script>
+</body>
+</html>

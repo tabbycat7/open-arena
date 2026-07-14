@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>排队中的数学奥秘 - 余数的概念</title>
+  <style>
+    /* 全局样式 */
+    body {
+      margin: 0;
+      padding: 15px;
+      background-color: #f0f4f8;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* 4:3 宽高比自适应容器 */
+    .container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 头部标题与题干 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 22px;
+      color: #2c3e50;
+      margin: 0 0 8px 0;
+      font-weight: bold;
+    }
+
+    .question-box {
+      background-color: #eef5fc;
+      border-left: 5px solid #3498db;
+      padding: 10px 15px;
+      border-radius: 4px;
+      text-align: left;
+      font-size: 15px;
+      color: #34495e;
+      line-height: 1.5;
+    }
+
+    .highlight-text {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* 可视化画布区域 */
+    .canvas-area {
+      flex-grow: 1;
+      position: relative;
+      width: 100%;
+      background: #fcfcfc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      gap: 10px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-step {
+      background-color: #e2e8f0;
+      color: #4a5568;
+    }
+
+    .btn-step:hover {
+      background-color: #cbd5e1;
+    }
+
+    .btn-step.active {
+      background-color: #3498db;
+      color: white;
+      box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-action {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .btn-action:hover {
+      background-color: #c0392b;
+      box-shadow: 0 4px 6px rgba(231, 76, 60, 0.3);
+    }
+
+    /* 教学提示 */
+    .teaching-tip {
+      font-size: 13px;
+      color: #7f8c8d;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .teaching-tip::before {
+      content: "💡";
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 头部信息 -->
+    <div class="header">
+      <h1 class="title">分兵列阵：认识余数</h1>
+      <div class="question-box">
+        <strong>思考题：</strong>“3人一排多2人”，如果我们把所有士兵每3个人分成一组，最后分不完、多出来的这2个人，在数学上叫什么数？
+      </div>
+    </div>
+
+    <!-- 交互可视化区域 -->
+    <div class="canvas-area">
+      <svg id="scene" viewBox="0 0 800 380">
+        <!-- 基础定义：小士兵组件 -->
+        <defs>
+          <g id="soldier">
+            <!-- 阴影 -->
+            <ellipse cx="0" cy="0" rx="14" ry="5" fill="rgba(0,0,0,0.12)" />
+            <!-- 腿部 -->
+            <rect x="-8" y="-12" width="5" height="12" rx="2" fill="#2c3e50" />
+            <rect x="3" y="-12" width="5" height="12" rx="2" fill="#2c3e50" />
+            <!-- 身体/军装 -->
+            <path d="M -15 -12 L -15 -42 L 15 -42 L 15 -12 Z" fill="#3498db" rx="3" />
+            <!-- 腰带与扣 -->
+            <rect x="-15" y="-26" width="30" height="5" fill="#2c3e50" />
+            <rect x="-3" y="-27" width="6" height="7" fill="#f1c40f" />
+            <!-- 领口 -->
+            <rect x="-4" y="-45" width="8" height="5" fill="#ffdbb5" />
+            <!-- 头部 -->
+            <circle cx="0" cy="-54" r="12" fill="#ffdbb5" />
+            <!-- 五官 -->
+            <circle cx="-4" cy="-56" r="1.5" fill="#2c3e50" />
+            <circle cx="4" cy="-56" r="1.5" fill="#2c3e50" />
+            <path d="M -4 -50 Q 0 -46 4 -50" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            <!-- 头盔 -->
+            <path d="M -14 -56 C -14 -72 14 -72 14 -56 Z" fill="#2ecc71" />
+            <path d="M -16 -56 L 16 -56 L 14 -53 L -14 -53 Z" fill="#27ae60" />
+            <!-- 头盔红星 -->
+            <polygon points="0,-67 -2,-62 -7,-62 -3,-59 -5,-54 0,-57 5,-54 3,-59 7,-62 2,-62" fill="#f1c40f" />
+          </g>
+          
+          <!-- 箭头定义 -->
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#e74c3c" />
+          </marker>
+        </defs>
+
+        <!-- 操场背景线 -->
+        <line x1="40" y1="290" x2="760" y2="290" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round" />
+
+        <!-- 分组圈（默认隐藏） -->
+        <g id="group-circles" opacity="0" style="transition: opacity 0.6s ease;">
+          <!-- 第1组 -->
+          <circle cx="150" cy="190" r="75" fill="none" stroke="#2ecc71" stroke-width="3" stroke-dasharray="8 4" />
+          <rect x="100" y="95" width="100" height="24" rx="12" fill="#e8f8f5" />
+          <text x="150" y="111" text-anchor="middle" fill="#27ae60" font-weight="bold" font-size="13">第 1 组 (3人)</text>
+
+          <!-- 第2组 -->
+          <circle cx="350" cy="190" r="75" fill="none" stroke="#2ecc71" stroke-width="3" stroke-dasharray="8 4" />
+          <rect x="300" y="95" width="100" height="24" rx="12" fill="#e8f8f5" />
+          <text x="350" y="111" text-anchor="middle" fill="#27ae60" font-weight="bold" font-size="13">第 2 组 (3人)</text>
+
+          <!-- 第3组 -->
+          <circle cx="550" cy="190" r="75" fill="none" stroke="#2ecc71" stroke-width="3" stroke-dasharray="8 4" />
+          <rect x="500" y="95" width="100" height="24" rx="12" fill="#e8f8f5" />
+          <text x="550" y="111" text-anchor="middle" fill="#27ae60" font-weight="bold" font-size="13">第 3 组 (3人)</text>
+        </g>
+
+        <!-- 剩余人数高亮框（默认隐藏） -->
+        <g id="leftover-highlight" opacity="0" style="transition: opacity 0.6s ease;">
+          <rect x="660" y="105" width="115" height="160" rx="12" fill="none" stroke="#e74c3c" stroke-width="3" stroke-dasharray="8 4" />
+          
+          <!-- 疑问气泡 -->
+          <g transform="translate(717, 65)">
+            <path d="M -20 -15 L 20 -15 L 20 15 L 5 15 L 0 22 L -5 15 L -20 15 Z" fill="#e74c3c" />
+            <text x="0" y="5" text-anchor="middle" fill="white" font-weight="bold" font-size="16">?</text>
+          </g>
+          <text x="717" y="295" text-anchor="middle" fill="#e74c3c" font-weight="bold" font-size="15">多出来的 2 人</text>
+        </g>
+
+        <!-- 概念揭晓（默认隐藏） -->
+        <g id="concept-reveal" opacity="0" style="transition: opacity 0.6s ease;">
+          <!-- 指向箭头 -->
+          <path d="M 717 305 L 717 335 C 717 350, 650 350, 580 350" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrow)" fill="none" />
+          <!-- 概念展示牌 -->
+          <g transform="translate(160, 315)">
+            <rect x="0" y="0" width="390" height="50" rx="8" fill="#fadbd8" stroke="#e74c3c" stroke-width="2" />
+            <text x="195" y="31" text-anchor="middle" fill="#c0392b" font-weight="bold" font-size="18">
+              在数学中，分不完多出来的数叫作：<tspan fill="#e74c3c" font-size="22" font-weight="900">余数</tspan>
+            </text>
+          </g>
+        </g>
+
+        <!-- 11位士兵实例 -->
+        <use id="s1" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s2" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s3" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s4" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s5" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s6" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s7" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s8" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s9" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s10" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+        <use id="s11" href="#soldier" x="0" y="0" style="transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);" />
+      </svg>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <div class="teaching-tip">点击步骤，引导学生观察</div>
+      <div class="btn-group">
+        <button id="btn-line" class="btn-step active">1. 集合排队</button>
+        <button id="btn-group" class="btn-step">2. 3人一组</button>
+        <button id="btn-highlight" class="btn-step">3. 观察多余</button>
+        <button id="btn-reveal" class="btn-action">4. 揭晓概念</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 士兵坐标配置
+    const positions = {
+      // 队列状态：11人一字排开
+      line: [
+        {x: 100, y: 280}, {x: 160, y: 280}, {x: 220, y: 280},
+        {x: 280, y: 280}, {x: 340, y: 280}, {x: 400, y: 280},
+        {x: 460, y: 280}, {x: 520, y: 280}, {x: 580, y: 280},
+        {x: 640, y: 280}, {x: 700, y: 280}
+      ],
+      // 分组状态：3组每组3人，剩余2人
+      grouped: [
+        // 第一组 (围绕 150, 190)
+        {x: 115, y: 170}, {x: 185, y: 170}, {x: 150, y: 230},
+        // 第二组 (围绕 350, 190)
+        {x: 315, y: 170}, {x: 385, y: 170}, {x: 350, y: 230},
+        // 第三组 (围绕 550, 190)
+        {x: 515, y: 170}, {x: 585, y: 170}, {x: 550, y: 230},
+        // 剩余2人 (围绕 717, 190)
+        {x: 690, y: 200}, {x: 745, y: 200}
+      ]
+    };
+
+    // 获取DOM元素
+    const soldiers = Array.from({length: 11}, (_, i) => document.getElementById(`s${i + 1}`));
+    const groupCircles = document.getElementById('group-circles');
+    const leftoverHighlight = document.getElementById('leftover-highlight');
+    const conceptReveal = document.getElementById('concept-reveal');
+
+    const btnLine = document.getElementById('btn-line');
+    const btnGroup = document.getElementById('btn-group');
+    const btnHighlight = document.getElementById('btn-highlight');
+    const btnReveal = document.getElementById('btn-reveal');
+
+    // 更新士兵位置
+    function updateSoldierPositions(state) {
+      const coords = positions[state];
+      soldiers.forEach((soldier, index) => {
+        const {x, y} = coords[index];
+        soldier.setAttribute('transform', `translate(${x}, ${y})`);
+      });
+    }
+
+    // 激活按钮样式切换
+    function setActiveButton(activeBtn) {
+      [btnLine, btnGroup, btnHighlight].forEach(btn => btn.classList.remove('active'));
+      if (activeBtn !== btnReveal) {
+        activeBtn.classList.add('active');
+      }
+    }
+
+    // 步骤1：集合排队
+    function stepLine() {
+      updateSoldierPositions('line');
+      groupCircles.setAttribute('opacity', '0');
+      leftoverHighlight.setAttribute('opacity', '0');
+      conceptReveal.setAttribute('opacity', '0');
+      setActiveButton(btnLine);
+    }
+
+    // 步骤2：3人一组分一分
+    function stepGroup() {
+      updateSoldierPositions('grouped');
+      groupCircles.setAttribute('opacity', '1');
+      leftoverHighlight.setAttribute('opacity', '0');
+      conceptReveal.setAttribute('opacity', '0');
+      setActiveButton(btnGroup);
+    }
+
+    // 步骤3：观察多余人数
+    function stepHighlight() {
+      updateSoldierPositions('grouped');
+      groupCircles.setAttribute('opacity', '1');
+      leftoverHighlight.setAttribute('opacity', '1');
+      conceptReveal.setAttribute('opacity', '0');
+      setActiveButton(btnHighlight);
+    }
+
+    // 步骤4：揭晓数学概念
+    function stepReveal() {
+      updateSoldierPositions('grouped');
+      groupCircles.setAttribute('opacity', '1');
+      leftoverHighlight.setAttribute('opacity', '1');
+      conceptReveal.setAttribute('opacity', '1');
+    }
+
+    // 绑定事件监听器
+    btnLine.addEventListener('click', stepLine);
+    btnGroup.addEventListener('click', stepGroup);
+    btnHighlight.addEventListener('click', stepHighlight);
+    btnReveal.addEventListener('click', stepReveal);
+
+    // 初始化显示
+    stepLine();
+  </script>
+</body>
+</html>

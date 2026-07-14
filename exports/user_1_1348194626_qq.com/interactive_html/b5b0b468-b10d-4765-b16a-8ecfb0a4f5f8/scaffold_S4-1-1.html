@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻找分水岭：参数 a 的取值空间与交点个数</title>
+    <style>
+        /* 基础样式，适配 4:3 比例投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            max-width: 1024px;
+            max-height: 768px;
+            aspect-ratio: 4 / 3;
+            background-color: #242424;
+            border: 2px solid #3d3d3d;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* 头部区域 */
+        header {
+            border-bottom: 1px solid #3d3d3d;
+            padding-bottom: 12px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-size: 22px;
+            color: #f3f4f6;
+            line-height: 1.4;
+        }
+        .highlight-text {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        /* 主体可视化区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            margin: 20px 0;
+            position: relative;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            border: 1px solid #2d2d2d;
+            overflow: hidden;
+        }
+
+        /* 左侧控制与说明 */
+        .control-panel {
+            width: 35%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid #2d2d2d;
+            z-index: 10;
+        }
+        .instruction {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+        .interactive-hint {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid #3b82f6;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: #93c5fd;
+        }
+
+        /* 右侧数轴可视化 */
+        .visualization-panel {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 动态弹窗样式 */
+        .popover {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #fca5a5;
+        }
+        .popover.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* 交互元素样式 */
+        .spotlight-trigger {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .spotlight-trigger:hover {
+            filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.8));
+        }
+        .zone-rect {
+            transition: fill-opacity 0.3s;
+            cursor: pointer;
+        }
+        .zone-rect:hover {
+            fill-opacity: 0.25 !important;
+        }
+
+        /* 底部页脚 */
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: #6b7280;
+            border-top: 1px solid #3d3d3d;
+            padding-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 头部 -->
+        <header>
+            <span class="tag">思考与发现</span>
+            <h1>回想一下我们刚才上下移动水平直线 <span class="highlight-text">y = a</span> 的过程：当 a 处于什么位置时，交点个数会发生突然的改变？这个最关键的“分水岭”数值是谁？</h1>
+        </header>
+
+        <!-- 主体 -->
+        <div class="main-content">
+            <!-- 左侧引导 -->
+            <div class="control-panel">
+                <div class="instruction">
+                    <p style="margin-bottom: 16px;">观察右侧代表参数 <span class="highlight-text">a</span> 取值空间的垂直数轴：</p>
+                    <p style="margin-bottom: 12px; color: #10b981;">● 绿色区域：a &gt; 2 (2个交点)</p>
+                    <p style="margin-bottom: 12px; color: #fbbf24;">● 黄色临界：a = 2 (无数个交点)</p>
+                    <p style="margin-bottom: 12px; color: #f87171;">● 红色区域：a &lt; 2 (0个交点)</p>
+                </div>
+                <div class="interactive-hint">
+                    💡 <strong>课堂互动：</strong>请在右侧数轴上寻找那个决定交点个数突变的<strong>“分水岭”</strong>，并点击它！
+                </div>
+            </div>
+
+            <!-- 右侧可视化 -->
+            <div class="visualization-panel">
+                <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 渐变定义 -->
+                    <defs>
+                        <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+                        </linearGradient>
+                        <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#ef4444" stop-opacity="0.05"/>
+                            <stop offset="100%" stop-color="#ef4444" stop-opacity="0.3"/>
+                        </linearGradient>
+                        <radialGradient id="spotlightGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#ef4444" stop-opacity="1"/>
+                            <stop offset="30%" stop-color="#ef4444" stop-opacity="0.5"/>
+                            <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+
+                    <!-- 背景网格线（装饰） -->
+                    <line x1="50" y1="250" x2="450" y2="250" stroke="#2d2d2d" stroke-width="1" stroke-dasharray="4"/>
+                    
+                    <!-- 区域划分背景 -->
+                    <!-- a > 2 区域 -->
+                    <rect class="zone-rect" x="180" y="50" width="140" height="190" fill="url(#greenGrad)" fill-opacity="0.15" rx="6"/>
+                    <!-- a < 2 区域 -->
+                    <rect class="zone-rect" x="180" y="260" width="140" height="190" fill="url(#redGrad)" fill-opacity="0.15" rx="6"/>
+
+                    <!-- 垂直数轴主体 -->
+                    <line x1="250" y1="30" x2="250" y2="470" stroke="#4b5563" stroke-width="4" stroke-linecap="round"/>
+                    <!-- 数轴向上箭头 -->
+                    <polygon points="250,20 244,35 256,35" fill="#4b5563"/>
+                    <text x="270" y="35" fill="#9ca3af" font-size="14" font-weight="bold">a 轴</text>
+
+                    <!-- 刻度与标签 -->
+                    <!-- a > 2 标签 -->
+                    <text x="340" y="140" fill="#10b981" font-size="16" font-weight="bold">a &gt; 2</text>
+                    <text x="340" y="165" fill="#a7f3d0" font-size="14">2 个交点</text>
+                    <path d="M 260 145 L 325 145" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3" fill="none"/>
+
+                    <!-- a < 2 标签 -->
+                    <text x="340" y="340" fill="#f87171" font-size="16" font-weight="bold">a &lt; 2</text>
+                    <text x="340" y="365" fill="#fecaca" font-size="14">0 个交点</text>
+                    <path d="M 260 345 L 325 345" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3" fill="none"/>
+
+                    <!-- a = 2 临界线 -->
+                    <line x1="150" y1="250" x2="350" y2="250" stroke="#fbbf24" stroke-width="3" stroke-dasharray="5 3"/>
+                    <text x="80" y="255" fill="#fbbf24" font-size="16" font-weight="bold">a = 2</text>
+                    <text x="360" y="255" fill="#fde047" font-size="15" font-weight="bold">无数个交点</text>
+
+                    <!-- 聚光灯特效与触发核心 (a = 2 处) -->
+                    <g class="spotlight-trigger" id="spotlightBtn">
+                        <!-- 扩散动画光晕 -->
+                        <circle cx="250" cy="250" r="35" fill="url(#spotlightGlow)"/>
+                        <!-- 核心警示圆点 -->
+                        <circle cx="250" cy="250" r="10" fill="#ef4444" stroke="#ffffff" stroke-width="2"/>
+                        <!-- 引导点击的呼吸圈 -->
+                        <circle cx="250" cy="250" r="18" fill="none" stroke="#ef4444" stroke-width="1.5">
+                            <animate attributeName="r" values="12;24;12" dur="2s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                </svg>
+
+                <!-- 弹出提示 -->
+                <div class="popover" id="popoverMessage">
+                    <span>🎯 2 是决定交点个数发生突变的唯一“分水岭”！</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer>
+            <span>提示：点击数轴上的红色闪烁“分水岭”标记，验证你的想法。</span>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const spotlightBtn = document.getElementById('spotlightBtn');
+            const popoverMessage = document.getElementById('popoverMessage');
+            let timer = null;
+
+            spotlightBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // 切换显示状态
+                popoverMessage.classList.add('show');
+
+                // 震动反馈（如果设备支持）
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+
+                // 3秒后自动消失
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    popoverMessage.classList.remove('show');
+                }, 4000);
+            });
+
+            // 点击页面其他地方关闭弹窗
+            document.addEventListener('click', () => {
+                popoverMessage.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>

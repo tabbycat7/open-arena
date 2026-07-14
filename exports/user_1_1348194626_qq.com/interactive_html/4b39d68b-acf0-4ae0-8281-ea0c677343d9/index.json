@@ -1,0 +1,176 @@
+{
+  "task_id": "4b39d68b-acf0-4ae0-8281-ea0c677343d9",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "我们从‘细胞分裂’中得到了函数y=2^x。那请大家看看这几个式子：y=1^x， y=(-2)^x， y=3 * 2^x。它们都是指数函数吗？说说你的判断依据。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "我们要亲手画出y=2^x的图像。在动手计算和描点之前，请大家想一想：你打算取哪些x的值？为什么你认为取这些值，能帮助我们画出一幅有代表性的图像？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "观察大家画的y=2^x和y=(1/2)^x的图像。有同学说：‘底数越大，图像越陡峭’。这个观察准确吗？它背后反映的是函数的什么根本性质？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "现在，我们不用计算器，也不看图像。已知a>0且a≠1，如何比较a^√2和a^√3的大小？敢不敢说说你的思路？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "假设某放射性物质的剩余质量y与时间t（单位：年）满足关系式 y=(1/2)^(t/5)。请你判断这个函数是指数函数吗？依据是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "考察这四个函数：y=1^x, y=(-2)^x, y=x^2, y=2^(x+1)。它们中哪些是指数函数？哪些不是？请一一说明你的理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "现在，请尝试画出 y=3^x 和 y=(1/3)^x 的图像。想一想，你打算取哪些关键的x值，才能让画出的图像既准确又能反映出变化趋势？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "小明在研究某个函数时，记录了x和y的几组对应值：当x=0时，y=1；x=1时，y=4；x=2时，y=16。你能推测出这是什么函数吗？并补全x=-1， x=3时的y值，再尝试画出它的图像。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "小亮画了一条从左到右先下降后上升的曲线，并且它穿过了(0,1)点。他说这可能是一个指数函数的图像。你同意他的说法吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "已知a>0且a≠1，请比较 a^(1.7) 与 a^(1.5) 的大小。你的比较过程需要考虑什么关键步骤？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "如果已知 (0.3)^m > (0.3)^n，那么 m 和 n 的大小关系是怎样的？你能解释这背后的逻辑吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-3",
+      "question_type": "variant",
+      "content": "现在有两个幂：2^0.3 和 3^0.3。你能直接利用我们刚学的单调性来比较它们的大小吗？为什么不行？这启发我们需要寻找什么新工具？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "我们刚遇到的函数y=2^x，它的标准形式y=a^x中，底数a必须满足什么条件？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "对于y=2^x，x=-2时，y是多少？能说说你是怎么算的吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "想一想，计算x=-1, 0, 1这几个点的y值，为什么能帮我们更好地画出图像的趋势？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "对比你画的y=2^x和y=(1/2)^x，当x的值不断增大时，它们图像上的点分别是向上走还是向下走？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "图像“向上走”，用函数的语言来描述，是不是意味着当x增大时，y也…？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "请复述一下我们刚发现的规律：当底数a>1时，函数单调…？当0<a<1时呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "对于单调递增的函数y=2^x，如果2^m > 2^n，你能猜出m和n的大小关系吗？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

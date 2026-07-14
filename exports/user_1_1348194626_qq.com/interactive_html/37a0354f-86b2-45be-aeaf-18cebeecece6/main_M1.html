@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>神奇的税收循环 - 教学可视化</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --accent-color: #FFD54F;
+      --bg-color: #F5F7FA;
+      --text-color: #37474F;
+      --card-bg: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 宽高比自适应容器 */
+    .aspect-ratio-container {
+      width: 95vw;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 头部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      color: #2C3E50;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 16px;
+      color: #7F8C8D;
+    }
+
+    /* 主交互区域 */
+    .main-stage {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      min-height: 0; /* 允许子元素在flex中缩放 */
+    }
+
+    /* 左侧：社会生活场景 */
+    .scene-container {
+      flex: 1.3;
+      background: #E0F7FA;
+      border-radius: 12px;
+      border: 2px solid #B2EBF2;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 右侧：财政库 */
+    .treasury-container {
+      flex: 0.7;
+      background: #FFFDE7;
+      border-radius: 12px;
+      border: 2px solid #FFF9C4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* 底部硬币区 */
+    .action-bar {
+      height: 100px;
+      margin-top: 15px;
+      background: #ECEFF1;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 40px;
+      position: relative;
+    }
+
+    .action-bar-label {
+      position: absolute;
+      top: 5px;
+      left: 15px;
+      font-size: 12px;
+      color: #78909C;
+      font-weight: bold;
+    }
+
+    /* 硬币样式 */
+    .coin {
+      width: 64px;
+      height: 64px;
+      background: radial-gradient(circle at 30% 30%, #FFD54F, #FFB300);
+      border-radius: 50%;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15), inset 0 -4px 0 rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      position: relative;
+      z-index: 10;
+      touch-action: none; /* 阻止移动端默认滚动行为 */
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .coin:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .coin-inner {
+      width: 48px;
+      height: 48px;
+      border: 2px dashed #FF8F00;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .coin-symbol {
+      font-size: 18px;
+      font-weight: bold;
+      color: #E65100;
+      line-height: 1;
+    }
+
+    .coin-text {
+      font-size: 10px;
+      font-weight: bold;
+      color: #E65100;
+    }
+
+    /* 提示信息面板 */
+    .info-panel {
+      position: absolute;
+      bottom: 125px;
+      left: 24px;
+      right: 24px;
+      background: rgba(38, 50, 56, 0.9);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    /* SVG 内部样式与动画 */
+    .facility-group {
+      transition: filter 0.5s ease, opacity 0.5s ease;
+      cursor: pointer;
+    }
+
+    .facility-group.grayscale {
+      filter: grayscale(100%) brightness(0.8);
+      opacity: 0.4;
+    }
+
+    .facility-group.active {
+      filter: grayscale(0%) brightness(1);
+      opacity: 1;
+    }
+
+    /* 悬停高亮效果 */
+    .facility-group.active:hover {
+      filter: drop-shadow(0px 0px 8px rgba(255,255,255,0.8)) brightness(1.1);
+    }
+
+    /* 财政库发光效果 */
+    #treasury-glow {
+      transition: fill-opacity 0.5s ease, r 0.5s ease;
+    }
+
+    /* 重置按钮 */
+    .btn-reset {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background-color: #FF5722;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+      display: none;
+      z-index: 110;
+    }
+
+    .btn-reset:hover {
+      background-color: #F4511E;
+      transform: scale(1.05);
+    }
+
+    /* 拖拽辅助提示 */
+    .drag-target-highlight {
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from {
+        stroke-width: 2;
+        stroke: #FFD54F;
+      }
+      to {
+        stroke-width: 5;
+        stroke: #FF8F00;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <button class="btn-reset" id="btn-reset">重新体验</button>
+
+    <!-- 头部标题 -->
+    <div class="header">
+      <h1>神奇的税收循环</h1>
+      <p>拖拽下方的“税金硬币”放入“国家财政库”，看看公共设施会发生什么变化！</p>
+    </div>
+
+    <!-- 主舞台 -->
+    <div class="main-stage">
+      <!-- 左侧：社会生活场景 -->
+      <div class="scene-container">
+        <svg id="scene-svg" viewBox="0 0 500 375" width="100%" height="100%">
+          <!-- 天空与地面背景 -->
+          <rect x="0" y="0" width="500" height="260" fill="#E0F7FA"/>
+          <rect x="0" y="260" width="500" height="115" fill="#81C784"/>
+          
+          <!-- 远山 -->
+          <polygon points="-20,260 100,150 220,260" fill="#A5D6A7" opacity="0.7"/>
+          <polygon points="150,260 280,120 410,260" fill="#A5D6A7" opacity="0.5"/>
+          <polygon points="300,260 420,160 520,260" fill="#A5D6A7" opacity="0.8"/>
+
+          <!-- 太阳 -->
+          <circle cx="440" cy="60" r="25" fill="#FFF59D"/>
+          <circle cx="440" cy="60" r="20" fill="#FFE082"/>
+
+          <!-- 1. 高速公路 (Highway) -->
+          <g id="group-highway" class="facility-group grayscale" data-name="公路" data-info="【高速公路】建设资金主要来自国家税收。有了税收，才能修筑四通八达的道路，让人们出行更便利、物资运输更快捷。">
+            <!-- 道路主体 -->
+            <polygon points="0,340 180,260 220,260 0,375" fill="#78909C"/>
+            <!-- 道路虚线 -->
+            <line x1="0" y1="358" x2="200" y2="260" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="8,8"/>
+            <!-- 路灯 -->
+            <path d="M150,260 L150,230 Q150,220 140,220" fill="none" stroke="#455A64" stroke-width="2"/>
+            <circle cx="140" cy="220" r="4" fill="#FFF59D"/>
+            <!-- 汽车 -->
+            <g transform="translate(40, 290) scale(0.9)">
+              <rect x="0" y="12" width="45" height="18" fill="#0288D1" rx="4"/>
+              <path d="M10,12 L15,3 L30,3 L35,12 Z" fill="#B3E5FC"/>
+              <circle cx="10" cy="30" r="6" fill="#37474F"/>
+              <circle cx="35" cy="30" r="6" fill="#37474F"/>
+              <circle cx="10" cy="30" r="2" fill="#CFD8DC"/>
+              <circle cx="35" cy="30" r="2" fill="#CFD8DC"/>
+            </g>
+            <!-- 标签 -->
+            <rect x="15" y="265" width="65" height="22" rx="11" fill="rgba(0,0,0,0.6)"/>
+            <text x="47.5" y="280" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">高速公路</text>
+          </g>
+
+          <!-- 2. 免费公园 (Park) -->
+          <g id="group-park" class="facility-group grayscale" data-name="公园" data-info="【免费公园】是市民休闲娱乐的好去处。公园里的绿化、健身器材和干净的环境，都需要税收资金进行日常维护和更新。">
+            <!-- 树木 -->
+            <circle cx="320" cy="230" r="25" fill="#2E7D32"/>
+            <rect x="316" y="250" width="8" height="30" fill="#5D4037"/>
+            <circle cx="280" cy="240" r="20" fill="#4CAF50"/>
+            <rect x="277" y="255" width="6" height="25" fill="#5D4037"/>
+            <!-- 长椅 -->
+            <rect x="330" y="275" width="35" height="6" fill="#A1887F" rx="2"/>
+            <line x1="335" y1="281" x2="335" y2="290" stroke="#4E342E" stroke-width="3"/>
+            <line x1="360" y1="281" x2="360" y2="290" stroke="#4E342E" stroke-width="3"/>
+            <!-- 喷泉 -->
+            <path d="M380,285 Q390,260 400,285 Q410,260 420,285" fill="none" stroke="#29B6F6" stroke-width="2"/>
+            <ellipse cx="400" cy="288" rx="25" ry="6" fill="#0288D1"/>
+            <!-- 标签 -->
+            <rect x="315" y="185" width="65" height="22" rx="11" fill="rgba(0,0,0,0.6)"/>
+            <text x="347.5" y="200" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">免费公园</text>
+          </g>
+
+          <!-- 3. 公立学校 (School) -->
+          <g id="group-school" class="facility-group grayscale" data-name="学校" data-info="【公立学校】由国家财政拨款建设。我们明亮的教室、先进的教学设备以及免费的义务教育，全部得益于国家税收的支持。">
+            <!-- 学校大楼 -->
+            <rect x="60" y="130" width="150" height="110" fill="#EF5350" rx="6"/>
+            <rect x="105" y="80" width="60" height="50" fill="#E53935" rx="4"/>
+            <polygon points="95,80 135,55 175,80" fill="#C62828"/>
+            <!-- 钟表 -->
+            <circle cx="135" cy="105" r="12" fill="#FFFFFF"/>
+            <line x1="135" y1="105" x2="135" y2="98" stroke="#37474F" stroke-width="2"/>
+            <line x1="135" y1="105" x2="141" y2="105" stroke="#37474F" stroke-width="2"/>
+            <!-- 门窗 -->
+            <rect x="120" y="190" width="30" height="50" fill="#8D6E63" rx="2"/>
+            <rect x="80" y="150" width="25" height="25" fill="#E0F7FA" rx="3"/>
+            <rect x="165" y="150" width="25" height="25" fill="#E0F7FA" rx="3"/>
+            <!-- 国旗杆与国旗 -->
+            <line x1="135" y1="55" x2="135" y2="20" stroke="#78909C" stroke-width="2"/>
+            <polygon points="135,20 160,28 135,36" fill="#FFEB3B"/>
+            <!-- 标签 -->
+            <rect x="102.5" y="215" width="65" height="22" rx="11" fill="rgba(0,0,0,0.6)"/>
+            <text x="135" y="230" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">公立学校</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 右侧：财政库 -->
+      <div class="treasury-container" id="treasury-dropzone">
+        <svg viewBox="0 0 200 250" width="100%" height="100%">
+          <!-- 外部发光圈 -->
+          <circle id="treasury-glow" cx="100" cy="130" r="75" fill="#FFD54F" fill-opacity="0" filter="blur(5px)"/>
+          
+          <!-- 财政库建筑 -->
+          <g id="treasury-building">
+            <!-- 地基 -->
+            <rect x="20" y="190" width="160" height="25" fill="#90A4AE" rx="4"/>
+            <rect x="30" y="175" width="140" height="15" fill="#B0BEC5"/>
+            
+            <!-- 柱子 -->
+            <rect x="40" y="95" width="16" height="80" fill="#CFD8DC"/>
+            <rect x="72" y="95" width="16" height="80" fill="#CFD8DC"/>
+            <rect x="112" y="95" width="16" height="80" fill="#CFD8DC"/>
+            <rect x="144" y="95" width="16" height="80" fill="#CFD8DC"/>
+            
+            <!-- 三角屋顶 -->
+            <polygon points="15,95 100,45 185,95" fill="#78909C"/>
+            <polygon points="30,95 100,55 170,95" fill="#546E7A"/>
+            
+            <!-- 门/存钱口 -->
+            <rect x="85" y="115" width="30" height="60" fill="#37474F" rx="3"/>
+            <!-- 存钱槽 -->
+            <rect x="92" y="125" width="16" height="4" fill="#1A237E" rx="1"/>
+
+            <!-- 徽章 -->
+            <circle cx="100" cy="75" r="14" fill="#FFD54F" stroke="#FFB300" stroke-width="2"/>
+            <text x="100" y="81" fill="#E65100" font-size="18" font-weight="bold" text-anchor="middle">国</text>
+          </g>
+
+          <!-- 虚线引导框（未完成时显示） -->
+          <rect id="guide-box" x="15" y="10" width="170" height="225" fill="none" stroke="#FFB300" stroke-width="2" stroke-dasharray="6,6" rx="10" class="drag-target-highlight"/>
+        </svg>
+        <div style="position: absolute; bottom: 15px; font-weight: bold; color: #546E7A; font-size: 16px;">国家财政库</div>
+      </div>
+    </div>
+
+    <!-- 提示信息面板 -->
+    <div class="info-panel" id="info-panel">
+      请拖拽下方的“个人税”和“企业税”硬币，放入右侧的“国家财政库”中。
+    </div>
+
+    <!-- 底部硬币区 -->
+    <div class="action-bar">
+      <div class="action-bar-label">纳税来源</div>
+      
+      <div class="coin-wrapper">
+        <div class="coin" id="coin-personal" data-type="personal">
+          <div class="coin-inner">
+            <span class="coin-symbol">￥</span>
+            <span class="coin-text">个人税</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="coin-wrapper">
+        <div class="coin" id="coin-enterprise" data-type="enterprise">
+          <div class="coin-inner">
+            <span class="coin-symbol">￥</span>
+            <span class="coin-text">企业税</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 状态管理
+    const state = {
+      personalTaxDeposited: false,
+      enterpriseTaxDeposited: false,
+      get totalDeposited() {
+        return (this.personalTaxDeposited ? 1 : 0) + (this.enterpriseTaxDeposited ? 1 : 0);
+      }
+    };
+
+    // DOM 元素
+    const coins = document.querySelectorAll('.coin');
+    const dropzone = document.getElementById('treasury-dropzone');
+    const infoPanel = document.getElementById('info-panel');
+    const glow = document.getElementById('treasury-glow');
+    const guideBox = document.getElementById('guide-box');
+    const btnReset = document.getElementById('btn-reset');
+
+    const facilityGroups = {
+      highway: document.getElementById('group-highway'),
+      park: document.getElementById('group-park'),
+      school: document.getElementById('group-school')
+    };
+
+    // 声音合成器 (Web Audio API) - 增加趣味性
+    function playSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'coin') {
+          // 金币落袋声
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1); // A5
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'success') {
+          // 成功点亮声
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.4);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + i * 0.08);
+            osc.stop(ctx.currentTime + i * 0.08 + 0.4);
+          });
+        }
+      } catch (e) {
+        // 忽略不支持Web Audio的浏览器
+      }
+    }
+
+    // 拖拽逻辑实现 (兼容桌面与移动端 Pointer Events)
+    coins.forEach(coin => {
+      let isDragging = false;
+      let startX, startY;
+      let initialX = 0, initialY = 0;
+
+      coin.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        coin.setPointerCapture(e.pointerId);
+        
+        // 记录初始指针位置
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        coin.style.transition = 'none';
+        coin.style.zIndex = '1000';
+      });
+
+      coin.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        
+        coin.style.transform = `translate(${initialX + dx}px, ${initialY + dy}px) scale(1.1)`;
+      });
+
+      coin.addEventListener('pointerup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        coin.releasePointerCapture(e.pointerId);
+
+        // 检测是否碰撞到财政库
+        const coinRect = coin.getBoundingClientRect();
+        const dropzoneRect = dropzone.getBoundingClientRect();
+
+        const isOverlapping = !(
+          coinRect.right < dropzoneRect.left ||
+          coinRect.left > dropzoneRect.right ||
+          coinRect.bottom < dropzoneRect.top ||
+          coinRect.top > dropzoneRect.bottom
+        );
+
+        if (isOverlapping) {
+          // 成功放入
+          const taxType = coin.dataset.type;
+          handleTaxDeposit(taxType, coin);
+        } else {
+          // 弹回原位
+          resetCoinPosition(coin);
+        }
+      });
+    });
+
+    function resetCoinPosition(coin) {
+      coin.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      coin.style.transform = 'translate(0px, 0px)';
+      coin.style.zIndex = '10';
+    }
+
+    // 处理税收存入
+    function handleTaxDeposit(type, coinElement) {
+      playSound('coin');
+      coinElement.style.display = 'none'; // 隐藏硬币
+
+      if (type === 'personal') {
+        state.personalTaxDeposited = true;
+      } else if (type === 'enterprise') {
+        state.enterpriseTaxDeposited = true;
+      }
+
+      updateVisuals();
+    }
+
+    // 更新整体视觉状态
+    function updateVisuals() {
+      const count = state.totalDeposited;
+
+      if (count === 1) {
+        // 存入一个硬币：财政库微弱发光，点亮公路和公园
+        glow.setAttribute('fill-opacity', '0.4');
+        glow.setAttribute('r', '85');
+        
+        facilityGroups.highway.classList.remove('grayscale');
+        facilityGroups.highway.classList.add('active');
+        facilityGroups.park.classList.remove('grayscale');
+        facilityGroups.park.classList.add('active');
+
+        infoPanel.innerHTML = "太棒了！你注入了资金。观察左侧：<strong>高速公路</strong>和<strong>免费公园</strong>被点亮了！点击它们看看资金是如何使用的。";
+        playSound('success');
+      } 
+      else if (count === 2) {
+        // 两个硬币全部存入：财政库强烈发光，点亮所有设施
+        glow.setAttribute('fill-opacity', '0.8');
+        glow.setAttribute('r', '100');
+        guideBox.style.display = 'none';
+
+        facilityGroups.school.classList.remove('grayscale');
+        facilityGroups.school.classList.add('active');
+
+        infoPanel.innerHTML = "<strong>税收全部到位！</strong>公立学校也被点亮了。原来，我们享受的公共设施都是由千千万万纳税人共同出资建设的！这就是“取之于民，用之于民”。";
+        playSound('success');
+        btnReset.style.display = 'block';
+      }
+    }
+
+    // 设施悬停/点击交互
+    Object.keys(facilityGroups).forEach(key => {
+      const group = facilityGroups[key];
+      
+      // 点击或触摸显示详细信息
+      group.addEventListener('click', () => {
+        if (group.classList.contains('active')) {
+          infoPanel.innerHTML = group.dataset.info;
+        } else {
+          infoPanel.innerHTML = `此设施（${group.dataset.name}）目前处于置灰状态，需要往财政库中注入税金才能建设和维护哦！`;
+        }
+      });
+    });
+
+    // 重置按钮逻辑
+    btnReset.addEventListener('click', () => {
+      state.personalTaxDeposited = false;
+      state.enterpriseTaxDeposited = false;
+
+      // 恢复硬币
+      coins.forEach(coin => {
+        coin.style.display = 'flex';
+        resetCoinPosition(coin);
+      });
+
+      // 恢复设施置灰
+      Object.keys(facilityGroups).forEach(key => {
+        facilityGroups[key].classList.add('grayscale');
+        facilityGroups[key].classList.remove('active');
+      });
+
+      // 恢复财政库
+      glow.setAttribute('fill-opacity', '0');
+      glow.setAttribute('r', '75');
+      guideBox.style.display = 'block';
+
+      // 恢复提示
+      infoPanel.innerHTML = "请拖拽下方的“个人税”和“企业税”硬币，放入右侧的“国家财政库”中。";
+      btnReset.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

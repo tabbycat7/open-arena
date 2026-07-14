@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>计税基数可视化教学</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --highlight: #f59e0b;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: var(--primary); }
+        .formula-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f1f5f9;
+            border-radius: 0.5rem;
+        }
+        .num-box {
+            padding: 0.5rem 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            user-select: none;
+        }
+        .num-box.active { border-color: var(--primary); background: #dbeafe; }
+        .num-box.highlight { border-color: var(--highlight); background: #fef3c7; transform: scale(1.1); }
+        #result {
+            font-weight: bold;
+            color: var(--highlight);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .controls { text-align: center; margin-top: 1rem; }
+        button {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.3rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>计税基数探究</h2>
+    <p style="text-align: center;">点击下方数字，观察它们如何影响应纳税基数：</p>
+    
+    <div class="formula-box">
+        <div id="total" class="num-box">6000</div>
+        <span>-</span>
+        <div id="taxFree" class="num-box">2000</div>
+        <span>=</span>
+        <div id="result">4000</div>
+    </div>
+
+    <div class="controls">
+        <button id="resetBtn">重置演示</button>
+    </div>
+    
+    <p id="hint" style="text-align: center; color: #64748b; margin-top: 2rem;">提示：请点击“总收入”和“免税额”来完成计算。</p>
+</div>
+
+<script>
+    const totalEl = document.getElementById('total');
+    const taxFreeEl = document.getElementById('taxFree');
+    const resultEl = document.getElementById('result');
+    const resetBtn = document.getElementById('resetBtn');
+    const hintEl = document.getElementById('hint');
+
+    let clicked = { total: false, taxFree: false };
+
+    function update() {
+        if (clicked.total && clicked.taxFree) {
+            resultEl.style.opacity = '1';
+            resultEl.classList.add('highlight');
+            hintEl.innerText = '计算完成！4000元即为我们需要的“计税基数”。';
+        }
+    }
+
+    totalEl.addEventListener('click', () => {
+        totalEl.classList.add('active');
+        clicked.total = true;
+        update();
+    });
+
+    taxFreeEl.addEventListener('click', () => {
+        taxFreeEl.classList.add('active');
+        clicked.taxFree = true;
+        update();
+    });
+
+    resetBtn.addEventListener('click', () => {
+        clicked = { total: false, taxFree: false };
+        totalEl.classList.remove('active');
+        taxFreeEl.classList.remove('active');
+        resultEl.style.opacity = '0';
+        resultEl.classList.remove('highlight');
+        hintEl.innerText = '提示：请点击“总收入”和“免税额”来完成计算。';
+    });
+</script>
+
+</body>
+</html>

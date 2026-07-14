@@ -1,0 +1,383 @@
+{
+  "id": "6f041481-cdb2-4473-82cd-99c614bbf94e",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "八年级",
+  "teaching_goals": "1．理解勾股定理的内容，掌握赵爽弦图等证明方法，能运用勾股定理求直角三角形的未知边长.",
+  "student_profile": "学生已掌握三角形的基本性质、直角三角形全等判定，具备初步的几何观察、分析和简单推理能力，能进行基本的平方、开方运算，为学习勾股定理奠定了知识和能力基础．但学生对“数形结合\"思想的运用尚不成熟，从面积关系推导边长的数量关系存在思维障碍,对定理证明的逻辑推导过程理解难度较大同时，学生抽象思维仍在发展中，运用勾股定理及其逆定理解决实际问题时，难以快速建立数学模型．此外，学生对数学史与定理的结合学习兴趣较高，可借助这一特点激发学习主动性.",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"故事里毕达哥拉斯发现了地砖的秘密。看我们操场，从一角径直走到对角，和分别沿两边走，你觉得哪条路最快？为什么大家都觉得斜着走最近呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.6, \"design_intent\": \"从数学史典故（毕达哥拉斯）和现实空间问题（从矩形操场一角到对角的最快路径）切入，让学生凭生活经验和直觉判断哪条路最短。激活学生对‘直角三角形斜边’的直观感知，并初步引发对‘两边与斜边是否存在某种确定数量关系’的猜想与评判。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"大家的直觉是‘斜边更短’。那它到底比两直角边短多少呢？如果我们在方格纸上画出直角三角形，并给每条边都配上这样一个正方形，仔细观察这三个正方形的面积，你有什么发现？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"design_intent\": \"在方格纸上给定多个以格点为顶点的直角三角形，要求学生计算以各边为边长的正方形面积。通过观察、计算、归纳，引导学生自主发现‘两直角边上的正方形面积之和等于斜边上的正方形面积’这一几何规律。此过程将代数的‘平方’运算与几何的‘面积’直观结合，是数形结合思想（KP5）的初步体验，也是勾股定理（KP1）的主动建构。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们发现的规律太美妙了！但它是所有直角三角形的共同秘密吗？看，这是我国古代数学家赵爽的弦图。你敢挑战一下，用它来证明我们发现的 a² + b² = c² 吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"引入赵爽弦图，提出核心挑战：如何通过这个弦图的面积关系，证明我们刚才发现的 a² + b² = c²？引导学生分步观察：大正方形的不同构成（四个全等直角三角形+中间小正方形），并用两种方式表示大正方形的面积。期待学生通过面积等式（c² = 4*(ab/2) + (b-a)²）的推导，完成从几何图形关系到代数等式的转化，深刻理解证明逻辑，并深化对数形结合思想（KP5）的认识。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"定理在手，现在能大展身手了！给你一个三角形，三条边分别是3、4、5，你能算出它的斜边长是多少吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.75, \"design_intent\": \"设计一个易错情境：给出一个三角形，三边长为3, 4, 5，但未明确标注直角。要求学生计算‘斜边’的长。部分学生会默认5为斜边直接应用公式，部分学生可能尝试用3或4作斜边。此设计旨在提前暴露并解决学情报告中的核心易错点——‘边长对应关系混淆’。冲突解决后，引导学生总结应用公式前必须先确定直角和斜边（联系逆定理KP4进行判断），并练习公式变形（如求直角边）。这是对定理应用（KP3）的深度理解和程序性巩固。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"一个5米长的梯子，靠墙立着，梯子脚离墙3米。如果梯子顶端不小心下滑了0.5米，你能算出梯子脚向外滑动了多远吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP6\", \"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"提供一个需要简单建模的实际问题（例如：一架5m长的梯子，顶端靠墙，底端离墙3m。若梯子顶端下滑0.5m，则底端滑动多少米？）。要求学生将文字描述转化为几何图形，标出已知量和未知量，判断其中的直角三角形关系（可能需要用到KP4的逆定理思想来确认垂直），并综合运用勾股定理（KP3）建立方程求解。此问题旨在提升学生数学建模（KP6）和综合应用的能力，完成从知识理解到现实迁移的闭环。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果一艘帆船要驶向远处的灯塔，是选择‘直接朝灯塔开’的航线快，还是‘先向正东航行一段，再转向正北航行一段’更快呢？这和我们在操场上斜着走的直觉，是不是同一个道理？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.6, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将陆地路径问题迁移到海上航行情景，用‘航线选择’激活学生对直角三角形斜边最短的直观判断。通过比较新旧情景的共通性，深化学生对‘斜边即最短路径’这一几何事实的感知与评价。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"我们画一个两直角边分别为6厘米和8厘米的直角三角形。不用去量斜边，你能通过计算6² + 8²来预测一下斜边上的正方形面积吗？这个结果和你量出斜边后计算的平方，会有什么关系？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.63, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"从方格纸的探索归纳转向具体数值的验证应用。给定具体直角边长，引导学生先通过计算两直角边平方和来“预言”斜边平方，再与实际测量计算对比，在验证中巩固对a²+b²=c²关系的理解，实现从观察到应用的过渡。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"仔细观察赵爽弦图，为什么中间那个小正方形的边长是(b-a)？如果拼成弦图的四个直角三角形不是全等的，我们还能用同样的方法推导出a²+b²=c²吗？这说明了证明中哪个条件至关重要？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.73, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过追问弦图构造细节（中间小正方形边长）和反设条件（直角三角形不全等），引导学生深度分析证明成立的前提。促使学生理解图形全等性是面积拼补证明法的关键，从而领悟数学证明的严谨性，深化对数形结合逻辑的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"有两组数据：①已知直角边为5和12，求斜边长；②已知斜边为13，一条直角边为5，求另一条直角边。对比一下你的求解过程，什么时候是‘两边的平方和’，什么时候又变成了‘斜边的平方减去一边的平方’？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过并列呈现已知条件不同的两组问题，制造对比冲突，引导学生明确区分公式a²+b²=c²的不同应用方向。让学生在对比中自主总结：求斜边是加，求直角边是减，从而强化对公式结构的理解，避免机械套用。\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"有人说，只要一个三角形的三边长是6、8、11，那它一定是直角三角形，因为6²+8²=100，而11²=121，这符合勾股定理吗？你怎么看他的说法？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.68, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"提供一个典型的非勾股数组(6,8,11)作为反例，并模仿常见错误陈述（混淆定理与逆定理）。引导学生辨析勾股定理（由直角推边的关系）与其逆定理（由边的关系推直角）的区别，从而澄清核心概念，巩固逆定理（KP4）的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"一棵大树在离地面4米高的地方被风折断，树梢顶端刚好碰到地面，接触点离树根有3米远。你能想象出这个画面，并算出大树在没有折断前大概有多高吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP6\", \"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.78, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将梯子滑动问题迁移到更生动的树木折断情景，引导学生将文字描述转化为直角三角形模型（折断处到树顶为斜边）。通过解决此问题，巩固学生从实际问题中抽象几何图形、识别直角并应用勾股定理求解的能力，提升数学建模（KP6）的熟练度。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"仔细观察赵爽弦图，图中除了大正方形，还藏着哪两种基本图形？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"将M2中‘数方格’的直观观察，过渡到M3中‘看弦图’的证明准备。引导学生识别证明工具（基本图形），为下一步分析面积关系作铺垫。\", \"design_intent\": \"针对学困生‘面积法推导能力’的断层。通过识别弦图中的基本图形（直角三角形和正方形），为后续分析其数量关系和面积构成打下基础，实现从具体计算到抽象证明的思维过渡。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"大正方形的面积除了用c²表示，还能看成哪两部分面积的和？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP2\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"承接S2-1的图形识别，聚焦于M3证明的核心——用不同方式表示同一图形（大正方形）的面积，引导学生初步建立‘整体等于各部分和’的面积等式思想。\", \"design_intent\": \"进一步分解面积关系。引导学生从‘整体看’和‘分块看’两个视角观察弦图，为自主推导‘四个直角三角形面积+中间小正方形面积=大正方形面积’这一关键等式搭建思维台阶。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"我们发现的定理，用字母a、b、c怎么表示？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.4, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"在完成M3的证明后，以最简洁的方式回顾核心结论（勾股定理公式），为M4的应用提供必须的记忆提取点。\", \"design_intent\": \"针对学困生可能忘记公式。以温和的提问方式，引导学生复述定理的字母表达式，巩固记忆，确保在进入应用环节前公式清晰可用。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果已知两条直角边求斜边c，怎么用a、b表示c？试着说说看。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"将M3中抽象的等式关系，转化为M4具体问题求解中可直接操作的公式变形（c = √(a²+b²)），降低应用门槛。\", \"design_intent\": \"针对学困生‘公式变形不熟’的障碍。在记忆公式的基础上，引导其进行最简单的公式变形，明确求斜边的操作路径，为处理M4中更复杂的边长对应关系做准备。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"墙壁、地面和梯子构成了什么图形？试着画出来。\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"将M5的文字描述（梯子问题）与M4中已练习的三角形图形关联起来，完成实际问题向几何图形的初步转化，为建模奠基。\", \"design_intent\": \"针对学困生‘实际问题数学化能力弱’的断层。引导学生从生活场景中抽象出关键的直角三角形模型，这是应用勾股定理解决实际问题的第一步。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"梯子下滑后，哪个长度没变？变化的边长间满足什么关系？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\", \"KP6\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"在S4-1建立图形的基础上，引导学生聚焦于M5问题中的变量与不变量，并联系M4中应用的勾股定理，建立方程模型。\", \"design_intent\": \"引导建立数学模型。通过识别“梯子长度不变”这一关键条件，并提问边长关系，启发学生将勾股定理作为等量关系，自然列出方程，完成从识图到建模的关键一跃。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-22 20:13:22",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "故事里毕达哥拉斯发现了地砖的秘密。看我们操场，从一角径直走到对角，和分别沿两边走，你觉得哪条路最快？为什么大家都觉得斜着走最近呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.6,
+        "design_intent": "从数学史典故（毕达哥拉斯）和现实空间问题（从矩形操场一角到对角的最快路径）切入，让学生凭生活经验和直觉判断哪条路最短。激活学生对‘直角三角形斜边’的直观感知，并初步引发对‘两边与斜边是否存在某种确定数量关系’的猜想与评判。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "大家的直觉是‘斜边更短’。那它到底比两直角边短多少呢？如果我们在方格纸上画出直角三角形，并给每条边都配上这样一个正方形，仔细观察这三个正方形的面积，你有什么发现？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "design_intent": "在方格纸上给定多个以格点为顶点的直角三角形，要求学生计算以各边为边长的正方形面积。通过观察、计算、归纳，引导学生自主发现‘两直角边上的正方形面积之和等于斜边上的正方形面积’这一几何规律。此过程将代数的‘平方’运算与几何的‘面积’直观结合，是数形结合思想（KP5）的初步体验，也是勾股定理（KP1）的主动建构。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们发现的规律太美妙了！但它是所有直角三角形的共同秘密吗？看，这是我国古代数学家赵爽的弦图。你敢挑战一下，用它来证明我们发现的 a² + b² = c² 吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "引入赵爽弦图，提出核心挑战：如何通过这个弦图的面积关系，证明我们刚才发现的 a² + b² = c²？引导学生分步观察：大正方形的不同构成（四个全等直角三角形+中间小正方形），并用两种方式表示大正方形的面积。期待学生通过面积等式（c² = 4*(ab/2) + (b-a)²）的推导，完成从几何图形关系到代数等式的转化，深刻理解证明逻辑，并深化对数形结合思想（KP5）的认识。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "定理在手，现在能大展身手了！给你一个三角形，三条边分别是3、4、5，你能算出它的斜边长是多少吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.75,
+        "design_intent": "设计一个易错情境：给出一个三角形，三边长为3, 4, 5，但未明确标注直角。要求学生计算‘斜边’的长。部分学生会默认5为斜边直接应用公式，部分学生可能尝试用3或4作斜边。此设计旨在提前暴露并解决学情报告中的核心易错点——‘边长对应关系混淆’。冲突解决后，引导学生总结应用公式前必须先确定直角和斜边（联系逆定理KP4进行判断），并练习公式变形（如求直角边）。这是对定理应用（KP3）的深度理解和程序性巩固。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "一个5米长的梯子，靠墙立着，梯子脚离墙3米。如果梯子顶端不小心下滑了0.5米，你能算出梯子脚向外滑动了多远吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP6",
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "提供一个需要简单建模的实际问题（例如：一架5m长的梯子，顶端靠墙，底端离墙3m。若梯子顶端下滑0.5m，则底端滑动多少米？）。要求学生将文字描述转化为几何图形，标出已知量和未知量，判断其中的直角三角形关系（可能需要用到KP4的逆定理思想来确认垂直），并综合运用勾股定理（KP3）建立方程求解。此问题旨在提升学生数学建模（KP6）和综合应用的能力，完成从知识理解到现实迁移的闭环。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果一艘帆船要驶向远处的灯塔，是选择‘直接朝灯塔开’的航线快，还是‘先向正东航行一段，再转向正北航行一段’更快呢？这和我们在操场上斜着走的直觉，是不是同一个道理？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.6,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将陆地路径问题迁移到海上航行情景，用‘航线选择’激活学生对直角三角形斜边最短的直观判断。通过比较新旧情景的共通性，深化学生对‘斜边即最短路径’这一几何事实的感知与评价。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "我们画一个两直角边分别为6厘米和8厘米的直角三角形。不用去量斜边，你能通过计算6² + 8²来预测一下斜边上的正方形面积吗？这个结果和你量出斜边后计算的平方，会有什么关系？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.63,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "从方格纸的探索归纳转向具体数值的验证应用。给定具体直角边长，引导学生先通过计算两直角边平方和来“预言”斜边平方，再与实际测量计算对比，在验证中巩固对a²+b²=c²关系的理解，实现从观察到应用的过渡。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "仔细观察赵爽弦图，为什么中间那个小正方形的边长是(b-a)？如果拼成弦图的四个直角三角形不是全等的，我们还能用同样的方法推导出a²+b²=c²吗？这说明了证明中哪个条件至关重要？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.73,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过追问弦图构造细节（中间小正方形边长）和反设条件（直角三角形不全等），引导学生深度分析证明成立的前提。促使学生理解图形全等性是面积拼补证明法的关键，从而领悟数学证明的严谨性，深化对数形结合逻辑的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "有两组数据：①已知直角边为5和12，求斜边长；②已知斜边为13，一条直角边为5，求另一条直角边。对比一下你的求解过程，什么时候是‘两边的平方和’，什么时候又变成了‘斜边的平方减去一边的平方’？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过并列呈现已知条件不同的两组问题，制造对比冲突，引导学生明确区分公式a²+b²=c²的不同应用方向。让学生在对比中自主总结：求斜边是加，求直角边是减，从而强化对公式结构的理解，避免机械套用。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "有人说，只要一个三角形的三边长是6、8、11，那它一定是直角三角形，因为6²+8²=100，而11²=121，这符合勾股定理吗？你怎么看他的说法？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.68,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "提供一个典型的非勾股数组(6,8,11)作为反例，并模仿常见错误陈述（混淆定理与逆定理）。引导学生辨析勾股定理（由直角推边的关系）与其逆定理（由边的关系推直角）的区别，从而澄清核心概念，巩固逆定理（KP4）的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "一棵大树在离地面4米高的地方被风折断，树梢顶端刚好碰到地面，接触点离树根有3米远。你能想象出这个画面，并算出大树在没有折断前大概有多高吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP6",
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.78,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将梯子滑动问题迁移到更生动的树木折断情景，引导学生将文字描述转化为直角三角形模型（折断处到树顶为斜边）。通过解决此问题，巩固学生从实际问题中抽象几何图形、识别直角并应用勾股定理求解的能力，提升数学建模（KP6）的熟练度。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "仔细观察赵爽弦图，图中除了大正方形，还藏着哪两种基本图形？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "将M2中‘数方格’的直观观察，过渡到M3中‘看弦图’的证明准备。引导学生识别证明工具（基本图形），为下一步分析面积关系作铺垫。",
+        "design_intent": "针对学困生‘面积法推导能力’的断层。通过识别弦图中的基本图形（直角三角形和正方形），为后续分析其数量关系和面积构成打下基础，实现从具体计算到抽象证明的思维过渡。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "大正方形的面积除了用c²表示，还能看成哪两部分面积的和？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP2",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "承接S2-1的图形识别，聚焦于M3证明的核心——用不同方式表示同一图形（大正方形）的面积，引导学生初步建立‘整体等于各部分和’的面积等式思想。",
+        "design_intent": "进一步分解面积关系。引导学生从‘整体看’和‘分块看’两个视角观察弦图，为自主推导‘四个直角三角形面积+中间小正方形面积=大正方形面积’这一关键等式搭建思维台阶。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "我们发现的定理，用字母a、b、c怎么表示？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.4,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "在完成M3的证明后，以最简洁的方式回顾核心结论（勾股定理公式），为M4的应用提供必须的记忆提取点。",
+        "design_intent": "针对学困生可能忘记公式。以温和的提问方式，引导学生复述定理的字母表达式，巩固记忆，确保在进入应用环节前公式清晰可用。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果已知两条直角边求斜边c，怎么用a、b表示c？试着说说看。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "将M3中抽象的等式关系，转化为M4具体问题求解中可直接操作的公式变形（c = √(a²+b²)），降低应用门槛。",
+        "design_intent": "针对学困生‘公式变形不熟’的障碍。在记忆公式的基础上，引导其进行最简单的公式变形，明确求斜边的操作路径，为处理M4中更复杂的边长对应关系做准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "墙壁、地面和梯子构成了什么图形？试着画出来。",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "将M5的文字描述（梯子问题）与M4中已练习的三角形图形关联起来，完成实际问题向几何图形的初步转化，为建模奠基。",
+        "design_intent": "针对学困生‘实际问题数学化能力弱’的断层。引导学生从生活场景中抽象出关键的直角三角形模型，这是应用勾股定理解决实际问题的第一步。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "梯子下滑后，哪个长度没变？变化的边长间满足什么关系？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3",
+          "KP6"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "在S4-1建立图形的基础上，引导学生聚焦于M5问题中的变量与不变量，并联系M4中应用的勾股定理，建立方程模型。",
+        "design_intent": "引导建立数学模型。通过识别“梯子长度不变”这一关键条件，并提问边长关系，启发学生将勾股定理作为等量关系，自然列出方程，完成从识图到建模的关键一跃。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

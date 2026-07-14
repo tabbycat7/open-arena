@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S1-1-2 钥匙与人脸的安全性对比</title>
+    <style>
+        :root { --primary: #2c3e50; --safe: #27ae60; --danger: #e74c3c; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; color: var(--primary); }
+        .container { display: flex; justify-content: space-around; width: 90%; max-width: 800px; gap: 20px; }
+        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; flex: 1; }
+        h2 { font-size: 1.2rem; margin-bottom: 20px; }
+        .visual { height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: var(--primary); color: white; font-size: 1rem; margin: 5px; transition: 0.3s; }
+        button:hover { opacity: 0.8; }
+        #warning { color: var(--danger); font-weight: bold; height: 20px; margin-top: 10px; visibility: hidden; }
+        .icon { font-size: 60px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 实体钥匙区 -->
+        <div class="box">
+            <h2>实体钥匙</h2>
+            <div class="visual" id="key-zone">
+                <div id="lock-icon" class="icon" style="color: var(--safe);">🔒</div>
+            </div>
+            <button id="btn-lose">丢钥匙</button>
+            <button id="btn-change-lock">换锁</button>
+        </div>
+
+        <!-- 人脸数据区 -->
+        <div class="box">
+            <h2>人脸数据</h2>
+            <div class="visual" id="face-zone">
+                <div id="face-icon" class="icon" style="color: var(--safe);">👤</div>
+            </div>
+            <button id="btn-leak">泄露人脸</button>
+            <button id="btn-change-face">换脸</button>
+            <div id="warning">警告：生物特征终身无法更改！</div>
+        </div>
+    </div>
+
+    <script>
+        const lockIcon = document.getElementById('lock-icon');
+        const faceIcon = document.getElementById('face-icon');
+        const warning = document.getElementById('warning');
+
+        // 实体钥匙逻辑
+        document.getElementById('btn-lose').addEventListener('click', () => {
+            lockIcon.style.color = 'var(--danger)';
+            lockIcon.textContent = '🔓';
+        });
+
+        document.getElementById('btn-change-lock').addEventListener('click', () => {
+            lockIcon.style.color = 'var(--safe)';
+            lockIcon.textContent = '🔒';
+        });
+
+        // 人脸数据逻辑
+        document.getElementById('btn-leak').addEventListener('click', () => {
+            faceIcon.style.color = 'var(--danger)';
+            faceIcon.textContent = '🚫';
+            warning.style.visibility = 'hidden';
+        });
+
+        document.getElementById('btn-change-face').addEventListener('click', () => {
+            warning.style.visibility = 'visible';
+            // 模拟动画效果
+            faceIcon.style.transform = 'scale(1.2)';
+            setTimeout(() => { faceIcon.style.transform = 'scale(1)'; }, 200);
+        });
+    </script>
+</body>
+</html>

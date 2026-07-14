@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数轴区间划分交互微课</title>
+    <style>
+        /* 4:3 比例自适应容器设计，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-container {
+            width: 800px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+        }
+        /* 头部标题与引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .highlight-text {
+            color: #3182ce;
+            font-weight: bold;
+        }
+
+        /* 核心画布区域 */
+        .canvas-container {
+            flex-grow: 1;
+            position: relative;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #fafafa;
+            overflow: hidden;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 交互元素样式 */
+        .interactive-region {
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.65;
+        }
+        .interactive-region:hover, .interactive-region.active {
+            opacity: 0.95;
+            filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.15));
+        }
+        
+        /* 刻度点与标签 */
+        .axis-line {
+            stroke: #2d3748;
+            stroke-width: 3;
+        }
+        .tick-mark {
+            stroke: #2d3748;
+            stroke-width: 2;
+        }
+        .tick-label {
+            font-size: 18px;
+            font-weight: bold;
+            fill: #2d3748;
+            text-anchor: middle;
+        }
+        .boundary-point {
+            stroke: #2d3748;
+            stroke-width: 2;
+            fill: #ffffff;
+            transition: r 0.2s ease;
+        }
+        .boundary-point.active {
+            r: 8;
+            fill: #2d3748;
+        }
+
+        /* 气泡提示框样式 */
+        .tooltip-box {
+            fill: #2d3748;
+            rx: 6;
+            ry: 6;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tooltip-text {
+            fill: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tooltip-visible {
+            opacity: 1 !important;
+        }
+
+        /* 底部控制与展示区 */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            border-top: 2px dashed #e2e8f0;
+            padding-top: 15px;
+        }
+        
+        .btn {
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);
+        }
+        .btn:hover {
+            background-color: #2b6cb0;
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* 分段函数雏形展示 */
+        .formula-container {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-family: "Times New Roman", Times, serif;
+            color: #2d3748;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .formula-container.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .brace {
+            font-size: 60px;
+            font-weight: 100;
+            margin: 0 10px;
+            color: #4a5568;
+        }
+        .formula-branches {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .branch-item {
+            display: flex;
+            align-items: center;
+            height: 24px;
+        }
+        .color-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        .placeholder-box {
+            border: 2px dashed #cbd5e0;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 16px;
+            color: #a0aec0;
+            background-color: #f7fafc;
+            min-width: 120px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .placeholder-box.filled {
+            border-style: solid;
+            background-color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 头部引导 -->
+        <div class="header">
+            <h1>探索数轴的区间划分</h1>
+            <p>点击数轴上的<span class="highlight-text">不同彩色区域</span>，观察它们对应的代数范围。点击“确认划分”生成分段结构。</p>
+        </div>
+
+        <!-- 数轴交互画布 -->
+        <div class="canvas-container">
+            <svg id="visual-svg" viewBox="0 0 740 320">
+                <!-- 定义渐变与滤镜 -->
+                <defs>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+
+                <!-- 辅助网格线（轻微） -->
+                <g stroke="#edf2f7" stroke-width="1">
+                    <line x1="50" y1="50" x2="690" y2="50" />
+                    <line x1="50" y1="100" x2="690" y2="100" />
+                    <line x1="50" y1="150" x2="690" y2="150" />
+                    <line x1="50" y1="200" x2="690" y2="200" />
+                </g>
+
+                <!-- 1. 交互区域（背景高亮段） -->
+                <!-- 左段：x < -1 (红) -->
+                <g class="interactive-region" id="region-left" data-range="x < -1" data-color="#e53e3e" data-index="0">
+                    <rect x="50" y="100" width="220" height="60" fill="#feebcb" rx="6" opacity="0.5"/>
+                    <path d="M 50 130 L 270 130" stroke="#e53e3e" stroke-width="8" stroke-linecap="round" />
+                    <polygon points="50,125 40,130 50,135" fill="#e53e3e" />
+                </g>
+
+                <!-- 中段：-1 ≤ x ≤ 1 (黄) -->
+                <g class="interactive-region" id="region-mid" data-range="-1 ≤ x ≤ 1" data-color="#dd6b20" data-index="1">
+                    <rect x="270" y="100" width="200" height="60" fill="#feebcb" rx="6" opacity="0.3"/>
+                    <path d="M 270 130 L 470 130" stroke="#dd6b20" stroke-width="8" />
+                </g>
+
+                <!-- 右段：x > 1 (绿) -->
+                <g class="interactive-region" id="region-right" data-range="x > 1" data-color="#38a169" data-index="2">
+                    <rect x="470" y="100" width="220" height="60" fill="#e6fffa" rx="6" opacity="0.5"/>
+                    <path d="M 470 130 L 690 130" stroke="#38a169" stroke-width="8" stroke-linecap="round" />
+                    <polygon points="690,125 700,130 690,135" fill="#38a169" />
+                </g>
+
+                <!-- 2. 基础数轴线与刻度 -->
+                <g>
+                    <!-- 轴线 -->
+                    <line x1="35" y1="130" x2="705" y2="130" class="axis-line" stroke-linecap="round"/>
+                    <!-- 轴箭头 -->
+                    <polygon points="705,124 717,130 705,136" fill="#2d3748" />
+                    <text x="715" y="115" font-size="16" font-weight="bold" fill="#2d3748">x</text>
+
+                    <!-- 刻度 -1 -->
+                    <line x1="270" y1="122" x2="270" y2="138" class="tick-mark" />
+                    <text x="270" y="165" class="tick-label">-1</text>
+
+                    <!-- 刻度 1 -->
+                    <line x1="470" y1="122" x2="470" y2="138" class="tick-mark" />
+                    <text x="470" y="165" class="tick-label">1</text>
+                    
+                    <!-- 原点辅助参考 -->
+                    <line x1="370" y1="126" x2="370" y2="134" stroke="#a0aec0" stroke-width="1" />
+                    <text x="370" y="155" font-size="14" fill="#a0aec0" text-anchor="middle">0</text>
+                </g>
+
+                <!-- 3. 边界点（空心/实心示意，此处用经典圆点） -->
+                <circle cx="270" cy="130" r="6" class="boundary-point" id="point-left"/>
+                <circle cx="470" cy="130" r="6" class="boundary-point" id="point-right"/>
+
+                <!-- 4. 动态悬浮气泡提示 -->
+                <g id="tooltip-group">
+                    <rect id="tooltip-bg" class="tooltip-box" x="0" y="40" width="110" height="36" />
+                    <text id="tooltip-txt" class="tooltip-text" x="0" y="63">x < -1</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 底部控制与分段函数雏形 -->
+        <div class="control-panel">
+            <!-- 左侧：分段函数大括号结构 -->
+            <div class="formula-container" id="formula-container">
+                <span>y = </span>
+                <span class="brace">{</span>
+                <div class="formula-branches">
+                    <div class="branch-item">
+                        <span class="color-indicator" style="background-color: #e53e3e;"></span>
+                        <span class="placeholder-box" id="box-0" style="color: #e53e3e;">第一段区间</span>
+                    </div>
+                    <div class="branch-item">
+                        <span class="color-indicator" style="background-color: #dd6b20;"></span>
+                        <span class="placeholder-box" id="box-1" style="color: #dd6b20;">第二段区间</span>
+                    </div>
+                    <div class="branch-item">
+                        <span class="color-indicator" style="background-color: #38a169;"></span>
+                        <span class="placeholder-box" id="box-2" style="color: #38a169;">第三段区间</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：操作按钮 -->
+            <button class="btn" id="btn-confirm">确认划分</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const regions = document.querySelectorAll('.interactive-region');
+            const tooltipBg = document.getElementById('tooltip-bg');
+            const tooltipTxt = document.getElementById('tooltip-txt');
+            const btnConfirm = document.getElementById('btn-confirm');
+            const formulaContainer = document.getElementById('formula-container');
+            
+            // 记录学生是否点击过各区间
+            const clickedRanges = {
+                '0': false,
+                '1': false,
+                '2': false
+            };
+
+            // 区域交互逻辑
+            regions.forEach(region => {
+                region.addEventListener('mouseenter', (e) => {
+                    highlightRegion(region);
+                });
+
+                region.addEventListener('mouseleave', () => {
+                    resetHighlight();
+                });
+
+                region.addEventListener('click', () => {
+                    const index = region.getAttribute('data-index');
+                    const rangeText = region.getAttribute('data-range');
+                    const color = region.getAttribute('data-color');
+                    
+                    // 标记已探索
+                    clickedRanges[index] = true;
+                    
+                    // 更新对应的大括号占位框
+                    const box = document.getElementById(`box-${index}`);
+                    box.textContent = rangeText;
+                    box.classList.add('filled');
+                    box.style.borderColor = color;
+                    box.style.backgroundColor = '#ffffff';
+                    
+                    // 视觉激活动效
+                    regions.forEach(r => r.classList.remove('active'));
+                    region.classList.add('active');
+                    
+                    // 触发边界点高亮
+                    updateBoundaryPoints(index);
+                });
+            });
+
+            function highlightRegion(region) {
+                const rangeText = region.getAttribute('data-range');
+                const color = region.getAttribute('data-color');
+                const index = region.getAttribute('data-index');
+                
+                // 计算气泡位置
+                let targetX = 0;
+                if (index === '0') targetX = 160;
+                else if (index === '1') targetX = 370;
+                else if (index === '2') targetX = 580;
+
+                // 更新气泡
+                tooltipBg.setAttribute('x', targetX - 60);
+                tooltipBg.setAttribute('fill', color);
+                tooltipBg.classList.add('tooltip-visible');
+                
+                tooltipTxt.setAttribute('x', targetX);
+                tooltipTxt.textContent = rangeText;
+                tooltipTxt.classList.add('tooltip-visible');
+            }
+
+            function resetHighlight() {
+                tooltipBg.classList.remove('tooltip-visible');
+                tooltipTxt.classList.remove('tooltip-visible');
+            }
+
+            function updateBoundaryPoints(activeIndex) {
+                const ptLeft = document.getElementById('point-left');
+                const ptRight = document.getElementById('point-right');
+                
+                ptLeft.classList.remove('active');
+                ptRight.classList.remove('active');
+
+                if (activeIndex === '0') {
+                    ptLeft.classList.add('active');
+                } else if (activeIndex === '1') {
+                    ptLeft.classList.add('active');
+                    ptRight.classList.add('active');
+                } else if (activeIndex === '2') {
+                    ptRight.classList.add('active');
+                }
+            }
+
+            // 确认划分按钮 - 展现分段函数雏形
+            btnConfirm.addEventListener('click', () => {
+                formulaContainer.classList.add('visible');
+                
+                // 自动填充未点击的区间，帮助教学收尾
+                regions.forEach(region => {
+                    const index = region.getAttribute('data-index');
+                    if (!clickedRanges[index]) {
+                        const rangeText = region.getAttribute('data-range');
+                        const color = region.getAttribute('data-color');
+                        const box = document.getElementById(`box-${index}`);
+                        
+                        // 渐进式填充效果
+                        setTimeout(() => {
+                            box.textContent = rangeText;
+                            box.classList.add('filled');
+                            box.style.borderColor = color;
+                            box.style.transform = 'scale(1.05)';
+                            setTimeout(() => box.style.transform = 'scale(1)', 200);
+                        }, index * 200);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

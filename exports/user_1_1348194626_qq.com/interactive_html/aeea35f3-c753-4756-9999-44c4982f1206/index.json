@@ -1,0 +1,149 @@
+{
+  "task_id": "aeea35f3-c753-4756-9999-44c4982f1206",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们过年都收到不少压岁钱吧？要是把2000元存到银行，有人说到期取出来的所有钱就是利息，你觉得对吗？再说说存的钱、多拿的钱、银行公示的利率分别指什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "如果咱们把1000元按年利率1.5%存银行，存1年能拿到多少利息？存3年又是多少？你能总结出算利息的通用方法吗？要是存2年半就要提前取，这个方法还能用吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "小明把3000元存两年定期，年利率是2.10%，他算出来利息是3000×2.1%=63元，你觉得他算得对吗？哪里有问题呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3a",
+      "question_type": "main",
+      "content": "如果咱们计划把一笔钱存3年，但中途可能需要取钱用，你觉得选存款方案时除了利息多少，还要考虑哪些因素呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "要是你有10000元压岁钱打算存3年，银行有一年期、两年期、三年期三种定期存款，你能设计几种不同的存款方案，算算哪种拿到的利息最多吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "妈妈把2万元工资结余存到银行，你能分别说说这笔存款里的本金、利息、利率分别指什么吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "把5000元存银行1年，到期拿到75元利息，你能算出这笔存款对应的年利率是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "小丽把2000元按年利率1.5%存1年，她说到期一共能取30元，你觉得她错在哪？正确是多少？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "银行公示了活期、3个月、1-3年定期的完整利率表，存5000元3个月定期能拿多少利息？要注意什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "你有10000元打算存3年，除了定期存款还有年利率2.85%的3年期国债可选，哪种收益更高？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "你能说说本金、利息、利率分别指什么吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "你觉得算利息会用到刚才说的哪几个量呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "存2年定期，要选对应几年期的利率呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "年利率的单位是年，存期要按什么单位算呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "算某存款方案的利息，要先找哪三个信息呀？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "每个存款方案的利息，你能试着分步算出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

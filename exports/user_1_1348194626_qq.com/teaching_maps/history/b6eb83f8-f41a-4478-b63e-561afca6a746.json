@@ -1,0 +1,344 @@
+{
+  "id": "b6eb83f8-f41a-4478-b63e-561afca6a746",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "八年级",
+  "teaching_goals": "能将实际问题转化为直角三角形模型，运用勾股定理解决，2.提升从实际情境中抽象出几何问题的能力.",
+  "student_profile": "八下学生已掌握勾股定理的基本内容，能进行简单的直角三角形边长计算，具备一定的几何推理和运算能力，这为本课时的应用学习提供了知识基础．但学生在将实际问题抽象为几何模型时，往往难以快速识别其中的直角三角形和已知、未知条件，对“建模\"过程存在思维障碍．同时，部分学生对定理的适用条件重视不足，容易忽略“直角\"这一关键前提．不过学生对解决生活中的实际问题兴趣较高，乐于通过合作探究完成任务，这一特点可有效驱动课堂学习.",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"工地上，一个5米长的梯子斜靠在墙上，梯脚离墙底3米。梯子顶端离地多高？先算算看。诶，如果我们把梯脚往外移到离墙2.5米——恰好是梯长的一半，你注意到的三角形还能用勾股定理吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP1\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"从一个结构清晰、直角明显的实际问题（梯子靠墙）切入，让学生直接运用勾股定理进行计算。目的是激活学生的先备知识，建立‘我能用勾股定理解决问题’的初始信心和熟悉感，为后续更复杂的建模任务提供心理和认知起点。\", \"design_rationale\": \"\"}, {\"id\": \"M2a\", \"content\": \"我们想测量操场上旗杆的高度，但没法爬上去。如果给你卷尺，我们得先在地面上‘创造’出一个直角三角形。这让你想到了什么？怎么才能保证我们创造的那个角是直角呢？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"新增节点。承接M1，从具体计算转向建模准备。引导学生思考在实际测量中如何主动‘构造’直角三角形，并探讨确保直角的常用方法（如勾股数、垂直判定），将KP2（判定）的知识点前置并融入简单情境的建模（KP3）思考中，为后续复杂文本建模打下坚实基础。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"回到古人的智慧：‘一根竹子，原高一丈，折断后竹梢触地，触地点离竹根三尺。’假如你就是那个古人，手头只有这段折断的竹子，你会怎样把‘一丈’、‘三尺’这些信息，变成一个可以计算的图形？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP1\", \"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"design_intent\": \"提供一个未配图的实际问题（如‘折竹抵地’），引导学生经历完整的数学建模初体验：1.阅读理解，剥离背景；2.识别关键元素（竹子、地面、折断点构成直角三角形）；3.画出示意图；4.标注已知和未知量；5.列方程求解。这是本节课核心能力（KP3）的第一次结构化建构。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"有同学想测量池塘两端A、B的距离。他走到C点，使AC等于AB，形成一个等腰三角形，然后测量BC就想算AB。这方法真的保险吗？三角形的形状确定了吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"设计一个具有迷惑性的实际问题，其中隐含的三角形可能被误认为是直角三角形（如利用等腰三角形测距，但未告知顶角是直角）。旨在让学生提前暴露并深刻体会‘忽视直角前提’这一核心易错点。通过冲突，强制学生在建模流程中插入‘验证直角是否存在’的关键步骤，将KP2（判定）的知识点从后台推到前台，实现深度理解。\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"挑战升级！一个长30cm、宽20cm、高10cm的长方体盒子，蚂蚁从顶点A爬到对角的G点，沿着表面最短的路线是哪条？你能想象出把盒子‘拆开’后，这条路线在平面上构成了怎样的直角三角形吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP1\", \"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"引入一个涉及立体图形（如长方体箱子）中最短路径的实际问题。挑战学生不仅要在复杂描述中识别直角三角形，还要进行空间图形到平面图形的转化（将长方体的侧面展开）。这深化了‘建模’的内涵，并自然地引出对解的合理性检验（KP5），例如比较不同展开路径下的长度。旨在提升学生的高阶空间想象能力和综合应用能力。\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"现在，轮到你们来设计了。不能直接爬，只用卷尺和地面标记，你们小组能根据勾股定理，想出一个测量旗杆高度的具体方案吗？\", \"question_type\": \"main\", \"knowledge_points\": [\"KP3\", \"KP4\", \"KP5\"], \"cognitive_level\": \"创造\", \"difficulty\": 0.85, \"design_intent\": \"布置一个开放性的实践任务：‘请设计一个方案，利用勾股定理测量学校旗杆的高度（不可直接攀爬）’。要求学生以小组形式，明确测量目标、工具、步骤、构建的直角三角形模型、计算公式以及可能存在的误差分析与改进。此任务整合了全课的核心能力（建模、计算、验证），并鼓励创造性思维和合作交流，是教学目标的综合体现与终极验收。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"台风后，园林工人们用一根8米长的绳索从树干高处拉到地面固定点，以加固树木。如果树干与地面垂直，且固定点离树根4米，那么绳索在树干上的固定点离地多高？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP1\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"将‘梯子靠墙’这一经典模型，替换为‘绳索加固树干’这一生活化新情景。核心依然是识别垂直关系（树干与地面）与直角三角形（树干、绳索、地面），直接应用勾股定理计算。旨在让学生在不‘陌生’的熟悉结构（斜边、直角边）中，感受到数学模型的普适性。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"想象一下：一根10米长的钓鱼竿平放在小船上时，竿梢伸出船头3米。竖直抬起竿柄时，竿梢刚好触到水面。若船头位置不变，水面与船甲板平行，此时竿柄离船头多远？怎样用一个图形表示这个过程？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP1\", \"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"将古代‘折竹抵地’问题现代化、动态化，变为‘钓鱼竿抬起’的情景。引导学生将文字描述的动态过程（平放-竖直抬起）转化为静态的几何图形（一个变化的直角三角形），识别出竿长（斜边）、初始水平伸出距离与最终未知水平距离（直角边）的关系。旨在强化建模（KP3）中‘情境→图形→方程’的关键转化能力。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"针对刚才测河宽的方法，如果测量者特意让两根等长的测杆与对岸点构成90°角（形成了一个等腰直角三角形），那么河宽（AB）和测得的BC长是什么关系？这和前面‘不确定形状’的情况对比，关键区别在哪里？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"在M4引发‘等腰不一定直角’的认知冲突后，立刻追问一个‘确保直角’的特例，形成强烈对比。让学生亲手计算在明确直角条件下，问题如何变得简单直接（AB = BC/√2）。通过对比，将学生的注意力从‘等腰’这一错误焦点，强制拉回到‘直角’这一运用勾股定理的必要前提上，深刻内化KP2（判定）的重要性。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"挑战变了！一个圆柱形罐头高10cm，底面周长20cm。一只蚂蚁从侧面底部A点，想爬到正上方的B点（B在A的正上方）。最短路径怎么走？把罐头侧面‘剪开’铺平，这条路径构成了什么图形？如何计算它的长度？\", \"question_type\": \"variant\", \"knowledge_points\": [\"KP3\", \"KP1\", \"KP4\", \"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"将M5的长方体展开变换为圆柱侧面展开，改变建模的几何背景，但保留‘空间曲面→平面图形’的核心转化思想。引导学生想象并画出圆柱侧面展开图（矩形），在矩形中识别起点A与终点B’的位置，连接线段构成直角三角形。旨在深化空间想象，并让学生体会‘展开求最短路径’这一策略的通用性，同时自然引入对路径唯一性的思考（KP5）。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"测量旗杆时，我们的身体、影子、卷尺，哪三个量能围成一个三角形？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M1\", \"to_main_id\": \"M2a\", \"bridge_function\": \"将M1中已知的、直观的直角三角形三边（梯子、墙、地），过渡到M2a中需要从测量情境里主动识别和提取的“边”（人、影、卷尺测量的斜线），聚焦建模第一步：从实际描述中抽象出几何元素。\", \"design_intent\": \"学困生在M1到M2a的跃迁中，断层在于‘无法从纯文字中提取出构成直角三角形的三条边’。此支架将M2a问题的情境简化，直接提问，引导学生思考构成三角形的三个关键实物量，帮助他们完成信息筛选的关键一步。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"如果把你找到的三角形画出来，直角会在哪里？两条直角边分别对应什么？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.5, \"from_main_id\": \"M1\", \"to_main_id\": \"M2a\", \"bridge_function\": \"在S1-1确定了三角形的三条“边”之后，此支架引导学生思考它们之间的几何关系（哪里是直角？），为画出正确的直角三角形示意图并标注已知量、未知量做准备，完成建模的第二步。\", \"design_intent\": \"在上一步提取信息的基础上，提供脚手架，引导学生思考直角的位置和直角边的实际意义。这是将抽象关系可视化的关键前置思考，避免了直接命令画图的生硬感。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"要使用勾股定理，那个三角形必须是什么形状？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.3, \"from_main_id\": \"M2a\", \"to_main_id\": \"M3\", \"bridge_function\": \"在M2a探讨了如何‘创造’直角三角形后，此支架直接强化勾股定理的核心前提，为进入M3的建模以及后续可能遇到的非直角三角形陷阱（M4）打下坚实的认知基础。\", \"design_intent\": \"在进入易错情境M3前，强化概念前提。通过一个极其简单直接的问题，回顾勾股定理的适用条件，为识别后续问题中的建模关键点（必须是直角三角形）做认知准备。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"想象一个长方体盒子，把它侧面展开铺平。原来盒子上的最短路径，在展开图上变成了一条什么线？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"此支架将M3中在平面上处理折竹问题的经验，初步引向M4之后更复杂的空间情境。它聚焦于‘空间路径转化为平面线段’这一核心思想，为后续解决立体图形中的最短路径问题（M5）做思维铺垫。\", \"design_intent\": \"学困生面对立体图形问题，难以想象其展开图。此支架用一个引导性的想象问题，帮助学生建立‘立体表面路径’与‘平面图形中的线段’之间的初步联系，将抽象的空间转化具体化。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"在展开图上，这条线段如果是斜边，那么直角三角形的两条直角边，可能是长方体的哪两个棱长？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"在S3-1完成路径转化的基础上，此支架引导学生进一步在展开图中识别潜在的直角三角形结构，并关联长方体的具体棱长数据，为后续利用勾股定理列方程计算（M5的核心步骤）搭建台阶。\", \"design_intent\": \"在完成路径可视化后，进一步支架，引导学生主动在图形中寻找并确定直角三角形的两条直角边（即长方体的棱长），将几何图形与代数计算（勾股定理）自然衔接起来。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2a\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2a\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2a\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2a\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-22 19:47:55",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "工地上，一个5米长的梯子斜靠在墙上，梯脚离墙底3米。梯子顶端离地多高？先算算看。诶，如果我们把梯脚往外移到离墙2.5米——恰好是梯长的一半，你注意到的三角形还能用勾股定理吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP1",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "从一个结构清晰、直角明显的实际问题（梯子靠墙）切入，让学生直接运用勾股定理进行计算。目的是激活学生的先备知识，建立‘我能用勾股定理解决问题’的初始信心和熟悉感，为后续更复杂的建模任务提供心理和认知起点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2a",
+        "content": "我们想测量操场上旗杆的高度，但没法爬上去。如果给你卷尺，我们得先在地面上‘创造’出一个直角三角形。这让你想到了什么？怎么才能保证我们创造的那个角是直角呢？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "新增节点。承接M1，从具体计算转向建模准备。引导学生思考在实际测量中如何主动‘构造’直角三角形，并探讨确保直角的常用方法（如勾股数、垂直判定），将KP2（判定）的知识点前置并融入简单情境的建模（KP3）思考中，为后续复杂文本建模打下坚实基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "回到古人的智慧：‘一根竹子，原高一丈，折断后竹梢触地，触地点离竹根三尺。’假如你就是那个古人，手头只有这段折断的竹子，你会怎样把‘一丈’、‘三尺’这些信息，变成一个可以计算的图形？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP1",
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "design_intent": "提供一个未配图的实际问题（如‘折竹抵地’），引导学生经历完整的数学建模初体验：1.阅读理解，剥离背景；2.识别关键元素（竹子、地面、折断点构成直角三角形）；3.画出示意图；4.标注已知和未知量；5.列方程求解。这是本节课核心能力（KP3）的第一次结构化建构。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "有同学想测量池塘两端A、B的距离。他走到C点，使AC等于AB，形成一个等腰三角形，然后测量BC就想算AB。这方法真的保险吗？三角形的形状确定了吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "设计一个具有迷惑性的实际问题，其中隐含的三角形可能被误认为是直角三角形（如利用等腰三角形测距，但未告知顶角是直角）。旨在让学生提前暴露并深刻体会‘忽视直角前提’这一核心易错点。通过冲突，强制学生在建模流程中插入‘验证直角是否存在’的关键步骤，将KP2（判定）的知识点从后台推到前台，实现深度理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "挑战升级！一个长30cm、宽20cm、高10cm的长方体盒子，蚂蚁从顶点A爬到对角的G点，沿着表面最短的路线是哪条？你能想象出把盒子‘拆开’后，这条路线在平面上构成了怎样的直角三角形吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP1",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "引入一个涉及立体图形（如长方体箱子）中最短路径的实际问题。挑战学生不仅要在复杂描述中识别直角三角形，还要进行空间图形到平面图形的转化（将长方体的侧面展开）。这深化了‘建模’的内涵，并自然地引出对解的合理性检验（KP5），例如比较不同展开路径下的长度。旨在提升学生的高阶空间想象能力和综合应用能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "现在，轮到你们来设计了。不能直接爬，只用卷尺和地面标记，你们小组能根据勾股定理，想出一个测量旗杆高度的具体方案吗？",
+        "question_type": "main",
+        "knowledge_points": [
+          "KP3",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "创造",
+        "difficulty": 0.85,
+        "design_intent": "布置一个开放性的实践任务：‘请设计一个方案，利用勾股定理测量学校旗杆的高度（不可直接攀爬）’。要求学生以小组形式，明确测量目标、工具、步骤、构建的直角三角形模型、计算公式以及可能存在的误差分析与改进。此任务整合了全课的核心能力（建模、计算、验证），并鼓励创造性思维和合作交流，是教学目标的综合体现与终极验收。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "台风后，园林工人们用一根8米长的绳索从树干高处拉到地面固定点，以加固树木。如果树干与地面垂直，且固定点离树根4米，那么绳索在树干上的固定点离地多高？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP1",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "将‘梯子靠墙’这一经典模型，替换为‘绳索加固树干’这一生活化新情景。核心依然是识别垂直关系（树干与地面）与直角三角形（树干、绳索、地面），直接应用勾股定理计算。旨在让学生在不‘陌生’的熟悉结构（斜边、直角边）中，感受到数学模型的普适性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "想象一下：一根10米长的钓鱼竿平放在小船上时，竿梢伸出船头3米。竖直抬起竿柄时，竿梢刚好触到水面。若船头位置不变，水面与船甲板平行，此时竿柄离船头多远？怎样用一个图形表示这个过程？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP1",
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "将古代‘折竹抵地’问题现代化、动态化，变为‘钓鱼竿抬起’的情景。引导学生将文字描述的动态过程（平放-竖直抬起）转化为静态的几何图形（一个变化的直角三角形），识别出竿长（斜边）、初始水平伸出距离与最终未知水平距离（直角边）的关系。旨在强化建模（KP3）中‘情境→图形→方程’的关键转化能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "针对刚才测河宽的方法，如果测量者特意让两根等长的测杆与对岸点构成90°角（形成了一个等腰直角三角形），那么河宽（AB）和测得的BC长是什么关系？这和前面‘不确定形状’的情况对比，关键区别在哪里？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "在M4引发‘等腰不一定直角’的认知冲突后，立刻追问一个‘确保直角’的特例，形成强烈对比。让学生亲手计算在明确直角条件下，问题如何变得简单直接（AB = BC/√2）。通过对比，将学生的注意力从‘等腰’这一错误焦点，强制拉回到‘直角’这一运用勾股定理的必要前提上，深刻内化KP2（判定）的重要性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "挑战变了！一个圆柱形罐头高10cm，底面周长20cm。一只蚂蚁从侧面底部A点，想爬到正上方的B点（B在A的正上方）。最短路径怎么走？把罐头侧面‘剪开’铺平，这条路径构成了什么图形？如何计算它的长度？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "KP3",
+          "KP1",
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "将M5的长方体展开变换为圆柱侧面展开，改变建模的几何背景，但保留‘空间曲面→平面图形’的核心转化思想。引导学生想象并画出圆柱侧面展开图（矩形），在矩形中识别起点A与终点B’的位置，连接线段构成直角三角形。旨在深化空间想象，并让学生体会‘展开求最短路径’这一策略的通用性，同时自然引入对路径唯一性的思考（KP5）。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "测量旗杆时，我们的身体、影子、卷尺，哪三个量能围成一个三角形？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M1",
+        "to_main_id": "M2a",
+        "bridge_function": "将M1中已知的、直观的直角三角形三边（梯子、墙、地），过渡到M2a中需要从测量情境里主动识别和提取的“边”（人、影、卷尺测量的斜线），聚焦建模第一步：从实际描述中抽象出几何元素。",
+        "design_intent": "学困生在M1到M2a的跃迁中，断层在于‘无法从纯文字中提取出构成直角三角形的三条边’。此支架将M2a问题的情境简化，直接提问，引导学生思考构成三角形的三个关键实物量，帮助他们完成信息筛选的关键一步。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "如果把你找到的三角形画出来，直角会在哪里？两条直角边分别对应什么？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.5,
+        "from_main_id": "M1",
+        "to_main_id": "M2a",
+        "bridge_function": "在S1-1确定了三角形的三条“边”之后，此支架引导学生思考它们之间的几何关系（哪里是直角？），为画出正确的直角三角形示意图并标注已知量、未知量做准备，完成建模的第二步。",
+        "design_intent": "在上一步提取信息的基础上，提供脚手架，引导学生思考直角的位置和直角边的实际意义。这是将抽象关系可视化的关键前置思考，避免了直接命令画图的生硬感。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "要使用勾股定理，那个三角形必须是什么形状？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.3,
+        "from_main_id": "M2a",
+        "to_main_id": "M3",
+        "bridge_function": "在M2a探讨了如何‘创造’直角三角形后，此支架直接强化勾股定理的核心前提，为进入M3的建模以及后续可能遇到的非直角三角形陷阱（M4）打下坚实的认知基础。",
+        "design_intent": "在进入易错情境M3前，强化概念前提。通过一个极其简单直接的问题，回顾勾股定理的适用条件，为识别后续问题中的建模关键点（必须是直角三角形）做认知准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "想象一个长方体盒子，把它侧面展开铺平。原来盒子上的最短路径，在展开图上变成了一条什么线？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "此支架将M3中在平面上处理折竹问题的经验，初步引向M4之后更复杂的空间情境。它聚焦于‘空间路径转化为平面线段’这一核心思想，为后续解决立体图形中的最短路径问题（M5）做思维铺垫。",
+        "design_intent": "学困生面对立体图形问题，难以想象其展开图。此支架用一个引导性的想象问题，帮助学生建立‘立体表面路径’与‘平面图形中的线段’之间的初步联系，将抽象的空间转化具体化。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "在展开图上，这条线段如果是斜边，那么直角三角形的两条直角边，可能是长方体的哪两个棱长？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "在S3-1完成路径转化的基础上，此支架引导学生进一步在展开图中识别潜在的直角三角形结构，并关联长方体的具体棱长数据，为后续利用勾股定理列方程计算（M5的核心步骤）搭建台阶。",
+        "design_intent": "在完成路径可视化后，进一步支架，引导学生主动在图形中寻找并确定直角三角形的两条直角边（即长方体的棱长），将几何图形与代数计算（勾股定理）自然衔接起来。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2a",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2a",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2a",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2a",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

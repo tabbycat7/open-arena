@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数边界临界状态交互教学课件</title>
+    <style>
+        /* 全局样式，适配 4:3 比例投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 1000px;
+            height: 750px; /* 4:3 比例 */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+        }
+        
+        /* 头部区域 */
+        .header {
+            border-bottom: 2px solid #eef2f6;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .title-tag {
+            background-color: #409eff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .question-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #409eff;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #34495e;
+        }
+        .highlight-text {
+            color: #e6a23c;
+            font-weight: bold;
+        }
+
+        /* 主体布局：左图右控 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            min-height: 0; /* 允许子元素缩放 */
+        }
+        
+        .visual-area {
+            flex: 1.3;
+            position: relative;
+            border: 1px solid #e4e7ed;
+            border-radius: 8px;
+            background-color: #fafafa;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-area {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 交互面板样式 */
+        .panel {
+            background-color: #fff;
+            border: 1px solid #e4e7ed;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .panel-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: #409eff;
+            border-radius: 2px;
+        }
+
+        /* 滑块控制器 */
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .slider-input {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #e4e7ed;
+            cursor: pointer;
+        }
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #409eff;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: background 0.1s;
+        }
+        .slider-input::-webkit-slider-thumb:hover {
+            background: #66b1ff;
+        }
+
+        /* 预设按钮 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #dcdfe6;
+            background-color: #fff;
+            color: #606266;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn:hover {
+            color: #409eff;
+            border-color: #c6e2ff;
+            background-color: #ecf5ff;
+        }
+        .btn.active {
+            background-color: #409eff;
+            color: #fff;
+            border-color: #409eff;
+        }
+
+        /* 代数验证区域 */
+        .calc-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+        .calc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e4e7ed;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+        }
+        .calc-item.highlight {
+            background-color: #f0f9eb;
+            border-color: #c2e7b0;
+            color: #67c23a;
+        }
+        .calc-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #e6a23c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .calc-btn:hover {
+            background-color: #ebb563;
+        }
+
+        /* 闪烁动画 */
+        @keyframes pulse {
+            0% { stroke-width: 4; stroke-opacity: 0.6; }
+            50% { stroke-width: 8; stroke-opacity: 1; }
+            100% { stroke-width: 4; stroke-opacity: 0.6; }
+        }
+        .pulse-line {
+            animation: pulse 2s infinite;
+        }
+
+        /* 放大镜视窗样式 */
+        .lens-container {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid #67c23a;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: none; /* 仅在 a=2 时显示 */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .lens-title {
+            font-size: 12px;
+            color: #67c23a;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        /* 底部提示 */
+        .footer-tips {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #909399;
+            text-align: center;
+            border-top: 1px dashed #e4e7ed;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部：问题引入 -->
+    <div class="header">
+        <div>
+            <span class="title-tag">思考与探究</span>
+            <h1 class="title">方程的根与函数图象的交点</h1>
+        </div>
+        <div class="question-box">
+            <strong>思考：</strong> 当水平直线 <span class="highlight-text">y = a</span> 随着参数 <span class="highlight-text">a</span> 的减小，恰好落到折线“槽谷”的底部（即 <span class="highlight-text">a = 2</span>）时，直线与折线呈现出怎样的位置关系？此时方程的实数解有几个？
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 左侧：SVG 动态图表 -->
+        <div class="visual-area">
+            <svg id="plot" width="520" height="420" viewBox="0 0 520 420" style="background-color: #ffffff;">
+                <!-- 网格线 -->
+                <g stroke="#f0f0f0" stroke-width="1">
+                    <!-- 横网格 -->
+                    <line x1="40" y1="60" x2="480" y2="60" />
+                    <line x1="40" y1="110" x2="480" y2="110" />
+                    <line x1="40" y1="160" x2="480" y2="160" />
+                    <line x1="40" y1="210" x2="480" y2="210" />
+                    <line x1="40" y1="260" x2="480" y2="260" />
+                    <line x1="40" y1="310" x2="480" y2="310" />
+                    <line x1="40" y1="360" x2="480" y2="360" />
+                    <!-- 纵网格 -->
+                    <line x1="60" y1="40" x2="60" y2="380" />
+                    <line x1="110" y1="40" x2="110" y2="380" />
+                    <line x1="160" y1="40" x2="160" y2="380" />
+                    <line x1="210" y1="40" x2="210" y2="380" />
+                    <line x1="260" y1="40" x2="260" y2="380" />
+                    <line x1="310" y1="40" x2="310" y2="380" />
+                    <line x1="360" y1="40" x2="360" y2="380" />
+                    <line x1="410" y1="40" x2="410" y2="380" />
+                    <line x1="460" y1="40" x2="460" y2="380" />
+                </g>
+
+                <!-- 坐标轴 -->
+                <g stroke="#333" stroke-width="1.5">
+                    <!-- X轴 -->
+                    <line x1="30" y1="310" x2="490" y2="310" />
+                    <polygon points="490,306 500,310 490,314" fill="#333" />
+                    <!-- Y轴 -->
+                    <line x1="260" y1="390" x2="260" y2="30" />
+                    <polygon points="256,30 260,20 264,30" fill="#333" />
+                </g>
+
+                <!-- 轴标签 -->
+                <text x="485" y="330" font-size="14" font-weight="bold">x</text>
+                <text x="240" y="30" font-size="14" font-weight="bold">y</text>
+                <text x="245" y="325" font-size="12">O</text>
+
+                <!-- 刻度值 -->
+                <!-- X轴刻度 -->
+                <text x="150" y="325" font-size="12" text-anchor="middle">-2</text>
+                <text x="205" y="325" font-size="12" text-anchor="middle">-1</text>
+                <text x="315" y="325" font-size="12" text-anchor="middle">1</text>
+                <text x="365" y="325" font-size="12" text-anchor="middle">2</text>
+                <!-- Y轴刻度 -->
+                <text x="245" y="265" font-size="12" text-anchor="end">1</text>
+                <text x="245" y="215" font-size="12" text-anchor="end">2</text>
+                <text x="245" y="165" font-size="12" text-anchor="end">3</text>
+                <text x="245" y="115" font-size="12" text-anchor="end">4</text>
+
+                <!-- 折线图象 y = |x+1| + |x-1| -->
+                <!-- 关键点: (-3,6), (-1,2), (1,2), (3,6) -->
+                <!-- 映射关系: X_px = 260 + x * 50, Y_px = 310 - y * 50 -->
+                <polyline points="110,110 210,210 310,210 410,110" 
+                          fill="none" stroke="#409eff" stroke-width="3" stroke-linejoin="round" />
+                
+                <!-- 槽谷底部高亮线段 (当 a=2 时激活) -->
+                <line id="valley-highlight" x1="210" y1="210" x2="310" y2="210" 
+                      stroke="#67c23a" stroke-width="6" stroke-linecap="round" class="pulse-line" style="display: block;" />
+
+                <!-- 动态水平直线 y = a -->
+                <line id="line-a" x1="40" y1="210" x2="480" y2="210" stroke="#f56c6c" stroke-width="2" stroke-dasharray="5,5" />
+                
+                <!-- 直线标签 -->
+                <text id="label-a" x="415" y="200" fill="#f56c6c" font-size="14" font-weight="bold">y = 2.0</text>
+
+                <!-- 交点标记群 -->
+                <g id="intersection-points">
+                    <!-- 动态生成交点 -->
+                </g>
+            </svg>
+
+            <!-- 局部放大镜 (仅在 a=2 时显示) -->
+            <div id="lens" class="lens-container">
+                <svg width="120" height="100" viewBox="0 0 120 100">
+                    <!-- 放大后的重合线段 -->
+                    <line x1="10" y1="50" x2="110" y2="50" stroke="#67c23a" stroke-width="6" />
+                    <line x1="10" y1="50" x2="110" y2="50" stroke="#f56c6c" stroke-width="2" stroke-dasharray="3,3" />
+                    <!-- 密集的交点 -->
+                    <circle cx="20" cy="50" r="4" fill="#e6a23c" />
+                    <circle cx="35" cy="50" r="4" fill="#e6a23c" />
+                    <circle cx="50" cy="50" r="4" fill="#e6a23c" />
+                    <circle cx="65" cy="50" r="4" fill="#e6a23c" />
+                    <circle cx="80" cy="50" r="4" fill="#e6a23c" />
+                    <circle cx="95" cy="50" r="4" fill="#e6a23c" />
+                    <text x="60" y="80" font-size="11" fill="#666" text-anchor="middle">重合区间 [-1, 1]</text>
+                </svg>
+                <div class="lens-title">无数个交点！</div>
+            </div>
+        </div>
+
+        <!-- 右侧：控制与代数验证面板 -->
+        <div class="control-area">
+            <!-- 拖动控制面板 -->
+            <div class="panel">
+                <div class="panel-title">动态调整参数 a</div>
+                <div class="slider-container">
+                    <div class="slider-header">
+                        <span>直线高度 y = a</span>
+                        <span id="val-a" style="color: #f56c6c;">2.0</span>
+                    </div>
+                    <input type="range" id="slider-a" class="slider-input" min="1.0" max="4.0" step="0.1" value="2.0">
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="btn-high">a = 3.5 (上方)</button>
+                    <button class="btn active" id="btn-limit">a = 2.0 (临界)</button>
+                    <button class="btn" id="btn-low">a = 1.2 (下方)</button>
+                </div>
+            </div>
+
+            <!-- 代数验证面板 -->
+            <div class="panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="panel-title">代数验证：当 x 取区间 [-1, 1] 内的值时</div>
+                <div class="calc-box">
+                    <div class="calc-item" id="calc-1">
+                        <span>当 x = 0 时:</span>
+                        <span>|0+1| + |0-1| = 1 + 1 = <strong style="color:#67c23a">2</strong></span>
+                    </div>
+                    <div class="calc-item" id="calc-2">
+                        <span>当 x = 0.5 时:</span>
+                        <span>|0.5+1| + |0.5-1| = 1.5 + 0.5 = <strong style="color:#67c23a">2</strong></span>
+                    </div>
+                    <div class="calc-item" id="calc-3">
+                        <span>当 x = -0.8 时:</span>
+                        <span>|-0.8+1| + |-0.8-1| = 0.2 + 1.8 = <strong style="color:#67c23a">2</strong></span>
+                    </div>
+                    <!-- 动态验证输入 -->
+                    <div class="calc-item highlight" style="margin-top: auto;">
+                        <span style="font-size: 13px;">任意 x ∈ [-1, 1]:</span>
+                        <span>(x+1) + (1-x) ≡ <strong style="font-size: 16px;">2</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部教学引导 -->
+    <div class="footer-tips">
+        💡 观察提示：拖动滑块改变 a 的值。当 a = 2 时，注意观察重合的绿色线段，这代表了什么？
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('slider-a');
+    const valA = document.getElementById('val-a');
+    const lineA = document.getElementById('line-a');
+    const labelA = document.getElementById('label-a');
+    const valleyHighlight = document.getElementById('valley-highlight');
+    const lens = document.getElementById('lens');
+    const pointsGroup = document.getElementById('intersection-points');
+
+    const btnHigh = document.getElementById('btn-high');
+    const btnLimit = document.getElementById('btn-limit');
+    const btnLow = document.getElementById('btn-low');
+
+    // 坐标映射常量 (X_px = 260 + x * 50, Y_px = 310 - y * 50)
+    const xToPx = x => 260 + x * 50;
+    const yToPx = y => 310 - y * 50;
+    const pxToX = px => (px - 260) / 50;
+
+    // 更新视图主函数
+    function updateView(a) {
+        // 1. 更新滑块和数值显示
+        slider.value = a;
+        valA.textContent = a.toFixed(1);
+
+        // 2. 更新水平直线位置
+        const yPx = yToPx(a);
+        lineA.setAttribute('y1', yPx);
+        lineA.setAttribute('y2', yPx);
+        
+        // 更新直线标签位置
+        labelA.setAttribute('y', yPx - 10);
+        labelA.textContent = `y = ${a.toFixed(1)}`;
+
+        // 3. 临界状态处理 (a = 2)
+        if (Math.abs(a - 2.0) < 0.05) {
+            valleyHighlight.style.display = 'block';
+            lens.style.display = 'flex';
+            drawIntersectionPoints(a, true);
+        } else {
+            valleyHighlight.style.display = 'none';
+            lens.style.display = 'none';
+            drawIntersectionPoints(a, false);
+        }
+
+        // 4. 更新按钮激活状态
+        btnHigh.classList.remove('active');
+        btnLimit.classList.remove('active');
+        btnLow.classList.remove('active');
+        if (Math.abs(a - 3.5) < 0.1) btnHigh.classList.add('active');
+        else if (Math.abs(a - 2.0) < 0.1) btnLimit.classList.add('active');
+        else if (Math.abs(a - 1.2) < 0.1) btnLow.classList.add('active');
+    }
+
+    // 绘制交点
+    function drawIntersectionPoints(a, isLimit) {
+        pointsGroup.innerHTML = ''; // 清空旧交点
+        
+        if (isLimit) {
+            // 临界状态下，在 [-1, 1] 区间内绘制多个交点示意“无数个解”
+            for (let x = -1; x <= 1; x += 0.4) {
+                createPoint(xToPx(x), yToPx(2), '#e6a23c');
+            }
+        } else if (a > 2) {
+            // a > 2 时有两个交点
+            // 方程: x - 1 + x + 1 = a => 2x = a => x = a/2 (在 x >= 1 侧)
+            // 另一侧 x = -a/2
+            const x1 = a / 2;
+            const x2 = -a / 2;
+            createPoint(xToPx(x1), yToPx(a), '#f56c6c');
+            createPoint(xToPx(x2), yToPx(a), '#f56c6c');
+        }
+        // a < 2 时无交点，不绘制
+    }
+
+    // 创建单个SVG圆点
+    function createPoint(cx, cy, color) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', '6');
+        circle.setAttribute('fill', color);
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '1.5');
+        pointsGroup.appendChild(circle);
+    }
+
+    // 绑定滑块事件
+    slider.addEventListener('input', (e) => {
+        updateView(parseFloat(e.target.value));
+    });
+
+    // 绑定预设按钮事件
+    btnHigh.addEventListener('click', () => updateView(3.5));
+    btnLimit.addEventListener('click', () => updateView(2.0));
+    btnLow.addEventListener('click', () => updateView(1.2));
+
+    // 初始化默认状态
+    updateView(2.0);
+</script>
+</body>
+</html>

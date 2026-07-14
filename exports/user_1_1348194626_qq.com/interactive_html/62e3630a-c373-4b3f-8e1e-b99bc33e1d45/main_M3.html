@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>纳税问题：计税基数的逻辑</title>
+    <style>
+        :root { --primary: #2563eb; --danger: #dc2626; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { width: 100%; max-width: 600px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #1e293b; margin-top: 0; }
+        .controls { display: flex; gap: 10px; margin: 20px 0; justify-content: center; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 6px; background: var(--primary); color: white; font-size: 16px; }
+        button:disabled { background: #cbd5e1; }
+        #msg { height: 30px; color: var(--danger); font-weight: bold; text-align: center; }
+        svg { width: 100%; height: auto; }
+        .label { font-size: 14px; font-weight: bold; fill: #334155; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>为什么不能直接用总收入纳税？</h2>
+    <p>点击下方按钮，观察“扣除标准”如何影响计税基数。</p>
+    
+    <div id="msg"></div>
+
+    <svg viewBox="0 0 400 400" id="viz">
+        <!-- 漏斗主体 -->
+        <path d="M100 50 L300 50 L250 200 L150 200 Z" fill="#e2e8f0" stroke="#94a3b8" />
+        <path d="M150 200 L250 200 L200 350 Z" fill="#e2e8f0" stroke="#94a3b8" />
+        
+        <!-- 扣除标准块 -->
+        <rect id="deduction" x="120" y="100" width="160" height="40" fill="#f59e0b" rx="5" style="cursor: pointer;" />
+        <text x="200" y="125" text-anchor="middle" class="label" fill="white">扣除标准</text>
+        
+        <!-- 收入流 -->
+        <rect id="income" x="150" y="20" width="100" height="30" fill="#3b82f6" />
+        <text x="200" y="40" text-anchor="middle" class="label" fill="white">总收入</text>
+        
+        <!-- 计税基数区域 -->
+        <rect id="taxBase" x="175" y="250" width="50" height="80" fill="#10b981" opacity="0" />
+        <text id="baseLabel" x="200" y="295" text-anchor="middle" class="label" opacity="0">计税基数</text>
+    </svg>
+
+    <div class="controls">
+        <button id="btnDirect">直接计算税额</button>
+        <button id="btnFilter">应用扣除标准</button>
+    </div>
+</div>
+
+<script>
+    const msg = document.getElementById('msg');
+    const deduction = document.getElementById('deduction');
+    const taxBase = document.getElementById('taxBase');
+    const baseLabel = document.getElementById('baseLabel');
+    const btnDirect = document.getElementById('btnDirect');
+    const btnFilter = document.getElementById('btnFilter');
+
+    let isFiltered = false;
+
+    btnDirect.addEventListener('click', () => {
+        if (!isFiltered) {
+            msg.textContent = "错误：未扣除免税额，直接计算会导致税额偏高！";
+        } else {
+            msg.style.color = "#10b981";
+            msg.textContent = "正确：已基于扣除后的基数进行计算。";
+        }
+    });
+
+    btnFilter.addEventListener('click', () => {
+        deduction.style.transition = "transform 0.5s";
+        deduction.style.transform = "translateY(200px)";
+        deduction.style.opacity = "0";
+        
+        setTimeout(() => {
+            taxBase.style.opacity = "1";
+            baseLabel.style.opacity = "1";
+            isFiltered = true;
+            msg.style.color = "#2563eb";
+            msg.textContent = "扣除完成，现在可以计算税额了。";
+            btnFilter.disabled = true;
+        }, 500);
+    });
+</script>
+
+</body>
+</html>

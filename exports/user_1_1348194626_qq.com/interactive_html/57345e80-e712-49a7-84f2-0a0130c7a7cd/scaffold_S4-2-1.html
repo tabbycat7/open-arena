@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>除数不能为0</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .formula {
+            font-size: 4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 50px;
+        }
+        #drop-zone {
+            width: 100px;
+            height: 80px;
+            border: 4px dashed #3498db;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #3498db;
+            transition: all 0.3s;
+        }
+        .number-pool {
+            display: flex;
+            gap: 20px;
+        }
+        .num-item {
+            width: 60px;
+            height: 60px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: grab;
+            user-select: none;
+        }
+        #error-msg {
+            margin-top: 20px;
+            color: #e74c3c;
+            font-size: 1.5rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .shake { animation: shake 0.2s infinite; }
+        .error-border { border-color: #e74c3c !important; color: #e74c3c !important; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div class="formula">
+        <span>100</span>
+        <span>÷</span>
+        <div id="drop-zone">?</div>
+        <span>=</span>
+        <span>？</span>
+    </div>
+
+    <div class="number-pool">
+        <div class="num-item" draggable="true" id="num-0">0</div>
+        <div class="num-item" draggable="true" id="num-5">5</div>
+    </div>
+
+    <div id="error-msg">⚠️ 注意：0不能作除数，无意义！</div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const errorMsg = document.getElementById('error-msg');
+    const container = document.getElementById('container');
+
+    document.querySelectorAll('.num-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        });
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const val = document.getElementById(id).innerText;
+        
+        dropZone.innerText = val;
+
+        if (val === '0') {
+            triggerError();
+        } else {
+            resetState();
+        }
+    });
+
+    function triggerError() {
+        dropZone.classList.add('error-border', 'shake');
+        errorMsg.style.opacity = '1';
+        
+        setTimeout(() => {
+            dropZone.classList.remove('shake');
+        }, 500);
+    }
+
+    function resetState() {
+        dropZone.classList.remove('error-border', 'shake');
+        errorMsg.style.opacity = '0';
+    }
+</script>
+
+</body>
+</html>

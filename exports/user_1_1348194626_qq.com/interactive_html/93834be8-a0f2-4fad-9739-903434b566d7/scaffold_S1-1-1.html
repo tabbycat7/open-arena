@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S1-1-1 感受数据的力量 - 教学可视化</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例教学视口 */
+        .classroom-viewport {
+            width: 960px;
+            height: 720px;
+            background-color: var(--bg-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        /* 主对比区域 */
+        .comparison-container {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* 左右卡片基类 */
+        .panel {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* 左侧：小盒子 */
+        .left-panel {
+            border-color: #cbd5e1;
+        }
+
+        .small-box {
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            position: relative;
+            z-index: 10;
+        }
+
+        .small-box:hover {
+            transform: scale(1.05);
+        }
+
+        .small-box:active {
+            transform: scale(0.95);
+        }
+
+        /* 左侧展开的数字卡片容器 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+            width: 100%;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .number-card {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #475569;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .number-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 右侧：大集装箱 */
+        .right-panel {
+            border-color: #fca5a5;
+            overflow: hidden;
+        }
+
+        .big-container {
+            width: 200px;
+            height: 140px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.3);
+            position: relative;
+            z-index: 10;
+            border: 3px solid #fee2e2;
+        }
+
+        .big-container::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        /* 震动动画 */
+        .shake {
+            animation: shakeAnim 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shakeAnim {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-3deg) scale(1.02); }
+            40% { transform: rotate(3deg) scale(1.02); }
+            60% { transform: rotate(-3deg) scale(1.02); }
+            80% { transform: rotate(3deg) scale(1.02); }
+        }
+
+        /* 喷出数字的动画舞台 */
+        .spew-stage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* 喷出的数字卡片 */
+        .spewed-card {
+            position: absolute;
+            background: #ffe4e6;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform-origin: center;
+        }
+
+        /* 警告横幅 */
+        .warning-banner {
+            position: absolute;
+            bottom: 30px;
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-banner.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* 底部控制与引导区 */
+        .footer {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .question-prompt {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .question-prompt span {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .btn-reset {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #2563eb;
+        }
+
+        /* 辅助说明图标 */
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="classroom-viewport">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>手动计算 vs 计算机效率</h1>
+            <p>点击下方两个任务盒子，直观感受计算规模的变化</p>
+        </div>
+
+        <!-- 主对比区域 -->
+        <div class="comparison-container">
+            
+            <!-- 左侧：小规模 -->
+            <div class="panel left-panel" id="leftPanel">
+                <div class="panel-title">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    任务 A：1000 ~ 1010
+                </div>
+                <div class="panel-subtitle">手动检验 11 个数字</div>
+                
+                <div class="small-box" id="smallBox">
+                    点击打开盒子
+                </div>
+
+                <div class="cards-grid" id="cardsGrid">
+                    <!-- 动态生成11个数字卡片 -->
+                </div>
+            </div>
+
+            <!-- 右侧：大规模 -->
+            <div class="panel right-panel" id="rightPanel">
+                <div class="panel-title" style="color: var(--danger-color);">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    任务 B：1000 ~ 2000
+                </div>
+                <div class="panel-subtitle">手动检验 ？？？ 个数字</div>
+
+                <div class="big-container" id="bigBox">
+                    <span>超大任务箱</span>
+                    <span style="font-size: 12px; margin-top: 5px; font-weight: normal;">(点击挑战极限)</span>
+                </div>
+
+                <!-- 喷射舞台 -->
+                <div class="spew-stage" id="spewStage"></div>
+
+                <!-- 警告横幅 -->
+                <div class="warning-banner" id="warningBanner">
+                    <span>😫 算到明天也算不完啦！</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 底部控制与引导 -->
+        <div class="footer">
+            <div class="question-prompt">
+                💡 <strong>思考：</strong> 从 1000 到 2000，我们手动检验一共要算多少个数字？ 
+                <span>( 2000 - 1000 + 1 = ? )</span>
+            </div>
+            <button class="btn-reset" id="btnReset">重置演示</button>
+        </div>
+    </div>
+
+    <script>
+        const smallBox = document.getElementById('smallBox');
+        const bigBox = document.getElementById('bigBox');
+        const cardsGrid = document.getElementById('cardsGrid');
+        const spewStage = document.getElementById('spewStage');
+        const warningBanner = document.getElementById('warningBanner');
+        const btnReset = document.getElementById('btnReset');
+
+        let leftOpened = false;
+        let rightOpened = false;
+        let spewInterval = null;
+
+        // 左侧：展示11个数字
+        smallBox.addEventListener('click', () => {
+            if (leftOpened) return;
+            leftOpened = true;
+            smallBox.style.display = 'none';
+
+            // 动态生成 1000 ~ 1010
+            for (let i = 1000; i <= 1010; i++) {
+                const card = document.createElement('div');
+                card.className = 'number-card';
+                card.innerText = i;
+                cardsGrid.appendChild(card);
+
+                // 渐次显现效果
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, (i - 1000) * 80);
+            }
+        });
+
+        // 右侧：喷射无限数字
+        bigBox.addEventListener('click', () => {
+            if (rightOpened) return;
+            rightOpened = true;
+            
+            // 启动箱子震动
+            bigBox.classList.add('shake');
+
+            // 延迟弹出警告横幅
+            setTimeout(() => {
+                warningBanner.classList.add('show');
+            }, 1000);
+
+            // 开始源源不断喷出数字
+            let count = 0;
+            spewInterval = setInterval(() => {
+                if (count > 120) { // 限制最大生成数，防止卡顿
+                    clearInterval(spewInterval);
+                    return;
+                }
+                createSpewedCard();
+                count++;
+            }, 50);
+        });
+
+        // 产生随机喷射卡片
+        function createSpewedCard() {
+            const card = document.createElement('div');
+            card.className = 'spewed-card';
+            
+            // 随机生成 1011 ~ 2000 之间的数字
+            const randomNum = Math.floor(Math.random() * 990) + 1011;
+            card.innerText = randomNum;
+
+            // 初始位置在箱子中心
+            const startX = spewStage.offsetWidth / 2;
+            const startY = spewStage.offsetHeight / 2 - 30;
+
+            card.style.left = `${startX}px`;
+            card.style.top = `${startY}px`;
+
+            spewStage.appendChild(card);
+
+            // 随机喷射轨迹
+            const angle = Math.random() * Math.PI * 2; // 任意方向
+            const distance = 100 + Math.random() * 250; // 喷射距离
+            const targetX = Math.cos(angle) * distance;
+            const targetY = Math.sin(angle) * distance - 50; // 稍微向上飘
+            const rotation = Math.random() * 720 - 360; // 旋转角度
+            const scale = 0.6 + Math.random() * 0.8; // 随机大小
+
+            // 使用 Web Animations API 制作流畅动画
+            card.animate([
+                { 
+                    transform: 'translate(-50%, -50%) scale(0.2) rotate(0deg)', 
+                    opacity: 0 
+                },
+                { 
+                    opacity: 1, 
+                    offset: 0.1 
+                },
+                { 
+                    transform: `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) scale(${scale}) rotate(${rotation}deg)`, 
+                    opacity: 0.9,
+                    offset: 0.8
+                },
+                { 
+                    transform: `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) scale(${scale}) rotate(${rotation}deg)`, 
+                    opacity: 0 
+                }
+            ], {
+                duration: 1500 + Math.random() * 1000,
+                easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
+                fill: 'forwards'
+            }).onfinish = () => {
+                card.remove();
+            };
+        }
+
+        // 重置按钮
+        btnReset.addEventListener('click', () => {
+            // 停止喷射
+            if (spewInterval) {
+                clearInterval(spewInterval);
+            }
+
+            // 清空左侧
+            cardsGrid.innerHTML = '';
+            smallBox.style.display = 'flex';
+            leftOpened = false;
+
+            // 清空右侧
+            spewStage.innerHTML = '';
+            bigBox.classList.remove('shake');
+            warningBanner.classList.remove('show');
+            rightOpened = false;
+        });
+    </script>
+</body>
+</html>

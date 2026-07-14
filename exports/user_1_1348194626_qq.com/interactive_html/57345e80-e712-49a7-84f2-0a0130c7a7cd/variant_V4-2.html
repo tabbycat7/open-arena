@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>计算机与人脑的计算差异</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        .container { width: 800px; height: 600px; background: white; border: 2px solid #e2e8f0; border-radius: 12px; position: relative; padding: 20px; box-sizing: border-box; }
+        h2 { text-align: center; color: #1e293b; margin-top: 0; }
+        .stage { display: flex; justify-content: space-between; height: 400px; margin-top: 20px; }
+        .box { width: 45%; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 10px; position: relative; }
+        .btn-area { text-align: center; margin-top: 20px; }
+        button { padding: 10px 25px; font-size: 18px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 6px; }
+        .label { font-weight: bold; text-align: center; margin-bottom: 10px; }
+        #human-result { font-size: 48px; color: #ef4444; text-align: center; margin-top: 50px; opacity: 0; }
+        .cpu-step { font-size: 14px; margin: 5px 0; padding: 5px; background: #f1f5f9; border-radius: 4px; opacity: 0; transition: opacity 0.3s; }
+        svg { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>计算“15 + 28”：人脑 vs 计算机</h2>
+    <div class="stage">
+        <div class="box" id="human-side">
+            <div class="label">人脑（直觉思维）</div>
+            <div id="human-result">43</div>
+            <p id="human-note" style="text-align:center; font-size: 14px; color: #64748b;"></p>
+        </div>
+        <div class="box" id="cpu-side">
+            <div class="label">计算机（逻辑指令）</div>
+            <div id="cpu-steps">
+                <div class="cpu-step" id="s1">1. 寄存器A 接收数据: 15</div>
+                <div class="cpu-step" id="s2">2. 寄存器B 接收数据: 28</div>
+                <div class="cpu-step" id="s3">3. 加法器执行: 15 + 28</div>
+                <div class="cpu-step" id="s4">4. 结果存入寄存器C: 43</div>
+                <div class="cpu-step" id="s5">5. 屏幕显示: 43</div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-area">
+        <button id="start-btn">开始计算</button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('start-btn');
+    const hResult = document.getElementById('human-result');
+    const hNote = document.getElementById('human-note');
+    const steps = ['s1', 's2', 's3', 's4', 's5'];
+
+    btn.addEventListener('click', () => {
+        // 重置
+        hResult.style.opacity = 0;
+        hNote.innerText = "";
+        steps.forEach(id => document.getElementById(id).style.opacity = 0);
+
+        // 人脑逻辑：瞬间完成
+        setTimeout(() => {
+            hResult.style.opacity = 1;
+            hNote.innerText = "自动调用了潜意识里的加法表";
+        }, 100);
+
+        // 计算机逻辑：慢动作展示
+        steps.forEach((id, index) => {
+            setTimeout(() => {
+                document.getElementById(id).style.opacity = 1;
+            }, (index + 1) * 800);
+        });
+    });
+</script>
+
+</body>
+</html>

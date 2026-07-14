@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S5-1-1 算法模糊词识别</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 80vw;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        h2 { color: #333; margin-bottom: 40px; }
+        .sentence {
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        .word {
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .word:hover { background-color: #eef; }
+        .active { color: #ff4d4f; animation: blink 1s infinite; }
+        
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        #magnifier {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 5px solid #ff4d4f;
+            border-radius: 50%;
+            display: none;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(255, 77, 79, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        #hint {
+            margin-top: 50px;
+            font-size: 1.2rem;
+            color: #555;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>请点击句子中让机器人“犯糊涂”的两个词：</h2>
+    <div class="sentence" id="sentence">
+        <span class="word" data-target="true">用</span>
+        <span class="word" data-target="true">热水</span>
+        <span class="word" data-target="true">泡</span>
+        <span class="word" data-target="true">一会儿</span>
+        <span class="word">，</span>
+        <span class="word">茶</span>
+        <span class="word">香</span>
+        <span class="word">了</span>
+        <span class="word">即可</span>
+    </div>
+    <div id="hint"></div>
+    <div id="magnifier"></div>
+</div>
+
+<script>
+    const words = document.querySelectorAll('.word');
+    const hint = document.getElementById('hint');
+    const magnifier = document.getElementById('magnifier');
+    let foundCount = 0;
+
+    words.forEach(word => {
+        word.addEventListener('click', (e) => {
+            if (word.getAttribute('data-target') === 'true') {
+                if (!word.classList.contains('active')) {
+                    word.classList.add('active');
+                    foundCount++;
+                    
+                    // 显示放大镜
+                    const rect = word.getBoundingClientRect();
+                    magnifier.style.display = 'block';
+                    magnifier.style.left = (rect.left + rect.width/2 - 60) + 'px';
+                    magnifier.style.top = (rect.top + rect.height/2 - 60) + 'px';
+                    
+                    if (foundCount === 2) {
+                        hint.innerText = "目标锁定！这两个词太模糊了，必须改掉！";
+                        hint.style.color = "#ff4d4f";
+                        hint.style.fontWeight = "bold";
+                    }
+                }
+            } else {
+                word.style.color = "#ccc";
+                setTimeout(() => word.style.color = "#333", 500);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

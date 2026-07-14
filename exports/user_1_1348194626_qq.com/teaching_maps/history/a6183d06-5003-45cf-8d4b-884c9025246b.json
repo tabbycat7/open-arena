@@ -1,0 +1,791 @@
+{
+  "id": "a6183d06-5003-45cf-8d4b-884c9025246b",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "七年级",
+  "teaching_goals": "教学目标：1.理解并掌握用代入消元法解二元一次方程组；2.理解代入消元法的基本思想所体现的化归思想方法",
+  "student_profile": "1. 班级整体水平与人员分布\r\n本班学生整体数学基础处于中等水平，学习态度较为端正。从学生分层来看：\r\n\r\n学优生（约占20%）： 代数基础扎实，思维活跃，具备一定的自主探索能力，能够较快理解并提炼出“消元”的核心思想。\r\n\r\n中等生（约占60%）： 能够跟随教学进度掌握基础运算，但思维的灵活性稍显不足，在处理系数较复杂的方程变形时容易产生畏难情绪。\r\n\r\n学困生（约占20%）： 基础较弱，在之前的“一元一次方程解法”和“代数式化简”中仍存在遗留问题，主要表现为去括号时符号易错、移项忘记变号等基本计算规范性问题。\r\n\r\n2. 知识与认知基础\r\n在知识储备上，学生已经熟练掌握了一元一次方程的解法，并刚刚学习了二元一次方程（组）的概念。从认知规律来看，初中阶段的学生正处于由算术思维向代数抽象思维过渡的关键期。他们已经具备了“解方程就是求未知数”的意识，这为本节课通过“消元”将二元转化为一元（即“化归”思想）奠定了认知基础。",
+  "difficulty_analysis": "教学重点：理解并掌握用代入消元法解二元一次方程组\r\n教学难点：1.理解并掌握用代入消元法解二元一次方程组：2.理解代入消元法的基本思想所体现的化归思想方法",
+  "language_style": "启发引导",
+  "model_id": "gpt-5.4",
+  "duration_seconds": 976.99,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"看教材里这个采棉机方程组，从x+y=6和2x+y=8出发，教材是怎样得到一元方程2x+(6-x)=8的？这里为什么可以把y换成6-x？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们已经知道，这个问题既可以列成二元一次方程组，也可以列成一元一次方程。现在关键不是算结果，而是看一看：二元是怎么一步一步变成一元的。请大家盯住教材里的这句话——“两个方程中的y都表示租用小型采棉机的台数”。先从第一个方程x+y=6出发，把y单独表示出来，得到y=6-x。接着再看第二个方程里的y，它表示的是不是同一个量？如果表示的是同一个量，那就可以用6-x去替换它。大家边看边想：被“消去”的是谁？代入之后，原来有两个未知数的式子发生了什么变化？只要把这个依据说清楚，后面我们就能把这种想法整理成一种稳定的解题方法。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"用旧知一元方程作为认知抓手，降低新方法进入门槛，同时为后续方法命名与步骤形成建立原理基础\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"回到例1，如果用代入法来解这个方程组，整个过程按规范应该怎么走，才能从方程组一直写到最后的解？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们已经明白了“为什么能代”，下面要把这个想法变成一套能直接操作的步骤。请大家看例1，教材提示得很清楚：方程①里x的系数是1，所以先在方程①里用含y的式子表示x，会比较简便。接下来你们就顺着这个思路往下看：先“表示”，再“代入”，把二元变成一元；一元方程解出来以后，别停，还要“回代”求另一个未知数；最后要把方程组的解完整地写成一对数。大家特别留意两个地方：一是表示未知数时变形要准确，二是最后不能只写一个未知数。等会儿我们就看看，代入法到底能不能整理成几步清楚、稳定的流程。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.68, \"design_intent\": \"把M1中的转化原理落地为可重复执行的方法模板，解决本课最核心的操作性目标\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"同样是代入法，像例1、例2这样的方程组，先表示哪个未知数会更省事，你通常看哪里来判断？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在大家已经会按步骤解了，但真正做题时还有一个很实际的问题：先表示谁，更方便？我们来对比教材里的例1和例2。例1为什么选在方程①里表示x？例2为什么又选在方程②里表示y？你们不要只说“教材这么做”，要盯住方程里的系数看。哪个未知数的系数是1或者-1，往往一表示就比较直接；如果都不是，再看看谁的系数绝对值更小，后面的运算会不会更省。你们可以边观察边比较：如果换一种表示方法，式子会不会更复杂，代入后会不会更难算。把这个判断标准抓住了，代入法就不是机械套步骤了，而是会主动选更简便的路。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.76, \"design_intent\": \"将方法学习由程序执行提升到策略选择，服务普通生提升与学优生发展，也为复杂系数题降低计算负担\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"如果方程里没有系数是1或-1的未知数，像例3这样，代入法还怎么选一条比较简便的路来解？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们已经发现，系数是1或-1时，表示起来最方便。那如果没有这样的“现成优势”怎么办？请大家把刚才总结的判断标准继续用起来，再看例3。教材提醒我们：方程①中x的系数绝对值较小，所以可以先在方程①里表示x。这里虽然会出现分数，但不等于不能做，关键是要选相对更省的一条路。大家想一想：如果改成表示y，式子会不会更麻烦？代入之后运算量会不会更大？这类题最容易错在去括号、分数运算和符号处理，所以做的时候要把每一步写清楚，尤其是代入后的中间式。我们现在不是为了追求快，而是为了看清：即使没有系数1或-1，我们依然可以借助“选系数绝对值较小”这样的办法，尽量把计算变简单。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.84, \"design_intent\": \"突破本课运算难点，验证代入法并非只适用于简单系数题，增强方法的适用范围认识\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"回到快递员报酬这个实际问题，如果先不急着算，你能从题目里的两天数据中找到哪两个等量关系，列出方程组，再想想列出以后怎样用代入法继续解下去吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"前面我们一直在解已经写好的方程组，现在要把方法真正放回实际问题里，看它能不能从头用到尾。请大家回到教材的快递员报酬问题，先别急着盯计算，先抓住题目里最关键的信息：星期一送120件、揽45件，共得270元；星期二送90件、揽25件，共得185元。这里每送一件的报酬相同，每揽一件的报酬也相同，所以未知量应该设什么，题目里哪两句话正好对应两个相等关系，这是我们先要看清的。也就是说，这一题第一步不是直接代入，而是先把现实情境翻译成方程组。等方程组列出来以后，再回到我们熟悉的代入法：先看从哪个方程里表示一个未知数更合适，再把二元转成一元。大家边思考边体会，这道题虽然有生活背景，但后面走的路和前面例题其实是连着的：先建立模型，再用代入法求解。这样一来，我们下一步回头总结的时候，就能更清楚地看到，代入法不仅能解式子，也能帮助我们解决真实问题。\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.84, \"design_intent\": \"完成方法迁移，连接数学计算与实际建模，支撑“主动使用这一思路”的目标要求\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"我们刚才解了采棉机、例1、例2、例3和快递员报酬这些题，回头看代入那一步，原来有几个未知数，代入以后还剩几个未知数？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"这一节我们做了好几类题，现在先不要急着直接说“本质”，我们先把过程回头看清楚。请大家把采棉机问题、例1、例2、例3，还有刚刚经历了“先列方程组再求解”的快递员报酬问题放在一起比较，特别盯住“代入”这一步。无论是直接给出方程组，还是先从实际情境中列出方程组，代入之前，式子里有几个未知数？代入之后，还剩几个未知数？是不是每一题都重复出现了这样一个变化：先把一个未知数用含另一个未知数的式子表示出来，再代入到另一个方程里，于是二元就变成了一元。等一元方程解出来，再回过头去求另一个未知数。现在你们再试着用自己的话说，这种做法到底在“消去”什么，又把什么问题转化成了什么问题。把这条线说顺了，我们就不只是记住了步骤，也真正看到了代入法背后的消元和化归思想。\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.9, \"design_intent\": \"把计算技能上升为数学思想，完成从“会做”到“会说、会概括”的目标闭环\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"把情境换成买练习本和笔：x+y=10，3x+y=18。教材那种“先把一个字母换掉”的想法在这里还能用吗？你会怎样说明y为什么能换成10-x？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.61, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"用更熟悉的生活情境强化“为什么能代”的依据，避免学生把代入理解成机械换字母\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"有同学看到x+y=6后说“既然x=6-y，那第二个方程2x+y=8里也能把2x直接换成6-y”。这种换法和把y换成6-x相比，哪一步出了问题？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.66, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过正误对比澄清代入的合法性条件，帮助学生建立方法边界\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"有人解方程组时只写到“代入后得一元方程，解得x=3”就停了。你觉得这个过程还缺哪一步最关键，为什么最后不能只写一个未知数的值？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.69, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"借助不完整过程促使学生主动回忆规范链条，强化书写完整性\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"同样解一个方程组，有同学先把x=2直接和原方程组并列写成“所以解是x=2，y=5”。你觉得这种写法为什么不规范？代入法的完整过程应该体现出哪条顺序线？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.72, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过错例辨析促进学生形成稳定、可重复执行的操作模板\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"看方程组x+3y=11和4x-2y=6，如果都能表示，你会先表示谁？别只说答案，想想换成另一种表示后，哪一步开始明显变麻烦了。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"让学生在同一题中比较两条路的运算负担，形成简便性判断意识\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"如果一个方程组里没有系数1，但一个未知数的系数是2，另一个是5，你会更倾向先表示哪一个？你判断时主要盯住的是哪种“省事”信号？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.79, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"突破学生对“只看1或-1”的单一经验，过渡到更一般的简便判断\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"看方程组3x+5y=17和4x-7y=1，两个方程里都没有系数1或-1。你会先表示x还是y？如果换另一种表示，麻烦主要会出现在什么地方？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.83, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"让学生看到“出现分数不等于不能做”，核心是比较哪条路径更省\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"同样是没有系数1的方程组，有同学说“只要一表示出分数，就说明这条路选错了”。你同意吗？代入法在这类题里真正容易错的，是选路本身还是后面的运算处理？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.88, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"提前暴露复杂系数下的典型错误源，增强学生过程监控意识\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"把背景换成校园义卖：两天卖出两种文具，总收入已知，每种文具单价固定但未知。面对这样的题，你最先该盯住题目里的哪两类信息，才能顺利列出方程组？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.83, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过生活化迁移帮助学生把“列方程组—代入求解”看成一条完整方法链\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"如果题目信息不是一段话，而是用“两天完成量—总报酬”的表格给出，你怎么从表格里一眼找到那两个等量关系，并判断后面代入时先表示谁更合适？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.87, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"提升学生跨表征提取信息的能力，避免只会在文字题中列方程\", \"design_rationale\": \"\"}, {\"id\": \"V6-1\", \"content\": \"把“x+y=6，2x+y=8”和“2x+(6-x)=8”放在一起看，你觉得真正发生变化的只是写法，还是问题的复杂程度也变了？你会怎样用自己的话概括这种变化？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.89, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"通过显性比较帮助学生从步骤上升到思想层面，形成“消元—化归”的语言表达\", \"design_rationale\": \"\"}, {\"id\": \"V6-2\", \"content\": \"有同学总结代入法时说：“就是把y消掉了。”这句话听起来对，但又不够完整。你觉得“消掉”到底是指哪个层面的变化，为什么最后并不是永远不管这个未知数了？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.93, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"纠正口头化、模糊化理解，使学生更准确表达代入法背后的数学思想\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"在x+y=6里，把y写成6-x时，你其实是把哪个未知数先单独表示出来了？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.26, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"把M1中的具体代换动作收束为可重复识别的关键环节，为规范步骤做准备。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"把一个未知数表示出来以后，这个式子要放到另一个方程里的哪里，才能把两个字母变成一个字母？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.32, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生看清从一个方程组到一元方程之间的中间环节，搭起步骤意识。\", \"design_rationale\": \"\"}, {\"id\": \"S1-3\", \"content\": \"代入之后，方程里还有几个字母？解出这个字母后，我们还要做什么才能得到完整的答案？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.38, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"把学生送到M2的流程入口，但不直接替代完整步骤回答。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"看例1时，你先盯住的是哪个地方来决定表示谁：是未知数的位置，还是它前面的系数？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.27, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"先把学生的注意力拉回到方程中的可观察线索——未知数的系数。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"如果要在例1里表示y，你需要先把哪个数移到等号另一边？这比表示x多了一步还是少了一步？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.33, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"用最小比较任务让学生发现‘系数是1时更好表示’不是随意选择，而是更省一步。\", \"design_rationale\": \"\"}, {\"id\": \"S2-3\", \"content\": \"要是一个未知数前面的系数正好是1或-1，把它单独表示出来，通常会省在哪儿？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.39, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"把具体比较提炼成可迁移的判断抓手，为M3的策略概括铺路。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"要是一个方程组里，两个未知数前面的系数都不是1，也不是-1，你刚才那个最方便的判断办法还能直接用吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.29, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"先让学生确认旧标准在新情形中失效，从而产生继续寻找新线索的需要。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果没有1或-1，你再看两个未知数前面的数，哪一种数通常更值得先留意：绝对值大的，还是绝对值小的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生从‘看1或-1’过渡到‘看系数绝对值大小’，降低新标准的抽象度。\", \"design_rationale\": \"\"}, {\"id\": \"S3-3\", \"content\": \"先表示系数绝对值较小的那个未知数，写出来的式子一般会更长一些，还是更短一些？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.41, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"把新线索和运算负担建立起直接联系，送到M4的入口。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"看快递员报酬这道题，题里有两个一直不变的量，你觉得它们分别可以设成什么未知数？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.28, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"先把实际问题中的未知量找准，为从情境到方程组搭桥。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"星期一的数据和总报酬放在一起，能组成一个什么样的相等关系？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生把题目中的两天数据各自对应到一个方程，完成建模前的关键连接。\", \"design_rationale\": \"\"}, {\"id\": \"S4-3\", \"content\": \"方程组列出来以后，它和前面解的哪一类题样子很像？接下来你准备先看什么，来决定怎么解？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.42, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"连接列方程与解方程，让学生自然转入M5的求解任务。\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"看你刚才列出的方程组，在代入之前，每个方程里一共出现了几个未知数？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.27, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"先把学生目光重新拉回‘代入这一步’本身，为概括思想准备共同观察点。\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"把一个未知数代进去以后，式子里还剩几个未知数？和代入前比，少掉了哪一个？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.34, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"让学生通过最直观的数量变化看见代入的共同效果。\", \"design_rationale\": \"\"}, {\"id\": \"S5-3\", \"content\": \"这么一‘代’，原来要同时找两个数的问题，变成了先专心找哪一个数的问题？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"用低负荷语言把现象推进到方法本质的门口，为M6的思想概括蓄势。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V6-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"S1-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-3\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"S2-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-3\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"S3-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-3\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"S4-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"S5-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-3\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-06 10:35:41",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "看教材里这个采棉机方程组，从x+y=6和2x+y=8出发，教材是怎样得到一元方程2x+(6-x)=8的？这里为什么可以把y换成6-x？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们已经知道，这个问题既可以列成二元一次方程组，也可以列成一元一次方程。现在关键不是算结果，而是看一看：二元是怎么一步一步变成一元的。请大家盯住教材里的这句话——“两个方程中的y都表示租用小型采棉机的台数”。先从第一个方程x+y=6出发，把y单独表示出来，得到y=6-x。接着再看第二个方程里的y，它表示的是不是同一个量？如果表示的是同一个量，那就可以用6-x去替换它。大家边看边想：被“消去”的是谁？代入之后，原来有两个未知数的式子发生了什么变化？只要把这个依据说清楚，后面我们就能把这种想法整理成一种稳定的解题方法。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "用旧知一元方程作为认知抓手，降低新方法进入门槛，同时为后续方法命名与步骤形成建立原理基础",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "回到例1，如果用代入法来解这个方程组，整个过程按规范应该怎么走，才能从方程组一直写到最后的解？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们已经明白了“为什么能代”，下面要把这个想法变成一套能直接操作的步骤。请大家看例1，教材提示得很清楚：方程①里x的系数是1，所以先在方程①里用含y的式子表示x，会比较简便。接下来你们就顺着这个思路往下看：先“表示”，再“代入”，把二元变成一元；一元方程解出来以后，别停，还要“回代”求另一个未知数；最后要把方程组的解完整地写成一对数。大家特别留意两个地方：一是表示未知数时变形要准确，二是最后不能只写一个未知数。等会儿我们就看看，代入法到底能不能整理成几步清楚、稳定的流程。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.68,
+        "design_intent": "把M1中的转化原理落地为可重复执行的方法模板，解决本课最核心的操作性目标",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "同样是代入法，像例1、例2这样的方程组，先表示哪个未知数会更省事，你通常看哪里来判断？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在大家已经会按步骤解了，但真正做题时还有一个很实际的问题：先表示谁，更方便？我们来对比教材里的例1和例2。例1为什么选在方程①里表示x？例2为什么又选在方程②里表示y？你们不要只说“教材这么做”，要盯住方程里的系数看。哪个未知数的系数是1或者-1，往往一表示就比较直接；如果都不是，再看看谁的系数绝对值更小，后面的运算会不会更省。你们可以边观察边比较：如果换一种表示方法，式子会不会更复杂，代入后会不会更难算。把这个判断标准抓住了，代入法就不是机械套步骤了，而是会主动选更简便的路。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.76,
+        "design_intent": "将方法学习由程序执行提升到策略选择，服务普通生提升与学优生发展，也为复杂系数题降低计算负担",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "如果方程里没有系数是1或-1的未知数，像例3这样，代入法还怎么选一条比较简便的路来解？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们已经发现，系数是1或-1时，表示起来最方便。那如果没有这样的“现成优势”怎么办？请大家把刚才总结的判断标准继续用起来，再看例3。教材提醒我们：方程①中x的系数绝对值较小，所以可以先在方程①里表示x。这里虽然会出现分数，但不等于不能做，关键是要选相对更省的一条路。大家想一想：如果改成表示y，式子会不会更麻烦？代入之后运算量会不会更大？这类题最容易错在去括号、分数运算和符号处理，所以做的时候要把每一步写清楚，尤其是代入后的中间式。我们现在不是为了追求快，而是为了看清：即使没有系数1或-1，我们依然可以借助“选系数绝对值较小”这样的办法，尽量把计算变简单。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.84,
+        "design_intent": "突破本课运算难点，验证代入法并非只适用于简单系数题，增强方法的适用范围认识",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "回到快递员报酬这个实际问题，如果先不急着算，你能从题目里的两天数据中找到哪两个等量关系，列出方程组，再想想列出以后怎样用代入法继续解下去吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "前面我们一直在解已经写好的方程组，现在要把方法真正放回实际问题里，看它能不能从头用到尾。请大家回到教材的快递员报酬问题，先别急着盯计算，先抓住题目里最关键的信息：星期一送120件、揽45件，共得270元；星期二送90件、揽25件，共得185元。这里每送一件的报酬相同，每揽一件的报酬也相同，所以未知量应该设什么，题目里哪两句话正好对应两个相等关系，这是我们先要看清的。也就是说，这一题第一步不是直接代入，而是先把现实情境翻译成方程组。等方程组列出来以后，再回到我们熟悉的代入法：先看从哪个方程里表示一个未知数更合适，再把二元转成一元。大家边思考边体会，这道题虽然有生活背景，但后面走的路和前面例题其实是连着的：先建立模型，再用代入法求解。这样一来，我们下一步回头总结的时候，就能更清楚地看到，代入法不仅能解式子，也能帮助我们解决真实问题。",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.84,
+        "design_intent": "完成方法迁移，连接数学计算与实际建模，支撑“主动使用这一思路”的目标要求",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "我们刚才解了采棉机、例1、例2、例3和快递员报酬这些题，回头看代入那一步，原来有几个未知数，代入以后还剩几个未知数？",
+        "question_type": "main",
+        "lesson_presentation_script": "这一节我们做了好几类题，现在先不要急着直接说“本质”，我们先把过程回头看清楚。请大家把采棉机问题、例1、例2、例3，还有刚刚经历了“先列方程组再求解”的快递员报酬问题放在一起比较，特别盯住“代入”这一步。无论是直接给出方程组，还是先从实际情境中列出方程组，代入之前，式子里有几个未知数？代入之后，还剩几个未知数？是不是每一题都重复出现了这样一个变化：先把一个未知数用含另一个未知数的式子表示出来，再代入到另一个方程里，于是二元就变成了一元。等一元方程解出来，再回过头去求另一个未知数。现在你们再试着用自己的话说，这种做法到底在“消去”什么，又把什么问题转化成了什么问题。把这条线说顺了，我们就不只是记住了步骤，也真正看到了代入法背后的消元和化归思想。",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.9,
+        "design_intent": "把计算技能上升为数学思想，完成从“会做”到“会说、会概括”的目标闭环",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "把情境换成买练习本和笔：x+y=10，3x+y=18。教材那种“先把一个字母换掉”的想法在这里还能用吗？你会怎样说明y为什么能换成10-x？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.61,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "用更熟悉的生活情境强化“为什么能代”的依据，避免学生把代入理解成机械换字母",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "有同学看到x+y=6后说“既然x=6-y，那第二个方程2x+y=8里也能把2x直接换成6-y”。这种换法和把y换成6-x相比，哪一步出了问题？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.66,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过正误对比澄清代入的合法性条件，帮助学生建立方法边界",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "有人解方程组时只写到“代入后得一元方程，解得x=3”就停了。你觉得这个过程还缺哪一步最关键，为什么最后不能只写一个未知数的值？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.69,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "借助不完整过程促使学生主动回忆规范链条，强化书写完整性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "同样解一个方程组，有同学先把x=2直接和原方程组并列写成“所以解是x=2，y=5”。你觉得这种写法为什么不规范？代入法的完整过程应该体现出哪条顺序线？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.72,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过错例辨析促进学生形成稳定、可重复执行的操作模板",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "看方程组x+3y=11和4x-2y=6，如果都能表示，你会先表示谁？别只说答案，想想换成另一种表示后，哪一步开始明显变麻烦了。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "让学生在同一题中比较两条路的运算负担，形成简便性判断意识",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "如果一个方程组里没有系数1，但一个未知数的系数是2，另一个是5，你会更倾向先表示哪一个？你判断时主要盯住的是哪种“省事”信号？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.79,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "突破学生对“只看1或-1”的单一经验，过渡到更一般的简便判断",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "看方程组3x+5y=17和4x-7y=1，两个方程里都没有系数1或-1。你会先表示x还是y？如果换另一种表示，麻烦主要会出现在什么地方？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.83,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "让学生看到“出现分数不等于不能做”，核心是比较哪条路径更省",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "同样是没有系数1的方程组，有同学说“只要一表示出分数，就说明这条路选错了”。你同意吗？代入法在这类题里真正容易错的，是选路本身还是后面的运算处理？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.88,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "提前暴露复杂系数下的典型错误源，增强学生过程监控意识",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "把背景换成校园义卖：两天卖出两种文具，总收入已知，每种文具单价固定但未知。面对这样的题，你最先该盯住题目里的哪两类信息，才能顺利列出方程组？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.83,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过生活化迁移帮助学生把“列方程组—代入求解”看成一条完整方法链",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "如果题目信息不是一段话，而是用“两天完成量—总报酬”的表格给出，你怎么从表格里一眼找到那两个等量关系，并判断后面代入时先表示谁更合适？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.87,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "提升学生跨表征提取信息的能力，避免只会在文字题中列方程",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-1",
+        "content": "把“x+y=6，2x+y=8”和“2x+(6-x)=8”放在一起看，你觉得真正发生变化的只是写法，还是问题的复杂程度也变了？你会怎样用自己的话概括这种变化？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.89,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "通过显性比较帮助学生从步骤上升到思想层面，形成“消元—化归”的语言表达",
+        "design_rationale": ""
+      },
+      {
+        "id": "V6-2",
+        "content": "有同学总结代入法时说：“就是把y消掉了。”这句话听起来对，但又不够完整。你觉得“消掉”到底是指哪个层面的变化，为什么最后并不是永远不管这个未知数了？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.93,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "纠正口头化、模糊化理解，使学生更准确表达代入法背后的数学思想",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "在x+y=6里，把y写成6-x时，你其实是把哪个未知数先单独表示出来了？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.26,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "把M1中的具体代换动作收束为可重复识别的关键环节，为规范步骤做准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "把一个未知数表示出来以后，这个式子要放到另一个方程里的哪里，才能把两个字母变成一个字母？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.32,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "帮助学生看清从一个方程组到一元方程之间的中间环节，搭起步骤意识。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-3",
+        "content": "代入之后，方程里还有几个字母？解出这个字母后，我们还要做什么才能得到完整的答案？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.38,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "把学生送到M2的流程入口，但不直接替代完整步骤回答。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "看例1时，你先盯住的是哪个地方来决定表示谁：是未知数的位置，还是它前面的系数？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.27,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "先把学生的注意力拉回到方程中的可观察线索——未知数的系数。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "如果要在例1里表示y，你需要先把哪个数移到等号另一边？这比表示x多了一步还是少了一步？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.33,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "用最小比较任务让学生发现‘系数是1时更好表示’不是随意选择，而是更省一步。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-3",
+        "content": "要是一个未知数前面的系数正好是1或-1，把它单独表示出来，通常会省在哪儿？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.39,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "把具体比较提炼成可迁移的判断抓手，为M3的策略概括铺路。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "要是一个方程组里，两个未知数前面的系数都不是1，也不是-1，你刚才那个最方便的判断办法还能直接用吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.29,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "先让学生确认旧标准在新情形中失效，从而产生继续寻找新线索的需要。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果没有1或-1，你再看两个未知数前面的数，哪一种数通常更值得先留意：绝对值大的，还是绝对值小的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生从‘看1或-1’过渡到‘看系数绝对值大小’，降低新标准的抽象度。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-3",
+        "content": "先表示系数绝对值较小的那个未知数，写出来的式子一般会更长一些，还是更短一些？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.41,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "把新线索和运算负担建立起直接联系，送到M4的入口。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "看快递员报酬这道题，题里有两个一直不变的量，你觉得它们分别可以设成什么未知数？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.28,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "先把实际问题中的未知量找准，为从情境到方程组搭桥。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "星期一的数据和总报酬放在一起，能组成一个什么样的相等关系？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "帮助学生把题目中的两天数据各自对应到一个方程，完成建模前的关键连接。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-3",
+        "content": "方程组列出来以后，它和前面解的哪一类题样子很像？接下来你准备先看什么，来决定怎么解？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.42,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "连接列方程与解方程，让学生自然转入M5的求解任务。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "看你刚才列出的方程组，在代入之前，每个方程里一共出现了几个未知数？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.27,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "先把学生目光重新拉回‘代入这一步’本身，为概括思想准备共同观察点。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "把一个未知数代进去以后，式子里还剩几个未知数？和代入前比，少掉了哪一个？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.34,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "让学生通过最直观的数量变化看见代入的共同效果。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-3",
+        "content": "这么一‘代’，原来要同时找两个数的问题，变成了先专心找哪一个数的问题？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "用低负荷语言把现象推进到方法本质的门口，为M6的思想概括蓄势。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V6-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "S1-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-3",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "S2-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-3",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "S3-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-3",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "S4-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "S5-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-3",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

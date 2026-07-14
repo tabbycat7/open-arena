@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人所得税计算原理直观解析</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --tax-free-color: #2ecc71;
+            --taxable-color: #e67e22;
+            --error-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #d0d7de;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: var(--bg-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* 头部标题与问题 */
+        .header {
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 12px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title::before {
+            content: "📊";
+            font-size: 26px;
+        }
+
+        .question-box {
+            background-color: #eef2f7;
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+
+        .highlight-text {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        /* 主工作区 */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: space-between;
+        }
+
+        /* 算式对比区域 */
+        .formula-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .formula-card {
+            background: var(--card-bg);
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .formula-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+
+        .formula-card.active-correct {
+            border-color: var(--tax-free-color);
+            background-color: #f0fff4;
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.2);
+        }
+
+        .formula-card.active-wrong {
+            border-color: var(--error-color);
+            background-color: #fff5f5;
+            box-shadow: 0 0 12px rgba(231, 76, 60, 0.2);
+        }
+
+        .formula-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .active-correct .formula-badge {
+            display: block;
+            background-color: var(--tax-free-color);
+            color: white;
+        }
+
+        .active-wrong .formula-badge {
+            display: block;
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .formula-title {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .formula-body {
+            font-size: 22px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .formula-body span.highlight {
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #ffe0b2;
+            border: 1px dashed var(--taxable-color);
+        }
+
+        /* 可视化画布区 */
+        .canvas-container {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .slider-label {
+            font-size: 15px;
+            font-weight: bold;
+            width: 180px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-input {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            cursor: pointer;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* 动画与交互细节 */
+        .pulse {
+            animation: pulse-animation 1.5s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { fill-opacity: 0.8; }
+            50% { fill-opacity: 1; filter: drop-shadow(0px 0px 8px rgba(230, 126, 34, 0.6)); }
+            100% { fill-opacity: 0.8; }
+        }
+
+        .text-transition {
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部：情境引入 -->
+    <div class="header">
+        <div class="title">工资与个人所得税</div>
+        <div class="question-box">
+            月工资 <span class="highlight-text">8000元</span>，起征点 <span class="highlight-text">5000元</span>，超出部分税率 <span class="highlight-text">3%</span>。<br>
+            请对比以下两种算式，点击卡片或下方按钮，观察工资条的拆分变化：
+        </div>
+    </div>
+
+    <!-- 主工作区 -->
+    <div class="workspace">
+        <!-- 算式对比卡片 -->
+        <div class="formula-container">
+            <div class="formula-card" id="card-f1">
+                <div class="formula-badge">不合理</div>
+                <div class="formula-title">算式 ①</div>
+                <div class="formula-body">8000 × 3%</div>
+            </div>
+            <div class="formula-card" id="card-f2">
+                <div class="formula-badge">合理</div>
+                <div class="formula-title">算式 ②</div>
+                <div class="formula-body"><span id="formula-part-excess" class="">(8000 - 5000)</span> × 3%</div>
+            </div>
+        </div>
+
+        <!-- SVG 交互直观模型 -->
+        <div class="canvas-container">
+            <svg viewBox="0 0 800 240" id="svg-model">
+                <!-- 渐变定义 -->
+                <defs>
+                    <linearGradient id="blue-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3498db" />
+                        <stop offset="100%" stop-color="#2980b9" />
+                    </linearGradient>
+                    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2ecc71" />
+                        <stop offset="100%" stop-color="#27ae60" />
+                    </linearGradient>
+                    <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#e67e22" />
+                        <stop offset="100%" stop-color="#d35400" />
+                    </linearGradient>
+                </defs>
+
+                <!-- 背景网格/辅助线 -->
+                <line x1="100" y1="180" x2="700" y2="180" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="5,5" />
+                
+                <!-- 刻度尺 -->
+                <text x="100" y="200" font-size="12" fill="#7f8c8d" text-anchor="middle">0元</text>
+                <text x="475" y="200" font-size="12" fill="#7f8c8d" text-anchor="middle" id="scale-threshold">5000元(起征点)</text>
+                <text x="700" y="200" font-size="12" fill="#7f8c8d" text-anchor="middle">8000元(总工资)</text>
+
+                <!-- 1. 免税部分矩形 (左) -->
+                <rect id="rect-free" x="100" y="60" width="375" height="80" rx="6" fill="url(#blue-grad)" transition="all 0.5s" />
+                <!-- 2. 计税部分矩形 (右) -->
+                <rect id="rect-tax" x="475" y="60" width="225" height="80" rx="6" fill="url(#blue-grad)" transition="all 0.5s" />
+
+                <!-- 剪刀分割线 -->
+                <line id="split-line" x1="475" y1="40" x2="475" y2="160" stroke="#e74c3c" stroke-width="3" stroke-dasharray="6,4" opacity="0" />
+                <text id="split-scissor" x="465" y="35" font-size="20" opacity="0">✂️</text>
+
+                <!-- 动态文字标签 -->
+                <!-- 总工资标签 -->
+                <text id="label-total" x="400" y="105" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle" pointer-events="none">总工资 8000 元</text>
+                
+                <!-- 免税额标签 -->
+                <text id="label-free" x="287" y="105" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0" pointer-events="none">免税部分 5000元</text>
+                
+                <!-- 计税额标签 -->
+                <text id="label-taxable" x="587" y="105" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0" pointer-events="none">超出部分 3000元</text>
+                <text id="label-taxable-sub" x="587" y="125" font-size="12" fill="#ffffff" text-anchor="middle" opacity="0" pointer-events="none">(8000 - 5000)元</text>
+
+                <!-- 括号指示器 -->
+                <path id="bracket-free" d="M 102 150 L 102 160 L 287 160 L 287 165 L 287 160 L 473 160 L 473 150" fill="none" stroke="#27ae60" stroke-width="2" opacity="0" />
+                <path id="bracket-tax" d="M 477 150 L 477 160 L 587 160 L 587 165 L 587 160 L 698 160 L 698 150" fill="none" stroke="#d35400" stroke-width="2" opacity="0" />
+            </svg>
+        </div>
+
+        <!-- 交互控制面板 -->
+        <div class="control-panel">
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>起征点调整:</span>
+                    <span id="threshold-val" style="color: var(--primary-color);">5000 元</span>
+                </div>
+                <input type="range" id="threshold-slider" class="slider-input" min="1000" max="7000" step="500" value="5000">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="btn-reset">🔄 还原初始状态</button>
+                <button class="btn btn-primary" id="btn-show-f1">🔍 剖析算式 ① (全额征税)</button>
+                <button class="btn btn-primary" id="btn-show-f2">✂️ 剖析算式 ② (超出部分征税)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('threshold-slider');
+    const thresholdVal = document.getElementById('threshold-val');
+    const scaleThreshold = document.getElementById('scale-threshold');
+    
+    const rectFree = document.getElementById('rect-free');
+    const rectTax = document.getElementById('rect-tax');
+    const splitLine = document.getElementById('split-line');
+    const splitScissor = document.getElementById('split-scissor');
+    
+    const labelTotal = document.getElementById('label-total');
+    const labelFree = document.getElementById('label-free');
+    const labelTaxable = document.getElementById('label-taxable');
+    const labelTaxableSub = document.getElementById('label-taxable-sub');
+    
+    const bracketFree = document.getElementById('bracket-free');
+    const bracketTax = document.getElementById('bracket-tax');
+    
+    const cardF1 = document.getElementById('card-f1');
+    const cardF2 = document.getElementById('card-f2');
+    const formulaPartExcess = document.getElementById('formula-part-excess');
+    
+    const btnReset = document.getElementById('btn-reset');
+    const btnShowF1 = document.getElementById('btn-show-f1');
+    const btnShowF2 = document.getElementById('btn-show-f2');
+
+    // 常量配置
+    const TOTAL_SALARY = 8000;
+    const SVG_WIDTH = 600; // 对应 8000 元
+    const START_X = 100;
+
+    let currentThreshold = 5000;
+    let currentMode = 'normal'; // 'normal', 'f1', 'f2'
+
+    // 初始化渲染
+    function updateVisualization() {
+        // 计算比例
+        const thresholdRatio = currentThreshold / TOTAL_SALARY;
+        const splitX = START_X + SVG_WIDTH * thresholdRatio;
+        
+        // 更新滑块数值显示
+        thresholdVal.textContent = `${currentThreshold} 元`;
+        scaleThreshold.textContent = `${currentThreshold}元(起征点)`;
+        scaleThreshold.setAttribute('x', splitX);
+
+        // 动态更新算式②中的起征点数值
+        formulaPartExcess.innerHTML = `(${TOTAL_SALARY} - <span style="color: var(--tax-free-color);">${currentThreshold}</span>)`;
+
+        if (currentMode === 'normal') {
+            // 恢复整条蓝色
+            rectFree.setAttribute('width', splitX - START_X);
+            rectFree.setAttribute('fill', 'url(#blue-grad)');
+            
+            rectTax.setAttribute('x', splitX);
+            rectTax.setAttribute('width', START_X + SVG_WIDTH - splitX);
+            rectTax.setAttribute('fill', 'url(#blue-grad)');
+            
+            // 隐藏辅助线和标签
+            splitLine.setAttribute('opacity', '0');
+            splitScissor.setAttribute('opacity', '0');
+            labelTotal.setAttribute('opacity', '1');
+            labelTotal.setAttribute('x', START_X + SVG_WIDTH / 2);
+            
+            labelFree.setAttribute('opacity', '0');
+            labelTaxable.setAttribute('opacity', '0');
+            labelTaxableSub.setAttribute('opacity', '0');
+            
+            bracketFree.setAttribute('opacity', '0');
+            bracketTax.setAttribute('opacity', '0');
+
+            // 卡片状态
+            cardF1.className = 'formula-card';
+            cardF2.className = 'formula-card';
+            formulaPartExcess.className = '';
+            rectTax.classList.remove('pulse');
+        } 
+        else if (currentMode === 'f1') {
+            // 算式①：全额征税，整条变橙色/红色警告
+            rectFree.setAttribute('width', SVG_WIDTH);
+            rectFree.setAttribute('fill', 'url(#orange-grad)');
+            rectTax.setAttribute('width', '0');
+            
+            splitLine.setAttribute('opacity', '0');
+            splitScissor.setAttribute('opacity', '0');
+            
+            labelTotal.setAttribute('opacity', '1');
+            labelTotal.textContent = `全部 8000 元都纳税！`;
+            labelTotal.setAttribute('x', START_X + SVG_WIDTH / 2);
+            
+            labelFree.setAttribute('opacity', '0');
+            labelTaxable.setAttribute('opacity', '0');
+            labelTaxableSub.setAttribute('opacity', '0');
+            
+            bracketFree.setAttribute('opacity', '0');
+            bracketTax.setAttribute('opacity', '0');
+
+            // 卡片高亮
+            cardF1.className = 'formula-card active-wrong';
+            cardF2.className = 'formula-card';
+            formulaPartExcess.className = '';
+            rectTax.classList.remove('pulse');
+        } 
+        else if (currentMode === 'f2') {
+            // 算式②：合理切分
+            const gap = 15; // 切开的缝隙
+            const leftWidth = splitX - START_X;
+            const rightWidth = START_X + SVG_WIDTH - splitX;
+            const taxableAmount = TOTAL_SALARY - currentThreshold;
+
+            // 左侧免税部分（绿色）
+            rectFree.setAttribute('width', leftWidth);
+            rectFree.setAttribute('fill', 'url(#green-grad)');
+            
+            // 右侧计税部分（橙色，向右平移产生切开效果）
+            rectTax.setAttribute('x', splitX + gap);
+            rectTax.setAttribute('width', rightWidth - gap > 0 ? rightWidth - gap : 0);
+            rectTax.setAttribute('fill', 'url(#orange-grad)');
+            rectTax.classList.add('pulse');
+
+            // 显示剪刀和虚线
+            splitLine.setAttribute('x1', splitX + gap/2);
+            splitLine.setAttribute('x2', splitX + gap/2);
+            splitLine.setAttribute('opacity', '1');
+            
+            splitScissor.setAttribute('x', splitX - 5);
+            splitScissor.setAttribute('opacity', '1');
+
+            // 隐藏总工资标签，显示拆分标签
+            labelTotal.setAttribute('opacity', '0');
+            
+            // 免税标签位置与数值
+            const freeCenterX = START_X + leftWidth / 2;
+            labelFree.setAttribute('x', freeCenterX);
+            labelFree.setAttribute('opacity', '1');
+            labelFree.textContent = `免税部分 ${currentThreshold}元`;
+
+            // 计税标签位置与数值
+            const taxCenterX = splitX + gap + (rightWidth - gap) / 2;
+            labelTaxable.setAttribute('x', taxCenterX);
+            labelTaxable.setAttribute('opacity', '1');
+            labelTaxable.textContent = `超出部分 ${taxableAmount}元`;
+            
+            labelTaxableSub.setAttribute('x', taxCenterX);
+            labelTaxableSub.setAttribute('opacity', '1');
+            labelTaxableSub.textContent = `(${TOTAL_SALARY} - ${currentThreshold})元`;
+
+            // 绘制大括号
+            bracketFree.setAttribute('d', `M ${START_X+2} 150 L ${START_X+2} 160 L ${freeCenterX} 160 L ${freeCenterX} 165 L ${freeCenterX} 160 L ${splitX-2} 160 L ${splitX-2} 150`);
+            bracketFree.setAttribute('opacity', '1');
+
+            const bTaxStart = splitX + gap + 2;
+            const bTaxEnd = START_X + SVG_WIDTH - 2;
+            bracketTax.setAttribute('d', `M ${bTaxStart} 150 L ${bTaxStart} 160 L ${taxCenterX} 160 L ${taxCenterX} 165 L ${taxCenterX} 160 L ${bTaxEnd} 160 L ${bTaxEnd} 150`);
+            bracketTax.setAttribute('opacity', '1');
+
+            // 卡片高亮
+            cardF1.className = 'formula-card';
+            cardF2.className = 'formula-card active-correct';
+            formulaPartExcess.className = 'highlight';
+        }
+    }
+
+    // 事件监听
+    slider.addEventListener('input', (e) => {
+        currentThreshold = parseInt(e.target.value);
+        updateVisualization();
+    });
+
+    btnReset.addEventListener('click', () => {
+        currentMode = 'normal';
+        labelTotal.textContent = "总工资 8000 元";
+        updateVisualization();
+    });
+
+    btnShowF1.addEventListener('click', () => {
+        currentMode = 'f1';
+        updateVisualization();
+    });
+
+    btnShowF2.addEventListener('click', () => {
+        currentMode = 'f2';
+        updateVisualization();
+    });
+
+    cardF1.addEventListener('click', () => {
+        currentMode = 'f1';
+        updateVisualization();
+    });
+
+    cardF2.addEventListener('click', () => {
+        currentMode = 'f2';
+        updateVisualization();
+    });
+
+    // 首次加载初始化
+    updateVisualization();
+</script>
+
+</body>
+</html>

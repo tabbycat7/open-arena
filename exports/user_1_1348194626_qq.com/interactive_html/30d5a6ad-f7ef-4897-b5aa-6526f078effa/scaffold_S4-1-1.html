@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>原创与剽窃的界限</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; color: var(--primary); }
+        #stage { width: 800px; height: 600px; background: white; border: 2px solid #ddd; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .canvas-area { position: absolute; top: 50px; width: 100%; display: flex; justify-content: space-around; align-items: center; }
+        .art { width: 150px; height: 200px; border: 2px solid #333; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; position: relative; }
+        .machine { width: 200px; height: 150px; background: #bdc3c7; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        #copy-result { width: 150px; height: 200px; border: 2px dashed #333; background: #eee; position: absolute; left: 550px; top: 200px; display: none; cursor: grab; }
+        #name-tag { width: 80px; height: 30px; background: #f1c40f; border: 1px solid #d35400; position: absolute; left: 50px; bottom: 50px; cursor: grab; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 10; }
+        #warning { position: absolute; bottom: 50px; width: 100%; text-align: center; color: var(--accent); font-size: 24px; font-weight: bold; opacity: 0; transition: opacity 0.5s; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 5px; }
+        .label { position: absolute; top: 10px; font-size: 14px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div id="stage">
+    <div class="label" style="left: 20px;">同学A的手绘作品</div>
+    <div class="label" style="left: 350px;">复印机</div>
+    <div class="label" style="left: 550px;">复印件</div>
+
+    <div class="canvas-area">
+        <div class="art" id="original">🎨 精美画作</div>
+        <div class="machine" id="copier">复印机</div>
+    </div>
+
+    <div id="copy-result">复印件</div>
+    <div id="name-tag">我的名字</div>
+    
+    <div style="position: absolute; bottom: 100px; width: 100%; text-align: center;">
+        <button id="btn-copy">点击开始复印</button>
+    </div>
+    <div id="warning">⚠️ 涉嫌剽窃！这不是你的原创劳动。</div>
+</div>
+
+<script>
+    const btnCopy = document.getElementById('btn-copy');
+    const copyResult = document.getElementById('copy-result');
+    const nameTag = document.getElementById('name-tag');
+    const warning = document.getElementById('warning');
+
+    let isCopied = false;
+    let isDragging = false;
+
+    btnCopy.addEventListener('click', () => {
+        copyResult.style.display = 'flex';
+        isCopied = true;
+        btnCopy.disabled = true;
+        btnCopy.innerText = "复印完成";
+    });
+
+    nameTag.addEventListener('mousedown', (e) => {
+        if (!isCopied) return;
+        isDragging = true;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            nameTag.style.left = (e.clientX - 40) + 'px';
+            nameTag.style.top = (e.clientY - 15) + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const rect = copyResult.getBoundingClientRect();
+        if (e.clientX > rect.left && e.clientX < rect.right && 
+            e.clientY > rect.top && e.clientY < rect.bottom) {
+            nameTag.style.left = (rect.right - 85) + 'px';
+            nameTag.style.top = (rect.bottom - 35) + 'px';
+            warning.style.opacity = '1';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税务专家解题卡片拼图</title>
+  <style>
+    /* 全局样式与大屏适配 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    
+    body {
+      background-color: #f0f4f8;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例自适应容器 */
+    .aspect-ratio-container {
+      width: 95vw;
+      height: 71.25vw; /* 95 * 3/4 */
+      max-width: 1000px;
+      max-height: 750px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      position: relative;
+    }
+
+    /* 头部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1 .badge {
+      background-color: #3b82f6;
+      color: white;
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: normal;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #64748b;
+    }
+
+    /* 主交互区 */
+    .main-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.2fr 0.4fr 1.2fr;
+      gap: 20px;
+      align-items: center;
+      min-height: 0; /* 允许子元素在flex中缩放 */
+    }
+
+    /* 步骤槽区域 (左侧) */
+    .slots-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .slot-wrapper {
+      background: #f8fafc;
+      border: 3px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .slot-wrapper.drag-over {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+      transform: scale(1.02);
+    }
+
+    .slot-wrapper.correct {
+      border-color: #10b981;
+      background-color: #ecfdf5;
+      border-style: solid;
+    }
+
+    .slot-wrapper.incorrect {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+      border-style: solid;
+    }
+
+    .slot-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: #475569;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slot-label .step-num {
+      background: #64748b;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .slot-wrapper.correct .slot-label .step-num {
+      background: #10b981;
+    }
+
+    .slot-dropzone {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .slot-placeholder {
+      color: #94a3b8;
+      font-size: 14px;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    /* 中间指示箭头 */
+    .arrow-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .flow-arrow {
+      width: 48px;
+      height: 48px;
+      color: #cbd5e1;
+      transition: all 0.5s ease;
+    }
+
+    .flow-arrow.active {
+      color: #10b981;
+      transform: scale(1.2);
+      filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.2));
+    }
+
+    /* 卡片源区域 (右侧) */
+    .cards-column {
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .cards-column-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #475569;
+      text-align: center;
+      margin-bottom: -5px;
+    }
+
+    /* 可拖拽卡片样式 */
+    .card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: grab;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s ease;
+      position: relative;
+      touch-action: none; /* 优化移动端拖拽 */
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border-color: #3b82f6;
+    }
+
+    .card:active {
+      cursor: grabbing;
+    }
+
+    .card.dragging {
+      opacity: 0.5;
+      transform: scale(0.95);
+    }
+
+    .card.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .card-tag {
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      background: #3b82f6;
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .card-content {
+      font-size: 16px;
+      color: #1e293b;
+      font-weight: bold;
+      line-height: 1.5;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* 底部控制与反馈区 */
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 60px;
+    }
+
+    .feedback-box {
+      flex: 1;
+      margin-right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .feedback-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feedback-box.info {
+      background-color: #f1f5f9;
+      color: #475569;
+      border-left: 4px solid #64748b;
+    }
+
+    .feedback-box.success {
+      background-color: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .feedback-box.error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    .btn-reset {
+      background-color: #64748b;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-reset:hover {
+      background-color: #475569;
+    }
+
+    .btn-reset:active {
+      transform: scale(0.98);
+    }
+
+    /* 辅助提示动画 */
+    @keyframes pulse-green {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+    }
+
+    .pulse-success {
+      animation: pulse-green 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>税务专家解题卡片拼图 <span class="badge">六年级 · 百分数应用</span></h1>
+      <p>请将右侧的“解题卡片”拖拽或点击放入左侧正确的步骤槽中，理清解题思路！</p>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-layout">
+      
+      <!-- 左侧：步骤槽 -->
+      <div class="slots-column">
+        <!-- 步骤 1 -->
+        <div class="slot-wrapper" id="slot-1" data-expected="card-base">
+          <div class="slot-label">
+            <span class="step-num">1</span> 第一步：奠定计算基础
+          </div>
+          <div class="slot-dropzone" id="zone-1">
+            <div class="slot-placeholder">请拖入或点击选择卡片放入此处</div>
+          </div>
+        </div>
+
+        <!-- 步骤 2 -->
+        <div class="slot-wrapper" id="slot-2" data-expected="card-tax">
+          <div class="slot-label">
+            <span class="step-num">2</span> 第二步：计算最终税额
+          </div>
+          <div class="slot-dropzone" id="zone-2">
+            <div class="slot-placeholder">请拖入或点击选择卡片放入此处</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中间：流程箭头 -->
+      <div class="arrow-column">
+        <svg class="flow-arrow" id="flow-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 13l-7 7-7-7m14-6l-7 7-7-7"></path>
+        </svg>
+      </div>
+
+      <!-- 右侧：卡片池 -->
+      <div class="cards-column" id="cards-pool">
+        <div class="cards-column-title">待整理的解题卡片</div>
+        
+        <!-- 卡片 A -->
+        <div class="card" id="card-tax" draggable="true">
+          <div class="card-tag">计算公式</div>
+          <div class="card-content">计算应纳税额 =<br>计税基数 × 税率</div>
+        </div>
+
+        <!-- 卡片 B -->
+        <div class="card" id="card-base" draggable="true">
+          <div class="card-tag">计算公式</div>
+          <div class="card-content">确定计税基数 =<br>总收入 - 免税额</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部控制与反馈 -->
+    <div class="footer">
+      <div class="feedback-box info" id="feedback-box">
+        <span id="feedback-icon">💡</span>
+        <span id="feedback-text">试着把卡片放到对应的步骤框里吧！支持拖拽，也可以先点卡片再点目标框。</span>
+      </div>
+      <button class="btn-reset" id="btn-reset">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path>
+        </svg>
+        重置卡片
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const cards = document.querySelectorAll('.card');
+    const slots = document.querySelectorAll('.slot-wrapper');
+    const dropzones = document.querySelectorAll('.slot-dropzone');
+    const cardsPool = document.getElementById('cards-pool');
+    const flowArrow = document.getElementById('flow-arrow');
+    const feedbackBox = document.getElementById('feedback-box');
+    const feedbackIcon = document.getElementById('feedback-icon');
+    const feedbackText = document.getElementById('feedback-text');
+    const btnReset = document.getElementById('btn-reset');
+
+    let draggedCard = null;
+    let selectedCard = null;
+
+    // Web Audio API 声音合成器
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'success') {
+          // 欢快的双音符
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.12); // E5
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'error') {
+          // 低沉的提示音
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, now); // A3
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'click') {
+          // 轻微的点击反馈
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (e) {
+        console.log('Audio context not supported or blocked');
+      }
+    }
+
+    // 初始化反馈信息
+    function showFeedback(type, text) {
+      feedbackBox.className = `feedback-box ${type} show`;
+      feedbackText.textContent = text;
+      if (type === 'success') {
+        feedbackIcon.textContent = '🎉';
+      } else if (type === 'error') {
+        feedbackIcon.textContent = '❌';
+      } else {
+        feedbackIcon.textContent = '💡';
+      }
+    }
+
+    // 拖拽开始
+    cards.forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedCard = card;
+        card.classList.add('dragging');
+        // 清除点击选择状态
+        if (selectedCard) {
+          selectedCard.classList.remove('selected');
+          selectedCard = null;
+        }
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        draggedCard = null;
+      });
+
+      // 点击选择逻辑 (适配移动端和黑板触屏)
+      card.addEventListener('pointerdown', (e) => {
+        // 如果卡片已经在槽里，点击它会退回到池中
+        if (card.parentElement.classList.contains('slot-dropzone')) {
+          playSound('click');
+          cardsPool.appendChild(card);
+          checkStatus();
+          return;
+        }
+
+        playSound('click');
+        if (selectedCard === card) {
+          card.classList.remove('selected');
+          selectedCard = null;
+        } else {
+          if (selectedCard) {
+            selectedCard.classList.remove('selected');
+          }
+          selectedCard = card;
+          card.classList.add('selected');
+          showFeedback('info', '已选择卡片，请点击左侧的“第一步”或“第二步”空槽放入。');
+        }
+      });
+    });
+
+    // 放置区逻辑
+    slots.forEach(slot => {
+      const zone = slot.querySelector('.slot-dropzone');
+
+      // 拖拽悬停
+      slot.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!zone.querySelector('.card')) {
+          slot.classList.add('drag-over');
+        }
+      });
+
+      slot.addEventListener('dragleave', () => {
+        slot.classList.remove('drag-over');
+      });
+
+      // 拖拽释放
+      slot.addEventListener('drop', (e) => {
+        e.preventDefault();
+        slot.classList.remove('drag-over');
+        
+        if (draggedCard && !zone.querySelector('.card')) {
+          zone.appendChild(draggedCard);
+          playSound('click');
+          checkStatus();
+        }
+      });
+
+      // 点击放置逻辑
+      slot.addEventListener('click', () => {
+        if (selectedCard && !zone.querySelector('.card')) {
+          zone.appendChild(selectedCard);
+          selectedCard.classList.remove('selected');
+          selectedCard = null;
+          playSound('click');
+          checkStatus();
+        }
+      });
+    });
+
+    // 点击空白处取消选择
+    document.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.card') && !e.target.closest('.slot-wrapper')) {
+        if (selectedCard) {
+          selectedCard.classList.remove('selected');
+          selectedCard = null;
+        }
+      }
+    });
+
+    // 检查拼图状态
+    function checkStatus() {
+      const slot1 = document.getElementById('slot-1');
+      const slot2 = document.getElementById('slot-2');
+      const cardIn1 = slot1.querySelector('.card');
+      const cardIn2 = slot2.querySelector('.card');
+
+      // 隐藏占位文本
+      togglePlaceholder(slot1, cardIn1);
+      togglePlaceholder(slot2, cardIn2);
+
+      // 重置状态样式
+      slots.forEach(s => s.className = 'slot-wrapper');
+
+      if (cardIn1 && cardIn2) {
+        // 两个槽都放满了，开始校验
+        const is1Correct = slot1.dataset.expected === cardIn1.id;
+        const is2Correct = slot2.dataset.expected === cardIn2.id;
+
+        if (is1Correct && is2Correct) {
+          // 完全正确
+          slot1.classList.add('correct');
+          slot2.classList.add('correct');
+          flowArrow.classList.add('active');
+          showFeedback('success', '太棒了！解题第一步是先求出“计税基数”（总收入-免税额），第二步再用“计税基数×税率”求出应纳税额。');
+          playSound('success');
+          // 增加呼吸灯效果
+          slot1.classList.add('pulse-success');
+          slot2.classList.add('pulse-success');
+        } else {
+          // 顺序反了
+          slot1.classList.add('incorrect');
+          slot2.classList.add('incorrect');
+          flowArrow.classList.remove('active');
+          showFeedback('error', '顺序好像反了哦！想一想：如果不先算出“计税基数”，第二步能直接计算“应纳税额”吗？');
+          playSound('error');
+        }
+      } else {
+        // 未放满
+        flowArrow.classList.remove('active');
+        slots.forEach(s => {
+          s.classList.remove('pulse-success');
+        });
+        
+        if (cardIn1 || cardIn2) {
+          showFeedback('info', '继续把另一张卡片也放好吧！');
+        } else {
+          showFeedback('info', '试着把卡片放到对应的步骤框里吧！支持拖拽，也可以先点卡片再点目标框。');
+        }
+      }
+    }
+
+    // 控制占位符显示隐藏
+    function togglePlaceholder(slotElement, hasCard) {
+      const placeholder = slotElement.querySelector('.slot-placeholder');
+      if (hasCard) {
+        placeholder.style.display = 'none';
+      } else {
+        placeholder.style.display = 'block';
+      }
+    }
+
+    // 重置按钮
+    btnReset.addEventListener('click', () => {
+      playSound('click');
+      cards.forEach(card => {
+        cardsPool.appendChild(card);
+        card.classList.remove('selected');
+      });
+      selectedCard = null;
+      draggedCard = null;
+      
+      slots.forEach(slot => {
+        slot.className = 'slot-wrapper';
+        const placeholder = slot.querySelector('.slot-placeholder');
+        placeholder.style.display = 'block';
+      });
+
+      flowArrow.classList.remove('active');
+      showFeedback('info', '卡片已重置，请重新开始拼图！');
+    });
+
+    // 初始化提示
+    showFeedback('info', '试着把卡片放到对应的步骤框里吧！支持拖拽，也可以先点卡片再点目标框。');
+  </script>
+</body>
+</html>

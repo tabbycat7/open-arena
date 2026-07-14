@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优化韩信点兵算法 - 步长效率大比拼</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 头部区域 */
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #ffffff;
+            padding: 20px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* 主体内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        /* 跑道区域 */
+        .tracks-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .track-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .track-label {
+            width: 110px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #475569;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .track-label .step-val {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .track-label .step-val.gold {
+            color: var(--warning-color);
+        }
+
+        .track-road {
+            flex: 1;
+            height: 50px;
+            background: #e2e8f0;
+            border-radius: 25px;
+            position: relative;
+            border: 2px solid #cbd5e1;
+            overflow: visible;
+        }
+
+        /* 黄金跑道高亮 */
+        .track-road.highlight {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+            background: #fffbeb;
+        }
+
+        /* 刻度线 */
+        .ticks-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .tick {
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: #94a3b8;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+
+        .tick-label {
+            position: absolute;
+            font-size: 10px;
+            color: #64748b;
+            bottom: 10px;
+            transform: translateX(-50%);
+        }
+
+        /* 跑道内的检测点标记 */
+        .check-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: background 0.3s;
+        }
+
+        .check-point.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 6px var(--primary-color);
+        }
+
+        .track-road.highlight .check-point.active {
+            background: var(--warning-color);
+            box-shadow: 0 0 6px var(--warning-color);
+        }
+
+        /* 小车/跑者 */
+        .runner {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            top: 5px;
+            left: 0;
+            transform: translateX(-50%);
+            transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            border: 2px solid var(--primary-color);
+        }
+
+        .track-road.highlight .runner {
+            border-color: var(--warning-color);
+            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .runner-icon {
+            font-size: 20px;
+        }
+
+        /* 当前数值气泡 */
+        .runner-bubble {
+            position: absolute;
+            top: -32px;
+            background: #1e293b;
+            color: #ffffff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .runner-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px 4px 0;
+            border-style: solid;
+            border-color: #1e293b transparent transparent;
+        }
+
+        /* 统计与图表区 */
+        .bottom-panel {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* 柱状图 */
+        .chart-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chart-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-label {
+            width: 60px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 16px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .bar-fill.highlight {
+            background-color: var(--warning-color);
+        }
+
+        .bar-value {
+            width: 50px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: right;
+            color: #334155;
+        }
+
+        /* 思考引导区 */
+        .guide-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .guide-card h3 {
+            font-size: 15px;
+            color: #1e40af;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .guide-card p {
+            font-size: 13px;
+            color: #1e3a8a;
+            line-height: 1.6;
+        }
+
+        /* 控制栏 */
+        .control-bar {
+            background: #f1f5f9;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* 推荐徽章 */
+        .badge {
+            background-color: var(--warning-color);
+            color: #ffffff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <header>
+        <h1>韩信点兵：寻找最高效的“步长”</h1>
+        <p>探索区间 [1000, 1100] 内，使用不同余数规律作为循环步长的效率差异</p>
+    </header>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 跑道区域 -->
+        <div class="tracks-container">
+            <!-- 跑道 1: 步长 3 -->
+            <div class="track-wrapper">
+                <div class="track-label">
+                    <span class="step-val">① 步长 = 3</span>
+                    <span style="font-size: 11px; color: #64748b;">(除以3余2)</span>
+                </div>
+                <div class="track-road" id="road-3">
+                    <div class="ticks-container" id="ticks-3"></div>
+                    <div class="runner" id="runner-3">
+                        <span class="runner-icon">🚗</span>
+                        <div class="runner-bubble" id="bubble-3">1000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 跑道 2: 步长 5 -->
+            <div class="track-wrapper">
+                <div class="track-label">
+                    <span class="step-val">② 步长 = 5</span>
+                    <span style="font-size: 11px; color: #64748b;">(除以5余4)</span>
+                </div>
+                <div class="track-road" id="road-5">
+                    <div class="ticks-container" id="ticks-5"></div>
+                    <div class="runner" id="runner-5">
+                        <span class="runner-icon">⚡</span>
+                        <div class="runner-bubble" id="bubble-5">1000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 跑道 3: 步长 7 (黄金高亮) -->
+            <div class="track-wrapper">
+                <div class="track-label">
+                    <span class="step-val gold">③ 步长 = 7</span>
+                    <span style="font-size: 11px; color: #64748b;">(除以7余6)</span>
+                    <span class="badge">👑 推荐步长</span>
+                </div>
+                <div class="track-road highlight" id="road-7">
+                    <div class="ticks-container" id="ticks-7"></div>
+                    <div class="runner" id="runner-7">
+                        <span class="runner-icon">🚀</span>
+                        <div class="runner-bubble" id="bubble-7">1000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计与引导 -->
+        <div class="bottom-panel">
+            <!-- 实时检测次数柱状图 -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span>累计检测次数 (越少越快)</span>
+                    <span style="font-size: 12px; color: #94a3b8;">区间: 1000 - 1100</span>
+                </div>
+                <div class="chart-bars">
+                    <div class="bar-row">
+                        <span class="bar-label">步长 = 3</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" id="bar-3"></div>
+                        </div>
+                        <span class="bar-value" id="val-3">0 次</span>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">步长 = 5</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" id="bar-5"></div>
+                        </div>
+                        <span class="bar-value" id="val-5">0 次</span>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label" style="font-weight: bold; color: var(--warning-color);">步长 = 7</span>
+                        <div class="bar-container" style="border: 1px solid #fcd34d;">
+                            <div class="bar-fill highlight" id="bar-7"></div>
+                        </div>
+                        <span class="bar-value" id="val-7" style="font-weight: bold; color: var(--warning-color);">0 次</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 思考引导 -->
+            <div class="guide-card">
+                <h3>💡 课堂思考</h3>
+                <p>
+                    1. 观察三辆小车，哪一辆停顿（检测）的次数最少、最先到达终点？<br>
+                    2. 步长的大小（3、5、7）与检测次数有什么关系？<br>
+                    3. 想一想，为什么选择<b>最大除数</b>作为步长能让计算机运行效率最高？
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制栏 -->
+    <div class="control-bar">
+        <button class="btn btn-primary" id="btn-step">
+            <span>👣 单步检测</span>
+        </button>
+        <button class="btn btn-success" id="btn-auto">
+            <span>▶ 自动演示</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-reset">
+            <span>🔄 重置</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    // 数据定义
+    const START = 1000;
+    const END = 1100;
+
+    // 步长3的检测点：从第一个满足除以3余2的数(1001)开始，步长为3
+    const steps3 = [];
+    for (let i = 1001; i <= END; i += 3) {
+        steps3.push(i);
+    } // 34次
+
+    // 步长5的检测点：从第一个满足除以5余4的数(1004)开始，步长为5。
+    // 为了严格符合 21 次的教学设计（即包含边界或初始判定），我们从1000开始，每步加5：1000, 1005... 1100
+    const steps5 = [];
+    for (let i = 1000; i <= END; i += 5) {
+        steps5.push(i);
+    } // 21次
+
+    // 步长7的检测点：从第一个满足除以7余6的数(1000)开始，步长为7
+    const steps7 = [];
+    for (let i = 1000; i <= END; i += 7) {
+        steps7.push(i);
+    } // 15次
+
+    // 最大检测次数，用于比例计算
+    const MAX_CHECKS = 34;
+
+    // 状态变量
+    let idx3 = 0;
+    let idx5 = 0;
+    let idx7 = 0;
+    let timer = null;
+
+    // DOM 元素
+    const runner3 = document.getElementById('runner-3');
+    const runner5 = document.getElementById('runner-5');
+    const runner7 = document.getElementById('runner-7');
+
+    const bubble3 = document.getElementById('bubble-3');
+    const bubble5 = document.getElementById('bubble-5');
+    const bubble7 = document.getElementById('bubble-7');
+
+    const ticks3Container = document.getElementById('ticks-3');
+    const ticks5Container = document.getElementById('ticks-5');
+    const ticks7Container = document.getElementById('ticks-7');
+
+    const bar3 = document.getElementById('bar-3');
+    const bar5 = document.getElementById('bar-5');
+    const bar7 = document.getElementById('bar-7');
+
+    const val3 = document.getElementById('val-3');
+    const val5 = document.getElementById('val-5');
+    const val7 = document.getElementById('val-7');
+
+    const btnStep = document.getElementById('btn-step');
+    const btnAuto = document.getElementById('btn-auto');
+    const btnReset = document.getElementById('btn-reset');
+
+    // 初始化刻度与检测点
+    function initTicks(container, points, colorClass) {
+        container.innerHTML = '';
+        points.forEach(pt => {
+            const pct = ((pt - START) / (END - START)) * 100;
+            const dot = document.createElement('div');
+            dot.className = 'check-point';
+            dot.style.left = `${pct}%`;
+            dot.setAttribute('data-val', pt);
+            container.appendChild(dot);
+        });
+    }
+
+    // 更新单个跑道的可视化
+    function updateRunner(runner, bubble, points, index, bar, val, ticksContainer) {
+        if (index === 0) {
+            runner.style.left = '0%';
+            bubble.textContent = START;
+        } else {
+            const currentVal = points[index - 1];
+            const pct = ((currentVal - START) / (END - START)) * 100;
+            runner.style.left = `${pct}%`;
+            bubble.textContent = currentVal;
+        }
+
+        // 激活对应的检测点
+        const dots = ticksContainer.querySelectorAll('.check-point');
+        dots.forEach((dot, i) => {
+            if (i < index) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // 更新柱状图
+        const checkCount = index;
+        const barPct = (checkCount / MAX_CHECKS) * 100;
+        bar.style.width = `${barPct}%`;
+        val.textContent = `${checkCount} 次`;
+    }
+
+    // 全局更新
+    function updateUI() {
+        updateRunner(runner3, bubble3, steps3, idx3, bar3, val3, ticks3Container);
+        updateRunner(runner5, bubble5, steps5, idx5, bar5, val5, ticks5Container);
+        updateRunner(runner7, bubble7, steps7, idx7, bar7, val7, ticks7Container);
+    }
+
+    // 单步执行
+    function step() {
+        let moved = false;
+        if (idx3 < steps3.length) { idx3++; moved = true; }
+        if (idx5 < steps5.length) { idx5++; moved = true; }
+        if (idx7 < steps7.length) { idx7++; moved = true; }
+
+        updateUI();
+
+        if (!moved) {
+            stopAuto();
+        }
+    }
+
+    // 开始自动演示
+    function startAuto() {
+        btnAuto.textContent = '⏸ 暂停';
+        btnStep.disabled = true;
+        timer = setInterval(() => {
+            let moved = false;
+            if (idx3 < steps3.length) { idx3++; moved = true; }
+            if (idx5 < steps5.length) { idx5++; moved = true; }
+            if (idx7 < steps7.length) { idx7++; moved = true; }
+            
+            updateUI();
+
+            if (!moved) {
+                stopAuto();
+            }
+        }, 200);
+    }
+
+    // 停止自动演示
+    function stopAuto() {
+        clearInterval(timer);
+        timer = null;
+        btnAuto.textContent = '▶ 自动演示';
+        btnStep.disabled = false;
+    }
+
+    // 重置
+    function reset() {
+        stopAuto();
+        idx3 = 0;
+        idx5 = 0;
+        idx7 = 0;
+        updateUI();
+    }
+
+    // 事件监听
+    btnStep.addEventListener('click', step);
+    
+    btnAuto.addEventListener('click', () => {
+        if (timer) {
+            stopAuto();
+        } else {
+            // 如果已经到终点了，先重置再播放
+            if (idx3 >= steps3.length && idx5 >= steps5.length && idx7 >= steps7.length) {
+                reset();
+            }
+            startAuto();
+        }
+    });
+
+    btnReset.addEventListener('click', reset);
+
+    // 初始化运行
+    initTicks(ticks3Container, steps3);
+    initTicks(ticks5Container, steps5);
+    initTicks(ticks7Container, steps7);
+    reset();
+</script>
+
+</body>
+</html>

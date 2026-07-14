@@ -1,0 +1,104 @@
+{
+  "task_id": "2f4d797b-30d1-4827-9378-d662b486330a",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家来看这两种增长方式：一个是细胞1变2、2变4地翻倍，另一个是银行里每年固定增加100元本金。如果比‘后劲’，十年后哪个会拉开惊人的差距？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "我们记下细胞分裂的次数x和总数y，比如0次时1个，1次时2个……你们能发现x和y之间的‘暗号’吗？如果分裂速度不同，这个‘暗号’会怎么变？现在和同桌一起，画出速度分别是‘翻倍’和‘减半’时的图像，看看它们透露了什么共同秘密？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我这里有几个函数‘选手’：y=(-2)^x, y=1^x, y=x^2，它们都想自称是指数函数。你们来当裁判，谁能入选？为什么那些落选的‘选手’不行？再考考你们，0.5^3和0.5^2，哪个更大？这结果和你第一感觉一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "假设有个城市人口每年增长5%，但环境最多承载1000万人。我们能用一个数学式子来描述未来的人口变化吗？这个式子能告诉我们什么时候会‘挤不下’吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "现在举办一场‘衰减小竞赛’：碳-14大约5730年衰减一半，锶-90大约29年衰减一半。如果同时开始，几百年后谁剩下的多？这和细胞分裂的‘后劲’感觉一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "来场‘暗号挑战’：函数y=(a-1)^x想当指数函数，参数a需要满足什么‘入职条件’？画出a=2（入职成功）和a=0.5（也成功）时的图像草图，说说它俩的性格（单调性）为何相反？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "指数函数y=2^x和幂函数y=x^2在x≥0时都是‘增长选手’。把它们前几局的‘比分’（函数值）列出来，再想象一下赛跑图像，谁在后期会变成让人惊呼的‘飞毛腿’？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "找茬游戏升级：有人说y=(-1)^x也是指数函数，因为底数是个常数。你同意吗？试着画出它的图像（x取…,-2,-1,0,1,2,…），这图像透露了什么‘古怪’的秘密？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "理财高手挑战：本金1万元，A银行年利率2%，B银行年利率2.5%，都按复利计算。谁的资产先翻倍？别看只差0.5%，30年后这‘微小差距’会变成多大的‘财富鸿沟’？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "如果a分别是-2、0、1、2，y=a^x在x=1和x=2时算出的值，有哪些看起来“生病了”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "当底数a是个小于1的正数，比如0.5，你觉得它喜欢x变大还是变小？试着比比0.5^1.2和0.5^0.8的大小。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

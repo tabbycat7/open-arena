@@ -1,0 +1,212 @@
+{
+  "task_id": "6185ef0b-7a71-42f1-83a5-1935647e0dd9",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，请看大屏幕上的圆锥模型，谁能指一指它的高到底在哪儿？是侧面这条棱吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "大家看老师手里的圆柱和圆锥，它们底面积相等、高也相等。猜一猜，这个圆锥的体积大概是圆柱的几分之几？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "既然实验证明了圆锥体积是等底等高圆柱体积的三分之一，那你能用字母把圆锥的体积公式写出来吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "看例题3，题目给出了沙堆的直径和高，要求体积。第一步我们应该先算什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "我们已经算出了沙堆的体积是6.28立方米，那这堆沙子到底有多重呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果老师把这个圆锥模型侧放在桌面上，它的高还在原来的位置吗？这时候，高应该怎么画？是从顶点垂直于桌面，还是垂直于底面？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "这是一个圆锥形的冰淇淋筒，售货员说它的高是从顶点到底面圆周那根线的长度。售货员说得对吗？如果不对，错在哪里？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "如果圆柱和圆锥的底面积相等，但圆锥的高只有圆柱的一半。猜一猜，倒沙子实验的结果会怎样？体积关系还是三分之一吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "有同学说：'圆锥体积就是圆柱体积的三分之一。'这句话对吗？如果给你一个很矮很胖的圆柱和一个很高很瘦的圆锥，它们的体积关系还是这样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "把一个圆柱削成一个最大的圆锥，削去的体积是多少？如果不给你具体数字，你能用一个关系式来表示削去的体积吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "如果题目不告诉我们底面积和高，而是直接告诉我们一个圆柱的体积是48立方厘米，要求与它等底等高的圆锥体积，你会怎么算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "测量一个圆锥形麦堆，测得底面周长是12.56米，高是1.5米。要求体积，第一步和刚才的例题有什么不同？请口述你的解题思路。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "小明在计算圆锥体积时，列式为 $3.14 \\times 2^2 \\times 3$。他算对了吗？如果不看计算结果，你能一眼看出他的问题在哪里吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一辆卡车运来了9.42吨的沙子，堆成一个圆锥形，测得底面直径是4米。这堆沙子大概有多高？（每立方米沙子重1.5吨）",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "刚才算出沙堆重6.28吨。如果用一辆小车每次最多运1.5吨，运完这堆沙子需要运几次？这和单纯的数学计算有什么不一样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "大家看这两个模型，把圆锥的底面和圆柱的底面扣在一起比一比，看看是不是完全重合？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "底面一样大了，再把它们并排放平，比一比高度，这两个模型的高度也完全一样吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "刚才倒沙子实验，我们一共倒了几次才把圆柱正好装满？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "圆锥装满需要倒3次，说明圆柱的体积是圆锥的3倍，反过来说，圆锥体积是圆柱的几分之几？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "公式里需要底面积，但题目直接给的是直径，要算底面积，我们必须先求出什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "现在底面积和高都有了，算圆锥体积时，和圆柱相比，最后千万别忘了乘哪个数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "题目说“每立方米沙子重1.5吨”，这句话的意思是，如果有1立方米的沙子，它有多重？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "我们算出了6.28立方米，那就意味着有多少个1.5吨？该怎么列式计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <title>营业税问题逆向思维训练</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --border: #e2e8f0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 800px;
+      height: 600px;
+      position: absolute;
+      transform-origin: top left;
+      background: #f1f5f9;
+      overflow: hidden;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 5px 0;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: bold;
+      color: var(--dark);
+      letter-spacing: 1px;
+    }
+
+    /* Problem Box */
+    .problem-box {
+      background: #ffffff;
+      border-left: 6px solid var(--primary);
+      padding: 15px 20px;
+      margin: 5px 10px;
+      border-radius: 4px 8px 8px 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .problem-text {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #334155;
+      margin: 0;
+    }
+
+    .highlight-tax {
+      color: var(--success);
+      font-weight: bold;
+      border-bottom: 2px dashed var(--success);
+      padding: 0 2px;
+    }
+
+    .highlight-rate {
+      color: var(--warning);
+      font-weight: bold;
+      border-bottom: 2px dashed var(--warning);
+      padding: 0 2px;
+    }
+
+    .highlight-revenue {
+      color: var(--primary);
+      font-weight: bold;
+      border-bottom: 2px dashed var(--primary);
+      padding: 0 2px;
+    }
+
+    /* Workspace */
+    .workspace {
+      margin: 5px 10px;
+    }
+
+    .formula-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 0 5px;
+    }
+
+    .formula-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #475569;
+    }
+
+    .formula-tag {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .tag-multiplication {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .tag-division {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+
+    /* Formula Container */
+    .formula-container {
+      position: relative;
+      width: 740px;
+      height: 120px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .formula-block {
+      position: absolute;
+      top: 15px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+      padding: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .block-tax {
+      background: #ecfdf5;
+      border: 2px solid var(--success);
+      color: #065f46;
+    }
+
+    .block-revenue {
+      background: #eff6ff;
+      border: 2px solid var(--primary);
+      color: #1e40af;
+    }
+
+    .block-rate {
+      background: #fffbeb;
+      border: 2px solid var(--warning);
+      color: #92400e;
+    }
+
+    .block-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .block-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .operator {
+      position: absolute;
+      top: 15px;
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #475569;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 5px 0;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7c3aed;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary:disabled {
+      background: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-outline {
+      background: white;
+      border: 1px solid var(--border);
+      color: #475569;
+    }
+
+    .btn-outline:hover {
+      background: #f1f5f9;
+    }
+
+    /* Pulse animation for guide */
+    .pulse {
+      animation: pulse-animation 2s infinite;
+    }
+
+    @keyframes pulse-animation {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+
+    /* Calc Panel */
+    .calc-panel {
+      margin: 5px 10px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      padding: 15px 20px;
+      height: 190px;
+      box-sizing: border-box;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calc-steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .calc-step-row {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: #334155;
+    }
+
+    .step-num {
+      background: #e2e8f0;
+      color: #475569;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      margin-right: 12px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .step-desc {
+      font-weight: 600;
+      margin-right: 15px;
+      width: 200px;
+    }
+
+    .step-math {
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 20px;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .highlight-result {
+      color: var(--success);
+      font-size: 22px;
+      background: #ecfdf5;
+      padding: 2px 10px;
+      border-radius: 6px;
+      border: 1px solid #a7f3d0;
+    }
+
+    .step-math-svg {
+      height: 45px;
+      display: flex;
+      align-items: center;
+    }
+
+    .calc-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-sm {
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: #475569;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sm:hover {
+      background: #e2e8f0;
+    }
+
+    /* Bottom Tip */
+    .bottom-tip {
+      text-align: center;
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 5px;
+      background: #e2e8f0;
+      padding: 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <div class="header">
+      <div class="title">百分数应用题：纳税问题逆推</div>
+    </div>
+
+    <!-- Problem Box -->
+    <div class="problem-box">
+      <p class="problem-text">
+        某景区上个月向国家缴纳了<span class="highlight-tax">1.2万元</span>的营业税。已知该景区的门票营业税税率是<span class="highlight-rate">3%</span>。你能帮景区会计算出上个月该景区的<span class="highlight-revenue">门票总收入</span>是多少万元吗？
+      </p>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace">
+      <div class="formula-header">
+        <span class="formula-title">数量关系模型</span>
+        <span id="formula-mode-tag" class="formula-tag tag-multiplication">乘法模型：总量 × 税率 = 应纳税额</span>
+      </div>
+      <div class="formula-container">
+        <!-- Tax Block -->
+        <div id="block-tax" class="formula-block block-tax">
+          <span class="block-title">应纳税额</span>
+          <span class="block-value">1.2 万元</span>
+        </div>
+        <!-- Equal -->
+        <div id="op-equal" class="operator">=</div>
+        <!-- Revenue Block -->
+        <div id="block-revenue" class="formula-block block-revenue">
+          <span class="block-title">门票总收入</span>
+          <span class="block-value">？ 万元</span>
+        </div>
+        <!-- Multiply/Divide Operator -->
+        <div id="op-multiply" class="operator">×</div>
+        <div id="op-divide" class="operator" style="opacity: 0;">÷</div>
+        <!-- Rate Block -->
+        <div id="block-rate" class="formula-block block-rate">
+          <span class="block-title">税率</span>
+          <span class="block-value">3%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button id="btn-transform" class="btn btn-primary pulse">变换公式 (逆推)</button>
+      <button id="btn-calc" class="btn btn-secondary" disabled>计算步骤</button>
+      <button id="btn-reset" class="btn btn-outline">重置</button>
+    </div>
+
+    <!-- Calculation Panel -->
+    <div id="calc-panel" class="calc-panel">
+      <div class="calc-steps-container">
+        <!-- Step 1 -->
+        <div id="calc-step-1" class="calc-step-row" style="display: none;">
+          <span class="step-num">1</span>
+          <span class="step-desc">将百分数化成小数：</span>
+          <span class="step-math">3% = 0.03</span>
+        </div>
+        <!-- Step 2 -->
+        <div id="calc-step-2" class="calc-step-row" style="display: none;">
+          <span class="step-num">2</span>
+          <span class="step-desc">列式并移动小数点：</span>
+          <div class="step-math-svg">
+            <svg width="450" height="45" viewBox="0 0 450 45" style="background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                </marker>
+              </defs>
+              <!-- Left Group: 1.20 -->
+              <g transform="translate(10, 2)">
+                <text x="15" y="25" font-size="20" font-family="monospace" fill="#334155" text-anchor="middle">1</text>
+                <text id="dec1" x="27" y="25" font-size="20" font-family="monospace" fill="#ef4444" font-weight="bold" text-anchor="middle">.</text>
+                <text x="39" y="25" font-size="20" font-family="monospace" fill="#334155" text-anchor="middle">2</text>
+                <text id="zero1" x="51" y="25" font-size="20" font-family="monospace" fill="#94a3b8" opacity="0" text-anchor="middle">0</text>
+
+                <!-- Curved Arrows for 1.20 -->
+                <path id="arrow1" d="M 27 28 Q 33 40 39 28" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="50" stroke-dashoffset="50" />
+                <path id="arrow2" d="M 39 28 Q 45 40 51 28" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="50" stroke-dashoffset="50" />
+              </g>
+
+              <!-- Operator ÷ -->
+              <text x="95" y="30" font-size="20" fill="#475569" text-anchor="middle">÷</text>
+
+              <!-- Right Group: 0.03 -->
+              <g transform="translate(110, 2)">
+                <text id="zero2" x="15" y="25" font-size="20" font-family="monospace" fill="#94a3b8" text-anchor="middle">0</text>
+                <text id="dec2" x="27" y="25" font-size="20" font-family="monospace" fill="#ef4444" font-weight="bold" text-anchor="middle">.</text>
+                <text id="zero3" x="39" y="25" font-size="20" font-family="monospace" fill="#334155" text-anchor="middle">0</text>
+                <text x="51" y="25" font-size="20" font-family="monospace" fill="#334155" text-anchor="middle">3</text>
+
+                <!-- Curved Arrows for 0.03 -->
+                <path id="arrow3" d="M 27 28 Q 33 40 39 28" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="50" stroke-dashoffset="50" />
+                <path id="arrow4" d="M 39 28 Q 45 40 51 28" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="50" stroke-dashoffset="50" />
+              </g>
+
+              <!-- Result Expression -->
+              <g id="result-expr" transform="translate(200, 2)" opacity="0">
+                <text x="10" y="25" font-size="20" fill="#475569" text-anchor="middle">=</text>
+                <text x="45" y="25" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">120</text>
+                <text x="80" y="25" font-size="20" fill="#475569" text-anchor="middle">÷</text>
+                <text x="105" y="25" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">3</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div id="calc-step-3" class="calc-step-row" style="display: none;">
+          <span class="step-num">3</span>
+          <span class="step-desc">计算得出最终结果：</span>
+          <span class="step-math highlight-result">120 ÷ 3 = 40 (万元)</span>
+        </div>
+      </div>
+      <div class="calc-footer">
+        <button id="next-calc-btn" class="btn-sm">下一步：移动小数点</button>
+      </div>
+    </div>
+
+    <!-- Bottom Tip -->
+    <div class="bottom-tip">
+      💡 教学提示：已知部分量和对应的百分率，求总量用除法计算。
+    </div>
+  </div>
+
+  <script>
+    // 4:3 Aspect Ratio Auto Scaling
+    function resize() {
+      const app = document.getElementById('app');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const scale = Math.min(width / 800, height / 600);
+      app.style.transform = `scale(${scale})`;
+      app.style.left = `${(width - 800 * scale) / 2}px`;
+      app.style.top = `${(height - 600 * scale) / 2}px`;
+    }
+    window.addEventListener('resize', resize);
+    window.addEventListener('DOMContentLoaded', resize);
+
+    // State Management
+    let formulaState = 0; // 0: Multiplication, 1: Division
+    let calcStep = 0; // 0: Hidden, 1: Step 1, 2: Step 2, 3: Step 3
+
+    // Formula Layout Positions
+    const layoutConfig = {
+      0: { // Multiplication: Tax = Revenue * Rate
+        tax: { left: '20px', width: '180px' },
+        equal: { left: '215px', width: '30px' },
+        revenue: { left: '260px', width: '200px' },
+        multiply: { left: '475px', opacity: 1 },
+        divide: { left: '475px', opacity: 0 },
+        rate: { left: '520px', width: '180px' }
+      },
+      1: { // Division: Revenue = Tax / Rate
+        revenue: { left: '20px', width: '200px' },
+        equal: { left: '235px', width: '30px' },
+        tax: { left: '280px', width: '180px' },
+        multiply: { left: '475px', opacity: 0 },
+        divide: { left: '475px', opacity: 1 },
+        rate: { left: '520px', width: '180px' }
+      }
+    };
+
+    // DOM Elements
+    const blockTax = document.getElementById('block-tax');
+    const blockRevenue = document.getElementById('block-revenue');
+    const blockRate = document.getElementById('block-rate');
+    const opEqual = document.getElementById('op-equal');
+    const opMultiply = document.getElementById('op-multiply');
+    const opDivide = document.getElementById('op-divide');
+    const formulaModeTag = document.getElementById('formula-mode-tag');
+
+    const btnTransform = document.getElementById('btn-transform');
+    const btnCalc = document.getElementById('btn-calc');
+    const btnReset = document.getElementById('btn-reset');
+
+    const calcPanel = document.getElementById('calc-panel');
+    const calcStep1 = document.getElementById('calc-step-1');
+    const calcStep2 = document.getElementById('calc-step-2');
+    const calcStep3 = document.getElementById('calc-step-3');
+    const nextCalcBtn = document.getElementById('next-calc-btn');
+
+    // Apply Formula Layout
+    function applyLayout(state) {
+      const config = layoutConfig[state];
+      
+      blockTax.style.left = config.tax.left;
+      blockTax.style.width = config.tax.width;
+
+      blockRevenue.style.left = config.revenue.left;
+      blockRevenue.style.width = config.revenue.width;
+
+      blockRate.style.left = config.rate.left;
+      blockRate.style.width = config.rate.width;
+
+      opEqual.style.left = config.equal.left;
+      opEqual.style.width = config.equal.width;
+
+      opMultiply.style.left = config.multiply.left;
+      opMultiply.style.opacity = config.multiply.opacity;
+
+      opDivide.style.left = config.divide.left;
+      opDivide.style.opacity = config.divide.opacity;
+
+      if (state === 0) {
+        formulaModeTag.textContent = '乘法模型：总量 × 税率 = 应纳税额';
+        formulaModeTag.className = 'formula-tag tag-multiplication';
+        btnTransform.textContent = '变换公式 (逆推)';
+        btnTransform.classList.add('pulse');
+        btnCalc.disabled = true;
+      } else {
+        formulaModeTag.textContent = '除法模型：总量 = 应纳税额 ÷ 税率';
+        formulaModeTag.className = 'formula-tag tag-division';
+        btnTransform.textContent = '还原公式';
+        btnTransform.classList.remove('pulse');
+        btnCalc.disabled = false;
+      }
+    }
+
+    // SVG Animation Logic
+    let animTimeout1, animTimeout2, animTimeout3;
+
+    function clearAllTimeouts() {
+      clearTimeout(animTimeout1);
+      clearTimeout(animTimeout2);
+      clearTimeout(animTimeout3);
+    }
+
+    function animateDecimalShift() {
+      clearAllTimeouts();
+
+      const zero1 = document.getElementById('zero1');
+      const zero2 = document.getElementById('zero2');
+      const zero3 = document.getElementById('zero3');
+      const dec1 = document.getElementById('dec1');
+      const dec2 = document.getElementById('dec2');
+      const arrow1 = document.getElementById('arrow1');
+      const arrow2 = document.getElementById('arrow2');
+      const arrow3 = document.getElementById('arrow3');
+      const arrow4 = document.getElementById('arrow4');
+      const resultExpr = document.getElementById('result-expr');
+
+      // Reset state
+      zero1.style.transition = 'none';
+      zero1.style.opacity = '0';
+      zero2.style.transition = 'none';
+      zero2.style.opacity = '1';
+      zero3.style.transition = 'none';
+      zero3.style.opacity = '1';
+      dec1.style.transition = 'none';
+      dec1.style.opacity = '1';
+      dec2.style.transition = 'none';
+      dec2.style.opacity = '1';
+
+      arrow1.style.transition = 'none';
+      arrow1.style.strokeDashoffset = '50';
+      arrow2.style.transition = 'none';
+      arrow2.style.strokeDashoffset = '50';
+      arrow3.style.transition = 'none';
+      arrow3.style.strokeDashoffset = '50';
+      arrow4.style.transition = 'none';
+      arrow4.style.strokeDashoffset = '50';
+
+      resultExpr.style.transition = 'none';
+      resultExpr.style.opacity = '0';
+
+      // Force reflow
+      void zero1.offsetWidth;
+
+      // Step A: Show helper zero
+      zero1.style.transition = 'opacity 0.4s';
+      zero1.style.opacity = '1';
+
+      // Step B: First jump
+      animTimeout1 = setTimeout(() => {
+        arrow1.style.transition = 'stroke-dashoffset 0.5s ease-in-out';
+        arrow1.style.strokeDashoffset = '0';
+        arrow3.style.transition = 'stroke-dashoffset 0.5s ease-in-out';
+        arrow3.style.strokeDashoffset = '0';
+      }, 600);
+
+      // Step C: Second jump
+      animTimeout2 = setTimeout(() => {
+        arrow2.style.transition = 'stroke-dashoffset 0.5s ease-in-out';
+        arrow2.style.strokeDashoffset = '0';
+        arrow4.style.transition = 'stroke-dashoffset 0.5s ease-in-out';
+        arrow4.style.strokeDashoffset = '0';
+      }, 1200);
+
+      // Step D: Fade out decimals and show result
+      animTimeout3 = setTimeout(() => {
+        dec1.style.transition = 'opacity 0.4s';
+        dec1.style.opacity = '0.15';
+        dec2.style.transition = 'opacity 0.4s';
+        dec2.style.opacity = '0.15';
+        zero2.style.transition = 'opacity 0.4s';
+        zero2.style.opacity = '0.15';
+        zero3.style.transition = 'opacity 0.4s';
+        zero3.style.opacity = '0.15';
+
+        resultExpr.style.transition = 'opacity 0.6s';
+        resultExpr.style.opacity = '1';
+      }, 1800);
+    }
+
+    function showFinalDecimalShift() {
+      clearAllTimeouts();
+      const zero1 = document.getElementById('zero1');
+      const zero2 = document.getElementById('zero2');
+      const zero3 = document.getElementById('zero3');
+      const dec1 = document.getElementById('dec1');
+      const dec2 = document.getElementById('dec2');
+      const arrow1 = document.getElementById('arrow1');
+      const arrow2 = document.getElementById('arrow2');
+      const arrow3 = document.getElementById('arrow3');
+      const arrow4 = document.getElementById('arrow4');
+      const resultExpr = document.getElementById('result-expr');
+
+      zero1.style.transition = 'none';
+      zero1.style.opacity = '1';
+      zero2.style.transition = 'none';
+      zero2.style.opacity = '0.15';
+      zero3.style.transition = 'none';
+      zero3.style.opacity = '0.15';
+      dec1.style.transition = 'none';
+      dec1.style.opacity = '0.15';
+      dec2.style.transition = 'none';
+      dec2.style.opacity = '0.15';
+
+      arrow1.style.transition = 'none';
+      arrow1.style.strokeDashoffset = '0';
+      arrow2.style.transition = 'none';
+      arrow2.style.strokeDashoffset = '0';
+      arrow3.style.transition = 'none';
+      arrow3.style.strokeDashoffset = '0';
+      arrow4.style.transition = 'none';
+      arrow4.style.strokeDashoffset = '0';
+
+      resultExpr.style.transition = 'none';
+      resultExpr.style.opacity = '1';
+    }
+
+    // Render Calculation Steps
+    function renderCalcStep() {
+      calcPanel.style.display = 'flex';
+      
+      calcStep1.style.display = 'none';
+      calcStep2.style.display = 'none';
+      calcStep3.style.display = 'none';
+
+      if (calcStep === 1) {
+        calcStep1.style.display = 'flex';
+        nextCalcBtn.textContent = '下一步：移动小数点';
+      } else if (calcStep === 2) {
+        calcStep1.style.display = 'flex';
+        calcStep2.style.display = 'flex';
+        nextCalcBtn.textContent = '下一步：计算结果';
+        animateDecimalShift();
+      } else if (calcStep === 3) {
+        calcStep1.style.display = 'flex';
+        calcStep2.style.display = 'flex';
+        calcStep3.style.display = 'flex';
+        showFinalDecimalShift();
+        nextCalcBtn.textContent = '重新演示';
+      }
+    }
+
+    // Event Listeners
+    btnTransform.addEventListener('click', () => {
+      formulaState = formulaState === 0 ? 1 : 0;
+      applyLayout(formulaState);
+      if (formulaState === 0) {
+        calcPanel.style.display = 'none';
+        calcStep = 0;
+      }
+    });
+
+    btnCalc.addEventListener('click', () => {
+      calcStep = 1;
+      renderCalcStep();
+    });
+
+    btnReset.addEventListener('click', () => {
+      formulaState = 0;
+      calcStep = 0;
+      applyLayout(0);
+      calcPanel.style.display = 'none';
+      clearAllTimeouts();
+    });
+
+    nextCalcBtn.addEventListener('click', () => {
+      if (calcStep === 3) {
+        calcStep = 1;
+      } else {
+        calcStep++;
+      }
+      renderCalcStep();
+    });
+
+    // Initialize
+    applyLayout(0);
+  </script>
+</body>
+</html>

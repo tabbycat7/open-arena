@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>决策树阈值修复器 - 高一数学</title>
+    <style>
+        /* 基础样式与投屏优化 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 1024px;
+            height: 768px;
+            background-color: #1e293b;
+            border: 4px solid #38bdf8;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            padding: 15px 24px;
+            border-bottom: 2px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+        .header .tag {
+            background-color: #0284c7;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        /* 主体布局：左右分栏 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 140px);
+        }
+        /* 左侧：函数图像区 */
+        .left-panel {
+            flex: 1.1;
+            background-color: #0f172a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+        }
+        .panel-title {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .formula {
+            color: #f43f5e;
+            font-weight: bold;
+            font-family: "Cambria", "Times New Roman", serif;
+            font-size: 20px;
+        }
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            background-color: #020617;
+            border-radius: 6px;
+            border: 1px solid #1e293b;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* 右侧：决策树交互区 */
+        .right-panel {
+            flex: 0.9;
+            background-color: #0f172a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        /* 决策树 SVG 样式 */
+        .tree-container {
+            flex: 1;
+            position: relative;
+            background-color: #020617;
+            border-radius: 6px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+        }
+        .tree-svg {
+            width: 100%;
+            height: 100%;
+        }
+        /* 状态指示灯 */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1e293b;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #334155;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+        .light {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+        .light.red {
+            background-color: #ef4444;
+            box-shadow: 0 0 12px #ef4444;
+            animation: blink 1s infinite alternate;
+        }
+        .light.green {
+            background-color: #22c55e;
+            box-shadow: 0 0 12px #22c55e;
+        }
+        @keyframes blink {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+        /* 交互输入框 */
+        .input-overlay {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .input-overlay input {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+        }
+        .input-overlay input:focus {
+            border-color: #38bdf8;
+        }
+        .input-overlay button {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .input-overlay button:hover {
+            background-color: #0ea5e9;
+        }
+        /* 底部控制栏 */
+        .footer {
+            height: 80px;
+            background-color: #0f172a;
+            border-top: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        .question-text {
+            font-size: 16px;
+            color: #cbd5e1;
+            max-width: 70%;
+            line-height: 1.4;
+        }
+        .control-btn {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .control-btn:hover {
+            background-color: #334155;
+            border-color: #38bdf8;
+        }
+        /* 提示信息 */
+        .tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #475569;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            display: none;
+            z-index: 100;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>分类讨论决策树的柔性应用</h1>
+        <span class="tag">高一数学 · 函数与方程</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：动态函数图像 -->
+        <div class="left-panel">
+            <div class="panel-title">
+                <span>动态函数图像</span>
+                <span class="formula">y = |x - 1| + |x + 2|</span>
+            </div>
+            <div class="canvas-container" id="canvasContainer">
+                <canvas id="functionCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- 右侧：决策树 -->
+        <div class="right-panel">
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="light red" id="statusLight"></div>
+                    <span id="statusText" style="color: #ef4444;">决策树阈值错误！系统异常</span>
+                </div>
+                <button class="control-btn" id="resetBtn" style="padding: 4px 10px; font-size: 12px;">重置</button>
+            </div>
+            <div class="tree-container" id="treeContainer">
+                <!-- 决策树 SVG -->
+                <svg class="tree-svg" id="treeSvg" viewBox="0 0 400 450">
+                    <!-- 连线 -->
+                    <g stroke="#334155" stroke-width="3" fill="none">
+                        <path d="M 200,60 L 200,120" id="line1" />
+                        <path d="M 200,180 L 100,260" id="line2" />
+                        <path d="M 200,180 L 300,260" id="line3" />
+                    </g>
+                    
+                    <!-- 根节点：输入 a -->
+                    <g transform="translate(200, 40)">
+                        <rect x="-60" y="-20" width="120" height="40" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                        <text x="0" y="5" fill="#e2e8f0" font-size="14" text-anchor="middle" font-weight="bold">输入参数 a</text>
+                    </g>
+
+                    <!-- 关键分叉点（可点击激活输入） -->
+                    <g transform="translate(200, 150)" id="decisionNode" style="cursor: pointer;">
+                        <polygon points="0,-35 70,0 0,35 -70,0" fill="#1e293b" stroke="#ef4444" stroke-width="3" id="decisionDiamond"/>
+                        <text x="0" y="-5" fill="#94a3b8" font-size="12" text-anchor="middle">a 与 阈值 比较</text>
+                        <!-- 关键数字 -->
+                        <text x="0" y="15" fill="#ef4444" font-size="22" text-anchor="middle" font-weight="bold" id="thresholdText">2</text>
+                        <circle cx="0" cy="10" r="25" fill="transparent" /> <!-- 增大点击区域 -->
+                    </g>
+
+                    <!-- 左分支：无解 -->
+                    <g transform="translate(100, 280)" id="leftBranch">
+                        <rect x="-60" y="-20" width="120" height="40" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2" id="leftBox"/>
+                        <text x="0" y="5" fill="#94a3b8" font-size="14" text-anchor="middle" id="leftText">无实数解</text>
+                    </g>
+
+                    <!-- 右分支：有解 -->
+                    <g transform="translate(300, 280)" id="rightBranch">
+                        <rect x="-60" y="-20" width="120" height="40" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2" id="rightBox"/>
+                        <text x="0" y="5" fill="#94a3b8" font-size="14" text-anchor="middle" id="rightText">有实数解</text>
+                    </g>
+
+                    <!-- 分支条件标注 -->
+                    <text x="130" y="210" fill="#ef4444" font-size="14" text-anchor="middle" font-weight="bold" id="leftCond">a < 2</text>
+                    <text x="270" y="210" fill="#ef4444" font-size="14" text-anchor="middle" font-weight="bold" id="rightCond">a ≥ 2</text>
+
+                    <!-- 提示双击修改的动画气泡 -->
+                    <g transform="translate(200, 215)" id="clickTip">
+                        <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#f59e0b" />
+                        <text x="0" y="4" fill="#0f172a" font-size="11" text-anchor="middle" font-weight="bold">点击错误的“2”进行修复</text>
+                    </g>
+                </svg>
+
+                <!-- 悬浮输入框 -->
+                <div class="input-overlay" id="inputOverlay">
+                    <label for="thresholdInput" style="font-size: 14px; color: #94a3b8;">请输入正确的分叉点数值：</label>
+                    <input type="number" id="thresholdInput" step="1" placeholder="输入数字">
+                    <button id="submitBtn">确定修复</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部说明 -->
+    <div class="footer">
+        <div class="question-text">
+            <strong>思考：</strong> 方程变为 <span style="color:#f43f5e; font-weight:bold;">|x-1| + |x+2| = a</span>。若直接套用旧决策树（以2为分叉点），当 <span style="color:#38bdf8;">a = 2.5</span> 时会发生什么错误？请观察左图，找到正确的临界值并修复决策树。
+        </div>
+        <button class="control-btn" id="showHintBtn">显示解析提示</button>
+    </div>
+</div>
+
+<!-- 悬浮提示框 -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+    // 初始化变量
+    const canvas = document.getElementById('functionCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('canvasContainer');
+    
+    let width, height;
+    let scale = 40; // 像素/单位
+    let originX, originY;
+    
+    // 交互状态
+    let currentThreshold = 2;
+    let isFixed = false;
+    let hoverA = 2.5; // 默认鼠标悬停在 y=2.5 处展示冲突
+    let isMouseInCanvas = false;
+
+    // 调整画布大小
+    function resizeCanvas() {
+        width = container.clientWidth;
+        height = container.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+        originX = width / 2 - 20; // 稍微偏左
+        originY = height / 2 + 80; // 稍微偏下，给上方留出空间
+    }
+
+    // 绘制函数图像
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. 绘制网格
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        const gridStep = scale;
+        for (let x = originX % gridStep; x < width; x += gridStep) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+        for (let y = originY % gridStep; y < height; y += gridStep) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+
+        // 2. 绘制坐标轴
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 2;
+        // X轴
+        ctx.beginPath();
+        ctx.moveTo(0, originY);
+        ctx.lineTo(width, originY);
+        ctx.stroke();
+        // Y轴
+        ctx.beginPath();
+        ctx.moveTo(originX, 0);
+        ctx.lineTo(originX, height);
+        ctx.stroke();
+
+        // 轴刻度与标签
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        // X轴刻度
+        for (let i = -5; i <= 5; i++) {
+            if (i === 0) continue;
+            let cx = originX + i * scale;
+            ctx.fillText(i, cx, originY + 5);
+            ctx.beginPath();
+            ctx.moveTo(cx, originY);
+            ctx.lineTo(cx, originY - 4);
+            ctx.stroke();
+        }
+        // Y轴刻度
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (let i = -2; i <= 7; i++) {
+            if (i === 0) continue;
+            let cy = originY - i * scale;
+            ctx.fillText(i, originX - 8, cy);
+            ctx.beginPath();
+            ctx.moveTo(originX, cy);
+            ctx.lineTo(originX + 4, cy);
+            ctx.stroke();
+        }
+        // 原点
+        ctx.fillText('0', originX - 8, originY + 5);
+
+        // 3. 绘制折线函数 y = |x-1| + |x+2|
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        
+        // 分段绘制以保证折角完美
+        const points = [
+            {x: -5, y: Math.abs(-5-1) + Math.abs(-5+2)},
+            {x: -2, y: Math.abs(-2-1) + Math.abs(-2+2)},
+            {x: 1, y: Math.abs(1-1) + Math.abs(1+2)},
+            {x: 5, y: Math.abs(5-1) + Math.abs(5+2)}
+        ];
+
+        points.forEach((p, index) => {
+            let cx = originX + p.x * scale;
+            let cy = originY - p.y * scale;
+            if (index === 0) ctx.moveTo(cx, cy);
+            else ctx.lineTo(cx, cy);
+        });
+        ctx.stroke();
+
+        // 4. 绘制关键转折点高亮
+        ctx.fillStyle = '#f43f5e';
+        points.slice(1, 3).forEach(p => {
+            let cx = originX + p.x * scale;
+            let cy = originY - p.y * scale;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+            ctx.fill();
+            // 标注坐标
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`(${p.x}, ${p.y})`, cx + 10, cy - 10);
+            ctx.fillStyle = '#f43f5e';
+        });
+
+        // 5. 绘制谷底区间高亮 (x在 -2 到 1 之间，y=3)
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(originX - 2 * scale, originY - 3 * scale);
+        ctx.lineTo(originX + 1 * scale, originY - 3 * scale);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 6. 绘制动态扫描线 y = a
+        let ay = originY - hoverA * scale;
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, ay);
+        ctx.lineTo(width, ay);
+        ctx.stroke();
+
+        // 绘制交点
+        let intersections = [];
+        if (hoverA > 3) {
+            // 两个交点
+            // x > 1: 2x + 1 = a => x = (a-1)/2
+            // x < -2: -2x - 1 = a => x = -(a+1)/2
+            intersections.push((hoverA - 1) / 2);
+            intersections.push(-(hoverA + 1) / 2);
+        } else if (hoverA === 3) {
+            // 无数个交点（线段）
+            intersections.push(-2, 1);
+        }
+
+        ctx.fillStyle = '#38bdf8';
+        intersections.forEach(ix => {
+            let cx = originX + ix * scale;
+            ctx.beginPath();
+            ctx.arc(cx, ay, 6, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 绘制 y = a 标签
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(` y = a (a = ${hoverA.toFixed(1)})`, 15, ay - 10);
+
+        // 绘制交点个数提示
+        let infoText = "";
+        if (hoverA < 3) infoText = "无交点 (无解)";
+        else if (hoverA === 3) infoText = "无数个交点 (有解)";
+        else infoText = "2个交点 (有解)";
+        ctx.fillText(infoText, 15, ay + 15);
+    }
+
+    // 交互逻辑
+    const decisionNode = document.getElementById('decisionNode');
+    const inputOverlay = document.getElementById('inputOverlay');
+    const thresholdInput = document.getElementById('thresholdInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const thresholdText = document.getElementById('thresholdText');
+    const leftCond = document.getElementById('leftCond');
+    const rightCond = document.getElementById('rightCond');
+    const statusLight = document.getElementById('statusLight');
+    const statusText = document.getElementById('statusText');
+    const decisionDiamond = document.getElementById('decisionDiamond');
+    const clickTip = document.getElementById('clickTip');
+    const resetBtn = document.getElementById('resetBtn');
+    const showHintBtn = document.getElementById('showHintBtn');
+
+    const line1 = document.getElementById('line1');
+    const line2 = document.getElementById('line2');
+    const line3 = document.getElementById('line3');
+    const leftBox = document.getElementById('leftBox');
+    const rightBox = document.getElementById('rightBox');
+    const leftText = document.getElementById('leftText');
+    const rightText = document.getElementById('rightText');
+
+    // 点击决策点弹出输入框
+    decisionNode.addEventListener('click', (e) => {
+        e.stopPropagation();
+        inputOverlay.style.display = 'flex';
+        inputOverlay.style.left = '50px';
+        inputOverlay.style.top = '120px';
+        thresholdInput.focus();
+        thresholdInput.value = '';
+    });
+
+    // 隐藏输入框
+    document.addEventListener('click', () => {
+        inputOverlay.style.display = 'none';
+    });
+    inputOverlay.addEventListener('click', (e) => e.stopPropagation());
+
+    // 提交修复
+    submitBtn.addEventListener('click', checkAnswer);
+    thresholdInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') checkAnswer();
+    });
+
+    function checkAnswer() {
+        const val = parseFloat(thresholdInput.value);
+        if (val === 3) {
+            // 修复成功
+            isFixed = true;
+            currentThreshold = 3;
+            thresholdText.textContent = '3';
+            leftCond.textContent = 'a < 3';
+            rightCond.textContent = 'a ≥ 3';
+            
+            // 视觉反馈：绿色成功状态
+            statusLight.className = 'light green';
+            statusText.textContent = '决策树修复成功！逻辑完美契合';
+            statusText.style.color = '#22c55e';
+            decisionDiamond.setAttribute('stroke', '#22c55e');
+            clickTip.style.display = 'none';
+            
+            updateTreeFlow();
+            draw();
+        } else {
+            // 修复失败
+            alert(`数值 ${val} 无法解除警报！请观察左侧函数图象的“谷底高度”是多少？`);
+        }
+        inputOverlay.style.display = 'none';
+    }
+
+    // 动态更新决策树流动状态
+    function updateTreeFlow() {
+        // 重置所有颜色
+        line1.setAttribute('stroke', '#334155');
+        line2.setAttribute('stroke', '#334155');
+        line3.setAttribute('stroke', '#334155');
+        leftBox.setAttribute('stroke', '#475569');
+        rightBox.setAttribute('stroke', '#475569');
+        leftText.setAttribute('fill', '#94a3b8');
+        rightText.setAttribute('fill', '#94a3b8');
+
+        // 根节点向下流动
+        line1.setAttribute('stroke', '#38bdf8');
+
+        if (isFixed) {
+            // 修复后的正确逻辑
+            if (hoverA < 3) {
+                line2.setAttribute('stroke', '#38bdf8');
+                leftBox.setAttribute('stroke', '#38bdf8');
+                leftText.setAttribute('fill', '#38bdf8');
+            } else {
+                line3.setAttribute('stroke', '#38bdf8');
+                rightBox.setAttribute('stroke', '#38bdf8');
+                rightText.setAttribute('fill', '#38bdf8');
+            }
+        } else {
+            // 错误逻辑下的冲突表现 (例如 a = 2.5)
+            if (hoverA < 2) {
+                line2.setAttribute('stroke', '#ef4444');
+                leftBox.setAttribute('stroke', '#ef4444');
+            } else {
+                // 当 2.5 >= 2 时，走右边“有解”分支，但实际上 y=2.5 无解！产生冲突
+                line3.setAttribute('stroke', '#ef4444');
+                rightBox.setAttribute('stroke', '#ef4444');
+                rightText.setAttribute('fill', '#ef4444');
+                
+                if (hoverA < 3) {
+                    // 冲突高亮
+                    rightBox.setAttribute('stroke', '#ef4444');
+                    rightText.textContent = "有实数解 (逻辑冲突!)";
+                    rightText.setAttribute('fill', '#ef4444');
+                } else {
+                    rightText.textContent = "有实数解";
+                }
+            }
+        }
+    }
+
+    // 鼠标在画布上移动时动态改变 a 的值
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseY = e.clientY - rect.top;
+        // 将像素坐标转换为数学坐标 a
+        const mathY = (originY - mouseY) / scale;
+        
+        // 限制 a 的范围在 0 到 6 之间
+        hoverA = Math.max(0, Math.min(6, mathY));
+        
+        draw();
+        updateTreeFlow();
+    });
+
+    // 重置按钮
+    resetBtn.addEventListener('click', () => {
+        isFixed = false;
+        currentThreshold = 2;
+        hoverA = 2.5;
+        thresholdText.textContent = '2';
+        leftCond.textContent = 'a < 2';
+        rightCond.textContent = 'a ≥ 2';
+        statusLight.className = 'light red';
+        statusText.textContent = '决策树阈值错误！系统异常';
+        statusText.style.color = '#ef4444';
+        decisionDiamond.setAttribute('stroke', '#ef4444');
+        clickTip.style.display = 'block';
+        rightText.textContent = "有实数解";
+        
+        draw();
+        updateTreeFlow();
+    });
+
+    // 提示按钮
+    showHintBtn.addEventListener('click', () => {
+        alert("提示：\n1. 观察左图，红色折线图的最低点（谷底）对应的 y 值是多少？\n2. 当 a 小于这个谷底高度时，水平线 y = a 与折线没有交点，方程无解。\n3. 因此，分类讨论的“分水岭”（阈值）应该从旧的‘2’修正为这个谷底的高度。");
+    });
+
+    // 初始化
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        draw();
+    });
+    
+    resizeCanvas();
+    draw();
+    updateTreeFlow();
+</script>
+
+</body>
+</html>

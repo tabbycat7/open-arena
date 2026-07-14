@@ -1,0 +1,158 @@
+{
+  "task_id": "6f041481-cdb2-4473-82cd-99c614bbf94e",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "故事里毕达哥拉斯发现了地砖的秘密。看我们操场，从一角径直走到对角，和分别沿两边走，你觉得哪条路最快？为什么大家都觉得斜着走最近呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "大家的直觉是‘斜边更短’。那它到底比两直角边短多少呢？如果我们在方格纸上画出直角三角形，并给每条边都配上这样一个正方形，仔细观察这三个正方形的面积，你有什么发现？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "我们发现的规律太美妙了！但它是所有直角三角形的共同秘密吗？看，这是我国古代数学家赵爽的弦图。你敢挑战一下，用它来证明我们发现的 a² + b² = c² 吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "定理在手，现在能大展身手了！给你一个三角形，三条边分别是3、4、5，你能算出它的斜边长是多少吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "一个5米长的梯子，靠墙立着，梯子脚离墙3米。如果梯子顶端不小心下滑了0.5米，你能算出梯子脚向外滑动了多远吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果一艘帆船要驶向远处的灯塔，是选择‘直接朝灯塔开’的航线快，还是‘先向正东航行一段，再转向正北航行一段’更快呢？这和我们在操场上斜着走的直觉，是不是同一个道理？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "我们画一个两直角边分别为6厘米和8厘米的直角三角形。不用去量斜边，你能通过计算6² + 8²来预测一下斜边上的正方形面积吗？这个结果和你量出斜边后计算的平方，会有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "仔细观察赵爽弦图，为什么中间那个小正方形的边长是(b-a)？如果拼成弦图的四个直角三角形不是全等的，我们还能用同样的方法推导出a²+b²=c²吗？这说明了证明中哪个条件至关重要？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "有两组数据：①已知直角边为5和12，求斜边长；②已知斜边为13，一条直角边为5，求另一条直角边。对比一下你的求解过程，什么时候是‘两边的平方和’，什么时候又变成了‘斜边的平方减去一边的平方’？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "有人说，只要一个三角形的三边长是6、8、11，那它一定是直角三角形，因为6²+8²=100，而11²=121，这符合勾股定理吗？你怎么看他的说法？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一棵大树在离地面4米高的地方被风折断，树梢顶端刚好碰到地面，接触点离树根有3米远。你能想象出这个画面，并算出大树在没有折断前大概有多高吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "仔细观察赵爽弦图，图中除了大正方形，还藏着哪两种基本图形？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "大正方形的面积除了用c²表示，还能看成哪两部分面积的和？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "我们发现的定理，用字母a、b、c怎么表示？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果已知两条直角边求斜边c，怎么用a、b表示c？试着说说看。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "墙壁、地面和梯子构成了什么图形？试着画出来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "梯子下滑后，哪个长度没变？变化的边长间满足什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>机器人指令量化练习</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            overflow: hidden;
+        }
+        .container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        .workspace {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 30px;
+        }
+        .slot {
+            width: 180px;
+            height: 100px;
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #888;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        .slot.correct { border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
+        .card-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card {
+            padding: 15px 25px;
+            background: #2196f3;
+            color: white;
+            border-radius: 10px;
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #message {
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>请将合适的卡片拖入槽位，让机器人听懂指令</h2>
+    
+    <div class="workspace">
+        <div class="slot" id="slot-temp" data-type="temp">热水</div>
+        <div class="slot" id="slot-time" data-type="time">一会儿</div>
+    </div>
+
+    <div class="card-container">
+        <div class="card" draggable="true" data-value="85℃" data-type="temp">85℃</div>
+        <div class="card" draggable="true" data-value="1000℃" data-type="temp">1000℃</div>
+        <div class="card" draggable="true" data-value="3分钟" data-type="time">3分钟</div>
+        <div class="card" draggable="true" data-value="天" data-type="time">天</div>
+    </div>
+
+    <div id="message"></div>
+</div>
+
+<script>
+    const slots = document.querySelectorAll('.slot');
+    const cards = document.querySelectorAll('.card');
+    const message = document.getElementById('message');
+    
+    let state = { temp: false, time: false };
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.value);
+            e.dataTransfer.setData('type', e.target.dataset.type);
+        });
+    });
+
+    slots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => e.preventDefault());
+        
+        slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const val = e.dataTransfer.getData('text/plain');
+            const type = e.dataTransfer.getData('type');
+            
+            if (type === slot.dataset.type) {
+                slot.textContent = val;
+                slot.classList.add('correct');
+                state[type] = true;
+                checkResult();
+            } else {
+                alert("这个单位好像不太合适，再试一次吧！");
+            }
+        });
+    });
+
+    function checkResult() {
+        if (state.temp && state.time) {
+            message.textContent = "太棒了！用85℃的热水泡3分钟，机器人听懂了！";
+            message.style.color = "#4caf50";
+        }
+    }
+</script>
+
+</body>
+</html>

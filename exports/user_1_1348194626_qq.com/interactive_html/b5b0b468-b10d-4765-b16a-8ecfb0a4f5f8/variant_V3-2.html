@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高一数学函数图像动态交互：斜线与折线的交点探索</title>
+    <style>
+        /* 4:3 比例自适应布局 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 800px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e1e8ed;
+        }
+        /* 头部区域 */
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #3498db;
+        }
+        .header .tag {
+            background-color: #3498db;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        /* 主体区域：左侧画布，右侧控制面板 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        .canvas-container {
+            flex: 1.3;
+            position: relative;
+            background-color: #fafafa;
+            border-right: 1px solid #e1e8ed;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .control-panel {
+            flex: 0.7;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #ffffff;
+        }
+        /* 题干与引导 */
+        .question-box {
+            background-color: #ebf5fb;
+            border-left: 4px solid #3498db;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .question-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        /* 交互控制 */
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-label {
+            font-size: 15px;
+            font-weight: bold;
+            color: #34495e;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .b-value {
+            color: #e74c3c;
+            font-size: 18px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            transition: background .3s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        /* 动态反馈面板 */
+        .feedback-panel {
+            background-color: #fdf2e9;
+            border: 1px dashed #e67e22;
+            border-radius: 6px;
+            padding: 12px;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .feedback-title {
+            font-size: 13px;
+            color: #d35400;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+        .feedback-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+        .highlight-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .critical-active {
+            background-color: #fef9e7;
+            border: 1px solid #f1c40f;
+            animation: pulse 1.5s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 4px #f1c40f; }
+            100% { box-shadow: 0 0 12px #f1c40f; }
+        }
+        /* 底部状态栏 */
+        .footer {
+            background-color: #f1f2f6;
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+            border-top: 1px solid #e1e8ed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <span>数形结合：动态边界分析</span>
+        <span class="tag">高一数学 · 函数与方程</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧：直角坐标系画布 -->
+        <div class="canvas-container">
+            <canvas id="coordinateCanvas"></canvas>
+        </div>
+
+        <!-- 右侧：控制面板 -->
+        <div class="control-panel">
+            <div>
+                <div class="question-box">
+                    <div class="question-title">思考与观察：</div>
+                    当方程右边变为斜线 <span style="color:#2980b9; font-weight:bold;">y = x + b</span> 时，拖动下方滑块改变截距 <span style="color:#e74c3c; font-weight:bold;">b</span>，观察直线与“槽谷”折线 <span style="color:#c0392b; font-weight:bold;">y = |x-1| + |x+1|</span> 的交点变化。
+                </div>
+
+                <!-- 滑块控制 -->
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>调整截距 b 的值：</span>
+                        <span class="b-value" id="bValueDisplay">b = 0.0</span>
+                    </div>
+                    <input type="range" min="-2" max="4" step="0.01" value="0" class="slider" id="bSlider">
+                </div>
+            </div>
+
+            <!-- 动态反馈 -->
+            <div class="feedback-panel" id="feedbackPanel">
+                <div class="feedback-title" id="feedbackTitle">💡 当前状态观察</div>
+                <div class="feedback-content" id="feedbackText">
+                    拖动滑块，观察交点个数的变化。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+        方程 |x-1| + |x+1| = x + b 的实数根个数 对应 两个函数图像的交点个数
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('coordinateCanvas');
+    const ctx = canvas.getContext('2d');
+    const bSlider = document.getElementById('bSlider');
+    const bValueDisplay = document.getElementById('bValueDisplay');
+    const feedbackPanel = document.getElementById('feedbackPanel');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackText = document.getElementById('feedbackText');
+
+    // 坐标系配置
+    const config = {
+        originX: 0, // 动态计算
+        originY: 0,
+        scale: 50,  // 1个单位对应的像素值
+        minX: -5,
+        maxX: 5,
+        minY: -1,
+        maxY: 6
+    };
+
+    // 动画闪烁控制
+    let pulseTime = 0;
+
+    function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // 重新计算原点位置，使其居中偏下
+        config.originX = canvas.width / 2;
+        config.originY = canvas.height * 0.75; 
+        config.scale = canvas.width / (config.maxX - config.minX);
+    }
+
+    // 坐标转换：数学坐标 -> 屏幕像素坐标
+    function toScreen(x, y) {
+        return {
+            x: config.originX + x * config.scale,
+            y: config.originY - y * config.scale
+        };
+    }
+
+    // 坐标转换：屏幕像素坐标 -> 数学坐标
+    function toMath(px, py) {
+        return {
+            x: (px - config.originX) / config.scale,
+            y: (config.originY - py) / config.scale
+        };
+    }
+
+    // 绘制网格和坐标轴
+    function drawGrid() {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        
+        // 竖线
+        for (let x = config.minX; x <= config.maxX; x++) {
+            const p = toScreen(x, 0);
+            ctx.beginPath();
+            ctx.moveTo(p.x, 0);
+            ctx.lineTo(p.x, canvas.height);
+            ctx.stroke();
+            
+            // 刻度值
+            if (x !== 0) {
+                ctx.fillStyle = '#7f8c8d';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(x, p.x, config.originY + 15);
+            }
+        }
+
+        // 横线
+        for (let y = Math.floor(config.minY); y <= config.maxY; y++) {
+            const p = toScreen(0, y);
+            ctx.beginPath();
+            ctx.moveTo(0, p.y);
+            ctx.lineTo(canvas.width, p.y);
+            ctx.stroke();
+            
+            // 刻度值
+            if (y !== 0) {
+                ctx.fillStyle = '#7f8c8d';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(y, config.originX - 8, p.y + 4);
+            }
+        }
+
+        // 绘制坐标轴
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 2;
+        
+        // X轴
+        ctx.beginPath();
+        ctx.moveTo(0, config.originY);
+        ctx.lineTo(canvas.width, config.originY);
+        ctx.stroke();
+        
+        // Y轴
+        ctx.beginPath();
+        ctx.moveTo(config.originX, 0);
+        ctx.lineTo(config.originX, canvas.height);
+        ctx.stroke();
+
+        // 轴箭头与标签
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('x', canvas.width - 15, config.originY - 10);
+        ctx.fillText('y', config.originX + 10, 15);
+        ctx.fillText('O', config.originX - 15, config.originY + 15);
+    }
+
+    // 绘制红色折线 y = |x-1| + |x+1|
+    function drawTargetFunction() {
+        ctx.strokeStyle = '#e74c3c';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+
+        // 采样绘制折线
+        const step = 0.1;
+        let first = true;
+        for (let x = config.minX; x <= config.maxX; x += step) {
+            const y = Math.abs(x - 1) + Math.abs(x + 1);
+            const p = toScreen(x, y);
+            if (first) {
+                ctx.moveTo(p.x, p.y);
+                first = false;
+            } else {
+                ctx.lineTo(p.x, p.y);
+            }
+        }
+        ctx.stroke();
+
+        // 标注拐点
+        const p1 = toScreen(-1, 2);
+        const p2 = toScreen(1, 2);
+        
+        ctx.fillStyle = '#c0392b';
+        ctx.beginPath();
+        ctx.arc(p1.x, p1.y, 5, 0, Math.PI * 2);
+        ctx.arc(p2.x, p2.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = '12px Arial';
+        ctx.fillText('(-1, 2)', p1.x - 45, p1.y - 10);
+        ctx.fillText('(1, 2)', p2.x + 10, p2.y - 10);
+    }
+
+    // 绘制动态蓝色斜线 y = x + b
+    function drawDynamicLine(b) {
+        ctx.strokeStyle = '#3498db';
+        ctx.lineWidth = 3;
+        
+        const x1 = config.minX;
+        const y1 = x1 + b;
+        const x2 = config.maxX;
+        const y2 = x2 + b;
+
+        const p1 = toScreen(x1, y1);
+        const p2 = toScreen(x2, y2);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+
+        // 标注方程
+        ctx.fillStyle = '#2980b9';
+        ctx.font = 'italic bold 14px Arial';
+        const labelPos = toScreen(2.5, 2.5 + b);
+        ctx.fillText(`y = x + ${b.toFixed(2)}`, labelPos.x + 10, labelPos.y - 10);
+    }
+
+    // 计算并绘制交点
+    function handleIntersections(b) {
+        // y = |x-1| + |x+1| 的分段函数：
+        // x < -1: y = -2x
+        // -1 <= x <= 1: y = 2
+        // x > 1: y = 2x
+        
+        // 与 y = x + b 的交点计算：
+        // 1. x < -1 区域：-2x = x + b => 3x = -b => x = -b/3. 
+        //    条件：-b/3 < -1 => b > 3
+        // 2. -1 <= x <= 1 区域：2 = x + b => x = 2 - b.
+        //    条件：-1 <= 2 - b <= 1 => 1 <= b <= 3
+        // 3. x > 1 区域：2x = x + b => x = b.
+        //    条件：b > 1
+
+        let intersections = [];
+
+        // 区域 1 交点
+        if (b > 3) {
+            const x = -b / 3;
+            intersections.push({x: x, y: x + b});
+        }
+        // 区域 2 交点
+        if (b >= 1 && b <= 3) {
+            const x = 2 - b;
+            intersections.push({x: x, y: x + b});
+        }
+        // 区域 3 交点
+        if (b > 1) {
+            const x = b;
+            intersections.push({x: x, y: x + b});
+        }
+
+        // 绘制交点与闪烁效果
+        intersections.forEach(pt => {
+            const p = toScreen(pt.x, pt.y);
+            
+            // 闪烁外圈
+            ctx.strokeStyle = 'rgba(231, 76, 60, ' + (0.4 + 0.4 * Math.sin(pulseTime)) + ')';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 10 + 4 * Math.sin(pulseTime), 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 实心内圆
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 坐标标注
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText(`(${pt.x.toFixed(2)}, ${pt.y.toFixed(2)})`, p.x + 12, p.y + 5);
+        });
+
+        return intersections.length;
+    }
+
+    // 绘制拐点金色光环
+    function drawGoldenRing(b) {
+        // 当且仅当直线经过拐点 (1, 2) 时，即 2 = 1 + b => b = 1
+        if (Math.abs(b - 1) < 0.02) {
+            const p = toScreen(1, 2);
+            ctx.strokeStyle = '#f1c40f';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 15 + 5 * Math.sin(pulseTime * 2), 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(241, 196, 15, 0.2)';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 15 + 5 * Math.sin(pulseTime * 2), 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // 更新右侧面板状态描述
+    function updateFeedback(b, count) {
+        bValueDisplay.textContent = `b = ${b.toFixed(2)}`;
+
+        // 临界状态 b = 1
+        if (Math.abs(b - 1) < 0.02) {
+            feedbackPanel.className = "feedback-panel critical-active";
+            feedbackTitle.innerHTML = "🌟 临界状态 b = 1";
+            feedbackText.innerHTML = `直线恰好经过拐点 <span class="highlight-text">(1, 2)</span>。<br>此时交点个数从 <span class="highlight-text">0个</span> 突变为 <span class="highlight-text">1个</span>，若 b 继续增大，交点将变为 <span class="highlight-text">2个</span>。`;
+        } 
+        // 临界状态 b = 3
+        else if (Math.abs(b - 3) < 0.02) {
+            feedbackPanel.className = "feedback-panel critical-active";
+            feedbackTitle.innerHTML = "🌟 临界状态 b = 3";
+            feedbackText.innerHTML = `直线恰好经过拐点 <span class="highlight-text">(-1, 2)</span>。<br>此时交点个数仍为 <span class="highlight-text">2个</span>，但交点的分布区域和计算规则发生变化。`;
+        }
+        // 普通状态
+        else {
+            feedbackPanel.className = "feedback-panel";
+            feedbackTitle.innerHTML = "💡 当前状态观察";
+            if (b < 1) {
+                feedbackText.innerHTML = `当前 <span class="highlight-text">b < 1</span>。<br>直线在下方，与折线<span class="highlight-text">没有交点</span>（0个交点）。方程无实数根。`;
+            } else if (b > 1 && b < 3) {
+                feedbackText.innerHTML = `当前 <span class="highlight-text">1 < b < 3</span>。<br>直线与折线有 <span class="highlight-text">2个交点</span>。一个在底部水平段，一个在右侧斜段。`;
+            } else if (b > 3) {
+                feedbackText.innerHTML = `当前 <span class="highlight-text">b > 3</span>。<br>直线与折线有 <span class="highlight-text">2个交点</span>。分别在左侧斜段和右侧斜段。`;
+            }
+        }
+    }
+
+    // 渲染主循环
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const b = parseFloat(bSlider.value);
+        
+        drawGrid();
+        drawTargetFunction();
+        drawDynamicLine(b);
+        drawGoldenRing(b);
+        const count = handleIntersections(b);
+        
+        updateFeedback(b, count);
+
+        pulseTime += 0.15;
+        requestAnimationFrame(render);
+    }
+
+    // 初始化
+    window.addEventListener('resize', resizeCanvas);
+    
+    // 启动
+    resizeCanvas();
+    render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,315 @@
+{
+  "id": "2c171825-fd45-4c7b-b7fc-fdbc66456378",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标（1）数学眼光：通过观察生活中的纳税情境，结合教材内容，理解纳税的意义及税率的概念，初步感知数学在现实生活中的应用价值。（2）数学思维：在分析应纳税额计算问题时，能运用“求一个数的百分之几是多少”的思维方法，通过列式计算掌握税额计算的逻辑，提升解决实际问题的思维能力。（3）数学语言：能用数学术语描述税率的含义，清晰表达税额计算的过程和结果，在交流中规范使用“应纳税额”“税率”等数学语言，提升数学表达能力。\r\n",
+  "student_profile": "学情分析\r\n1. 知识与技能基础（已有起点）\r\n在进入本节课之前，学生已经掌握了百分数的意义，并能熟练解决“求一个数的百分之几是多少”的实际问题。这为本节课将“税率”转化为百分数问题、建立“应纳税额=计税收入×税率”的数学模型奠定了坚实的知识和运算基础。绝大多数学生在列式计算上不存在技术障碍。\r\n2. 生活经验与认知盲区（情境脱节）\r\n处于此学段的学生，虽然在日常生活中可能偶尔听到过“交税”“个人所得税”等词汇，但“纳税”属于典型的成人社会经济活动，距离学生的真实生活经验较远。\r\n经验缺乏： 学生对国家税收的种类（如增值税、消费税、个税等）缺乏感性认识，对“为什么要纳税”知之甚少。\r\n语言转换困难： 在面对包含“应纳税销售额”“扣除标准”等专业财经词汇的真实情境时，部分学生的“数学语言”理解能力受限，容易产生畏难情绪，难以迅速剥离出数学信息。",
+  "difficulty_analysis": "教学重点（1）理解税率的实际意义，能运用百分数乘法建立“应纳税额页=计税收入×税率”的数学模型，提升数学运算与数学建模能力。（2）在纳税问题的解决中体会数学与社会生活的联系，结合公民义务培养依法纳税的责任意识，发展数学应用与社会责任素养。\r\n教学难点（1）学生在不同纳税情境中，难以准确识别“应纳税的部分”与“全部收入”的差异，易将“全部收入”误作“应纳税基数”（如忽略“应纳税销售额”“奖金”等限定词），导致税额计算基数判断错误。（2）学生对“税率”的理解停留在公式记忆层面，难以结合真实税收政策（如增值税、个人所得税税率差异）理解税率的社会意义，无法将“税额计算”与“依法纳税是公民义务”的价值认知相联系，影响应用意识和法制意识的内化",
+  "language_style": "生动活泼",
+  "model_id": "gemini-3.1-flash-lite-preview",
+  "duration_seconds": 296.34,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"大家看课本第一段，如果国家把我们每个人交的税都收上来，这些钱最后又去了哪里呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，我们常听说“纳税纳税”，但大家有没有想过，这笔钱到底是从哪儿来的，又花到了什么地方？请大家快速读一读课本第一段，找找看，国家用这些税收都做了哪些了不起的大事？看看能不能从中感受到，为什么说纳税是咱们每一个公民应尽的责任。我们知道要纳税了，但大家一定很好奇，这税到底是怎么算出来的呢？别急，我们接着往下看。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"design_intent\": \"建立情感认同\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"对照课本里那个小规模纳税企业的例子，如果把税率看作一个百分数，你觉得计算税额的逻辑和我们之前学的求一个数的百分之几有什么联系？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们了解了税收的意义，现在来实操一下。请大家看向课本里的那个企业纳税例题，题目说要按销售额的3%缴纳增值税。请大家尝试列式算一算，在这个过程中，谁是“单位1”，谁又是那个“百分之几”？我们要怎么把这个实际问题转化为咱们熟悉的百分数乘法算式呢？大家动笔写一写。不过，如果题目给出的收入数字里，有一部分是不需要纳税的，那我们又该怎么办呢？\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"建立数学模型\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"来看看“做一做”里的李阿姨，题目里提到了“工资”和“应纳税部分”，大家思考一下，我们计算税额时，应该拿哪个数据去乘税率呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才大家计算得非常顺手，但现在遇到一个小挑战。请看“做一做”，李阿姨的工资总额和她需要纳税的部分金额是一样的吗？大家在计算时，一定要擦亮眼睛，分清楚到底哪部分钱才是我们要缴纳税款的“计税基数”。只有找准了这把钥匙，我们的计算才不会出错。通过这道题，大家总结一下，在处理这类复杂信息时，我们应该遵循怎样的思考步骤呢？\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"design_intent\": \"培养辨析能力\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"如果一位叔叔自愿给灾区捐了款，和另一位叔叔依法缴纳了个人所得税，这两笔钱在性质上有什么根本的不同？为什么我们说前者是爱心，后者是义务？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.65, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过辨析相似概念，深化对纳税“责任”属性的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"如果明天开始世界上所有的税收都取消了，你觉得我们每天习以为常的哪些生活便利会最先消失？这说明了税收在社会中扮演了什么角色？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.7, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过缺失情境的思考，让学生从反面更深刻地感受税收的价值。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"请看这张税收流程示意图，如果图中把销售总额标为‘单位1’，税额部分占其中的3%，你能直接在图上画出税额对应的比例线段吗？计算时我们要用哪个数乘哪个数？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过图形化表征，帮助学生直观定位计算中的‘单位1’。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"如果某公司销售额是100万元，但其中有20万元属于国家补贴的免税项目，我们计算增值税时，是直接用100万乘3%，还是另有算法？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过引入干扰条件，提升学生在复杂信息中提取有效数据的能力。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"如果爸爸拿到了一笔年终奖，但公司规定其中一部分是‘差旅报销款’，不用纳税，另一部分才是‘奖金’。我们在计算税额时，应该拿哪一部分去乘税率？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.7, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过不同生活场景的迁移，巩固计税基数的辨析方法。\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"生活中常听到‘月入一万，纳税八百’，这里的‘一万’和‘用于计算税额的基数’是一回事吗？如果直接用总收入乘税率，计算出来的结果会偏大还是偏小？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.82, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过辨析概念边界，防止学生在计算中直接套用总金额。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"我们之前学过，如果要表示一部分和整体的关系，常常会用到什么数学概念呢？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"强化百分数在量化关系中的基础作用\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"请大家在例题里找一找，这个“3%”说的是哪一笔钱的3%？把它和“单位1”连起来想一想。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"引导学生将税率百分比与具体的金额挂钩\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"题目中给出了李阿姨的工资总额和应纳税部分两个钱数，请你圈出计算税款时必须用到的那个数字，并说说为什么是它而不是另一个。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"降低信息干扰，确立计税基数的概念\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"在动手计算之前，我们先看看题目，是不是要把所有的钱都拿来纳税？我们应该先做哪一步判断，才能保证计算不选错数？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"引导学生建立“先筛选再计算”的简易心智模型\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-14 09:07:18",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "大家看课本第一段，如果国家把我们每个人交的税都收上来，这些钱最后又去了哪里呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，我们常听说“纳税纳税”，但大家有没有想过，这笔钱到底是从哪儿来的，又花到了什么地方？请大家快速读一读课本第一段，找找看，国家用这些税收都做了哪些了不起的大事？看看能不能从中感受到，为什么说纳税是咱们每一个公民应尽的责任。我们知道要纳税了，但大家一定很好奇，这税到底是怎么算出来的呢？别急，我们接着往下看。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "design_intent": "建立情感认同",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "对照课本里那个小规模纳税企业的例子，如果把税率看作一个百分数，你觉得计算税额的逻辑和我们之前学的求一个数的百分之几有什么联系？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们了解了税收的意义，现在来实操一下。请大家看向课本里的那个企业纳税例题，题目说要按销售额的3%缴纳增值税。请大家尝试列式算一算，在这个过程中，谁是“单位1”，谁又是那个“百分之几”？我们要怎么把这个实际问题转化为咱们熟悉的百分数乘法算式呢？大家动笔写一写。不过，如果题目给出的收入数字里，有一部分是不需要纳税的，那我们又该怎么办呢？",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "建立数学模型",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "来看看“做一做”里的李阿姨，题目里提到了“工资”和“应纳税部分”，大家思考一下，我们计算税额时，应该拿哪个数据去乘税率呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才大家计算得非常顺手，但现在遇到一个小挑战。请看“做一做”，李阿姨的工资总额和她需要纳税的部分金额是一样的吗？大家在计算时，一定要擦亮眼睛，分清楚到底哪部分钱才是我们要缴纳税款的“计税基数”。只有找准了这把钥匙，我们的计算才不会出错。通过这道题，大家总结一下，在处理这类复杂信息时，我们应该遵循怎样的思考步骤呢？",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "design_intent": "培养辨析能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "如果一位叔叔自愿给灾区捐了款，和另一位叔叔依法缴纳了个人所得税，这两笔钱在性质上有什么根本的不同？为什么我们说前者是爱心，后者是义务？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.65,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过辨析相似概念，深化对纳税“责任”属性的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "如果明天开始世界上所有的税收都取消了，你觉得我们每天习以为常的哪些生活便利会最先消失？这说明了税收在社会中扮演了什么角色？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.7,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过缺失情境的思考，让学生从反面更深刻地感受税收的价值。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "请看这张税收流程示意图，如果图中把销售总额标为‘单位1’，税额部分占其中的3%，你能直接在图上画出税额对应的比例线段吗？计算时我们要用哪个数乘哪个数？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过图形化表征，帮助学生直观定位计算中的‘单位1’。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "如果某公司销售额是100万元，但其中有20万元属于国家补贴的免税项目，我们计算增值税时，是直接用100万乘3%，还是另有算法？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过引入干扰条件，提升学生在复杂信息中提取有效数据的能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "如果爸爸拿到了一笔年终奖，但公司规定其中一部分是‘差旅报销款’，不用纳税，另一部分才是‘奖金’。我们在计算税额时，应该拿哪一部分去乘税率？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.7,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过不同生活场景的迁移，巩固计税基数的辨析方法。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "生活中常听到‘月入一万，纳税八百’，这里的‘一万’和‘用于计算税额的基数’是一回事吗？如果直接用总收入乘税率，计算出来的结果会偏大还是偏小？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.82,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过辨析概念边界，防止学生在计算中直接套用总金额。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "我们之前学过，如果要表示一部分和整体的关系，常常会用到什么数学概念呢？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "强化百分数在量化关系中的基础作用",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "请大家在例题里找一找，这个“3%”说的是哪一笔钱的3%？把它和“单位1”连起来想一想。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "引导学生将税率百分比与具体的金额挂钩",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "题目中给出了李阿姨的工资总额和应纳税部分两个钱数，请你圈出计算税款时必须用到的那个数字，并说说为什么是它而不是另一个。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "降低信息干扰，确立计税基数的概念",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "在动手计算之前，我们先看看题目，是不是要把所有的钱都拿来纳税？我们应该先做哪一步判断，才能保证计算不选错数？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "引导学生建立“先筛选再计算”的简易心智模型",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

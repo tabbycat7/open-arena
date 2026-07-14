@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>S2-2-1 动作的前置条件</title>
+    <style>
+        :root {
+            --bg-color: #f0f7ff;
+            --primary-color: #4a90e2;
+            --accent-color: #e74c3c;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        #stage {
+            width: 80vw;
+            height: 60vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        #canvas-container { position: relative; cursor: pointer; }
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            height: 1.5em;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>从书包里拿课本</h2>
+    <div id="stage">
+        <div id="canvas-container">
+            <svg width="300" height="250" viewBox="0 0 300 250" id="scene">
+                <!-- 书包主体 -->
+                <rect id="bag" x="75" y="80" width="150" height="140" rx="20" fill="#4a90e2" />
+                <rect id="zipper" x="75" y="90" width="150" height="10" fill="#357abd" />
+                <!-- 课本 -->
+                <rect id="book" x="110" y="110" width="80" height="100" rx="5" fill="#f1c40f" stroke="#d4ac0d" stroke-width="2" />
+            </svg>
+        </div>
+        <div id="message"></div>
+        <button id="resetBtn" class="btn">重置状态</button>
+    </div>
+
+<script>
+    const book = document.getElementById('book');
+    const message = document.getElementById('message');
+    const resetBtn = document.getElementById('resetBtn');
+    let isOpened = false;
+    let isDragging = false;
+
+    // 交互逻辑
+    book.addEventListener('mousedown', () => {
+        if (!isOpened) {
+            shakeBag();
+            message.textContent = "书包还没打开，课本拿不出来哦！请先拉开拉链。";
+        } else {
+            message.textContent = "成功拿出了课本！";
+            book.style.transform = "translateY(-150px)";
+        }
+    });
+
+    document.getElementById('zipper').addEventListener('click', () => {
+        if (!isOpened) {
+            isOpened = true;
+            document.getElementById('zipper').setAttribute('fill', '#2ecc71');
+            message.textContent = "书包已打开！现在可以尝试拿课本了。";
+        }
+    });
+
+    function shakeBag() {
+        const bag = document.getElementById('bag');
+        const zipper = document.getElementById('zipper');
+        let count = 0;
+        const interval = setInterval(() => {
+            const offset = (count % 2 === 0) ? 10 : -10;
+            bag.style.transform = `translateX(${offset}px)`;
+            zipper.style.transform = `translateX(${offset}px)`;
+            count++;
+            if (count > 6) {
+                clearInterval(interval);
+                bag.style.transform = `translateX(0px)`;
+                zipper.style.transform = `translateX(0px)`;
+            }
+        }, 50);
+    }
+
+    resetBtn.addEventListener('click', () => {
+        isOpened = false;
+        document.getElementById('zipper').setAttribute('fill', '#357abd');
+        book.style.transform = "translateY(0px)";
+        message.textContent = "";
+    });
+</script>
+</body>
+</html>

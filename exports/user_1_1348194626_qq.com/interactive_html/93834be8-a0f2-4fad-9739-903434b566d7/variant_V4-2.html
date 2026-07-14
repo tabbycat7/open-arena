@@ -1,0 +1,665 @@
+html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自动浇花系统流程图交互设计</title>
+  <style>
+    /* 全局样式与重置 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+      background-color: #f0f4f8;
+      color: #2d3748;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    /* 主容器：4:3 比例自适应 */
+    .app-container {
+      width: 100%;
+      max-width: 1024px;
+      aspect-ratio: 4 / 3;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 头部区域 */
+    .header {
+      background: linear-gradient(135deg, #3182ce, #2b6cb0);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .header .subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* 主内容区：左右分栏 */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      overflow: hidden;
+    }
+
+    /* 左侧：情境模拟动画区 */
+    .left-panel {
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      background-color: #f7fafc;
+    }
+
+    /* 天空与环境动画 */
+    .sim-sky {
+      height: 180px;
+      position: relative;
+      background: linear-gradient(to bottom, #ff9a9e, #fecfef); /* 默认早上8点 */
+      transition: background 1s ease;
+      overflow: hidden;
+      border-bottom: 4px solid #48bb78; /* 草地线 */
+    }
+
+    /* 太阳 */
+    .sun {
+      width: 40px;
+      height: 40px;
+      background: #f6e05e;
+      border-radius: 50%;
+      position: absolute;
+      left: 15%;
+      top: 60%;
+      box-shadow: 0 0 20px #f6e05e;
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 云朵 */
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+    }
+    .cloud-1 { width: 60px; height: 20px; top: 20px; left: 10%; }
+    .cloud-2 { width: 80px; height: 25px; top: 40px; right: 15%; }
+
+    /* 时间与状态悬浮窗 */
+    .sim-info-overlay {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 10;
+    }
+    .sim-info-overlay span {
+      color: #3182ce;
+    }
+
+    /* 花盆与浇水场景 */
+    .sim-garden {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 20px;
+      background: #edf2f7;
+    }
+
+    /* 植物与花盆 SVG */
+    .plant-container {
+      width: 160px;
+      height: 160px;
+      position: relative;
+    }
+    .plant-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 喷水枪 SVG */
+    .sprinkler-container {
+      position: absolute;
+      top: 10px;
+      right: 40px;
+      width: 80px;
+      height: 80px;
+    }
+    .sprinkler-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .water-drop {
+      opacity: 0;
+      transform-origin: top center;
+    }
+    @keyframes drip {
+      0% { transform: translateY(0) scaleY(1); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translateY(50px) scaleY(0.8); opacity: 0; }
+    }
+    .watering .water-drop {
+      animation: drip 0.6s linear infinite;
+    }
+
+    /* 湿度计 */
+    .gauge-container {
+      width: 70px;
+      height: 150px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #cbd5e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 5px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .gauge-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #718096;
+      margin-bottom: 5px;
+    }
+    .gauge-track {
+      flex: 1;
+      width: 16px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .gauge-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to top, #3182ce, #63b3ed);
+      border-radius: 8px;
+      transition: height 0.5s ease;
+    }
+    .gauge-threshold {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #e53e3e;
+    }
+    .threshold-tag {
+      position: absolute;
+      left: 20px;
+      transform: translateY(-50%);
+      background: #e53e3e;
+      color: white;
+      font-size: 9px;
+      padding: 1px 3px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .gauge-value {
+      font-size: 14px;
+      font-weight: bold;
+      color: #2d3748;
+      margin-top: 5px;
+    }
+
+    /* 运行日志控制台 */
+    .console-panel {
+      height: 100px;
+      background: #2d3748;
+      color: #a0aec0;
+      padding: 10px 15px;
+      font-family: monospace;
+      font-size: 12px;
+      overflow-y: auto;
+      border-top: 2px solid #1a202c;
+    }
+    .console-title {
+      color: #ecc94b;
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .console-log-line {
+      margin-bottom: 2px;
+      line-height: 1.4;
+    }
+    .console-log-line.highlight {
+      color: #63b3ed;
+    }
+    .console-log-line.success {
+      color: #48bb78;
+    }
+    .console-log-line.warn {
+      color: #f6e05e;
+    }
+
+    /* 右侧：流程图设计区 */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      background-color: #ffffff;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #4a5568;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 流程图 SVG 容器 */
+    .flowchart-container {
+      flex: 1;
+      position: relative;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      min-height: 320px;
+    }
+    .flowchart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 流程图节点样式 */
+    .flow-node {
+      fill: #ffffff;
+      stroke: #cbd5e0;
+      stroke-width: 2;
+      transition: all 0.3s ease;
+    }
+    .node-start, .node-end {
+      fill: #edf2f7;
+      stroke: #a0aec0;
+    }
+    .node-rect {
+      fill: #ebf8ff;
+      stroke: #90cdf4;
+    }
+    .node-diamond {
+      fill: #feebc8;
+      stroke: #fbd38d;
+    }
+    
+    /* 激活高亮状态 */
+    .flow-node.active {
+      stroke: #3182ce;
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 6px rgba(49, 130, 206, 0.6));
+    }
+    .flow-node.active-run {
+      stroke: #48bb78;
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 8px rgba(72, 187, 120, 0.8));
+    }
+
+    .flow-text {
+      font-size: 12px;
+      font-weight: bold;
+      fill: #2d3748;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+    .flow-text-sub {
+      font-size: 10px;
+      fill: #718096;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    /* 流程图插槽（嵌入在 SVG 中的 HTML） */
+    .node-layout {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #2d3748;
+      user-select: none;
+    }
+    .slot {
+      width: 45px;
+      height: 26px;
+      border: 2px dashed #a0aec0;
+      background-color: #ffffff;
+      border-radius: 4px;
+      margin: 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #a0aec0;
+      font-size: 12px;
+    }
+    .slot:hover {
+      border-color: #4299e1;
+      background-color: #ebf8ff;
+    }
+    .slot.active-slot {
+      border-color: #3182ce;
+      background-color: #ebf8ff;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.4);
+    }
+    .slot.filled {
+      border-style: solid;
+      border-color: #3182ce;
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      font-size: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .slot.error {
+      border-color: #e53e3e;
+      background-color: #fff5f5;
+      color: #c53030;
+      animation: shake 0.4s ease-in-out;
+    }
+    .slot-wide {
+      width: 90px;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    /* 备选零件库 */
+    .parts-library {
+      margin-top: 12px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .parts-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #718096;
+      margin-bottom: 8px;
+    }
+    .parts-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card {
+      padding: 6px 12px;
+      background: white;
+      border: 1.5px solid #cbd5e0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      color: #4a5568;
+      transition: all 0.2s ease;
+      user-select: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card:hover {
+      border-color: #4299e1;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card.selected {
+      border-color: #3182ce;
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.4);
+    }
+    .card.used {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 控制按钮区 */
+    .control-bar {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-run {
+      background-color: #48bb78;
+      color: white;
+    }
+    .btn-run:hover {
+      background-color: #38a169;
+    }
+    .btn-run:disabled {
+      background-color: #cbd5e0;
+      cursor: not-allowed;
+    }
+    .btn-reset {
+      background-color: #edf2f7;
+      color: #4a5568;
+      border: 1px solid #cbd5e0;
+    }
+    .btn-reset:hover {
+      background-color: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>自动浇花系统流程图设计</h1>
+      <div class="subtitle">信息技术 · 五年级</div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      
+      <!-- 左侧：情境模拟 -->
+      <div class="left-panel">
+        <!-- 天空与时间 -->
+        <div class="sim-sky" id="sim-sky">
+          <div class="sim-info-overlay">
+            时间: <span id="time-display">08:00</span><br>
+            状态: <span id="status-display" style="color:#e53e3e;">未启动</span>
+          </div>
+          <div class="sun" id="sun"></div>
+          <div class="cloud cloud-1"></div>
+          <div class="cloud cloud-2"></div>
+        </div>
+
+        <!-- 花盆与浇水 -->
+        <div class="sim-garden">
+          <!-- 喷水枪 -->
+          <div class="sprinkler-container" id="sprinkler">
+            <svg viewBox="0 0 100 100" class="sprinkler-svg">
+              <path d="M 100,20 L 40,20 L 30,40" fill="none" stroke="#718096" stroke-width="6" stroke-linecap="round"/>
+              <polygon points="20,40 40,40 35,50 25,50" fill="#4a5568"/>
+              <g id="water-drops">
+                <line x1="25" y1="55" x2="15" y2="95" stroke="#4299e1" stroke-width="3" stroke-dasharray="5,5" class="water-drop" style="animation-delay: 0s;"/>
+                <line x1="30" y1="55" x2="30" y2="100" stroke="#4299e1" stroke-width="3" stroke-dasharray="5,5" class="water-drop" style="animation-delay: 0.2s;"/>
+                <line x1="35" y1="55" x2="45" y2="95" stroke="#4299e1" stroke-width="3" stroke-dasharray="5,5" class="water-drop" style="animation-delay: 0.1s;"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- 植物 -->
+          <div class="plant-container">
+            <svg viewBox="0 0 200 200" class="plant-svg">
+              <!-- 花盆 -->
+              <polygon points="70,140 130,140 140,190 60,190" fill="#c05621" stroke="#7b341e" stroke-width="2"/>
+              <rect x="55" y="130" width="90" height="12" rx="3" fill="#dd6b20" stroke="#7b341e" stroke-width="2"/>
+              <!-- 土壤 -->
+              <ellipse cx="100" cy="135" rx="40" ry="5" fill="#744210"/>
+              <!-- 茎 -->
+              <path d="M 100,135 Q 95,90 100,50" fill="none" stroke="#48bb78" stroke-width="6" stroke-linecap="round"/>
+              <!-- 叶子 -->
+              <path d="M 98,110 Q 70,100 65,85 Q 85,95 98,110" fill="#38a169" stroke="#276749" stroke-width="1.5"/>
+              <path d="M 100,90 Q 130,80 135,65 Q 115,75 100,90" fill="#38a169" stroke="#276749" stroke-width="1.5"/>
+              <!-- 花朵 -->
+              <circle cx="100" cy="50" r="15" fill="#ecc94b" stroke="#d69e2e" stroke-width="2"/>
+              <circle cx="100" cy="30" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="100" cy="70" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="80" cy="50" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="120" cy="50" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="86" cy="36" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="114" cy="36" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="86" cy="64" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="114" cy="64" r="10" fill="#f56565" opacity="0.9"/>
+              <circle cx="100" cy="50" r="12" fill="#ecc94b"/>
+            </svg>
+          </div>
+
+          <!-- 湿度计 -->
+          <div class="gauge-container">
+            <div class="gauge-label">土壤湿度</div>
+            <div class="gauge-track">
+              <div class="gauge-fill" id="moisture-fill" style="height: 25%;"></div>
+              <div class="gauge-threshold" style="bottom: 30%;">
+                <span class="threshold-tag">30% 警戒线</span>
+              </div>
+            </div>
+            <div class="gauge-value" id="moisture-value">25%</div>
+          </div>
+        </div>
+
+        <!-- 运行日志 -->
+        <div class="console-panel">
+          <div class="console-title">系统运行日志</div>
+          <div id="console-log">
+            <div class="console-log-line">💡 提示：请先在右侧流程图中填入正确的控制参数。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：流程图设计 -->
+      <div class="right-panel">
+        <div class="panel-title">
+          <span>流程图画板</span>
+        </div>
+
+        <!-- 流程图 SVG -->
+        <div class="flowchart-container">
+          <svg viewBox="0 0 400 520" class="flowchart-svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#a0aec0" />
+              </marker>
+              <marker id="arrow-active" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#48bb78" />
+              </marker>
+            </defs>
+
+            <!-- 连接线 -->
+            <line x1="200" y1="40" x2="200" y2="65" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-start-init"/>
+            <line x1="200" y1="115" x2="200" y2="140" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-init-loop"/>
+            <line x1="200" y1="210" x2="200" y2="235" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-loop-branch"/>
+            <text x="212" y="222" class="flow-text-sub">是</text>
+
+            <!-- 循环结束线 -->
+            <path d="M 280 175 L 340 175 L 340 455 L 250 455" fill="none" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-loop-end"/>
+            <text x="300" y="165" class="flow-text-sub">否</text>
+
+            <!-- 分支判断线 -->
+            <line x1="200" y1="305" x2="200" y2="330" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-branch-water"/>
+            <text x="212" y="318" class="flow-text-sub">是</text>
+
+            <path d="M 120 270 L 60 270 L 60 385 L 200 385" fill="none" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-branch-skip"/>
+            <text x="85" y="260" class="flow-text-sub">否</text>
+
+            <!-- 浇水到步长更新 -->
+            <line x1="200" y1="365" x2="200" y2="385" stroke="#cbd5e0" stroke-width="2" id="line-water-merge"/>
+            <line x1="200" y1="385" x2="200" y2="405" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-merge-inc"/>
+
+            <!-- 步长更新返回循环判断 -->
+            <path d="M 200 455 L 200 480 L 30 480 L 30 175 L 120 175" fill="none" stroke="#cbd5e0" stroke-width="2" marker-end="url(#arrow)" id="line-loop-back"/>
+
+            <!-- 节点图形 -->
+            <!-- 开始 -->
+            <rect x="150" y="10" width="100" height="30" rx="15" class="flow-node node-start" id="node-start"/>
+            <text x="200" y="25" class="flow-text">开始</text>
+
+            <!-- 初始化 -->
+            <rect x="90" y="65" width="220" height="50" rx="6" class="flow-node node-rect" id="node-init"/>
+            <foreignObject x="90" y="65" width="220" height="50">
+              <div class="node-layout">
+                t = <div class="slot" id="slot-1" data-expected="8">?</div> (时)
+              </div>
+            </foreignObject>
+
+            <!-- 循环条件 -->
+            <polygon points="200,140 280,175 200,210 120,175" class="flow-node node-diamond" id="node-loop"/>
+            <foreignObject x="130" y="150" width="140" height="50">
+              <div class="node-layout">
+                t ≤ <div class="slot" id="slot-2" data-expected="20">?</div>
+              </div>
+            </foreignObject>
+
+            <!-- 分支条件 -->
+            <polygon points="200,235 280,270 200,305 120,270" class="flow-node node-diamond" id="node-branch"/>
+            <foreignObject x="125" y="245" width="150" height="50">
+              <div class="node-layout">
+                如果 <div class="slot slot-wide" id="slot-4" data-expected="湿度 < 30%">?</div>
+              </div>
+            </foreignObject>
+
+            <!-- 浇水执行 -->
+            <rect x="140" y="330" width="120" height="35" rx="6" class="flow-node node-rect" id="node-water"/>
+            <text x="200" y="348" class="flow-text">自动浇水</text>
+
+            <!-- 步长更新 -->
+            <rect x="90" y="405" width="220" height="50" rx="6" class="flow-node node-rect" id="node-inc"/>
+            <foreignObject x="90" y="405" width="220" height="50">
+              <div class="node-layout">

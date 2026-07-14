@@ -1,0 +1,642 @@
+{
+  "id": "244a2e3d-f74b-46cc-af63-9e5361306751",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1.经历探究国旗长宽比值的过程，理解比例的意义，学会判断两个比能否组成比例。2.通过寻找能组成比例的比，发展分析比较和归纳概括的思维能力。3.感受比例在生活中的应用，养成用数学眼光观察生活的素养。",
+  "student_profile": "学情描述：\r\n本课的学习对象是六年级的学生。在知识储备上，学生在五年级已经深入学习了“比”的相关知识，能够熟练求出比值并化简比，这为本节课学习“比例的意义”奠定了坚实的认知基础。在思维水平上，该阶段学生正处于从形象思维向抽象逻辑思维过渡的关键期，具备了一定的观察、比较和归纳能力。\r\n\r\n学生分布： 班级整体数学基础较好，其中**优生（约30%）**思维活跃，能快速从国旗长宽的比值中发现规律并自主建模；**中等生（约50%）**在引导下能理解比例的本质，但在复杂情境中寻找比例关系时可能反应稍慢；**学困生（约20%）**对“比值”的计算仍存在速度慢或准确率低的问题，容易混淆“比”和“比例”这两个概念，需要通过直观教具和同伴互助加强理解。",
+  "difficulty_analysis": "三、教学重难点1.教学重点：理解比例的意义，掌握判断两个比能否组成比例的方法。2.教学难点：理解比例中两个比比值相等的本质，能从实际情境中准确找出组成比例的比。",
+  "language_style": "生动活泼",
+  "model_id": "Pro/MiniMaxAI/MiniMax-M2.5",
+  "duration_seconds": 508.7,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，请看教材第38页的三面国旗——天安门广场的国旗、操场上的国旗和教室里的国旗。它们的长和宽分别是多少呢？这些数据之间有没有藏着什么秘密？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，上一节课我们学习了比的概念，知道了怎么求比值。今天我们要用学过的知识来探索一个新问题。请翻开教材第38页，看看这里展示的三面国旗：左边是天安门广场的国旗，长5米，宽10/3米；中间是操场上的国旗，长2.4米，宽1.6米；右边是教室里的国旗，长60厘米，宽40厘米。大家先独立算一算每面国旗长和宽的比值，然后和小伙伴比比看，看看你有什么发现。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"通过真实情境激发探究兴趣，让学生在计算比值过程中自主发现比值相等的规律，为后续抽象比例概念做铺垫\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"刚才大家发现操场国旗和教室国旗的长宽比值都是3:2，像这样表示两个比相等的式子，叫作什么？它和我们学过的“比”有什么区别呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"太棒了！大家都发现了2.4:1.6和60:40的比值都等于3/2，这两个比相等。像这样表示两个比相等的式子，在数学上有一个专门的名字，叫做“比例”。打开课本，找到第38页这句话把它读一读。比例和比到底有什么不同呢？比是表示两个数相除的关系，而比例是表示两个相等的比之间的关系。大家一起说一遍：比例是表示两个比相等的式子。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.62, \"design_intent\": \"在学生发现具体现象后及时抽象出概念，建立新认知结构，通过对比辨析帮助学生区分比和比例\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"现在老师来考考大家，请看教材第38页“做一做”第1题的几组比，怎样才能快速判断它们能不能组成比例呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在我们知道了比例的定义，那能不能快速判断两个比能不能组成比例呢？请看教材第38页“做一做”第1题，这里有四组比。同学们想一想，判断的关键是什么？对了，就是看这两个比的比值是否相等。比值相等，就能组成比例；比值不相等，就不能组成比例。大家先自己算一算每组比的比值，看看哪几组能组成比例，把它写下来。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"design_intent\": \"在明确概念后及时形成判断方法，通过多样化练习帮助学生熟练掌握技能\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"大家表现真棒！接下来看看教材第38页机器人思考气泡的问题：在这三面国旗的尺寸中，除了我们已经发现的，还有哪些比可以组成比例呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，我们已经会用求比值的方法来判断两个比能否组成比例了。现在有个更有挑战性的问题：请看教材第38页的机器人思考气泡——在三面国旗的尺寸中，还有哪些比可以组成比例？大家别只盯着同一面国旗的长和宽，可以想想不同国旗之间能不能找关系。比如两面国旗长的比、宽的比，或者长与另一面国旗宽的比等等。把能组成比例的都找出来，看看谁找得又准又全！\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"design_intent\": \"这是本课难点，通过开放性问题引导学生从多角度寻找比例关系，培养分析比较和有序思考能力\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"同学们，其实在生活中比例无处不在！请看教材第39页“做一做”第2题的两个相似直角三角形，它们的边长数据之间有什么关系呢？谁能举出生活中其他用到比例的例子？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"同学们，我们已经学会从国旗数据中找比例了。其实比例在生活中处处可见。请翻开教材第39页，看看“做一做”第2题的两个相似直角三角形，大三角形高3厘米、底4厘米，小三角形高1.5厘米、底2厘米。大家算算它们对应边的比，看看有什么发现？对了，3:1.5和4:2都等于2，这些比也能组成比例。这就是相似图形中比例的应用。除了这题，谁还能想到生活中用到比例的例子？地图、照片、建筑物……都藏着比例的秘密呢！\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"design_intent\": \"通过相似三角形素材实现知识迁移，让学生体会比例在几何中的应用，渗透用数学眼光观察生活的素养\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"小明用橙汁和水按2:1的比例调果汁，小红用300毫升橙汁和150毫升水调果汁，谁调的果汁味道更浓？他们的橙汁与水的比值相等吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.62, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过换到学生熟悉的果汁调配场景，让学生看到不同物体间也存在和国旗类似的相等比值关系，体会规律的普遍性\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"老师带来两张照片，第一张是5厘米×3厘米的风景照，第二张是10厘米×6厘米的同一个人像照片。先量一量这两张照片的长和宽，再算算长与长的比、宽与宽的比，你发现了什么秘密？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.65, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"增加一步测量步骤，培养学生的动手操作能力，同时保持核心的比值发现任务\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"判断下面哪个是比例？A. 3:4  B. 6:8=3:4  C. 5:2。能说说为什么选B而不选A吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.64, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过追问“3:4是不是比例”这个反例，帮助学生澄清易混点：单独的“3:4”只是一个比，只有写成“3:4=6:8”这样两个相等比的形式才是比例\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"3:5和6:10这两个比能组成比例吗？那3:5本身是一个比例吗？请说明理由。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.66, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过“3:5和6:10”与“3:5本身”的对比，帮助学生理解比可以化简但化简后还是同一个比，而比例必须是两个相等的比\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"小明说“0.5:1”和“1:2”比值相等，所以能组成比例。小红说“0.5:1”化简后就是“1:2”，它们是同一个比，不能组成比例。你同意谁的说法？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.66, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过小明和小红对同一组比的争议，引导学生理解化简后的比值比较与原比值比较是等价的\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"判断下面两组数能否组成比例：第一组：3/4 和 0.75；第二组：2/5 和 3/8。请写出你的判断过程。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.67, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过分数和比两种表示形式的转换练习，帮助学生理解判断方法在不同表征形式下的通用性\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"有三本不同的书，第一本长20厘米宽14厘米，第二本长15厘米宽10厘米，第三本长12厘米宽8厘米。除了同一本书的长宽比，还能找出哪些比能组成比例？试试看！\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.73, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"变换素材但保持多角度寻找比例的核心任务，帮助学生掌握有序思考的方法\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"教室里有一张长方形课桌（长100厘米、宽60厘米）、一块正方形橡皮（边长4厘米）和一本数学书（长26厘米、宽18厘米）。请找出这些物品尺寸中能组成比例的所有比，看谁找得又准又全！\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过更开放的生活场景，培养学生从多角度、系统性地寻找比例关系的能力\", \"design_rationale\": \"\"}, {\"id\": \"V5-1\", \"content\": \"一幅地图上从北京到上海的距离是5厘米，实际距离是1000公里。如果另一幅地图上这两地距离是10厘米，那么这幅地图的比例尺是多少？这两个地图的比例尺能组成比例吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.69, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过地图和照片这两个学生非常熟悉的生活场景，帮助学生体会比例在生活中的广泛应用\", \"design_rationale\": \"\"}, {\"id\": \"V5-2\", \"content\": \"两个正方形，第一个边长6厘米，第二个边长3厘米；两个长方形，第一个长8厘米宽4厘米，第二个长6厘米宽3厘米。这些图形中哪些对应边的比能组成比例？请说明理由。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.71, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过不同形状的相似图形，帮助学生理解比例的应用不局限于直角三角形，而是几何中的普遍规律\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"同学们，还记得我们前面学过的‘比’是什么意思吗？比值又是怎么算的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.22, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"先让学生说出前面学过的‘比’和‘比值’是什么，回到已知的概念平台\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"大家看，操场国旗的2.4:1.6和教室国旗的60:40，这两个比的比值都是3/2。像这样把两个比值相等的比写在一起的式子，在数学上有一个名字，谁知道叫什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"把‘比值相等’这个现象和‘比例’这个新概念建立联系，让学生看到两者可以对应起来\", \"design_rationale\": \"\"}, {\"id\": \"S1-3\", \"content\": \"刚才大家说了‘2.4:1.6’是一个比，那‘2.4:1.6=60:40’这个式子和单纯的‘2.4:1.6’有什么不同？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"通过对比辨析，帮助学生分清‘比’表示一个除法关系，而‘比例’表示两个相等比之间的关系\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"要判断两个比能不能写成比例，关键要看什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.24, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"让学生明确判断两个比能否组成比例的关键条件是什么\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"我们来看第一组比：3:5和6:10。先算出3:5的比值是多少？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.32, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"把抽象的判断方法落实到一个具体例子上，让学生知道第一步做什么\", \"design_rationale\": \"\"}, {\"id\": \"S2-3\", \"content\": \"3:5的比值是3/5，那6:10的比值是多少？两个比值相等吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.38, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"把完整的判断过程拆成两步，先算出第一个比值，再比较\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"大家之前都是在同一面国旗上找长和宽的比。除了同一面国旗，我们还可以把不同的国旗放在一起比。看看大国旗的5米长和小国旗的60厘米宽，能不能组成一个比？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.25, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生注意到除了同一面国旗的长和宽，还有其他可以比较的对象\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"如果我们把天安门国旗的长（5米）和操场国旗的长（2.4米）放在一起，能不能写成一个比？那把这个比和另外两个国旗的某个比比较，会怎样？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.34, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"帮学生建立不同物体之间对应关系的意识，明确可以比什么\", \"design_rationale\": \"\"}, {\"id\": \"S3-3\", \"content\": \"大家可以试试：两面国旗的長比、两面国旗的宽比、还有长和另一面宽的比。看哪些也能写成比例？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.42, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"引导学生有序思考，从不同角度尝试找比例，但不给 出完整答案\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"大家看，天安门国旗的長和宽是5:10/3，也就是15:10，简化后是3:2。操场国旗的長和宽是2.4:1.6，也是3:2。它们的什么是一样的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.26, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"从学生熟悉的国旗比例中提取关键线索，帮助学生看到比例的普遍性\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"如果有两个三角形，它们的对应边也像国旗那样保持着相同的比，这两个三角形会是什么样的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.33, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"帮助学生建立从特殊到一般的认知桥梁，看到比例关系的普遍意义\", \"design_rationale\": \"\"}, {\"id\": \"S4-3\", \"content\": \"教材上画了两个直角三角形，大三角形的高是3厘米、底是4厘米，小三角形的高是1.5厘米、底是2厘米。大家算算，它们对应边的比相等吗？这说明什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.4, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"通过具体数据引导学生发现相似图形中的比例关系，为后续举例做铺垫\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"S1-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-3\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"S2-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-3\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"S3-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-3\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"S4-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-05 14:41:30",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，请看教材第38页的三面国旗——天安门广场的国旗、操场上的国旗和教室里的国旗。它们的长和宽分别是多少呢？这些数据之间有没有藏着什么秘密？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，上一节课我们学习了比的概念，知道了怎么求比值。今天我们要用学过的知识来探索一个新问题。请翻开教材第38页，看看这里展示的三面国旗：左边是天安门广场的国旗，长5米，宽10/3米；中间是操场上的国旗，长2.4米，宽1.6米；右边是教室里的国旗，长60厘米，宽40厘米。大家先独立算一算每面国旗长和宽的比值，然后和小伙伴比比看，看看你有什么发现。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "通过真实情境激发探究兴趣，让学生在计算比值过程中自主发现比值相等的规律，为后续抽象比例概念做铺垫",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "刚才大家发现操场国旗和教室国旗的长宽比值都是3:2，像这样表示两个比相等的式子，叫作什么？它和我们学过的“比”有什么区别呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "太棒了！大家都发现了2.4:1.6和60:40的比值都等于3/2，这两个比相等。像这样表示两个比相等的式子，在数学上有一个专门的名字，叫做“比例”。打开课本，找到第38页这句话把它读一读。比例和比到底有什么不同呢？比是表示两个数相除的关系，而比例是表示两个相等的比之间的关系。大家一起说一遍：比例是表示两个比相等的式子。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.62,
+        "design_intent": "在学生发现具体现象后及时抽象出概念，建立新认知结构，通过对比辨析帮助学生区分比和比例",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "现在老师来考考大家，请看教材第38页“做一做”第1题的几组比，怎样才能快速判断它们能不能组成比例呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在我们知道了比例的定义，那能不能快速判断两个比能不能组成比例呢？请看教材第38页“做一做”第1题，这里有四组比。同学们想一想，判断的关键是什么？对了，就是看这两个比的比值是否相等。比值相等，就能组成比例；比值不相等，就不能组成比例。大家先自己算一算每组比的比值，看看哪几组能组成比例，把它写下来。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "design_intent": "在明确概念后及时形成判断方法，通过多样化练习帮助学生熟练掌握技能",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "大家表现真棒！接下来看看教材第38页机器人思考气泡的问题：在这三面国旗的尺寸中，除了我们已经发现的，还有哪些比可以组成比例呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，我们已经会用求比值的方法来判断两个比能否组成比例了。现在有个更有挑战性的问题：请看教材第38页的机器人思考气泡——在三面国旗的尺寸中，还有哪些比可以组成比例？大家别只盯着同一面国旗的长和宽，可以想想不同国旗之间能不能找关系。比如两面国旗长的比、宽的比，或者长与另一面国旗宽的比等等。把能组成比例的都找出来，看看谁找得又准又全！",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "design_intent": "这是本课难点，通过开放性问题引导学生从多角度寻找比例关系，培养分析比较和有序思考能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "同学们，其实在生活中比例无处不在！请看教材第39页“做一做”第2题的两个相似直角三角形，它们的边长数据之间有什么关系呢？谁能举出生活中其他用到比例的例子？",
+        "question_type": "main",
+        "lesson_presentation_script": "同学们，我们已经学会从国旗数据中找比例了。其实比例在生活中处处可见。请翻开教材第39页，看看“做一做”第2题的两个相似直角三角形，大三角形高3厘米、底4厘米，小三角形高1.5厘米、底2厘米。大家算算它们对应边的比，看看有什么发现？对了，3:1.5和4:2都等于2，这些比也能组成比例。这就是相似图形中比例的应用。除了这题，谁还能想到生活中用到比例的例子？地图、照片、建筑物……都藏着比例的秘密呢！",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "design_intent": "通过相似三角形素材实现知识迁移，让学生体会比例在几何中的应用，渗透用数学眼光观察生活的素养",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "小明用橙汁和水按2:1的比例调果汁，小红用300毫升橙汁和150毫升水调果汁，谁调的果汁味道更浓？他们的橙汁与水的比值相等吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.62,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过换到学生熟悉的果汁调配场景，让学生看到不同物体间也存在和国旗类似的相等比值关系，体会规律的普遍性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "老师带来两张照片，第一张是5厘米×3厘米的风景照，第二张是10厘米×6厘米的同一个人像照片。先量一量这两张照片的长和宽，再算算长与长的比、宽与宽的比，你发现了什么秘密？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.65,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "增加一步测量步骤，培养学生的动手操作能力，同时保持核心的比值发现任务",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "判断下面哪个是比例？A. 3:4  B. 6:8=3:4  C. 5:2。能说说为什么选B而不选A吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.64,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过追问“3:4是不是比例”这个反例，帮助学生澄清易混点：单独的“3:4”只是一个比，只有写成“3:4=6:8”这样两个相等比的形式才是比例",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "3:5和6:10这两个比能组成比例吗？那3:5本身是一个比例吗？请说明理由。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.66,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过“3:5和6:10”与“3:5本身”的对比，帮助学生理解比可以化简但化简后还是同一个比，而比例必须是两个相等的比",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "小明说“0.5:1”和“1:2”比值相等，所以能组成比例。小红说“0.5:1”化简后就是“1:2”，它们是同一个比，不能组成比例。你同意谁的说法？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.66,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过小明和小红对同一组比的争议，引导学生理解化简后的比值比较与原比值比较是等价的",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "判断下面两组数能否组成比例：第一组：3/4 和 0.75；第二组：2/5 和 3/8。请写出你的判断过程。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.67,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过分数和比两种表示形式的转换练习，帮助学生理解判断方法在不同表征形式下的通用性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "有三本不同的书，第一本长20厘米宽14厘米，第二本长15厘米宽10厘米，第三本长12厘米宽8厘米。除了同一本书的长宽比，还能找出哪些比能组成比例？试试看！",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.73,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "变换素材但保持多角度寻找比例的核心任务，帮助学生掌握有序思考的方法",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "教室里有一张长方形课桌（长100厘米、宽60厘米）、一块正方形橡皮（边长4厘米）和一本数学书（长26厘米、宽18厘米）。请找出这些物品尺寸中能组成比例的所有比，看谁找得又准又全！",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过更开放的生活场景，培养学生从多角度、系统性地寻找比例关系的能力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-1",
+        "content": "一幅地图上从北京到上海的距离是5厘米，实际距离是1000公里。如果另一幅地图上这两地距离是10厘米，那么这幅地图的比例尺是多少？这两个地图的比例尺能组成比例吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.69,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过地图和照片这两个学生非常熟悉的生活场景，帮助学生体会比例在生活中的广泛应用",
+        "design_rationale": ""
+      },
+      {
+        "id": "V5-2",
+        "content": "两个正方形，第一个边长6厘米，第二个边长3厘米；两个长方形，第一个长8厘米宽4厘米，第二个长6厘米宽3厘米。这些图形中哪些对应边的比能组成比例？请说明理由。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.71,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过不同形状的相似图形，帮助学生理解比例的应用不局限于直角三角形，而是几何中的普遍规律",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "同学们，还记得我们前面学过的‘比’是什么意思吗？比值又是怎么算的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.22,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "先让学生说出前面学过的‘比’和‘比值’是什么，回到已知的概念平台",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "大家看，操场国旗的2.4:1.6和教室国旗的60:40，这两个比的比值都是3/2。像这样把两个比值相等的比写在一起的式子，在数学上有一个名字，谁知道叫什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "把‘比值相等’这个现象和‘比例’这个新概念建立联系，让学生看到两者可以对应起来",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-3",
+        "content": "刚才大家说了‘2.4:1.6’是一个比，那‘2.4:1.6=60:40’这个式子和单纯的‘2.4:1.6’有什么不同？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "通过对比辨析，帮助学生分清‘比’表示一个除法关系，而‘比例’表示两个相等比之间的关系",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "要判断两个比能不能写成比例，关键要看什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.24,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "让学生明确判断两个比能否组成比例的关键条件是什么",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "我们来看第一组比：3:5和6:10。先算出3:5的比值是多少？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.32,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "把抽象的判断方法落实到一个具体例子上，让学生知道第一步做什么",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-3",
+        "content": "3:5的比值是3/5，那6:10的比值是多少？两个比值相等吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.38,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "把完整的判断过程拆成两步，先算出第一个比值，再比较",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "大家之前都是在同一面国旗上找长和宽的比。除了同一面国旗，我们还可以把不同的国旗放在一起比。看看大国旗的5米长和小国旗的60厘米宽，能不能组成一个比？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.25,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生注意到除了同一面国旗的长和宽，还有其他可以比较的对象",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "如果我们把天安门国旗的长（5米）和操场国旗的长（2.4米）放在一起，能不能写成一个比？那把这个比和另外两个国旗的某个比比较，会怎样？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.34,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "帮学生建立不同物体之间对应关系的意识，明确可以比什么",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-3",
+        "content": "大家可以试试：两面国旗的長比、两面国旗的宽比、还有长和另一面宽的比。看哪些也能写成比例？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.42,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "引导学生有序思考，从不同角度尝试找比例，但不给 出完整答案",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "大家看，天安门国旗的長和宽是5:10/3，也就是15:10，简化后是3:2。操场国旗的長和宽是2.4:1.6，也是3:2。它们的什么是一样的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.26,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "从学生熟悉的国旗比例中提取关键线索，帮助学生看到比例的普遍性",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "如果有两个三角形，它们的对应边也像国旗那样保持着相同的比，这两个三角形会是什么样的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.33,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "帮助学生建立从特殊到一般的认知桥梁，看到比例关系的普遍意义",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-3",
+        "content": "教材上画了两个直角三角形，大三角形的高是3厘米、底是4厘米，小三角形的高是1.5厘米、底是2厘米。大家算算，它们对应边的比相等吗？这说明什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.4,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "通过具体数据引导学生发现相似图形中的比例关系，为后续举例做铺垫",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "S1-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-3",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "S2-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-3",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "S3-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-3",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "S4-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

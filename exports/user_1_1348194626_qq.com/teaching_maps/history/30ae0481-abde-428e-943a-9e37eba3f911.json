@@ -1,0 +1,788 @@
+{
+  "id": "30ae0481-abde-428e-943a-9e37eba3f911",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标（1）数学眼光：通过观察生活中的纳税情境，结合教材内容，理解纳税的意义及税率的概念，初步感知数学在现实生活中的应用价值。（2）数学思维：在分析应纳税额计算问题时，能运用“求一个数的百分之几是多少”的思维方法，通过列式计算掌握税额计算的逻辑，提升解决实际问题的思维能力。（3）数学语言：能用数学术语描述税率的含义，清晰表达税额计算的过程和结果，在交流中规范使用“应纳税额”“税率”等数学语言，提升数学表达能力。",
+  "student_profile": "学情分析\r\n1. 知识与技能基础（已有起点）\r\n在进入本节课之前，学生已经掌握了百分数的意义，并能熟练解决“求一个数的百分之几是多少”的实际问题。这为本节课将“税率”转化为百分数问题、建立“应纳税额=计税收入×税率”的数学模型奠定了坚实的知识和运算基础。绝大多数学生在列式计算上不存在技术障碍。\r\n2. 生活经验与认知盲区（情境脱节）\r\n处于此学段的学生，虽然在日常生活中可能偶尔听到过“交税”“个人所得税”等词汇，但“纳税”属于典型的成人社会经济活动，距离学生的真实生活经验较远。\r\n经验缺乏： 学生对国家税收的种类（如增值税、消费税、个税等）缺乏感性认识，对“为什么要纳税”知之甚少。\r\n语言转换困难： 在面对包含“应纳税销售额”“扣除标准”等专业财经词汇的真实情境时，部分学生的“数学语言”理解能力受限，容易产生畏难情绪，难以迅速剥离出数学信息。\r\n\r\n",
+  "difficulty_analysis": "教学重点（1）理解税率的实际意义，能运用百分数乘法建立“应纳税额页=计税收入×税率”的数学模型，提升数学运算与数学建模能力。（2）在纳税问题的解决中体会数学与社会生活的联系，结合公民义务培养依法纳税的责任意识，发展数学应用与社会责任素养。\r\n教学难点（1）学生在不同纳税情境中，难以准确识别“应纳税的部分”与“全部收入”的差异，易将“全部收入”误作“应纳税基数”（如忽略“应纳税销售额”“奖金”等限定词），导致税额计算基数判断错误。（2）学生对“税率”的理解停留在公式记忆层面，难以结合真实税收政策（如增值税、个人所得税税率差异）理解税率的社会意义，无法将“税额计算”与“依法纳税是公民义务”的价值认知相联系，影响应用意识和法制意识的内化",
+  "language_style": "启发引导",
+  "model_id": "gpt-5.4",
+  "duration_seconds": 779.6,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"看教材开头这段话，国家收上来的税，最后都用到哪些地方去了？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们先把百分数的旧知识唤醒了一下，这节课要学的新内容，就藏在生活里的“纳税”中。先别急着看后面的数字和算式，我们把目光放到教材开头这段介绍上。这里写到，税收是国家财政收入的主要来源之一，国家会把税收用在科学、技术、教育、文化、卫生、环境保护、社会保障和国防等方面。大家读的时候，可以联系自己的生活想一想：哪些事情、哪些公共设施、哪些社会服务，和这些税收是有关系的？说的时候尽量用自己的话，不必背原句。等我们明白了“为什么要纳税”，再往下学“交多少、怎么算”，就更有依据了。\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.6, \"design_intent\": \"先消除情境陌生感，防止课堂一开始直接落入机械算税；为后续抽象概念“税率”提供现实语义依托\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"教材里这句话说“应缴纳的税款叫作应纳税额”，又说“……的比率叫作税率”，这里的“应纳税额”和“税率”各表示什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们已经知道了，纳税不是离我们很远的事，它和国家建设、社会生活都有关系。那接下来，我们要把生活里的说法变成数学里的说法。请大家盯住教材中的定义：前半句是在给“应纳税额”命名，后半句是在说明“税率”是怎么来的。想的时候要特别注意，“税率”不只是一个3%这样的符号，它表示的是哪两个量在比较，谁和谁相比得到这个百分数。你可以先抓住“应缴纳的税款”和“应纳税部分”这几个词，再试着把这两个术语说完整。只要把这两个量之间的关系说清楚，后面算的时候才不会混。\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.68, \"design_intent\": \"把新词汇从标签记忆推进到关系理解，为后续找准计税基数和建立模型打基础\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"看这两个材料，一个是“应纳税销售额是30万元”，一个是“工资中应纳税的部分为2500元”，这里真正用来算税的那个量，你会选哪一个？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在两个关键名词我们已经有了，接下来要解决一个特别容易出错的问题：题目里到底是拿谁来算。请大家把目光放到教材中的两个表述上，一个出现在企业纳税的例题里，一个出现在李阿姨工资纳税的情境里。虽然前面的背景不一样，一个说销售额，一个说工资，但都出现了很关键的限定词。大家别只盯着30、2500、3%这些数字，要特别留意“应纳税”这几个字，还有“工资中……的部分”这样的说法。想一想，为什么不是全部收入都直接拿来算，而是要找出其中专门用于纳税的那一部分。把这个量认准了，后面的列式才会对。\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"先解决最易出错的条件筛选问题，避免后续公式模型建立建立在错误基数上\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"例题里为什么用“30×3%”就能算出应纳税额？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们已经把题目里真正参与计算的量找出来了，现在往前再走一步：为什么是这样列式。请大家回到例题“30×3%=0.9（万元）”这一行，先想清楚，30表示什么，3%又表示什么。其实这和我们前面学过的百分数问题很像——求一个数的百分之几是多少。这里的30是应纳税销售额，3%表示应纳税额占应纳税部分的百分之几，所以要求应缴多少税，就是求30万元的3%是多少。你如果能把“税率”理解成一个百分数，把“应纳税部分”看成“一个数”，这个乘法的依据就出来了。说清楚了这一点，我们就不是只会套公式，而是真正明白了为什么这样算。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.82, \"design_intent\": \"让学生不仅会算，更会说明“为什么乘”，实现从概念理解到方法形成的核心跃迁\", \"design_rationale\": \"\"}, {\"id\": \"M5\", \"content\": \"如果让你完整解答这道纳税题，你会怎样把过程写清楚，让别人一看就明白你算的是什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"现在我们已经知道该找哪个量，也知道为什么要用乘法了，接下来要把会想变成会写。数学题不只是算出结果，还要把过程表达清楚。你可以回到教材例题的完整解答看一看，别人为什么一眼就能看明白。写的时候，先弄清是哪个量在纳税，再看税率是多少，然后列式、计算，最后在答语里说清楚应缴纳的是什么税、结果是多少、单位是什么。特别要提醒大家，纳税题里的单位和数量意义很重要，不能只写一个光秃秃的数字。等会儿谁来说一说，你会怎样把这道题写得规范又完整。\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.84, \"design_intent\": \"把已建立的方法固化为可执行流程，使数学语言目标与计算目标同步落地\", \"design_rationale\": \"\"}, {\"id\": \"M6\", \"content\": \"同样都是按3%纳税，企业按销售额的一部分算，李阿姨按工资中应纳税的部分算，这两题变了什么，又没变什么？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"前面我们已经会在一道题里找基数、认税率、列式计算、规范表达了。现在把两道题放在一起看，看看你的方法是不是真的稳了。一个是企业缴纳增值税，一个是个人缴纳工资薪金个人所得税，名称变了，情境变了，题目里的话也不完全一样，所以有时候大家会被这些词语带偏。我们这时就要抓住不变的地方：都要先找到应纳税的那一部分，再看对应的税率，最后求这一部分的百分之几。你可以边比较边想，哪些是情境外衣，哪些才是数学骨架。等这个问题想清楚了，这节课的关键方法就真正掌握住了。\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.9, \"design_intent\": \"通过比较提升迁移能力，并在课末完成概念、模型、方法、表达四位一体的总结\", \"design_rationale\": \"\"}, {\"id\": \"V-M1-1\", \"content\": \"如果从你每天看得见的地方想一想，像学校、医院、公园、马路这些公共设施，哪些可能和税收的使用有关？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.61, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"帮助学生把“税收用途”从书面概念转化为可感知的生活经验，降低情境陌生感\", \"design_rationale\": \"\"}, {\"id\": \"V-M1-2\", \"content\": \"把“修建地铁”和“给某一个人买玩具”放在一起比一比，你觉得哪一类更像税收会支持的方向？为什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.66, \"main_id\": \"M1\", \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过公共与个人用途的对比，促使学生更准确地理解纳税的社会意义\", \"design_rationale\": \"\"}, {\"id\": \"V-M2-1\", \"content\": \"有一项收入中，拿来计算税的部分是1000元，应缴税30元。这里30元表示什么，3%又表示什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.69, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"借助具体量关系帮助学生摆脱术语死记，真正说清两个概念各指什么\", \"design_rationale\": \"\"}, {\"id\": \"V-M2-2\", \"content\": \"有人说“税率就是最后要交的钱数”，你同意吗？你会用“哪个是钱数，哪个是比率”来说明吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"main_id\": \"M2\", \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"针对易混概念进行边界澄清，防止学生把税率误当成税款本身\", \"design_rationale\": \"\"}, {\"id\": \"V-M3-1\", \"content\": \"题目里同时出现“本月收入5000元”和“其中应纳税部分是1800元”，你觉得算税时该盯住哪个量？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.76, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"强化学生对限定词的敏感度，解决“看到数字就代入”的常见错误\", \"design_rationale\": \"\"}, {\"id\": \"V-M3-2\", \"content\": \"如果题目不直接说“应纳税销售额”，而说“销售总额中需要纳税的部分是12万元”，你会拿哪个量来算税？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.8, \"main_id\": \"M3\", \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"帮助学生在不同文本表达中提取同一关键量，提升条件筛选稳定性\", \"design_rationale\": \"\"}, {\"id\": \"V-M4-1\", \"content\": \"如果应纳税的部分是2000元，税率是5%，为什么也可以用“2000×5%”来求应缴的税款？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.83, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"通过换背景保留结构，帮助学生把税额计算模型迁移到新语境中\", \"design_rationale\": \"\"}, {\"id\": \"V-M4-2\", \"content\": \"有同学看到30万元和3%，列成了“30÷3%”。你觉得他错在哪儿，为什么这里应该用乘法？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.88, \"main_id\": \"M4\", \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"借助错误辨析，促使学生从算理层面说明列式依据，而非只凭记忆套公式\", \"design_rationale\": \"\"}, {\"id\": \"V-M5-1\", \"content\": \"如果有人只写“30×3%=0.9”，你觉得这份解答哪里还不够清楚，应该补出哪些关键信息？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.85, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"帮助学生从“会算”过渡到“会写”，强化规范表达意识\", \"design_rationale\": \"\"}, {\"id\": \"V-M5-2\", \"content\": \"两位同学都算对了结果，一位只写数字，一位把“算的是什么税、用了哪个量、单位是什么”都写清了，你更认可哪一种？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.89, \"main_id\": \"M5\", \"parent_id\": \"M5\", \"variation_type\": \"\", \"design_intent\": \"通过优劣对比提升学生对规范书写标准的判断力\", \"design_rationale\": \"\"}, {\"id\": \"V-M6-1\", \"content\": \"把“营业收入中应纳税的部分”和“工资中应纳税的部分”放在一起看，它们说法不同，但算税时共同要先找准什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.9, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"帮助学生建立跨情境的统一解题框架，提升迁移稳定性\", \"design_rationale\": \"\"}, {\"id\": \"V-M6-2\", \"content\": \"如果题目里不再出现“企业”或“李阿姨”这些人物名称，只告诉你“某项收入中应纳税部分”和“税率”，你的解题方法会变吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.94, \"main_id\": \"M6\", \"parent_id\": \"M6\", \"variation_type\": \"\", \"design_intent\": \"促进学生从具体题目上升到一般方法，形成结构化总结\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"读这段话时，和“纳税”最直接有关系的，是“税用到哪里去”这件事，还是“要交多少钱”这件事？你从文中能指出相关的词吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.24, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"先从教材文字里找出与纳税直接有关的对象，为理解术语名称做准备。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"如果把“要交多少钱”换成数学课上更简洁的说法，你觉得它更像是在说“交的这笔税款”，还是“交税的原因”？说说你的判断。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.3, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"把“交多少税”与“一个具体的量”对应起来，降低进入术语定义的门槛。\", \"design_rationale\": \"\"}, {\"id\": \"S1-3\", \"content\": \"像题里常见的“3%”，你觉得它更像是在表示“要交的税有多少”，还是在表示“交的税占要纳税那部分的几分之几”？选一个，并说说你是怎么想的。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.36, \"from_id\": \"M1\", \"to_id\": \"M2\", \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"\", \"design_intent\": \"用明确对比选项帮助学生先辨认“税率”是在说比关系，再进入术语解释。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"题目里如果同时出现“税款”和“收入的一部分”，真正还没算出来、要我们去求的，通常是哪一个量？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\", \"KP3\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.27, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"先把“应纳税额”和“应纳税部分”两个对象区分开，避免后续选错基数。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"读题时，哪些词会提醒我们“不是所有的钱都拿来算税”，而是只看其中一部分？你能从题目里找出这样的词吗？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.33, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"引导学生抓住“应纳税”“……的部分”等关键词，建立筛选意识。\", \"design_rationale\": \"\"}, {\"id\": \"S2-3\", \"content\": \"看到“销售额是30万元”或“工资中应纳税的部分是2500元”这样的句子时，我们算税更该盯住“全部收入”，还是“应纳税的那部分”？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.39, \"from_id\": \"M2\", \"to_id\": \"M3\", \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"\", \"design_intent\": \"把复杂题意压缩成“看全部还是看其中一部分”的选择，帮助学生进入下一主问题。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"如果已知一个量是30，要求它的3%是多少，这类题在以前百分数学习里，一般会用加法、减法，还是乘法来表示？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\", \"KP4\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.28, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"唤起“求一个数的百分之几是多少”这一旧知，为解释列式依据搭桥。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"在“30×3%”里，30表示的是哪一部分钱，3%表示的是这部分钱和税款之间的什么关系？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.35, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"让学生把算式中的两个数分别对应到情境含义，降低“为什么乘”的抽象度。\", \"design_rationale\": \"\"}, {\"id\": \"S3-3\", \"content\": \"试着用我们熟悉的百分数说法来说，这道题其实就是在求“30万元的什么是多少”？把这句话补完整。\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.41, \"from_id\": \"M3\", \"to_id\": \"M4\", \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"\", \"design_intent\": \"把纳税语言换成熟悉的百分数语言，帮助学生顺利进入“为什么用乘法”的解释。\", \"design_rationale\": \"\"}, {\"id\": \"S4-1\", \"content\": \"把“30×3%”写进解答时，怎样说才能让别人一眼看出你是在求“30万元的3%”？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\", \"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.29, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"先把“求30万元的3%”这一列式依据转成书面表达的核心意思。\", \"design_rationale\": \"\"}, {\"id\": \"S4-2\", \"content\": \"除了写算式，还可以加上一句什么话，来说明30表示应纳税的那部分钱，3%表示税率？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.36, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"提醒学生在解答中补上关键量的含义，帮助过程表达更完整。\", \"design_rationale\": \"\"}, {\"id\": \"S4-3\", \"content\": \"结果写成0.9还不够时，后面还要补清哪两样信息，才能让人明白这是多少税、单位是什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.43, \"from_id\": \"M4\", \"to_id\": \"M5\", \"from_main_id\": \"M4\", \"to_main_id\": \"M5\", \"bridge_function\": \"\", \"design_intent\": \"把结果表达从“算出来”推进到“说清楚”，为完整规范解答做好最后准备。\", \"design_rationale\": \"\"}, {\"id\": \"S5-1\", \"content\": \"不看题目说的是企业还是个人，一道纳税题的解答里，通常都离不开哪几个关键信息：哪部分钱、税率，还是别的什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\", \"KP6\"], \"cognitive_level\": \"记忆\", \"difficulty\": 0.26, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"先从已会写的解答中提取共同要素，为跨情境比较打基础。\", \"design_rationale\": \"\"}, {\"id\": \"S5-2\", \"content\": \"一道题说销售额，一道题说工资，这两个词不一样；那它们都是不是在提醒我们先找“拿来算税的那部分钱”呢？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.33, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"引导学生先分辨“名字不同”和“做法不同”不是一回事，降低比较难度。\", \"design_rationale\": \"\"}, {\"id\": \"S5-3\", \"content\": \"虽然一道题说销售额，一道题说工资，但两道题在“找要拿来算税的钱”这一步，做法是不是一样的？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP6\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_id\": \"M5\", \"to_id\": \"M6\", \"from_main_id\": \"M5\", \"to_main_id\": \"M6\", \"bridge_function\": \"\", \"design_intent\": \"用具体对比引导学生进入结构比较，为后一主问题做低负荷铺垫。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M4\", \"target\": \"M5\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M5\", \"target\": \"M6\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V-M1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V-M1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V-M2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V-M2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V-M3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V-M3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V-M4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V-M4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V-M5-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M5\", \"target\": \"V-M5-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V-M6-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M6\", \"target\": \"V-M6-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"S1-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-3\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"S2-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-3\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"S3-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-3\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M4\", \"target\": \"S4-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S4-1\", \"target\": \"S4-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-2\", \"target\": \"S4-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S4-3\", \"target\": \"M5\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M5\", \"target\": \"S5-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S5-1\", \"target\": \"S5-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-2\", \"target\": \"S5-3\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S5-3\", \"target\": \"M6\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-06 14:11:09",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "看教材开头这段话，国家收上来的税，最后都用到哪些地方去了？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们先把百分数的旧知识唤醒了一下，这节课要学的新内容，就藏在生活里的“纳税”中。先别急着看后面的数字和算式，我们把目光放到教材开头这段介绍上。这里写到，税收是国家财政收入的主要来源之一，国家会把税收用在科学、技术、教育、文化、卫生、环境保护、社会保障和国防等方面。大家读的时候，可以联系自己的生活想一想：哪些事情、哪些公共设施、哪些社会服务，和这些税收是有关系的？说的时候尽量用自己的话，不必背原句。等我们明白了“为什么要纳税”，再往下学“交多少、怎么算”，就更有依据了。",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.6,
+        "design_intent": "先消除情境陌生感，防止课堂一开始直接落入机械算税；为后续抽象概念“税率”提供现实语义依托",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "教材里这句话说“应缴纳的税款叫作应纳税额”，又说“……的比率叫作税率”，这里的“应纳税额”和“税率”各表示什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们已经知道了，纳税不是离我们很远的事，它和国家建设、社会生活都有关系。那接下来，我们要把生活里的说法变成数学里的说法。请大家盯住教材中的定义：前半句是在给“应纳税额”命名，后半句是在说明“税率”是怎么来的。想的时候要特别注意，“税率”不只是一个3%这样的符号，它表示的是哪两个量在比较，谁和谁相比得到这个百分数。你可以先抓住“应缴纳的税款”和“应纳税部分”这几个词，再试着把这两个术语说完整。只要把这两个量之间的关系说清楚，后面算的时候才不会混。",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.68,
+        "design_intent": "把新词汇从标签记忆推进到关系理解，为后续找准计税基数和建立模型打基础",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "看这两个材料，一个是“应纳税销售额是30万元”，一个是“工资中应纳税的部分为2500元”，这里真正用来算税的那个量，你会选哪一个？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在两个关键名词我们已经有了，接下来要解决一个特别容易出错的问题：题目里到底是拿谁来算。请大家把目光放到教材中的两个表述上，一个出现在企业纳税的例题里，一个出现在李阿姨工资纳税的情境里。虽然前面的背景不一样，一个说销售额，一个说工资，但都出现了很关键的限定词。大家别只盯着30、2500、3%这些数字，要特别留意“应纳税”这几个字，还有“工资中……的部分”这样的说法。想一想，为什么不是全部收入都直接拿来算，而是要找出其中专门用于纳税的那一部分。把这个量认准了，后面的列式才会对。",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "先解决最易出错的条件筛选问题，避免后续公式模型建立建立在错误基数上",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "例题里为什么用“30×3%”就能算出应纳税额？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们已经把题目里真正参与计算的量找出来了，现在往前再走一步：为什么是这样列式。请大家回到例题“30×3%=0.9（万元）”这一行，先想清楚，30表示什么，3%又表示什么。其实这和我们前面学过的百分数问题很像——求一个数的百分之几是多少。这里的30是应纳税销售额，3%表示应纳税额占应纳税部分的百分之几，所以要求应缴多少税，就是求30万元的3%是多少。你如果能把“税率”理解成一个百分数，把“应纳税部分”看成“一个数”，这个乘法的依据就出来了。说清楚了这一点，我们就不是只会套公式，而是真正明白了为什么这样算。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.82,
+        "design_intent": "让学生不仅会算，更会说明“为什么乘”，实现从概念理解到方法形成的核心跃迁",
+        "design_rationale": ""
+      },
+      {
+        "id": "M5",
+        "content": "如果让你完整解答这道纳税题，你会怎样把过程写清楚，让别人一看就明白你算的是什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "现在我们已经知道该找哪个量，也知道为什么要用乘法了，接下来要把会想变成会写。数学题不只是算出结果，还要把过程表达清楚。你可以回到教材例题的完整解答看一看，别人为什么一眼就能看明白。写的时候，先弄清是哪个量在纳税，再看税率是多少，然后列式、计算，最后在答语里说清楚应缴纳的是什么税、结果是多少、单位是什么。特别要提醒大家，纳税题里的单位和数量意义很重要，不能只写一个光秃秃的数字。等会儿谁来说一说，你会怎样把这道题写得规范又完整。",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.84,
+        "design_intent": "把已建立的方法固化为可执行流程，使数学语言目标与计算目标同步落地",
+        "design_rationale": ""
+      },
+      {
+        "id": "M6",
+        "content": "同样都是按3%纳税，企业按销售额的一部分算，李阿姨按工资中应纳税的部分算，这两题变了什么，又没变什么？",
+        "question_type": "main",
+        "lesson_presentation_script": "前面我们已经会在一道题里找基数、认税率、列式计算、规范表达了。现在把两道题放在一起看，看看你的方法是不是真的稳了。一个是企业缴纳增值税，一个是个人缴纳工资薪金个人所得税，名称变了，情境变了，题目里的话也不完全一样，所以有时候大家会被这些词语带偏。我们这时就要抓住不变的地方：都要先找到应纳税的那一部分，再看对应的税率，最后求这一部分的百分之几。你可以边比较边想，哪些是情境外衣，哪些才是数学骨架。等这个问题想清楚了，这节课的关键方法就真正掌握住了。",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.9,
+        "design_intent": "通过比较提升迁移能力，并在课末完成概念、模型、方法、表达四位一体的总结",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M1-1",
+        "content": "如果从你每天看得见的地方想一想，像学校、医院、公园、马路这些公共设施，哪些可能和税收的使用有关？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.61,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "帮助学生把“税收用途”从书面概念转化为可感知的生活经验，降低情境陌生感",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M1-2",
+        "content": "把“修建地铁”和“给某一个人买玩具”放在一起比一比，你觉得哪一类更像税收会支持的方向？为什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.66,
+        "main_id": "M1",
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过公共与个人用途的对比，促使学生更准确地理解纳税的社会意义",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M2-1",
+        "content": "有一项收入中，拿来计算税的部分是1000元，应缴税30元。这里30元表示什么，3%又表示什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.69,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "借助具体量关系帮助学生摆脱术语死记，真正说清两个概念各指什么",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M2-2",
+        "content": "有人说“税率就是最后要交的钱数”，你同意吗？你会用“哪个是钱数，哪个是比率”来说明吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "main_id": "M2",
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "针对易混概念进行边界澄清，防止学生把税率误当成税款本身",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M3-1",
+        "content": "题目里同时出现“本月收入5000元”和“其中应纳税部分是1800元”，你觉得算税时该盯住哪个量？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.76,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "强化学生对限定词的敏感度，解决“看到数字就代入”的常见错误",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M3-2",
+        "content": "如果题目不直接说“应纳税销售额”，而说“销售总额中需要纳税的部分是12万元”，你会拿哪个量来算税？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.8,
+        "main_id": "M3",
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "帮助学生在不同文本表达中提取同一关键量，提升条件筛选稳定性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M4-1",
+        "content": "如果应纳税的部分是2000元，税率是5%，为什么也可以用“2000×5%”来求应缴的税款？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.83,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "通过换背景保留结构，帮助学生把税额计算模型迁移到新语境中",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M4-2",
+        "content": "有同学看到30万元和3%，列成了“30÷3%”。你觉得他错在哪儿，为什么这里应该用乘法？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.88,
+        "main_id": "M4",
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "借助错误辨析，促使学生从算理层面说明列式依据，而非只凭记忆套公式",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M5-1",
+        "content": "如果有人只写“30×3%=0.9”，你觉得这份解答哪里还不够清楚，应该补出哪些关键信息？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.85,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "帮助学生从“会算”过渡到“会写”，强化规范表达意识",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M5-2",
+        "content": "两位同学都算对了结果，一位只写数字，一位把“算的是什么税、用了哪个量、单位是什么”都写清了，你更认可哪一种？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.89,
+        "main_id": "M5",
+        "parent_id": "M5",
+        "variation_type": "",
+        "design_intent": "通过优劣对比提升学生对规范书写标准的判断力",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M6-1",
+        "content": "把“营业收入中应纳税的部分”和“工资中应纳税的部分”放在一起看，它们说法不同，但算税时共同要先找准什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.9,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "帮助学生建立跨情境的统一解题框架，提升迁移稳定性",
+        "design_rationale": ""
+      },
+      {
+        "id": "V-M6-2",
+        "content": "如果题目里不再出现“企业”或“李阿姨”这些人物名称，只告诉你“某项收入中应纳税部分”和“税率”，你的解题方法会变吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.94,
+        "main_id": "M6",
+        "parent_id": "M6",
+        "variation_type": "",
+        "design_intent": "促进学生从具体题目上升到一般方法，形成结构化总结",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "读这段话时，和“纳税”最直接有关系的，是“税用到哪里去”这件事，还是“要交多少钱”这件事？你从文中能指出相关的词吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.24,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "先从教材文字里找出与纳税直接有关的对象，为理解术语名称做准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "如果把“要交多少钱”换成数学课上更简洁的说法，你觉得它更像是在说“交的这笔税款”，还是“交税的原因”？说说你的判断。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.3,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "把“交多少税”与“一个具体的量”对应起来，降低进入术语定义的门槛。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-3",
+        "content": "像题里常见的“3%”，你觉得它更像是在表示“要交的税有多少”，还是在表示“交的税占要纳税那部分的几分之几”？选一个，并说说你是怎么想的。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.36,
+        "from_id": "M1",
+        "to_id": "M2",
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "",
+        "design_intent": "用明确对比选项帮助学生先辨认“税率”是在说比关系，再进入术语解释。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "题目里如果同时出现“税款”和“收入的一部分”，真正还没算出来、要我们去求的，通常是哪一个量？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2",
+          "KP3"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.27,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "先把“应纳税额”和“应纳税部分”两个对象区分开，避免后续选错基数。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "读题时，哪些词会提醒我们“不是所有的钱都拿来算税”，而是只看其中一部分？你能从题目里找出这样的词吗？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.33,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "引导学生抓住“应纳税”“……的部分”等关键词，建立筛选意识。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-3",
+        "content": "看到“销售额是30万元”或“工资中应纳税的部分是2500元”这样的句子时，我们算税更该盯住“全部收入”，还是“应纳税的那部分”？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.39,
+        "from_id": "M2",
+        "to_id": "M3",
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "",
+        "design_intent": "把复杂题意压缩成“看全部还是看其中一部分”的选择，帮助学生进入下一主问题。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "如果已知一个量是30，要求它的3%是多少，这类题在以前百分数学习里，一般会用加法、减法，还是乘法来表示？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3",
+          "KP4"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.28,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "唤起“求一个数的百分之几是多少”这一旧知，为解释列式依据搭桥。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "在“30×3%”里，30表示的是哪一部分钱，3%表示的是这部分钱和税款之间的什么关系？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.35,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "让学生把算式中的两个数分别对应到情境含义，降低“为什么乘”的抽象度。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-3",
+        "content": "试着用我们熟悉的百分数说法来说，这道题其实就是在求“30万元的什么是多少”？把这句话补完整。",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.41,
+        "from_id": "M3",
+        "to_id": "M4",
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "",
+        "design_intent": "把纳税语言换成熟悉的百分数语言，帮助学生顺利进入“为什么用乘法”的解释。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-1",
+        "content": "把“30×3%”写进解答时，怎样说才能让别人一眼看出你是在求“30万元的3%”？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4",
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.29,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "先把“求30万元的3%”这一列式依据转成书面表达的核心意思。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-2",
+        "content": "除了写算式，还可以加上一句什么话，来说明30表示应纳税的那部分钱，3%表示税率？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.36,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "提醒学生在解答中补上关键量的含义，帮助过程表达更完整。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S4-3",
+        "content": "结果写成0.9还不够时，后面还要补清哪两样信息，才能让人明白这是多少税、单位是什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.43,
+        "from_id": "M4",
+        "to_id": "M5",
+        "from_main_id": "M4",
+        "to_main_id": "M5",
+        "bridge_function": "",
+        "design_intent": "把结果表达从“算出来”推进到“说清楚”，为完整规范解答做好最后准备。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-1",
+        "content": "不看题目说的是企业还是个人，一道纳税题的解答里，通常都离不开哪几个关键信息：哪部分钱、税率，还是别的什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5",
+          "KP6"
+        ],
+        "cognitive_level": "记忆",
+        "difficulty": 0.26,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "先从已会写的解答中提取共同要素，为跨情境比较打基础。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-2",
+        "content": "一道题说销售额，一道题说工资，这两个词不一样；那它们都是不是在提醒我们先找“拿来算税的那部分钱”呢？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.33,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "引导学生先分辨“名字不同”和“做法不同”不是一回事，降低比较难度。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S5-3",
+        "content": "虽然一道题说销售额，一道题说工资，但两道题在“找要拿来算税的钱”这一步，做法是不是一样的？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP6"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_id": "M5",
+        "to_id": "M6",
+        "from_main_id": "M5",
+        "to_main_id": "M6",
+        "bridge_function": "",
+        "design_intent": "用具体对比引导学生进入结构比较，为后一主问题做低负荷铺垫。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M4",
+        "target": "M5",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M5",
+        "target": "M6",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V-M1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V-M1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V-M2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V-M2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V-M3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V-M3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V-M4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V-M4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V-M5-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M5",
+        "target": "V-M5-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V-M6-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M6",
+        "target": "V-M6-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "S1-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-3",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "S2-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-3",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "S3-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-3",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M4",
+        "target": "S4-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-1",
+        "target": "S4-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-2",
+        "target": "S4-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S4-3",
+        "target": "M5",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M5",
+        "target": "S5-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-1",
+        "target": "S5-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-2",
+        "target": "S5-3",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S5-3",
+        "target": "M6",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

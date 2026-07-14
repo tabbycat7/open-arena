@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>信息侦探：多媒体真伪鉴定台</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; --gold: #f1c40f; }
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #app { width: 800px; height: 600px; background: white; border: 2px solid #ddd; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        h2 { color: var(--primary); margin-top: 0; }
+        .main-container { display: flex; gap: 20px; flex-grow: 1; }
+        .video-box { width: 400px; height: 300px; background: #333; position: relative; display: flex; justify-content: center; align-items: center; color: white; }
+        .controls { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .btn { padding: 10px; cursor: pointer; border: 1px solid #ccc; background: #eee; border-radius: 5px; transition: 0.3s; }
+        .btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .shield { width: 100%; height: 80px; background: #fff9c4; border: 2px dashed var(--gold); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #b8860b; margin-top: auto; }
+        .overlay { position: absolute; border: 3px solid var(--accent); display: none; }
+        #edge-box { top: 80px; left: 140px; width: 120px; height: 140px; }
+        #wave-box { bottom: 20px; left: 50px; width: 300px; height: 50px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>多媒体真伪鉴定台</h2>
+    <div class="main-container">
+        <div class="video-box" id="videoArea">
+            [ 模拟视频播放区 ]
+            <div id="edge-box" class="overlay"></div>
+            <div id="wave-box" class="overlay"></div>
+        </div>
+        <div class="controls">
+            <p>请开启侦探工具进行核实：</p>
+            <button class="btn" id="btn-edge">🔍 检查口型边缘</button>
+            <button class="btn" id="btn-wave">🔍 检查音频波形</button>
+            <button class="btn" id="btn-verify">🔍 官方渠道核实</button>
+            <div id="result-text" style="font-size: 0.9em; color: #666;"></div>
+        </div>
+    </div>
+    <div class="shield">🛡️ 核心原则：多源交叉验证</div>
+</div>
+
+<script>
+    const btnEdge = document.getElementById('btn-edge');
+    const btnWave = document.getElementById('btn-wave');
+    const btnVerify = document.getElementById('btn-verify');
+    const edgeBox = document.getElementById('edge-box');
+    const waveBox = document.getElementById('wave-box');
+    const resultText = document.getElementById('result-text');
+
+    btnEdge.addEventListener('click', () => {
+        btnEdge.classList.toggle('active');
+        edgeBox.style.display = btnEdge.classList.contains('active') ? 'block' : 'none';
+        updateResult();
+    });
+
+    btnWave.addEventListener('click', () => {
+        btnWave.classList.toggle('active');
+        waveBox.style.display = btnWave.classList.contains('active') ? 'block' : 'none';
+        updateResult();
+    });
+
+    btnVerify.addEventListener('click', () => {
+        btnVerify.classList.toggle('active');
+        updateResult();
+    });
+
+    function updateResult() {
+        const count = document.querySelectorAll('.btn.active').length;
+        if (count === 3) {
+            resultText.innerHTML = "<strong>鉴定结论：</strong>该视频存在深度伪造（Deepfake）特征，请勿转发，建议向学校核实。";
+            resultText.style.color = "var(--accent)";
+        } else {
+            resultText.innerText = "正在收集证据，请继续检查...";
+            resultText.style.color = "#666";
+        }
+    }
+</script>
+
+</body>
+</html>

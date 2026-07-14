@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类讨论的临界点遗漏演示</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 头部标题与问题引导 */
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eef2f6;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 0 0 8px 0;
+        }
+        .header p {
+            font-size: 15px;
+            color: #64748b;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* 核心可视化区域 */
+        .visualization-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* 决策树卡片 */
+        .tree-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fafbfd;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .tree-card.active {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .tree-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* SVG 决策树样式 */
+        .tree-svg {
+            width: 100%;
+            height: 240px;
+            background: #ffffff;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 交互控制区 */
+        .control-panel {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .input-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .input-btn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+            background: #ffffff;
+            color: #475569;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .input-btn.selected {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn {
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 80%;
+            max-width: 240px;
+            text-align: center;
+        }
+        .btn-wrong { background-color: #ef4444; }
+        .btn-wrong:hover { background-color: #dc2626; }
+        .btn-correct { background-color: #10b981; }
+        .btn-correct:hover { background-color: #059669; }
+
+        /* 警报与反馈弹窗 */
+        .alert-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+        .alert-box {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+            border-top: 5px solid #ef4444;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .alert-box.success {
+            border-top-color: #10b981;
+        }
+        .alert-box h3 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .alert-box p {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .alert-close {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* 动画效果 */
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .flow-line {
+            stroke-dasharray: 8;
+            animation: dash 1.5s linear infinite;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -16;
+            }
+        }
+
+        /* 节点高亮 */
+        .node-highlight {
+            animation: pulse 1.5s infinite alternate;
+        }
+        @keyframes pulse {
+            from { r: 12; fill-opacity: 0.7; }
+            to { r: 18; fill-opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>分类讨论的“临界点”漏掉了吗？</h1>
+        <p>思考：在讨论含参方程（如 $(a-2)x = 1$ 或 $(a-2)x = 0$）时，若只分 $a > 2$ 和 $a < 2$，会发生什么？</p>
+    </div>
+
+    <!-- 核心可视化区域 -->
+    <div class="visualization-area">
+        <!-- 左侧：错误决策树 -->
+        <div class="tree-card" id="card-wrong">
+            <div class="tree-title" style="color: #ef4444;">❌ 粗糙的二叉分类</div>
+            <svg class="tree-svg" id="svg-wrong">
+                <!-- 连线 -->
+                <path id="line-w-left" d="M 110,40 L 60,120" stroke="#cbd5e1" stroke-width="3" fill="none"/>
+                <path id="line-w-right" d="M 110,40 L 160,120" stroke="#cbd5e1" stroke-width="3" fill="none"/>
+                
+                <!-- 根节点 -->
+                <circle cx="110" cy="40" r="12" fill="#64748b"/>
+                <text x="110" y="45" font-size="12" fill="white" text-anchor="middle" font-weight="bold">输入a</text>
+                
+                <!-- 分支条件标注 -->
+                <text x="65" y="75" font-size="12" fill="#ef4444" font-weight="bold">a &lt; 2</text>
+                <text x="155" y="75" font-size="12" fill="#3b82f6" font-weight="bold">a &gt; 2</text>
+
+                <!-- 叶子节点 -->
+                <!-- 左叶子 -->
+                <circle id="node-w-left" cx="60" cy="120" r="10" fill="#94a3b8"/>
+                <text x="60" y="150" font-size="12" fill="#475569" text-anchor="middle" font-weight="bold">情况 ①</text>
+                
+                <!-- 右叶子 -->
+                <circle id="node-w-right" cx="160" cy="120" r="10" fill="#94a3b8"/>
+                <text x="160" y="150" font-size="12" fill="#475569" text-anchor="middle" font-weight="bold">情况 ②</text>
+
+                <!-- 异常指示器（隐藏） -->
+                <g id="error-indicator" opacity="0">
+                    <circle cx="110" cy="40" r="15" fill="none" stroke="#ef4444" stroke-width="3" class="node-highlight"/>
+                    <path d="M 110,15 L 110,95" stroke="#ef4444" stroke-width="4" stroke-dasharray="5,5"/>
+                    <rect x="70" y="95" width="80" height="25" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1"/>
+                    <text x="110" y="112" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="bold">卡死/无处可去</text>
+                </g>
+            </svg>
+            <div class="control-panel">
+                <button class="action-btn btn-wrong" id="btn-run-wrong">运行错误决策树</button>
+            </div>
+        </div>
+
+        <!-- 右侧：正确决策树 -->
+        <div class="tree-card" id="card-correct">
+            <div class="tree-title" style="color: #10b981;">&nbsp; 精确的三叉分类</div>
+            <svg class="tree-svg" id="svg-correct">
+                <!-- 连线 -->
+                <path id="line-c-left" d="M 110,40 L 40,120" stroke="#cbd5e1" stroke-width="3" fill="none"/>
+                <path id="line-c-mid" d="M 110,40 L 110,120" stroke="#cbd5e1" stroke-width="3" fill="none"/>
+                <path id="line-c-right" d="M 110,40 L 180,120" stroke="#cbd5e1" stroke-width="3" fill="none"/>
+                
+                <!-- 根节点 -->
+                <circle cx="110" cy="40" r="12" fill="#64748b"/>
+                <text x="110" y="45" font-size="12" fill="white" text-anchor="middle" font-weight="bold">输入a</text>
+                
+                <!-- 分支条件标注 -->
+                <text x="45" y="75" font-size="11" fill="#ef4444" font-weight="bold">a &lt; 2</text>
+                <text x="110" y="75" font-size="11" fill="#f59e0b" font-weight="bold" text-anchor="middle">a = 2</text>
+                <text x="175" y="75" font-size="11" fill="#3b82f6" font-weight="bold">a &gt; 2</text>
+
+                <!-- 叶子节点 -->
+                <!-- 左叶子 -->
+                <circle id="node-c-left" cx="40" cy="120" r="10" fill="#94a3b8"/>
+                <text x="40" y="150" font-size="11" fill="#475569" text-anchor="middle" font-weight="bold">情况 ①</text>
+                
+                <!-- 中叶子 -->
+                <circle id="node-c-mid" cx="110" cy="120" r="10" fill="#94a3b8"/>
+                <text x="110" y="150" font-size="11" fill="#d97706" text-anchor="middle" font-weight="bold">临界点 ③</text>
+
+                <!-- 右叶子 -->
+                <circle id="node-c-right" cx="180" cy="120" r="10" fill="#94a3b8"/>
+                <text x="180" y="150" font-size="11" fill="#475569" text-anchor="middle" font-weight="bold">情况 ②</text>
+            </svg>
+            <div class="control-panel">
+                <button class="action-btn btn-correct" id="btn-run-correct">运行正确决策树</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部交互：选择输入的 a 值 -->
+    <div class="control-panel" style="margin-top: 20px;">
+        <div class="input-selector">
+            <span>选择测试输入值：</span>
+            <button class="input-btn" data-val="less">a = 1 (即 a &lt; 2)</button>
+            <button class="input-btn selected" data-val="equal">a = 2 (临界点)</button>
+            <button class="input-btn" data-val="greater">a = 3 (即 a &gt; 2)</button>
+        </div>
+    </div>
+
+    <!-- 弹窗反馈 -->
+    <div class="alert-overlay" id="alert-overlay">
+        <div class="alert-box" id="alert-box">
+            <h3 id="alert-title">警报！</h3>
+            <p id="alert-desc">系统无法处理该输入。</p>
+            <button class="alert-close" id="alert-close">返回观察</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 状态管理
+    let selectedValue = 'equal'; // 默认测试临界点 a = 2
+
+    // DOM 元素
+    const inputBtns = document.querySelectorAll('.input-btn');
+    const btnRunWrong = document.getElementById('btn-run-wrong');
+    const btnRunCorrect = document.getElementById('btn-run-correct');
+    const alertOverlay = document.getElementById('alert-overlay');
+    const alertBox = document.getElementById('alert-box');
+    const alertTitle = document.getElementById('alert-title');
+    const alertDesc = document.getElementById('alert-desc');
+    const alertClose = document.getElementById('alert-close');
+
+    // SVG 元素
+    const lineWLeft = document.getElementById('line-w-left');
+    const lineWRight = document.getElementById('line-w-right');
+    const nodeWLeft = document.getElementById('node-w-left');
+    const nodeWRight = document.getElementById('node-w-right');
+    const errorIndicator = document.getElementById('error-indicator');
+
+    const lineCLeft = document.getElementById('line-c-left');
+    const lineCMid = document.getElementById('line-c-mid');
+    const lineCRight = document.getElementById('line-c-right');
+    const nodeCLeft = document.getElementById('node-c-left');
+    const nodeCMid = document.getElementById('node-c-mid');
+    const nodeCRight = document.getElementById('node-c-right');
+
+    // 切换输入值
+    inputBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            inputBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedValue = btn.getAttribute('data-val');
+            resetVisuals();
+        });
+    });
+
+    // 重置所有动画和高亮状态
+    function resetVisuals() {
+        // 重置左树
+        lineWLeft.setAttribute('stroke', '#cbd5e1');
+        lineWLeft.classList.remove('flow-line');
+        lineWRight.setAttribute('stroke', '#cbd5e1');
+        lineWRight.classList.remove('flow-line');
+        nodeWLeft.setAttribute('fill', '#94a3b8');
+        nodeWRight.setAttribute('fill', '#94a3b8');
+        errorIndicator.setAttribute('opacity', '0');
+
+        // 重置右树
+        lineCLeft.setAttribute('stroke', '#cbd5e1');
+        lineCLeft.classList.remove('flow-line');
+        lineCMid.setAttribute('stroke', '#cbd5e1');
+        lineCMid.classList.remove('flow-line');
+        lineCRight.setAttribute('stroke', '#cbd5e1');
+        lineCRight.classList.remove('flow-line');
+        nodeCLeft.setAttribute('fill', '#94a3b8');
+        nodeCMid.setAttribute('fill', '#94a3b8');
+        nodeCRight.setAttribute('fill', '#94a3b8');
+    }
+
+    // 运行错误决策树
+    btnRunWrong.addEventListener('click', () => {
+        resetVisuals();
+        document.getElementById('card-wrong').classList.add('active');
+        document.getElementById('card-correct').classList.remove('active');
+
+        if (selectedValue === 'less') {
+            lineWLeft.setAttribute('stroke', '#ef4444');
+            lineWLeft.classList.add('flow-line');
+            setTimeout(() => {
+                nodeWLeft.setAttribute('fill', '#ef4444');
+            }, 800);
+        } else if (selectedValue === 'greater') {
+            lineWRight.setAttribute('stroke', '#3b82f6');
+            lineWRight.classList.add('flow-line');
+            setTimeout(() => {
+                nodeWRight.setAttribute('fill', '#3b82f6');
+            }, 800);
+        } else if (selectedValue === 'equal') {
+            // 临界点 a = 2 发生崩溃
+            errorIndicator.setAttribute('opacity', '1');
+            setTimeout(() => {
+                showAlert(
+                    '🚨 警报！决策树崩溃',
+                    '当输入临界值 a = 2 时，系统在“a > 2”和“a < 2”中都找不到对应的分支，导致程序卡死！无数个潜在的解在此处被彻底遗漏！',
+                    false
+                );
+            }, 600);
+        }
+    });
+
+    // 运行正确决策树
+    btnRunCorrect.addEventListener('click', () => {
+        resetVisuals();
+        document.getElementById('card-correct').classList.add('active');
+        document.getElementById('card-wrong').classList.remove('active');
+
+        if (selectedValue === 'less') {
+            lineCLeft.setAttribute('stroke', '#ef4444');
+            lineCLeft.classList.add('flow-line');
+            setTimeout(() => {
+                nodeCLeft.setAttribute('fill', '#ef4444');
+            }, 800);
+        } else if (selectedValue === 'greater') {
+            lineCRight.setAttribute('stroke', '#3b82f6');
+            lineCRight.classList.add('flow-line');
+            setTimeout(() => {
+                nodeCRight.setAttribute('fill', '#3b82f6');
+            }, 800);
+        } else if (selectedValue === 'equal') {
+            // 临界点 a = 2 顺利通车
+            lineCMid.setAttribute('stroke', '#f59e0b');
+            lineCMid.classList.add('flow-line');
+            setTimeout(() => {
+                nodeCMid.setAttribute('fill', '#f59e0b');
+                showAlert(
+                    '🟢 顺畅通车！独立成类',
+                    '当 a = 2 时，决策树精准地将其分流到“临界点 ③”分支。请同学们思考：在这个被独立讨论的位置，方程解的个数和另外两种情况一样吗？',
+                    true
+                );
+            }, 800);
+        }
+    });
+
+    // 弹窗控制
+    function showAlert(title, desc, isSuccess) {
+        alertTitle.innerText = title;
+        alertDesc.innerText = desc;
+        if (isSuccess) {
+            alertBox.classList.add('success');
+            alertBox.style.borderTopColor = '#10b981';
+        } else {
+            alertBox.classList.remove('success');
+            alertBox.style.borderTopColor = '#ef4444';
+        }
+        alertOverlay.style.display = 'flex';
+    }
+
+    alertClose.addEventListener('click', () => {
+        alertOverlay.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+{
+  "task_id": "28e63f7f-bba4-4442-b256-a538fb0f70ce",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "我们为什么要纳税？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "什么是税率？它与应纳税额、应纳税部分有什么关系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "你能根据税率的定义推导出应纳税额的计算公式吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "李阿姨的工资中应纳税部分是2500元，王叔叔月工资8000元，超过5000元的部分需要纳税。王叔叔的应纳税部分是多少？这两种情况中，应纳税部分分别是怎样确定的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "张阿姨月工资7200元，超过5000元的部分按3%缴纳个人所得税。她应缴纳个人所得税多少元？请列式计算，并说说你是怎么想的。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "同学们，税收被用于修建地铁、免费公园、义务教育等公共事业。请你结合这些用途，谈谈你对‘纳税是取之于民、用之于民’这句话的理解。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果国家没有税收，我们的社会将会发生哪些变化？请你从教育、医疗、交通等方面举例说明，并说说纳税为什么重要。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "小明家买了一辆新车，车价是10万元，需要缴纳车辆购置税，税率是10%。这里的'10%'表示什么意思？车价、税款与税率之间有什么关系？请用自己的话说明。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "张叔叔上个月缴纳了200元个人所得税，他的应纳税部分是2000元。税率是多少？请写出计算过程，并说明税率与应纳税额、应纳税部分的关系。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "老师画了一条线段表示应纳税部分，把它平均分成100份，其中的3份表示应纳税额。根据这个图示，你能写出应纳税额的计算公式吗？请说明理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "小刚在推导应纳税额公式时写道：因为税率=应纳税额÷应纳税部分，所以应纳税额=税率÷应纳税部分。他的推导正确吗？如果不正确，请改正并写出正确的推导过程。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "如果个人所得税的起征点从5000元调整为3500元，王叔叔月工资8000元，他的应纳税部分是多少？与起征点为5000元时相比，你有什么发现？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "国家规定，稿费收入不超过800元的不纳税，超过800元的部分需要按税率20%纳税。张老师获得稿费2000元，他的应纳税部分是多少？请说明理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "一家超市本月营业额为15万元，营业税税率为3%，应缴纳营业税多少万元？请列式计算，并解释每一步的意义。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "小明计算李阿姨（月工资7200元，超过5000元部分按3%纳税）的个人所得税时，列式为7200×3%=216元。他做得对吗？如果不对，请指出错误原因并写出正确算式。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

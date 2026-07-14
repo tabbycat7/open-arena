@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分段函数局部作图教学辅助系统</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 800px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* 顶部标题与引导区 */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 区间选择标签组 */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .tab-btn:hover {
+            border-color: #4a90e2;
+            color: #4a90e2;
+            background-color: #f0f7ff;
+        }
+        .tab-btn.active {
+            border-color: #e74c3c;
+            background-color: #e74c3c;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        .tab-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+            border-color: #ddd;
+            color: #aaa;
+        }
+
+        /* 主可视化区域 */
+        .visualization-area {
+            flex: 1;
+            position: relative;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            background-color: #fafafa;
+            overflow: hidden;
+        }
+
+        /* SVG 绘图区 */
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 动画控制 */
+        .draw-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+        .draw-line.animate {
+            stroke-dashoffset: 0;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fade-in.show {
+            opacity: 1;
+        }
+
+        /* 底部控制与提示 */
+        .footer-controls {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .instruction-box {
+            font-size: 15px;
+            color: #444;
+            background-color: #eef5fc;
+            padding: 10px 16px;
+            border-left: 4px solid #4a90e2;
+            border-radius: 4px;
+            flex: 1;
+            margin-right: 16px;
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            background-color: #34495e;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .reset-btn:hover {
+            background-color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>分段函数局部作图探究</h1>
+        <p>点击下方区间，观察对应自变量范围内的函数图像生成过程</p>
+    </div>
+
+    <!-- 区间选择器 -->
+    <div class="tab-container">
+        <button class="tab-btn disabled" id="tab-left">x &lt; -1</button>
+        <button class="tab-btn" id="tab-target">－1 ≤ x ≤ 1</button>
+        <button class="tab-btn disabled" id="tab-right">x &gt; 1</button>
+    </div>
+
+    <!-- 可视化画布 -->
+    <div class="visualization-area">
+        <svg id="coordinate-system" viewBox="0 0 750 400">
+            <!-- 定义网格模式 -->
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                </pattern>
+            </defs>
+
+            <!-- 填充网格背景 -->
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <!-- 动态高亮区间背景 (x在 -1 到 1 之间，对应像素 295 到 455) -->
+            <rect id="highlight-area" x="295" y="0" width="160" height="400" fill="#f1c40f" fill-opacity="0" style="transition: fill-opacity 0.5s;" />
+
+            <!-- 坐标轴 -->
+            <!-- X轴 -->
+            <line x1="50" y1="280" x2="700" y2="280" stroke="#333" stroke-width="2" />
+            <polygon points="700,275 715,280 700,285" fill="#333" />
+            <text x="710" y="300" font-size="16" font-weight="bold">x</text>
+
+            <!-- Y轴 -->
+            <line x1="375" y1="350" x2="375" y2="30" stroke="#333" stroke-width="2" />
+            <polygon points="370,30 375,15 380,30" fill="#333" />
+            <text x="390" y="25" font-size="16" font-weight="bold">y</text>
+
+            <!-- 原点 O -->
+            <text x="358" y="298" font-size="14" fill="#666">O</text>
+
+            <!-- 刻度与标签 (每个单位 80 像素) -->
+            <!-- X轴刻度 -->
+            <!-- -2 -->
+            <line x1="215" y1="275" x2="215" y2="285" stroke="#333" stroke-width="1.5" />
+            <text x="208" y="302" font-size="14" fill="#555">-2</text>
+            <!-- -1 -->
+            <line x1="295" y1="275" x2="295" y2="285" stroke="#333" stroke-width="1.5" />
+            <text x="288" y="302" font-size="14" fill="#555" font-weight="bold">-1</text>
+            <!-- 1 -->
+            <line x1="455" y1="275" x2="455" y2="285" stroke="#333" stroke-width="1.5" />
+            <text x="450" y="302" font-size="14" fill="#555" font-weight="bold">1</text>
+            <!-- 2 -->
+            <line x1="535" y1="275" x2="535" y2="285" stroke="#333" stroke-width="1.5" />
+            <text x="530" y="302" font-size="14" fill="#555">2</text>
+
+            <!-- Y轴刻度 -->
+            <!-- 1 -->
+            <line x1="370" y1="200" x2="380" y2="200" stroke="#333" stroke-width="1.5" />
+            <text x="350" y="205" font-size="14" fill="#555">1</text>
+            <!-- 2 -->
+            <line x1="370" y1="120" x2="380" y2="120" stroke="#333" stroke-width="1.5" />
+            <text x="350" y="125" font-size="14" fill="#555" font-weight="bold">2</text>
+            <!-- 3 -->
+            <line x1="370" y1="40" x2="380" y2="40" stroke="#333" stroke-width="1.5" />
+            <text x="350" y="45" font-size="14" fill="#555">3</text>
+
+            <!-- 辅助虚线：边界指示 -->
+            <line x1="295" y1="280" x2="295" y2="120" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="4,4" class="fade-in" id="guide-left" />
+            <line x1="455" y1="280" x2="455" y2="120" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="4,4" class="fade-in" id="guide-right" />
+
+            <!-- 核心绘制：y = 2 线段 (从 x=-1 到 x=1, 即 295,120 到 455,120) -->
+            <line id="target-line" x1="295" y1="120" x2="455" y2="120" stroke="#e74c3c" stroke-width="4" stroke-linecap="round" class="draw-line" />
+
+            <!-- 端点圆点 -->
+            <circle id="point-left" cx="295" cy="120" r="6" fill="#e74c3c" class="fade-in" />
+            <circle id="point-right" cx="455" cy="120" r="6" fill="#e74c3c" class="fade-in" />
+
+            <!-- 动态公式标注 -->
+            <g id="formula-label" class="fade-in">
+                <rect x="345" y="75" width="60" height="30" rx="4" fill="#fff" stroke="#e74c3c" stroke-width="1" />
+                <text x="353" y="95" font-size="14" fill="#e74c3c" font-weight="bold">y = 2</text>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 底部控制区 -->
+    <div class="footer-controls">
+        <div class="instruction-box" id="instruction-text">
+            思考：当 -1 ≤ x ≤ 1 时，y = 2 是一条怎样的线？点击上方高亮的区间按钮开始探索。
+        </div>
+        <button class="reset-btn" id="reset-btn">重置演示</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabTarget = document.getElementById('tab-target');
+        const highlightArea = document.getElementById('highlight-area');
+        const targetLine = document.getElementById('target-line');
+        const guideLeft = document.getElementById('guide-left');
+        const guideRight = document.getElementById('guide-right');
+        const pointLeft = document.getElementById('point-left');
+        const pointRight = document.getElementById('point-right');
+        const formulaLabel = document.getElementById('formula-label');
+        const instructionText = document.getElementById('instruction-text');
+        const resetBtn = document.getElementById('reset-btn');
+
+        // 初始化线段的 Dash 属性以支持动画
+        const pathLength = 160; // 455 - 295
+        targetLine.style.strokeDasharray = pathLength;
+        targetLine.style.strokeDashoffset = pathLength;
+
+        // 点击目标区间
+        tabTarget.addEventListener('click', () => {
+            if (tabTarget.classList.contains('active')) return;
+
+            tabTarget.classList.add('active');
+            instructionText.innerHTML = "<strong>观察：</strong>黄色区域即为自变量 <strong>-1 ≤ x ≤ 1</strong> 的范围。红色的常数函数 <strong>y = 2</strong> 正在该区间内生成...";
+
+            // 1. 亮起黄色背景
+            highlightArea.style.fillOpacity = "0.15";
+
+            // 2. 渐现边界虚线
+            setTimeout(() => {
+                guideLeft.classList.add('show');
+                guideRight.classList.add('show');
+            }, 300);
+
+            // 3. 动画绘制红线
+            setTimeout(() => {
+                targetLine.classList.add('animate');
+                targetLine.style.strokeDashoffset = '0';
+            }, 800);
+
+            // 4. 显现端点和公式标签
+            setTimeout(() => {
+                pointLeft.classList.add('show');
+                pointRight.classList.add('show');
+                formulaLabel.classList.add('show');
+                instructionText.innerHTML = "<strong>思考：</strong>在区间 [-1, 1] 内，y 始终等于 2。这是一条<strong>平行于 x 轴的水平线段</strong>，端点为实心点。";
+            }, 2300);
+        });
+
+        // 重置按钮
+        resetBtn.addEventListener('click', () => {
+            tabTarget.classList.remove('active');
+            highlightArea.style.fillOpacity = "0";
+            
+            // 重置线段动画
+            targetLine.classList.remove('animate');
+            targetLine.style.strokeDashoffset = pathLength;
+
+            // 隐藏其他元素
+            guideLeft.classList.remove('show');
+            guideRight.classList.remove('show');
+            pointLeft.classList.remove('show');
+            pointRight.classList.remove('show');
+            formulaLabel.classList.remove('show');
+
+            instructionText.innerHTML = "思考：当 -1 ≤ x ≤ 1 时，y = 2 是一条怎样的线？点击上方高亮的区间按钮开始探索。";
+        });
+    });
+</script>
+
+</body>
+</html>

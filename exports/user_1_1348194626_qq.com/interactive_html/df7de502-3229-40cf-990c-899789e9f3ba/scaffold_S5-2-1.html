@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法优化：双赢的智慧</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --rider-color: #f5a623;
+            --customer-color: #7ed321;
+            --bg: #f0f4f8;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 80vw;
+            max-width: 800px;
+            text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        .cards-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            perspective: 1000px;
+        }
+        .card {
+            width: 200px;
+            height: 250px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 4px solid transparent;
+            position: relative;
+        }
+        .card.active { transform: scale(1.1); }
+        .card-icon { font-size: 50px; margin-bottom: 15px; }
+        .card-title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; }
+        .card-content { 
+            font-size: 0.9em; 
+            color: #666; 
+            opacity: 0; 
+            transition: opacity 0.3s;
+            text-align: center;
+            padding: 0 10px;
+        }
+        .card.active .card-content { opacity: 1; }
+        
+        #result-area {
+            margin-top: 40px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .smile-svg { width: 80px; height: 80px; display: none; }
+        .message { font-size: 1.5em; font-weight: bold; color: var(--primary); display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>算法优化：让生活更美好</h2>
+    <p>点击卡片，探索算法带来的改变</p>
+    
+    <div class="cards-wrapper">
+        <div class="card" id="rider-card" style="border-color: var(--rider-color);">
+            <div class="card-icon">🛵</div>
+            <div class="card-title">骑手叔叔</div>
+            <div class="card-content" id="rider-text">省时省力<br>安全送达</div>
+        </div>
+        
+        <div class="card" id="customer-card" style="border-color: var(--customer-color);">
+            <div class="card-icon">😋</div>
+            <div class="card-title">外卖顾客</div>
+            <div class="card-content" id="customer-text">美味不用等<br>饭菜暖融融</div>
+        </div>
+    </div>
+
+    <div id="result-area">
+        <svg class="smile-svg" id="smile" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="#ffd93d"/>
+            <circle cx="35" cy="40" r="5" fill="#333"/>
+            <circle cx="65" cy="40" r="5" fill="#333"/>
+            <path d="M30 60 Q50 80 70 60" stroke="#333" stroke-width="5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="message" id="msg">好算法，让大家双赢！</div>
+    </div>
+</div>
+
+<script>
+    const riderCard = document.getElementById('rider-card');
+    const customerCard = document.getElementById('customer-card');
+    const smile = document.getElementById('smile');
+    const msg = document.getElementById('msg');
+
+    let riderActive = false;
+    let customerActive = false;
+
+    function checkWin() {
+        if (riderActive && customerActive) {
+            smile.style.display = 'block';
+            msg.style.display = 'block';
+        }
+    }
+
+    riderCard.addEventListener('click', () => {
+        riderCard.classList.add('active');
+        riderActive = true;
+        checkWin();
+    });
+
+    customerCard.addEventListener('click', () => {
+        customerCard.classList.add('active');
+        customerActive = true;
+        checkWin();
+    });
+</script>
+
+</body>
+</html>

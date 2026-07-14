@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>城市算法大发现</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { margin: 0; font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #app { width: 800px; height: 600px; background: white; border: 2px solid #e2e8f0; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .header { padding: 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .map-container { position: relative; width: 100%; height: 450px; background: #f1f5f9; overflow: hidden; }
+        .hotspot { position: absolute; width: 40px; height: 40px; background: var(--primary); border-radius: 50%; cursor: pointer; animation: pulse 2s infinite; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
+        @keyframes pulse { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); } 100% { transform: scale(0.9); } }
+        
+        #modal { position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px; background: white; border: 2px solid #334155; display: none; padding: 20px; z-index: 10; }
+        .canvas-area { width: 100%; height: 300px; border: 1px dashed #cbd5e1; margin: 10px 0; position: relative; }
+        button { padding: 10px 20px; background: var(--primary); color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="header">
+        <h2>城市算法大发现</h2>
+        <p>点击地图上的闪烁点，看看算法如何改变生活</p>
+    </div>
+    
+    <div class="map-container" id="map">
+        <div class="hotspot" style="top: 100px; left: 200px;" data-id="rider">骑手</div>
+        <div class="hotspot" style="top: 300px; left: 500px;" data-id="traffic">红绿灯</div>
+        <div class="hotspot" style="top: 150px; left: 600px;" data-id="center">分拣</div>
+    </div>
+
+    <div id="modal">
+        <span class="close-btn" id="close">×</span>
+        <h3 id="modal-title"></h3>
+        <div class="canvas-area" id="canvas-box">
+            <svg id="svg-draw" width="100%" height="100%"></svg>
+        </div>
+        <button id="optimize-btn">算法一键优化</button>
+        <p id="result-text"></p>
+    </div>
+</div>
+
+<script>
+    const map = document.getElementById('map');
+    const modal = document.getElementById('modal');
+    const svg = document.getElementById('svg-draw');
+    const btn = document.getElementById('optimize-btn');
+    const title = document.getElementById('modal-title');
+    const result = document.getElementById('result-text');
+    
+    let isOptimized = false;
+
+    map.addEventListener('click', (e) => {
+        if(e.target.classList.contains('hotspot')) {
+            const type = e.target.getAttribute('data-id');
+            showModal(type);
+        }
+    });
+
+    document.getElementById('close').addEventListener('click', () => modal.style.display = 'none');
+
+    function showModal(type) {
+        modal.style.display = 'block';
+        isOptimized = false;
+        title.innerText = type === 'rider' ? '外卖配送路线规划' : '系统模拟演示';
+        result.innerText = '当前路线：混乱且耗时较长...';
+        draw(false);
+    }
+
+    function draw(optimized) {
+        svg.innerHTML = '';
+        const points = [{x:100, y:50}, {x:500, y:50}, {x:300, y:250}];
+        
+        if(!optimized) {
+            // 混乱路线
+            svg.innerHTML = `<line x1="100" y1="50" x2="300" y2="250" stroke="red" stroke-width="2" stroke-dasharray="5"/>
+                             <line x1="300" y1="250" x2="500" y2="50" stroke="red" stroke-width="2" stroke-dasharray="5"/>`;
+        } else {
+            // 优化路线
+            svg.innerHTML = `<path d="M 100 50 L 500 50 L 300 250 Z" fill="none" stroke="green" stroke-width="3"/>`;
+        }
+        
+        points.forEach(p => {
+            svg.innerHTML += `<circle cx="${p.x}" cy="${p.y}" r="10" fill="#2563eb"/>`;
+        });
+    }
+
+    btn.addEventListener('click', () => {
+        isOptimized = !isOptimized;
+        draw(isOptimized);
+        result.innerText = isOptimized ? '优化成功！路线缩短了 40%，预计节省时间 15 分钟。' : '当前路线：混乱且耗时较长...';
+    });
+</script>
+
+</body>
+</html>

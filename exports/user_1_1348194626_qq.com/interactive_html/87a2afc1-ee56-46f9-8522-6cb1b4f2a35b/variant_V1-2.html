@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学微课堂 - 我们也是纳税人吗？</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-canvas: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK SC", sans-serif;
+            background-color: #0f172a;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            max-width: 1000px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            color: #ffffff;
+            padding: 20px 24px;
+            border-bottom: 4px solid #60a5fa;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #bfdbfe;
+        }
+
+        /* 主画布区域 */
+        .canvas-area {
+            flex: 1;
+            background-color: var(--bg-canvas);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #viz-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            padding: 16px 24px;
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* 动态提示框 */
+        .info-box {
+            flex: 1;
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-muted);
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-box.highlight {
+            border-left-color: var(--warning-color);
+            background-color: #fffbeb;
+            color: #92400e;
+        }
+
+        /* SVG 动画与样式 */
+        .coin-glow {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5)); }
+            50% { filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.8)); }
+            100% { filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5)); }
+        }
+
+        .tax-glow {
+            animation: tax-pulse 1.5s infinite;
+        }
+
+        @keyframes tax-pulse {
+            0% { filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4)); }
+            50% { filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8)); }
+            100% { filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4)); }
+        }
+
+        /* 交互引导手势 */
+        .guide-hand {
+            pointer-events: none;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* 悬停提示卡片 */
+        .tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 220px;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部：情境引入 -->
+        <div class="header">
+            <h1>🛒 2元铅笔的秘密：我们也是纳税人吗？</h1>
+            <p>小华说：“我又不上班挣钱，国家建设大工程的税款肯定跟我没关系。”你同意吗？当我们去买一支2元的铅笔时，我们是不是也在为国家建设作贡献呢？</p>
+        </div>
+
+        <!-- 主可视化画布 -->
+        <div class="canvas-area">
+            <div id="tooltip" class="tooltip"></div>
+            <svg id="viz-svg" viewBox="0 0 800 450">
+                <!-- 渐变定义 -->
+                <defs>
+                    <linearGradient id="gold-coin" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fbbf24" />
+                        <stop offset="50%" stop-color="#f59e0b" />
+                        <stop offset="100%" stop-color="#d97706" />
+                    </linearGradient>
+                    <linearGradient id="silver-coin" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f1f5f9" />
+                        <stop offset="100%" stop-color="#cbd5e1" />
+                    </linearGradient>
+                    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#34d399" />
+                        <stop offset="100%" stop-color="#059669" />
+                    </linearGradient>
+                    <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fb923c" />
+                        <stop offset="100%" stop-color="#ea580c" />
+                    </linearGradient>
+                    <linearGradient id="pencil-body" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#fde047" />
+                        <stop offset="50%" stop-color="#eab308" />
+                        <stop offset="100%" stop-color="#ca8a04" />
+                    </linearGradient>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+                    </filter>
+                </defs>
+
+                <!-- 背景装饰线 -->
+                <g stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,5">
+                    <line x1="400" y1="0" x2="400" y2="450" />
+                    <line x1="0" y1="225" x2="800" y2="225" />
+                </g>
+
+                <!-- 场景一：文具店 (左侧) -->
+                <g id="stationery-shop" filter="url(#shadow)">
+                    <!-- 柜台/背景 -->
+                    <rect x="40" y="120" width="280" height="240" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                    <rect x="40" y="120" width="280" height="40" rx="12" fill="#f1f5f9" />
+                    <text x="180" y="146" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">学校旁的小文具店</text>
+                    
+                    <!-- 铅笔绘制 -->
+                    <g id="pencil-svg" transform="translate(100, 220) rotate(-15)">
+                        <!-- 笔身 -->
+                        <rect x="0" y="0" width="120" height="24" fill="url(#pencil-body)" />
+                        <!-- 笔尖木质部 -->
+                        <polygon points="120,0 145,12 120,24" fill="#fed7aa" />
+                        <!-- 笔芯尖 -->
+                        <polygon points="135,7.2 145,12 135,16.8" fill="#1e293b" />
+                        <!-- 橡皮擦连接金属 -->
+                        <rect x="-12" y="0" width="12" height="24" fill="#94a3b8" />
+                        <!-- 橡皮擦 -->
+                        <rect x="-24" y="0" width="12" height="24" rx="2" fill="#fda4af" />
+                        <!-- 铅笔条纹 -->
+                        <line x1="0" y1="8" x2="120" y2="8" stroke="#ca8a04" stroke-width="1.5" />
+                        <line x1="0" y1="16" x2="120" y2="16" stroke="#ca8a04" stroke-width="1.5" />
+                    </g>
+                    <text x="180" y="320" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">2元 铅笔</text>
+                </g>
+
+                <!-- 场景二：国家建设/国库 (右侧) -->
+                <g id="national-treasury" filter="url(#shadow)">
+                    <!-- 国库大楼 -->
+                    <rect x="480" y="120" width="280" height="240" rx="12" fill="#ffffff" stroke="#fca5a5" stroke-width="2"/>
+                    <rect x="480" y="120" width="280" height="40" rx="12" fill="#fee2e2" />
+                    <text x="620" y="146" font-size="16" font-weight="bold" fill="#991b1b" text-anchor="middle">国家财政国库</text>
+                    
+                    <!-- 建筑简图 -->
+                    <path d="M540,280 L700,280 L700,210 L540,210 Z" fill="#fca5a5" opacity="0.3"/>
+                    <polygon points="530,210 620,170 710,210" fill="#ef4444" />
+                    <!-- 柱子 -->
+                    <rect x="560" y="210" width="12" height="70" fill="#ef4444" />
+                    <rect x="600" y="210" width="12" height="70" fill="#ef4444" />
+                    <rect x="640" y="210" width="12" height="70" fill="#ef4444" />
+                    <rect x="680" y="210" width="12" height="70" fill="#ef4444" />
+                    <rect x="540" y="275" width="160" height="10" fill="#dc2626" />
+                    
+                    <text x="620" y="320" font-size="18" font-weight="bold" fill="#b91c1c" text-anchor="middle">国家建设大工程</text>
+                    <text x="620" y="342" font-size="12" fill="#ef4444" text-anchor="middle">(高铁、学校、国防、航天...)</text>
+                </g>
+
+                <!-- 动态连接线/流向箭头 (初始隐藏) -->
+                <g id="flow-arrow" class="hidden" opacity="0">
+                    <path d="M 400,240 Q 480,180 550,210" fill="none" stroke="#f97316" stroke-width="4" stroke-dasharray="6,4" />
+                    <polygon points="550,210 540,202 544,215" fill="#f97316" />
+                </g>
+
+                <!-- 核心交互：2元硬币 -->
+                <g id="coin-container">
+                    <!-- 原始2元硬币 -->
+                    <g id="original-coin" class="coin-glow" transform="translate(400, 240)" style="cursor: pointer; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);">
+                        <circle cx="0" cy="0" r="45" fill="url(#gold-coin)" stroke="#d97706" stroke-width="3" filter="url(#shadow)"/>
+                        <circle cx="0" cy="0" r="38" fill="none" stroke="#fef08a" stroke-width="1" stroke-dasharray="4,2"/>
+                        <text x="0" y="8" font-size="24" font-weight="900" fill="#ffffff" text-anchor="middle">2元</text>
+                        <text x="0" y="24" font-size="11" fill="#fef08a" text-anchor="middle">人民币</text>
+                    </g>
+
+                    <!-- 拆解后的部分一：商品成本与利润 (1.77元) -->
+                    <g id="part-cost" class="hidden" transform="translate(400, 240)" style="transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                        <circle cx="0" cy="0" r="40" fill="url(#green-grad)" stroke="#047857" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="0" y="6" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">1.77元</text>
+                        <text x="0" y="22" font-size="10" fill="#a7f3d0" text-anchor="middle">成本与利润</text>
+                        <!-- 指向商家的辅助线 -->
+                        <path d="M -40,0 L -120,0" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,4" />
+                        <polygon points="-120,0 -112,-5 -112,5" fill="#10b981" />
+                    </g>
+
+                    <!-- 拆解后的部分二：增值税 (0.23元) -->
+                    <g id="part-tax" class="hidden" transform="translate(400, 240)" style="transition: all 1.2s cubic-bezier(0.34, 1.3, 0.64, 1); cursor: pointer;">
+                        <circle cx="0" cy="0" r="32" fill="url(#orange-grad)" stroke="#c2410c" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="0" y="4" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">0.23元</text>
+                        <text x="0" y="18" font-size="9" fill="#ffedd5" text-anchor="middle">增值税</text>
+                    </g>
+                </g>
+
+                <!-- 交互手势提示 (初始显示，点击后消失) -->
+                <g id="guide-hand" class="guide-hand" transform="translate(440, 280)">
+                    <path d="M0,0 L10,20 L2,22 L-2,30 L-8,22 L-10,20 Z" fill="#1e293b" />
+                    <circle cx="0" cy="0" r="6" fill="#ef4444" />
+                    <text x="15" y="35" font-size="12" font-weight="bold" fill="#1e293b">点击拆解</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 控制与信息反馈区 -->
+        <div class="control-panel">
+            <div id="info-box" class="info-box">
+                💡 画面中央是买铅笔付出的2元硬币。点击“拆解价格”按钮，看看这笔钱是如何构成的。
+            </div>
+            <div class="btn-group">
+                <button id="btn-reset" class="btn btn-secondary">重置</button>
+                <button id="btn-split" class="btn btn-primary">拆解价格</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnSplit = document.getElementById('btn-split');
+        const btnReset = document.getElementById('btn-reset');
+        const originalCoin = document.getElementById('original-coin');
+        const partCost = document.getElementById('part-cost');
+        const partTax = document.getElementById('part-tax');
+        const flowArrow = document.getElementById('flow-arrow');
+        const guideHand = document.getElementById('guide-hand');
+        const infoBox = document.getElementById('info-box');
+        const tooltip = document.getElementById('tooltip');
+        const svg = document.getElementById('viz-svg');
+
+        let isSplit = false;
+
+        // 拆解动作
+        function splitPrice() {
+            if (isSplit) return;
+            isSplit = true;
+
+            // 隐藏引导手势
+            guideHand.classList.add('hidden');
+
+            // 1. 原始硬币淡出并缩小
+            originalCoin.style.opacity = '0';
+            originalCoin.style.transform = 'translate(400px, 240px) scale(0.5)';
+            originalCoin.style.pointerEvents = 'none';
+
+            // 2. 显示拆分部分
+            partCost.classList.remove('hidden');
+            partTax.classList.remove('hidden');
+
+            // 强制重绘以触发 CSS 过渡
+            void partCost.offsetWidth;
+
+            // 3. 动画位移：1.77元移向左侧商家，0.23元移向右侧国库通道
+            partCost.style.transform = 'translate(260px, 240px)';
+            partTax.style.transform = 'translate(500px, 240px)';
+
+            // 4. 延迟显示流向国库的箭头和税款进一步移动
+            setTimeout(() => {
+                if (!isSplit) return; // 防止中途重置
+                flowArrow.classList.remove('hidden');
+                flowArrow.style.opacity = '1';
+                flowArrow.style.transition = 'opacity 0.5s ease';
+                
+                // 税款硬币向国库方向飘动并闪烁
+                partTax.style.transform = 'translate(580px, 220px) scale(0.9)';
+                partTax.classList.add('tax-glow');
+
+                // 更新提示信息
+                infoBox.classList.add('highlight');
+                infoBox.innerHTML = '<strong>拆解成功！</strong> 2元钱里有 <strong>1.77元</strong> 是铅笔的生产成本和商家的利润；有 <strong>0.23元</strong> 是国家法定的<strong>增值税</strong>。这笔税款直接流入了国库！';
+            }, 1000);
+        }
+
+        // 重置动作
+        function resetPrice() {
+            isSplit = false;
+            
+            // 恢复原始硬币
+            originalCoin.style.opacity = '1';
+            originalCoin.style.transform = 'translate(400px, 240px) scale(1)';
+            originalCoin.style.pointerEvents = 'auto';
+
+            // 隐藏拆分部分
+            partCost.classList.add('hidden');
+            partCost.style.transform = 'translate(400px, 240px)';
+            
+            partTax.classList.add('hidden');
+            partTax.style.transform = 'translate(400px, 240px)';
+            partTax.classList.remove('tax-glow');
+
+            // 隐藏流向
+            flowArrow.classList.add('hidden');
+            flowArrow.style.opacity = '0';
+
+            // 显示引导
+            guideHand.classList.remove('hidden');
+
+            // 重置提示
+            infoBox.classList.remove('highlight');
+            infoBox.innerHTML = '💡 画面中央是买铅笔付出的2元硬币。点击“拆解价格”按钮，看看这笔钱是如何构成的。';
+            tooltip.style.opacity = '0';
+        }
+
+        // 鼠标悬停在税款上的交互
+        function showTaxTooltip(e) {
+            if (!isSplit) return;
+            tooltip.innerHTML = '<strong>💡 核心思考：</strong><br>虽然我们没有直接去税务局交税，但当我们购买商品时，商品价格里就已经包含了税。我们作为<strong>消费者</strong>，实际上已经间接向国家纳税了！';
+            tooltip.style.opacity = '1';
+            updateTooltipPosition(e);
+        }
+
+        function hideTaxTooltip() {
+            tooltip.style.opacity = '0';
+        }
+
+        function updateTooltipPosition(e) {
+            // 获取画布的缩放比例和位置
+            const rect = svg.getBoundingClientRect();
+            // 计算鼠标在容器内的相对位置
+            const x = e.clientX - rect.left + 15;
+            const y = e.clientY - rect.top + 15;
+            tooltip.style.left = x + 'px';
+            tooltip.style.top = y + 'px';
+        }
+
+        // 事件监听
+        btnSplit.addEventListener('click', splitPrice);
+        originalCoin.addEventListener('click', splitPrice);
+        btnReset.addEventListener('click', resetPrice);
+
+        partTax.addEventListener('mouseenter', showTaxTooltip);
+        partTax.addEventListener('mousemove', updateTooltipPosition);
+        partTax.addEventListener('mouseleave', hideTaxTooltip);
+        partTax.addEventListener('click', showTaxTooltip); // 兼容移动端/触摸屏
+    </script>
+</body>
+</html>

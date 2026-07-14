@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绝对值化简交互微课 - S1-2-1</title>
+    <style>
+        /* 基础样式与投屏自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 比例容器，适合课堂投屏 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        /* 头部标题 */
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .tag {
+            font-size: 12px;
+            background-color: #1abc9c;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        /* 主体内容区 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            justify-content: space-between;
+        }
+        /* 题干引导 */
+        .question-box {
+            background-color: #eef2f7;
+            border-left: 5px solid #3498db;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        /* 交互核心区域：左控制，右展示 */
+        .interactive-area {
+            display: flex;
+            flex: 1;
+            margin: 15px 0;
+            gap: 20px;
+            align-items: center;
+        }
+        /* 左侧控制面板 */
+        .control-panel {
+            flex: 1;
+            background: #fcfcfc;
+            border: 1px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .control-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        /* 数轴可视化 */
+        .axis-container {
+            position: relative;
+            height: 50px;
+            margin-top: 10px;
+        }
+        .axis-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #7f8c8d;
+        }
+        .axis-tick {
+            position: absolute;
+            top: 15px;
+            width: 2px;
+            height: 12px;
+            background: #7f8c8d;
+        }
+        .axis-label {
+            position: absolute;
+            top: 30px;
+            font-size: 12px;
+            transform: translateX(-50%);
+            color: #7f8c8d;
+        }
+        .axis-highlight {
+            position: absolute;
+            top: 18px;
+            height: 6px;
+            background: rgba(231, 76, 60, 0.2);
+            border-radius: 3px;
+        }
+        .axis-pointer {
+            position: absolute;
+            top: 11px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e74c3c;
+            transform: translateX(-50%);
+            transition: left 0.1s ease-out;
+        }
+        /* 右侧公式展示区 */
+        .formula-panel {
+            flex: 1.2;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            height: 100%;
+        }
+        .formula-line {
+            font-family: "Cambria", "Times New Roman", serif;
+            font-size: 24px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .highlight-val {
+            color: #e74c3c;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+        .highlight-res {
+            color: #f1c40f;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+        .highlight-final {
+            color: #2ecc71;
+            font-weight: bold;
+            padding: 0 4px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .highlight-final.show {
+            opacity: 1;
+        }
+        /* 底部交互问答区 */
+        .question-action {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .action-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #bdc3c7;
+            background-color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #f0f0f0;
+            border-color: #7f8c8d;
+        }
+        .btn.correct {
+            background-color: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+        .btn.wrong {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+        /* 反馈提示 */
+        .feedback {
+            font-size: 15px;
+            font-weight: bold;
+            min-height: 22px;
+            transition: color 0.3s;
+        }
+        .feedback.success {
+            color: #27ae60;
+        }
+        .feedback.error {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <span>绝对值的代数意义探究</span>
+        <span class="tag">高一数学 - 集合与常用逻辑用语/不等式</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="content">
+        <!-- 题干引导 -->
+        <div class="question-box">
+            <strong>思考：</strong>当自变量 $x$ 属于最左边的区间（即 $x < -1$）时，我们可以挑选一个具体的数代入 $|x-1|$ 观察。此时绝对值内部的式子是正数还是负数？去掉绝对值符号时要不要变号呢？
+        </div>
+
+        <!-- 交互核心区 -->
+        <div class="interactive-area">
+            <!-- 左侧：拖动自变量 -->
+            <div class="control-panel">
+                <div class="control-title">
+                    <span>步骤 1：拖动选择 $x$ 的值</span>
+                    <span style="color: #e74c3c;">(限定 $x < -1$)</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range" id="x-slider" min="-5" max="-1.1" step="0.1" value="-2">
+                </div>
+                <!-- 简易数轴 -->
+                <div class="axis-container">
+                    <div class="axis-line"></div>
+                    <!-- 高亮区间 x < -1 -->
+                    <div class="axis-highlight" style="left: 0%; width: 80%;"></div>
+                    <!-- 刻度 -5, -3, -1, 0 -->
+                    <div class="axis-tick" style="left: 0%;"></div>
+                    <div class="axis-label" style="left: 0%;">-5</div>
+                    
+                    <div class="axis-tick" style="left: 40%;"></div>
+                    <div class="axis-label" style="left: 40%;">-3</div>
+                    
+                    <div class="axis-tick" style="left: 80%;"></div>
+                    <div class="axis-label" style="left: 80%; font-weight: bold; color: #e74c3c;">-1</div>
+                    
+                    <div class="axis-tick" style="left: 100%;"></div>
+                    <div class="axis-label" style="left: 100%;">0</div>
+                    
+                    <!-- 动态指针 -->
+                    <div class="axis-pointer" id="axis-pointer"></div>
+                </div>
+            </div>
+
+            <!-- 右侧：公式动态推导 -->
+            <div class="formula-panel">
+                <div style="font-size: 14px; color: #bdc3c7; margin-bottom: 10px;">步骤 2：代入计算观察</div>
+                <div class="formula-line">
+                    <span>当 $x =$ </span>
+                    <span class="highlight-val" id="val-x">-2.0</span>
+                    <span> 时：</span>
+                </div>
+                <div class="formula-line">
+                    <span>$|x - 1| = |$</span>
+                    <span class="highlight-val" id="val-x-sub">-2.0</span>
+                    <span>$- 1| = |$</span>
+                    <span class="highlight-res" id="val-result">-3.0</span>
+                    <span>|$</span>
+                </div>
+                <div class="formula-line" style="font-size: 18px; color: #f1c40f;">
+                    <span>此时绝对值内部为 </span>
+                    <span style="text-decoration: underline; font-weight: bold; margin-left: 5px;">负数 (&lt; 0)</span>
+                </div>
+                <div class="formula-line" style="margin-top: 15px; border-top: 1px dashed #7f8c8d; padding-top: 15px;">
+                    <span>化简结果：</span>
+                    <span class="highlight-final" id="final-formula">$-(x - 1)$</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部：选择互动 -->
+        <div class="question-action">
+            <div class="action-title">步骤 3：因为绝对值内部为负，所以去掉绝对值符号时，应选择：</div>
+            <div class="btn-group">
+                <button class="btn" id="btn-a">A. $x - 1$ (保持原样)</button>
+                <button class="btn" id="btn-b">B. $-(x - 1)$ (变号/加负号)</button>
+            </div>
+            <div class="feedback" id="feedback-text">请选择上方选项进行回答...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('x-slider');
+        const pointer = document.getElementById('axis-pointer');
+        const valX = document.getElementById('val-x');
+        const valXSub = document.getElementById('val-x-sub');
+        const valResult = document.getElementById('val-result');
+        const finalFormula = document.getElementById('final-formula');
+        
+        const btnA = document.getElementById('btn-a');
+        const btnB = document.getElementById('btn-b');
+        const feedback = document.getElementById('feedback-text');
+
+        // 更新计算视图
+        function updateView() {
+            const x = parseFloat(slider.value).toFixed(1);
+            const result = (x - 1).toFixed(1);
+            
+            // 更新文本
+            valX.textContent = x;
+            valXSub.textContent = x;
+            valResult.textContent = result;
+
+            // 更新数轴指针位置 (-5 到 0 映射到 0% 到 100%)
+            // 映射公式: percent = (val - min) / (max - min) * 100
+            const minVal = -5;
+            const maxVal = 0;
+            const percent = ((x - minVal) / (maxVal - minVal)) * 100;
+            pointer.style.left = `${percent}%`;
+        }
+
+        // 滑块拖动事件
+        slider.addEventListener('input', updateView);
+
+        // 初始化视图
+        updateView();
+
+        // 选项 A 点击 (错误)
+        btnA.addEventListener('click', () => {
+            btnA.classList.add('wrong');
+            btnB.classList.remove('correct');
+            btnA.blur();
+            
+            feedback.textContent = "❌ 再想想：绝对值内部计算结果为负数，直接去掉绝对值会变成负数，而绝对值的结果必须是非负的哦！";
+            feedback.className = "feedback error";
+            finalFormula.classList.remove('show');
+        });
+
+        // 选项 B 点击 (正确)
+        btnB.addEventListener('click', () => {
+            btnB.classList.add('correct');
+            btnA.classList.remove('wrong');
+            btnB.blur();
+            
+            feedback.textContent = "🎉 太棒了！因为内部是负数，去掉绝对值时要在前面加负号变号，即 -(x - 1)，从而保证结果为正。";
+            feedback.className = "feedback success";
+            
+            // 右侧公式高亮展示结果
+            finalFormula.classList.add('show');
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>方案评估：代价分析</title>
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --c-color: #2ecc71;
+            --d-color: #e74c3c;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #container {
+            width: 90vw;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        svg { width: 100%; height: auto; border: 1px solid #eee; border-radius: 8px; }
+        .controls { text-align: center; margin-top: 20px; }
+        button {
+            padding: 10px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #2980b9; }
+        .label { font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>方案C vs 方案D：代价对比</h2>
+    <svg id="viz" viewBox="0 0 800 400">
+        <!-- 跑道C -->
+        <line x1="50" y1="100" x2="700" y2="100" stroke="#ccc" stroke-width="40" stroke-linecap="round"/>
+        <text x="20" y="105" font-size="20">C</text>
+        <circle id="robotC" cx="50" cy="100" r="15" fill="#2ecc71"/>
+        
+        <!-- 跑道D -->
+        <path id="pathD" d="M50 300 L150 300 L150 250 L250 250 L250 350 L350 350 L350 250 L450 250 L450 350 L550 350 L550 300 L700 300" 
+              fill="none" stroke="#ccc" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="20" y="305" font-size="20">D</text>
+        <circle id="robotD" cx="50" cy="300" r="15" fill="#e74c3c"/>
+
+        <!-- 终点 -->
+        <line x1="700" y1="50" x2="700" y2="350" stroke="#333" stroke-dasharray="5,5"/>
+        <text x="680" y="40" font-size="16">终点</text>
+
+        <!-- 状态提示 -->
+        <g id="statusC" opacity="0">
+            <text x="500" y="80" fill="#2ecc71" font-size="14">状态：健康</text>
+        </g>
+        <g id="statusD" opacity="0">
+            <text x="500" y="230" fill="#e74c3c" font-size="14" font-weight="bold">电量低！</text>
+            <text x="500" y="250" fill="#e74c3c" font-size="14">关节磨损 +50%</text>
+        </g>
+    </svg>
+
+    <div class="controls">
+        <button id="startBtn">同步出发 (10秒)</button>
+    </div>
+</div>
+
+<script>
+    const robotC = document.getElementById('robotC');
+    const robotD = document.getElementById('robotD');
+    const statusC = document.getElementById('statusC');
+    const statusD = document.getElementById('statusD');
+    const btn = document.getElementById('startBtn');
+
+    btn.addEventListener('click', () => {
+        btn.disabled = true;
+        statusC.setAttribute('opacity', '0');
+        statusD.setAttribute('opacity', '0');
+        
+        const startTime = performance.now();
+        const duration = 10000;
+
+        function animate(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // 机器人C移动
+            robotC.setAttribute('cx', 50 + (650 * progress));
+
+            // 机器人D移动 (简化路径模拟)
+            const path = document.getElementById('pathD');
+            const length = path.getTotalLength();
+            const point = path.getPointAtLength(length * progress);
+            robotD.setAttribute('cx', point.x);
+            robotD.setAttribute('cy', point.y);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                statusC.setAttribute('opacity', '1');
+                statusD.setAttribute('opacity', '1');
+                btn.disabled = false;
+            }
+        }
+        requestAnimationFrame(animate);
+    });
+</script>
+
+</body>
+</html>

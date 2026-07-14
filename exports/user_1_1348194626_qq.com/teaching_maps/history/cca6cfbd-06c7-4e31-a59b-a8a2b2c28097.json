@@ -1,0 +1,328 @@
+{
+  "id": "cca6cfbd-06c7-4e31-a59b-a8a2b2c28097",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "高一",
+  "teaching_goals": "教学目标：让学生理解指数函数的定义，会用描点法画出图像，\r\n         掌握指数函数的单调性，并能利用单调性比较指数值大小。",
+  "student_profile": "班级学情：全班42人，函数基础参差不齐，约1/3同学初中函数\r\n         概念掌握不牢，常混淆自变量与底数，但大部分同学\r\n         计算能力较强。",
+  "difficulty_analysis": null,
+  "language_style": "启发引导",
+  "model_id": null,
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"main_1\", \"content\": \"我们已经用描点法分别画出了 y=2^x 和 y=(1/2)^x 的图像。仔细观察这两个图像，你能从形状、位置、变化趋势（增长或下降）等方面，系统地分析并对比它们的异同点吗？并尝试推测，这些差异的根本原因是什么？\", \"question_type\": \"main\", \"knowledge_points\": [\"用描点法绘制具体指数函数（如 y=2^x, y=(1/2)^x）的图像\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.6}, {\"id\": \"main_2\", \"content\": \"基于刚才总结的规律，如果已知一个指数函数 y = a^x 是增函数，那么关于底数a你能确定什么？请直接运用这一结论，快速判断下列各组数的大小：(1) 3^1.5 与 3^0.9；(2) (0.5)^(-2) 与 (0.5)^3；(3) 若 (√2)^m > (√2)^n，比较m与n。\", \"question_type\": \"main\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\", \"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.65}, {\"id\": \"main_3\", \"content\": \"现在我们将问题变得更具挑战性。已知指数函数 f(x) = k * a^x（k>0，a>0且a≠1）的图像经过点(2, 9)，且函数在整个定义域上是单调递减的。请问：满足条件的底数a可能存在几个？请阐述你的推理过程，并评价底数a和系数k在决定函数图像时所扮演的不同角色。\", \"question_type\": \"main\", \"knowledge_points\": [\"指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"evaluate\", \"difficulty\": 0.8}, {\"id\": \"main_4\", \"content\": \"假设我们要比较 π^√2 与 π^1.4 的大小。我们无法直接用计算器得到精确值。请你创造性地设计一种无需精确计算即可比较它们大小的方法或推理路径。你能将这种方法推广，来比较 a^p 与 a^q（a>0且a≠1，p, q为实数）的大小吗？请总结你的通用策略。\", \"question_type\": \"main\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"create\", \"difficulty\": 0.85}, {\"id\": \"variant_1_1\", \"content\": \"小明在笔记本上画了两个指数函数的草图，分别是 y = 3^x 和 y = (1/3)^x，但他只标注了坐标轴和几个点，图像线条画得比较简略。请你帮忙分析一下，这两个图像一定都会经过哪一个“公共据点”？它们的“生长方向”（从左向右看）会一样吗？如果不一样，你能从“种子”（底数）的角度解释为什么一个向上长、一个向下长吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.55}, {\"id\": \"variant_1_2\", \"content\": \"数学软件生成了两个神秘指数函数 y = 4^x 和 y = (0.25)^x 的图像。我们不看图，先来推理：① 它们会不会都经过y轴上的同一个点？为什么？② 当x的值从0开始不断增大时，两个函数的函数值（y值）分别会怎么变化？请你先猜一猜，并尝试用几个具体的x值（如x=1,2,-1）代入计算来验证你的猜想。最后，你能根据底数的关系，解释这两个函数图像之间可能存在的一种“对称”或“关联”吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.6}, {\"id\": \"variant_2_1\", \"content\": \"探险家发现了一个指数函数宝藏，其规律是：当底数a>1时，函数值y随x的增大而“膨胀”；当0<a<1时，y随x的增大而“收缩”。请利用这条规律，当一回“数值裁判”：① 比较 5^(-1) 与 5^(-2) 的大小；② 比较 (0.2)^(0.3) 与 (0.2)^(0.5) 的大小；③ 已知 (1/4)^x > (1/4)^(2x-1)，你能判断出x的取值范围吗？\", \"question_type\": \"variant\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.6}, {\"id\": \"variant_2_2\", \"content\": \"我们知道，对于指数函数 y = a^x，单调性完全由底数a“掌控”。现在，请进行一场“思维逆转”：如果不直接告诉你a的大小，而是告诉你一些函数值的大小关系，你能反过来推断a的信息吗？例如：① 若 (a)^(0.5) < (a)^(1.2)，你能确定a的取值范围吗？② 若 (a)^(-3) > (a)^2 成立，那么a可能是什么样的数？请说明你的推理逻辑。\", \"question_type\": \"variant\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\", \"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.65}, {\"id\": \"variant_3_1\", \"content\": \"在实验室中，一个描述某种物质衰变过程的模型可能是指数函数 f(x) = c * b^x (c>0, b>0且b≠1)。已知实验测得，当时间x=1时，物质剩余量为4；当时间x=3时，剩余量为1。① 你能求出这个模型的解析式吗？② 根据你求出的解析式，判断这个衰变过程是越来越快（函数递增）还是越来越慢（函数递减）？并解释这个“快慢”是由解析式中的哪个参数决定的。\", \"question_type\": \"variant\", \"knowledge_points\": [\"指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.7}, {\"id\": \"variant_3_2\", \"content\": \"现有四个指数型函数：A. y=2^x；B. y=0.5^x；C. y=3*2^x；D. y=0.2*0.5^x。请你担任“函数图像分析师”，完成以下任务：① 将这四个函数按“随着x增大，y值增大”和“随着x增大，y值减小”分成两类。② 仔细观察同一类中的两个函数（如A和C），它们的“增长势头”（增减趋势）完全一样吗？是什么决定了这个“势头”？③ 系数（如C中的3，D中的0.2）的改变，主要影响的是图像的哪个方面（比如：起点位置？变化速度？）？\", \"question_type\": \"variant\", \"knowledge_points\": [\"指数函数解析式的识别与辨析\", \"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.65}, {\"id\": \"variant_4_1\", \"content\": \"科学家用指数模型 P(t) = 1000 * 2^t 来模拟一种细菌在理想条件下的数量增长，其中t是时间（小时）。现有两个时刻：t₁ = √3 小时和 t₂ = 1.8 小时。由于√3是无理数，我们无法直接计算P(√3)的精确值。请问：在哪个时刻，细菌的数量更多？请你像侦探一样，不依赖精确计算，仅利用函数模型的特点进行逻辑推理，并写出完整的推理过程。\", \"question_type\": \"variant\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.7}, {\"id\": \"variant_4_2\", \"content\": \"挑战来了！我们需要比较两个数：A = 2^(√5) 和 B = 3^(√5)。它们底数不同，指数相同。直接计算很困难。请你开动脑筋：① 我们学过的指数函数性质，能直接用来比较底数不同的情况吗？② 有没有办法将问题转化一下，比如，找一个中间的“标尺”或“桥梁”来辅助比较？（提示：想想√5大概是多少，以及2^3和3^2谁大谁小？）请尝试设计你的比较方案。\", \"question_type\": \"variant\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"analyze\", \"difficulty\": 0.75}, {\"id\": \"scaffold_1_2_a\", \"content\": \"我们从图像中看到，y=2^x的图像从左往右一直在‘爬坡’，而y=(1/2)^x的图像从左往右一直在‘下坡’。如果我们用一个数学术语来描述这种‘爬坡’和‘下坡’的现象，应该叫什么呢？（提示：回忆函数性质，y随x增大而增大或减小）\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\", \"函数单调性的初步概念（y随x增大而增大或减小）\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.3}, {\"id\": \"scaffold_1_2_b\", \"content\": \"观察y=2^x和y=(1/2)^x，它们的单调性（递增或递减）似乎与底数的大小有关。你能把‘底数大于1’与‘函数递增’，还有‘底数在0到1之间’与‘函数递减’这两组关系对应起来吗？我们可以得出一个口诀：‘底数a>1，函数增；底数0<a<1，函数____。’（请你来填空）\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\", \"指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.4}, {\"id\": \"scaffold_2_3\", \"content\": \"现在我们已经知道，对于 y = a^x，当 a>1 时是增函数，0<a<1 时是减函数。那么，对于一个底数为 a（a>0且a≠1）的指数函数，如果我们想判断它是增还是减，关键是要确定 a 的哪个信息？（是它的具体数值，还是它与1的大小关系？）请试着判断：一个底数 a = √3（约1.732）的函数，它是增函数还是减函数？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"通过图像归纳指数函数的性质（定点、定义域、值域、单调性）\", \"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.5}, {\"id\": \"scaffold_3_4_a\", \"content\": \"main_3中我们讨论了底数a决定函数是增还是减。那么，当我们利用这个性质来比较像π^√2和π^1.4这样的大小时，我们的第一步应该做什么？（提示：回想比较3^1.5和3^0.9时，我们先确定了什么？）我们是否需要先计算出π^√2和π^1.4的精确值？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"understand\", \"difficulty\": 0.35}, {\"id\": \"scaffold_3_4_b\", \"content\": \"在确定底数π>1，函数y=π^x是增函数之后，比较π^√2和π^1.4的大小就转化成了比较什么？（请将这句话补充完整：因为底数大于1时，函数是____函数，所以指数越大，函数值越____。）那么，接下来的任务就变成了比较√2和1.4的大小。你能估算一下√2大约是多少吗？它比1.4大还是小？\", \"question_type\": \"scaffold\", \"knowledge_points\": [\"利用指数函数的单调性比较同底指数幂（或可化为同底）的大小\"], \"cognitive_level\": \"apply\", \"difficulty\": 0.45}], \"edges\": [{\"source\": \"main_1\", \"target\": \"main_2\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"main_2\", \"target\": \"main_3\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"main_3\", \"target\": \"main_4\", \"relation\": \"sequence\", \"weight\": 0.9}, {\"source\": \"variant_1_1\", \"target\": \"main_1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_1_2\", \"target\": \"main_1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_2_1\", \"target\": \"main_2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_2_2\", \"target\": \"main_2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_3_1\", \"target\": \"main_3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_3_2\", \"target\": \"main_3\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_4_1\", \"target\": \"main_4\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"variant_4_2\", \"target\": \"main_4\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"main_1\", \"target\": \"scaffold_1_2_a\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"scaffold_1_2_a\", \"target\": \"main_2\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"main_1\", \"target\": \"scaffold_1_2_b\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"scaffold_1_2_b\", \"target\": \"main_2\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"main_2\", \"target\": \"scaffold_2_3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"scaffold_2_3\", \"target\": \"main_3\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"main_3\", \"target\": \"scaffold_3_4_a\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"scaffold_3_4_a\", \"target\": \"main_4\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"main_3\", \"target\": \"scaffold_3_4_b\", \"relation\": \"scaffold_between\", \"weight\": 0.7}, {\"source\": \"scaffold_3_4_b\", \"target\": \"main_4\", \"relation\": \"scaffold_between\", \"weight\": 0.7}]}",
+  "created_at": "2026-03-20 12:32:01",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "main_1",
+        "content": "我们已经用描点法分别画出了 y=2^x 和 y=(1/2)^x 的图像。仔细观察这两个图像，你能从形状、位置、变化趋势（增长或下降）等方面，系统地分析并对比它们的异同点吗？并尝试推测，这些差异的根本原因是什么？",
+        "question_type": "main",
+        "knowledge_points": [
+          "用描点法绘制具体指数函数（如 y=2^x, y=(1/2)^x）的图像",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.6
+      },
+      {
+        "id": "main_2",
+        "content": "基于刚才总结的规律，如果已知一个指数函数 y = a^x 是增函数，那么关于底数a你能确定什么？请直接运用这一结论，快速判断下列各组数的大小：(1) 3^1.5 与 3^0.9；(2) (0.5)^(-2) 与 (0.5)^3；(3) 若 (√2)^m > (√2)^n，比较m与n。",
+        "question_type": "main",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）",
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.65
+      },
+      {
+        "id": "main_3",
+        "content": "现在我们将问题变得更具挑战性。已知指数函数 f(x) = k * a^x（k>0，a>0且a≠1）的图像经过点(2, 9)，且函数在整个定义域上是单调递减的。请问：满足条件的底数a可能存在几个？请阐述你的推理过程，并评价底数a和系数k在决定函数图像时所扮演的不同角色。",
+        "question_type": "main",
+        "knowledge_points": [
+          "指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "evaluate",
+        "difficulty": 0.8
+      },
+      {
+        "id": "main_4",
+        "content": "假设我们要比较 π^√2 与 π^1.4 的大小。我们无法直接用计算器得到精确值。请你创造性地设计一种无需精确计算即可比较它们大小的方法或推理路径。你能将这种方法推广，来比较 a^p 与 a^q（a>0且a≠1，p, q为实数）的大小吗？请总结你的通用策略。",
+        "question_type": "main",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "create",
+        "difficulty": 0.85
+      },
+      {
+        "id": "variant_1_1",
+        "content": "小明在笔记本上画了两个指数函数的草图，分别是 y = 3^x 和 y = (1/3)^x，但他只标注了坐标轴和几个点，图像线条画得比较简略。请你帮忙分析一下，这两个图像一定都会经过哪一个“公共据点”？它们的“生长方向”（从左向右看）会一样吗？如果不一样，你能从“种子”（底数）的角度解释为什么一个向上长、一个向下长吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.55
+      },
+      {
+        "id": "variant_1_2",
+        "content": "数学软件生成了两个神秘指数函数 y = 4^x 和 y = (0.25)^x 的图像。我们不看图，先来推理：① 它们会不会都经过y轴上的同一个点？为什么？② 当x的值从0开始不断增大时，两个函数的函数值（y值）分别会怎么变化？请你先猜一猜，并尝试用几个具体的x值（如x=1,2,-1）代入计算来验证你的猜想。最后，你能根据底数的关系，解释这两个函数图像之间可能存在的一种“对称”或“关联”吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.6
+      },
+      {
+        "id": "variant_2_1",
+        "content": "探险家发现了一个指数函数宝藏，其规律是：当底数a>1时，函数值y随x的增大而“膨胀”；当0<a<1时，y随x的增大而“收缩”。请利用这条规律，当一回“数值裁判”：① 比较 5^(-1) 与 5^(-2) 的大小；② 比较 (0.2)^(0.3) 与 (0.2)^(0.5) 的大小；③ 已知 (1/4)^x > (1/4)^(2x-1)，你能判断出x的取值范围吗？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.6
+      },
+      {
+        "id": "variant_2_2",
+        "content": "我们知道，对于指数函数 y = a^x，单调性完全由底数a“掌控”。现在，请进行一场“思维逆转”：如果不直接告诉你a的大小，而是告诉你一些函数值的大小关系，你能反过来推断a的信息吗？例如：① 若 (a)^(0.5) < (a)^(1.2)，你能确定a的取值范围吗？② 若 (a)^(-3) > (a)^2 成立，那么a可能是什么样的数？请说明你的推理逻辑。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）",
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.65
+      },
+      {
+        "id": "variant_3_1",
+        "content": "在实验室中，一个描述某种物质衰变过程的模型可能是指数函数 f(x) = c * b^x (c>0, b>0且b≠1)。已知实验测得，当时间x=1时，物质剩余量为4；当时间x=3时，剩余量为1。① 你能求出这个模型的解析式吗？② 根据你求出的解析式，判断这个衰变过程是越来越快（函数递增）还是越来越慢（函数递减）？并解释这个“快慢”是由解析式中的哪个参数决定的。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.7
+      },
+      {
+        "id": "variant_3_2",
+        "content": "现有四个指数型函数：A. y=2^x；B. y=0.5^x；C. y=3*2^x；D. y=0.2*0.5^x。请你担任“函数图像分析师”，完成以下任务：① 将这四个函数按“随着x增大，y值增大”和“随着x增大，y值减小”分成两类。② 仔细观察同一类中的两个函数（如A和C），它们的“增长势头”（增减趋势）完全一样吗？是什么决定了这个“势头”？③ 系数（如C中的3，D中的0.2）的改变，主要影响的是图像的哪个方面（比如：起点位置？变化速度？）？",
+        "question_type": "variant",
+        "knowledge_points": [
+          "指数函数解析式的识别与辨析",
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.65
+      },
+      {
+        "id": "variant_4_1",
+        "content": "科学家用指数模型 P(t) = 1000 * 2^t 来模拟一种细菌在理想条件下的数量增长，其中t是时间（小时）。现有两个时刻：t₁ = √3 小时和 t₂ = 1.8 小时。由于√3是无理数，我们无法直接计算P(√3)的精确值。请问：在哪个时刻，细菌的数量更多？请你像侦探一样，不依赖精确计算，仅利用函数模型的特点进行逻辑推理，并写出完整的推理过程。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.7
+      },
+      {
+        "id": "variant_4_2",
+        "content": "挑战来了！我们需要比较两个数：A = 2^(√5) 和 B = 3^(√5)。它们底数不同，指数相同。直接计算很困难。请你开动脑筋：① 我们学过的指数函数性质，能直接用来比较底数不同的情况吗？② 有没有办法将问题转化一下，比如，找一个中间的“标尺”或“桥梁”来辅助比较？（提示：想想√5大概是多少，以及2^3和3^2谁大谁小？）请尝试设计你的比较方案。",
+        "question_type": "variant",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "analyze",
+        "difficulty": 0.75
+      },
+      {
+        "id": "scaffold_1_2_a",
+        "content": "我们从图像中看到，y=2^x的图像从左往右一直在‘爬坡’，而y=(1/2)^x的图像从左往右一直在‘下坡’。如果我们用一个数学术语来描述这种‘爬坡’和‘下坡’的现象，应该叫什么呢？（提示：回忆函数性质，y随x增大而增大或减小）",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）",
+          "函数单调性的初步概念（y随x增大而增大或减小）"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.3
+      },
+      {
+        "id": "scaffold_1_2_b",
+        "content": "观察y=2^x和y=(1/2)^x，它们的单调性（递增或递减）似乎与底数的大小有关。你能把‘底数大于1’与‘函数递增’，还有‘底数在0到1之间’与‘函数递减’这两组关系对应起来吗？我们可以得出一个口诀：‘底数a>1，函数增；底数0<a<1，函数____。’（请你来填空）",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）",
+          "指数函数的定义（形式为 y = a^x，其中 a > 0 且 a ≠ 1）"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.4
+      },
+      {
+        "id": "scaffold_2_3",
+        "content": "现在我们已经知道，对于 y = a^x，当 a>1 时是增函数，0<a<1 时是减函数。那么，对于一个底数为 a（a>0且a≠1）的指数函数，如果我们想判断它是增还是减，关键是要确定 a 的哪个信息？（是它的具体数值，还是它与1的大小关系？）请试着判断：一个底数 a = √3（约1.732）的函数，它是增函数还是减函数？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "通过图像归纳指数函数的性质（定点、定义域、值域、单调性）",
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.5
+      },
+      {
+        "id": "scaffold_3_4_a",
+        "content": "main_3中我们讨论了底数a决定函数是增还是减。那么，当我们利用这个性质来比较像π^√2和π^1.4这样的大小时，我们的第一步应该做什么？（提示：回想比较3^1.5和3^0.9时，我们先确定了什么？）我们是否需要先计算出π^√2和π^1.4的精确值？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "understand",
+        "difficulty": 0.35
+      },
+      {
+        "id": "scaffold_3_4_b",
+        "content": "在确定底数π>1，函数y=π^x是增函数之后，比较π^√2和π^1.4的大小就转化成了比较什么？（请将这句话补充完整：因为底数大于1时，函数是____函数，所以指数越大，函数值越____。）那么，接下来的任务就变成了比较√2和1.4的大小。你能估算一下√2大约是多少吗？它比1.4大还是小？",
+        "question_type": "scaffold",
+        "knowledge_points": [
+          "利用指数函数的单调性比较同底指数幂（或可化为同底）的大小"
+        ],
+        "cognitive_level": "apply",
+        "difficulty": 0.45
+      }
+    ],
+    "edges": [
+      {
+        "source": "main_1",
+        "target": "main_2",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "main_2",
+        "target": "main_3",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "main_3",
+        "target": "main_4",
+        "relation": "sequence",
+        "weight": 0.9
+      },
+      {
+        "source": "variant_1_1",
+        "target": "main_1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_1_2",
+        "target": "main_1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_2_1",
+        "target": "main_2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_2_2",
+        "target": "main_2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_3_1",
+        "target": "main_3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_3_2",
+        "target": "main_3",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_4_1",
+        "target": "main_4",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "variant_4_2",
+        "target": "main_4",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "main_1",
+        "target": "scaffold_1_2_a",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "scaffold_1_2_a",
+        "target": "main_2",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "main_1",
+        "target": "scaffold_1_2_b",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "scaffold_1_2_b",
+        "target": "main_2",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "main_2",
+        "target": "scaffold_2_3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "scaffold_2_3",
+        "target": "main_3",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "main_3",
+        "target": "scaffold_3_4_a",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "scaffold_3_4_a",
+        "target": "main_4",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "main_3",
+        "target": "scaffold_3_4_b",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      },
+      {
+        "source": "scaffold_3_4_b",
+        "target": "main_4",
+        "relation": "scaffold_between",
+        "weight": 0.7
+      }
+    ]
+  }
+}

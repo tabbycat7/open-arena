@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人所得税免税额度解析</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            padding: 4% 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 头部标题与问题 */
+        .header {
+            text-align: center;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #e1f5fe;
+            color: #0288d1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-title {
+            font-size: 1.8rem;
+            color: #1a202c;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .instruction {
+            font-size: 1.1rem;
+            color: #718096;
+        }
+
+        /* 主可视化区域 */
+        .visualization-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            max-height: 280px;
+        }
+
+        /* 交互元素样式 */
+        .interactive-rect {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            fill: #edf2f7;
+            stroke: #cbd5e0;
+            stroke-width: 3;
+            rx: 12px;
+        }
+
+        .interactive-rect:hover {
+            fill: #e2e8f0;
+            stroke: #a0aec0;
+            filter: drop-shadow(0px 6px 12px rgba(0,0,0,0.08));
+        }
+
+        /* 激活状态 */
+        .interactive-rect.correct {
+            fill: #e8f5e9;
+            stroke: #2ecc71;
+            stroke-width: 4;
+            filter: drop-shadow(0px 8px 16px rgba(46, 204, 113, 0.2));
+        }
+
+        .interactive-rect.incorrect {
+            fill: #fff3e0;
+            stroke: #ff9800;
+            stroke-width: 4;
+            filter: drop-shadow(0px 8px 16px rgba(255, 152, 0, 0.15));
+        }
+
+        /* 文本样式 */
+        .segment-text {
+            font-size: 18px;
+            font-weight: bold;
+            fill: #4a5568;
+            pointer-events: none;
+            transition: fill 0.3s;
+        }
+
+        .segment-text.active-correct {
+            fill: #27ae60;
+        }
+
+        .segment-text.active-incorrect {
+            fill: #d35400;
+        }
+
+        .axis-label {
+            font-size: 16px;
+            fill: #718096;
+            font-weight: bold;
+        }
+
+        .axis-sublabel {
+            font-size: 12px;
+            fill: #a0aec0;
+        }
+
+        /* 反馈面板 */
+        .feedback-panel {
+            min-height: 100px;
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e0;
+        }
+
+        .feedback-panel.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .feedback-panel.correct-style {
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+        }
+
+        .feedback-panel.incorrect-style {
+            background-color: #fff3e0;
+            border: 1px solid #ffe0b2;
+            color: #e65100;
+        }
+
+        .feedback-emoji {
+            font-size: 3rem;
+            animation: bounce 0.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        .feedback-text h3 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .feedback-text p {
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        /* 辅助虚线 */
+        .guideline {
+            stroke: #cbd5e0;
+            stroke-width: 2;
+            stroke-dasharray: 6,6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <div class="header">
+            <span class="tag">数学 · 六年级 · 百分数（纳税）</span>
+            <h1 class="question-title">其中哪一部分是国家规定免税、不用交一分钱的？</h1>
+            <p class="instruction">💡 点击下方数轴上的不同区间，观察并找出免税部分</p>
+        </div>
+
+        <!-- 可视化数轴区 -->
+        <div class="visualization-area">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid meet">
+                <!-- 辅助投影/背景 -->
+                <defs>
+                    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.05"/>
+                    </filter>
+                </defs>
+
+                <!-- 数轴主线 -->
+                <line x1="80" y1="180" x2="720" y2="180" stroke="#a0aec0" stroke-width="4" stroke-linecap="round" />
+                
+                <!-- 刻度与辅助虚线 -->
+                <!-- 0元 刻度 -->
+                <line x1="100" y1="180" x2="100" y2="190" stroke="#718096" stroke-width="3" />
+                <text x="100" y="215" text-anchor="middle" class="axis-label">0元</text>
+                <line x1="100" y1="180" x2="100" y2="70" class="guideline" />
+
+                <!-- 5000元 刻度 -->
+                <line x1="460" y1="180" x2="460" y2="190" stroke="#718096" stroke-width="3" />
+                <text x="460" y="215" text-anchor="middle" class="axis-label" style="fill: #2c3e50;">5000元</text>
+                <text x="460" y="235" text-anchor="middle" class="axis-sublabel">（起征点）</text>
+                <line x1="460" y1="180" x2="460" y2="70" class="guideline" />
+
+                <!-- 8500元 刻度 -->
+                <line x1="700" y1="180" x2="700" y2="190" stroke="#718096" stroke-width="3" />
+                <text x="700" y="215" text-anchor="middle" class="axis-label">8500元</text>
+                <text x="700" y="235" text-anchor="middle" class="axis-sublabel">（总收入）</text>
+                <line x1="700" y1="180" x2="700" y2="70" class="guideline" />
+
+                <!-- 区间 A: 0 - 5000元 (免税区) -->
+                <g id="btn-correct">
+                    <rect class="interactive-rect" x="105" y="80" width="350" height="70" />
+                    <text x="280" y="122" text-anchor="middle" class="segment-text" id="text-correct">0 ~ 5000元 区间</text>
+                </g>
+
+                <!-- 区间 B: 5000 - 8500元 (纳税区) -->
+                <g id="btn-incorrect">
+                    <rect class="interactive-rect" x="465" y="80" width="230" height="70" />
+                    <text x="580" y="122" text-anchor="middle" class="segment-text" id="text-incorrect">5000 ~ 8500元 区间</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 动态反馈面板 -->
+        <div class="feedback-panel" id="feedback">
+            <div class="feedback-emoji" id="feedback-emoji">🤔</div>
+            <div class="feedback-text">
+                <h3 id="feedback-title">请点击上方数轴区间进行探索</h3>
+                <p id="feedback-desc">通过点击数轴上的两个区间，找出国家规定免税的部分吧！</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnCorrect = document.getElementById('btn-correct');
+        const btnIncorrect = document.getElementById('btn-incorrect');
+        const rectCorrect = btnCorrect.querySelector('rect');
+        const rectIncorrect = btnIncorrect.querySelector('rect');
+        const textCorrect = document.getElementById('text-correct');
+        const textIncorrect = document.getElementById('text-incorrect');
+        
+        const feedback = document.getElementById('feedback');
+        const feedbackEmoji = document.getElementById('feedback-emoji');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackDesc = document.getElementById('feedback-desc');
+
+        // 点击免税区间 (正确)
+        btnCorrect.addEventListener('click', () => {
+            // 更新图形状态
+            rectCorrect.className.baseVal = "interactive-rect correct";
+            rectIncorrect.className.baseVal = "interactive-rect";
+            textCorrect.className.baseVal = "segment-text active-correct";
+            textIncorrect.className.baseVal = "segment-text";
+
+            // 更新反馈面板
+            feedback.className = "feedback-panel show correct-style";
+            feedbackEmoji.textContent = "😊";
+            feedbackTitle.textContent = "回答正确！";
+            feedbackDesc.textContent = "这 5000 元完全免税，一分钱都不用交！它是国家规定的个人所得税起征额度。";
+        });
+
+        // 点击纳税区间 (错误/引导)
+        btnIncorrect.addEventListener('click', () => {
+            // 更新图形状态
+            rectIncorrect.className.baseVal = "interactive-rect incorrect";
+            rectCorrect.className.baseVal = "interactive-rect";
+            textIncorrect.className.baseVal = "segment-text active-incorrect";
+            textCorrect.className.baseVal = "segment-text";
+
+            // 更新反馈面板
+            feedback.className = "feedback-panel show incorrect-style";
+            feedbackEmoji.textContent = "💡";
+            feedbackTitle.textContent = "再想一想哦！";
+            feedbackDesc.textContent = "这部分是超过 5000 元的部分（共 3500 元），属于“个人所得税应纳税所得额”，是需要按规定比例交税的。";
+        });
+    </script>
+</body>
+</html>

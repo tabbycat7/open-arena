@@ -1,0 +1,230 @@
+{
+  "task_id": "05a6227c-bdbc-492c-8be0-1716731dcb4f",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "同学们，看看书上这个段落，它说国家用税收来发展哪些事业，你们能举例说说纳税是怎么支持教育或者卫生这些公共事业的吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "同学们，书上说税率是应纳税额与各种收入中应纳税部分的比率，你们能用数学的话来解释一下税率到底是什么意思吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "来看书上的这个例题，企业10月份的应纳税销售额是30万元，按3%的税率缴增值税，你们能用我们学过的百分数方法来算一算它应缴多少税吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "同学们，看书上的这个情境，李阿姨某月工资中应纳税的部分是2500元，按3%的税率缴个人所得税，你们觉得她的应纳税额该怎么算，为什么不是用全部工资呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "同学们，结合我们学过的税率和纳税意义，你们觉得这样的税率政策是怎么体现大家纳税义务和社会公平的呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "假如我们社区的公园是靠大家纳税修的，你们能举例说说纳税是怎么支持像公园这样公共设施的建设的吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "对比我们社区有税收修建的公园，和另一个因为没有税收而年久失修的公园图片，你觉得纳税起到了什么作用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "看这个长方形表示全部收入，其中一部分涂色表示应纳税部分，如果涂色部分中的一小块代表应纳税额，你们能用数学的话解释税率是怎么表示这个关系的吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果把书上的销售额换成某人每月工资，你们能用数学的话解释税率在工资收入中是什么意思吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "一家商店10月份的应纳税销售额是20万元，按5%的税率缴增值税，你们能用百分数方法算一算它应缴多少税吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "一家企业总销售额40万元，其中10万元免税，按4%的税率缴税，你们能先确定应纳税销售额，再算出应缴税额吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "如果有人用李阿姨全部工资算税，你们觉得为什么不对，该怎么正确识别应纳税部分来计算呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "王叔叔某月工资8000元，应纳税部分是3000元，按5%的税率缴税。小李直接用8000×5%计算，你认为他可能犯了什么错误？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "假如你家和邻居家收入不同，按税率缴税，你们觉得这怎么体现纳税义务和社会公平呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "看这个不同收入阶层的税率表，低收入3%、高收入10%，你们觉得这样的设计怎么体现纳税义务和社会公平呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "同学们，回想一下，我们刚才举例说纳税支持教育或卫生事业，这些事业的资金来自哪里？看看书上A2段落，找出它提到税收是国家财政的主要来源的那句话。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "从2000元和10000元这两个数，你能想到它们之间可能存在一种什么数学关系？（提示：我们学过用百分数来表示这种关系）",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "看看书上A3关键句，税率是应纳税额与应纳税部分的比率，你们能指出它像我们学过的哪种数学概念，比如百分数吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "假如税率是3%，而另一个是5%，你觉得税率越高，税额会怎么样？想想我们学过的百分数，为什么会这样？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "在书上A4例题中，应纳税销售额是30万元，但如果不是全部，你们能找出哪些词表示只缴一部分税吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "比较书上A4和A5情境，A5中李阿姨的2500元和全部工资有什么不同？这个不同会怎么影响税的计算？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "在李阿姨的情境中，为什么书上说只用2500元作为应纳税部分？看看关键词，能指出它和公平有关吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "李阿姨缴了75元个人所得税。想一想，这75元税款最终可能被用于支持书上说的哪些公共事业？（请结合A2段落说一说）",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "假如李阿姨的应纳税部分是2500元，按3%缴税，而另一个人是5000元，你们觉得谁缴的税更多？这个不同怎么体现纳税的公平？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "结合书上A2和A5，税率政策让高收入多缴税，你们能指出这怎么帮助社会公平，比如支持更多公共事业吗？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

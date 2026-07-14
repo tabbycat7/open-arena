@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寻找数字的规律 - 除以7余6</title>
+  <style>
+    /* 全局样式，确保4:3比例及投屏清晰度 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+    
+    /* 4:3 比例容器 */
+    .container {
+      width: 800px;
+      height: 600px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 头部标题区 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 16px;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+    .highlight-text {
+      color: #e11d48;
+      font-weight: bold;
+    }
+
+    /* 数轴视口区 */
+    .axis-viewport {
+      width: 100%;
+      height: 240px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      background-color: #f8fafc;
+      position: relative;
+      overflow: hidden; /* 关键：隐藏溢出部分实现滚动 */
+    }
+
+    /* 滚动的数轴容器 */
+    .axis-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 20px;
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+    }
+
+    /* SVG 连线层 */
+    .svg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 150px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 数轴格子 */
+    .number-cell {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #cbd5e1;
+      background-color: #ffffff;
+      margin: 0 5px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #64748b;
+      transition: all 0.4s ease;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .number-cell.ellipsis {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      color: #94a3b8;
+    }
+    .number-cell.target {
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    .number-cell.active {
+      background-color: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+      z-index: 5;
+    }
+    .number-cell .remainder {
+      font-size: 10px;
+      margin-top: 4px;
+      font-weight: normal;
+      opacity: 0.8;
+    }
+
+    /* 底部控制与信息区 */
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .formula-display {
+      min-height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #1e293b;
+      background-color: #f1f5f9;
+      padding: 10px 30px;
+      border-radius: 30px;
+      border: 1px solid #e2e8f0;
+      width: 90%;
+      text-align: center;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    .btn-secondary {
+      background-color: #64748b;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #475569;
+      transform: translateY(-2px);
+    }
+
+    /* SVG 动画效果 */
+    @keyframes drawPath {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .draw-arc {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawPath 0.8s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-text {
+      animation: fadeIn 0.4s ease-out 0.6s forwards;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>探索余数的规律</h1>
+      <p>在 1000 到 1100 之间，满足“<span class="highlight-text">除以 7 余 6</span>”的最小数字是 <span class="highlight-text">1007</span>。</p>
+      <p style="margin-top: 4px; font-size: 15px; color: #64748b;">点击下方按钮，观察下一个符合条件的数在哪里，它们之间有什么奥秘？</p>
+    </div>
+
+    <!-- 数轴交互区 -->
+    <div class="axis-viewport" id="viewport">
+      <div class="axis-container" id="axisContainer">
+        <svg class="svg-overlay" id="svgOverlay">
+          <defs>
+            <!-- 箭头定义 -->
+            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#f97316" />
+            </marker>
+          </defs>
+        </svg>
+        <!-- 动态生成格子 -->
+      </div>
+    </div>
+
+    <!-- 控制与公式显示 -->
+    <div class="control-panel">
+      <div class="formula-display" id="formulaDisplay">
+        准备就绪，点击“寻找下一个数”开始探索
+      </div>
+      <div class="button-group">
+        <button class="btn btn-primary" id="nextBtn">寻找下一个数</button>
+        <button class="btn btn-secondary" id="resetBtn">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 常量配置
+    const START_NUM = 1000;
+    const END_NUM = 1030;
+    const CELL_WIDTH = 80; // 70px 宽度 + 10px 左右 margin
+    const VIEWPORT_WIDTH = 736; // 容器内部可用宽度
+
+    // 目标数字列表 (除以7余6)
+    const targets = [];
+    for (let i = START_NUM; i <= END_NUM; i++) {
+      if (i % 7 === 6) {
+        targets.push(i);
+      }
+    }
+
+    // 状态变量
+    let currentStep = 0; // 0: 初始, 1: 1007, 2: 1014, 3: 1021, 4: 1028
+
+    // DOM 元素
+    const axisContainer = document.getElementById('axisContainer');
+    const svgOverlay = document.getElementById('svgOverlay');
+    const formulaDisplay = document.getElementById('formulaDisplay');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // 初始化数轴
+    function initAxis() {
+      axisContainer.innerHTML = '';
+      // 重新加入 SVG
+      axisContainer.appendChild(svgOverlay);
+      svgOverlay.innerHTML = svgOverlay.innerHTML; // 重置SVG内部元素
+
+      // 计算总宽度并设置给 SVG 和容器
+      const totalCells = (END_NUM - START_NUM + 1) + 2; // 加上两边的省略号
+      const totalWidth = totalCells * CELL_WIDTH;
+      axisContainer.style.width = `${totalWidth}px`;
+      svgOverlay.setAttribute('width', totalWidth);
+
+      // 1. 左侧省略号
+      createCell('...', 'ellipsis');
+
+      // 2. 数字格子
+      for (let i = START_NUM; i <= END_NUM; i++) {
+        const isTarget = (i % 7 === 6);
+        const cellClass = isTarget ? 'number-cell target' : 'number-cell';
+        const cell = createCell(i, cellClass, i);
+        if (isTarget) {
+          const rem = document.createElement('span');
+          rem.className = 'remainder';
+          rem.innerText = '余6';
+          cell.appendChild(rem);
+        }
+      }
+
+      // 3. 右侧省略号
+      createCell('...', 'ellipsis');
+
+      // 初始定位到最左边
+      scrollToIndex(0);
+    }
+
+    function createCell(text, className, id) {
+      const cell = document.createElement('div');
+      cell.className = className;
+      cell.innerText = text;
+      if (id) cell.id = `cell-${id}`;
+      axisContainer.appendChild(cell);
+      return cell;
+    }
+
+    // 滚动到指定数字，使其居中
+    function scrollToNumber(num) {
+      const index = num - START_NUM + 1; // 加上左侧省略号的偏移
+      scrollToIndex(index);
+    }
+
+    function scrollToIndex(index) {
+      const cellCenter = index * CELL_WIDTH + (CELL_WIDTH / 2);
+      let translateX = (VIEWPORT_WIDTH / 2) - cellCenter;
+      
+      // 边界限制
+      const maxTranslate = 0;
+      const minTranslate = VIEWPORT_WIDTH - (axisContainer.offsetWidth || 2640);
+      if (translateX > maxTranslate) translateX = maxTranslate;
+      if (translateX < minTranslate) translateX = minTranslate;
+
+      axisContainer.style.transform = `translateX(${translateX}px)`;
+    }
+
+    // 绘制跳跃弧线
+    function drawJumpArc(fromNum, toNum) {
+      const fromIdx = fromNum - START_NUM + 1;
+      const toIdx = toNum - START_NUM + 1;
+
+      // 计算坐标 (基于 axisContainer 内部)
+      const x1 = fromIdx * CELL_WIDTH + (CELL_WIDTH / 2);
+      const x2 = toIdx * CELL_WIDTH + (CELL_WIDTH / 2);
+      const y = 140; // 贴近格子顶部
+      const cx = (x1 + x2) / 2;
+      const cy = 30;  // 弧线顶点高度
+
+      // 创建 Path
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M ${x1} ${y} Q ${cx} ${cy} ${x2} ${y}`);
+      path.setAttribute("stroke", "#f97316");
+      path.setAttribute("stroke-width", "4");
+      path.setAttribute("fill", "none");
+      path.setAttribute("marker-end", "url(#arrow)");
+      path.setAttribute("class", "draw-arc");
+
+      // 创建标注文字
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", cx);
+      text.setAttribute("y", cy + 30);
+      text.setAttribute("fill", "#ea580c");
+      text.setAttribute("font-size", "20px");
+      text.setAttribute("font-weight", "bold");
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("class", "fade-in-text");
+      text.textContent = "+7";
+
+      svgOverlay.appendChild(path);
+      svgOverlay.appendChild(text);
+    }
+
+    // 更新交互步骤
+    function nextStep() {
+      if (currentStep < targets.length) {
+        currentStep++;
+        const activeNum = targets[currentStep - 1];
+        
+        // 1. 高亮当前数字
+        const cell = document.getElementById(`cell-${activeNum}`);
+        if (cell) cell.classList.add('active');
+
+        // 2. 滚动定位
+        scrollToNumber(activeNum);
+
+        // 3. 绘制弧线（从第二个目标开始）
+        if (currentStep > 1) {
+          const prevNum = targets[currentStep - 2];
+          drawJumpArc(prevNum, activeNum);
+        }
+
+        // 4. 更新公式与教学引导
+        updateFormula(activeNum);
+      }
+    }
+
+    function updateFormula(num) {
+      const quotient = Math.floor(num / 7);
+      let htmlContent = ``;
+
+      if (currentStep === 1) {
+        htmlContent = `<span style="color:#10b981">${num}</span> ÷ 7 = ${quotient} ... <span style="color:#e11d48">6</span> (最小的符合数)`;
+        nextBtn.innerText = "寻找下一个数";
+      } else if (currentStep === 2) {
+        htmlContent = `<span style="color:#10b981">${num}</span> ÷ 7 = ${quotient} ... <span style="color:#e11d48">6</span> (相差：${num} - 1007 = <span style="color:#f97316">7</span>)`;
+      } else if (currentStep === 3) {
+        htmlContent = `<span style="color:#10b981">${num}</span> ÷ 7 = ${quotient} ... <span style="color:#e11d48">6</span> (再次增加 <span style="color:#f97316">7</span>)`;
+      } else if (currentStep === 4) {
+        htmlContent = `<span style="color:#10b981">${num}</span> ÷ 7 = ${quotient} ... <span style="color:#e11d48">6</span> (它们构成等差数列！)`;
+        nextBtn.innerText = "观察完毕";
+        nextBtn.style.backgroundColor = "#10b981";
+      }
+      
+      formulaDisplay.innerHTML = htmlContent;
+    }
+
+    // 重置状态
+    function reset() {
+      currentStep = 0;
+      nextBtn.innerText = "寻找下一个数";
+      nextBtn.style.backgroundColor = "#3b82f6";
+      formulaDisplay.innerHTML = "准备就绪，点击“寻找下一个数”开始探索";
+      
+      // 清除高亮
+      const actives = document.querySelectorAll('.number-cell.active');
+      actives.forEach(el => el.classList.remove('active'));
+
+      // 清除 SVG 绘制
+      const paths = svgOverlay.querySelectorAll('path:not(#arrow path)');
+      const texts = svgOverlay.querySelectorAll('text');
+      paths.forEach(p => p.remove());
+      texts.forEach(t => t.remove());
+
+      scrollToIndex(0);
+    }
+
+    // 事件监听
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < targets.length) {
+        nextStep();
+      } else {
+        reset();
+      }
+    });
+    
+    resetBtn.addEventListener('click', reset);
+
+    // 初始化执行
+    initAxis();
+  </script>
+</body>
+</html>

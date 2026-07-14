@@ -1,0 +1,122 @@
+{
+  "task_id": "2c171825-fd45-4c7b-b7fc-fdbc66456378",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "大家看课本第一段，如果国家把我们每个人交的税都收上来，这些钱最后又去了哪里呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "对照课本里那个小规模纳税企业的例子，如果把税率看作一个百分数，你觉得计算税额的逻辑和我们之前学的求一个数的百分之几有什么联系？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "来看看“做一做”里的李阿姨，题目里提到了“工资”和“应纳税部分”，大家思考一下，我们计算税额时，应该拿哪个数据去乘税率呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "如果一位叔叔自愿给灾区捐了款，和另一位叔叔依法缴纳了个人所得税，这两笔钱在性质上有什么根本的不同？为什么我们说前者是爱心，后者是义务？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果明天开始世界上所有的税收都取消了，你觉得我们每天习以为常的哪些生活便利会最先消失？这说明了税收在社会中扮演了什么角色？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "请看这张税收流程示意图，如果图中把销售总额标为‘单位1’，税额部分占其中的3%，你能直接在图上画出税额对应的比例线段吗？计算时我们要用哪个数乘哪个数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果某公司销售额是100万元，但其中有20万元属于国家补贴的免税项目，我们计算增值税时，是直接用100万乘3%，还是另有算法？为什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "如果爸爸拿到了一笔年终奖，但公司规定其中一部分是‘差旅报销款’，不用纳税，另一部分才是‘奖金’。我们在计算税额时，应该拿哪一部分去乘税率？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "生活中常听到‘月入一万，纳税八百’，这里的‘一万’和‘用于计算税额的基数’是一回事吗？如果直接用总收入乘税率，计算出来的结果会偏大还是偏小？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "我们之前学过，如果要表示一部分和整体的关系，常常会用到什么数学概念呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "请大家在例题里找一找，这个“3%”说的是哪一笔钱的3%？把它和“单位1”连起来想一想。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "题目中给出了李阿姨的工资总额和应纳税部分两个钱数，请你圈出计算税款时必须用到的那个数字，并说说为什么是它而不是另一个。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "在动手计算之前，我们先看看题目，是不是要把所有的钱都拿来纳税？我们应该先做哪一步判断，才能保证计算不选错数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

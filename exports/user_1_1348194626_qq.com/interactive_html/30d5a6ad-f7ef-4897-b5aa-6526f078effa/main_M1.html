@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>AI伦理：便利与边界</title>
+    <style>
+        :root { --primary: #4a90e2; --danger: #e74c3c; --bg: #f4f7f6; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #container { width: 800px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; padding: 20px; box-sizing: border-box; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #ddd; transition: 0.3s; }
+        button.active { background: var(--primary); color: white; }
+        #canvas-area { width: 100%; height: 400px; border: 1px solid #eee; position: relative; overflow: hidden; }
+        .highlight-box { position: absolute; border: 2px dashed transparent; padding: 10px; border-radius: 8px; transition: 0.5s; }
+        .highlight-convenience { border-color: var(--primary); background: rgba(74, 144, 226, 0.1); }
+        .highlight-boundary { border-color: var(--danger); background: rgba(231, 76, 60, 0.1); }
+        #msg { text-align: center; font-size: 1.1em; color: #555; margin-top: 10px; height: 1.5em; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>智能音箱：服务还是越界？</h2>
+    <div class="controls">
+        <button id="btn-chat">开启聊天</button>
+        <button id="btn-convenience">便利服务视角</button>
+        <button id="btn-boundary">越界行为视角</button>
+    </div>
+    
+    <div id="canvas-area">
+        <svg width="100%" height="100%" viewBox="0 0 800 400">
+            <!-- 客厅场景 -->
+            <rect x="50" y="100" width="300" height="200" fill="#eee" rx="10"/>
+            <text x="150" y="200" font-size="20">小明 & 妈妈</text>
+            <circle id="speaker" cx="300" cy="250" r="20" fill="#333"/>
+            <circle id="light" cx="300" cy="250" r="5" fill="#555"/>
+            
+            <!-- 对话气泡 -->
+            <g id="bubble" style="display:none;">
+                <path d="M150 150 L250 150 L250 180 L180 180 L160 200 L160 180 L150 180 Z" fill="white" stroke="#333"/>
+                <text x="160" y="170" font-size="14">好想吃冰淇淋啊</text>
+            </g>
+
+            <!-- 云端 -->
+            <rect x="500" y="50" width="200" height="200" fill="#f9f9f9" stroke="#999" stroke-dasharray="5,5"/>
+            <text x="550" y="90" font-weight="bold">云端数据库</text>
+            <g id="cloud-data" style="display:none;">
+                <text x="520" y="130" font-size="12" fill="#666">记录：冰淇淋偏好</text>
+                <text x="520" y="155" font-size="12" fill="#666">分析：用户画像</text>
+                <text x="520" y="180" font-size="12" fill="#666">推送：优惠券</text>
+            </g>
+
+            <!-- 连接线 -->
+            <line id="line" x1="320" y1="250" x2="500" y2="150" stroke="red" stroke-width="2" stroke-dasharray="5,5" style="display:none;"/>
+        </svg>
+        
+        <div id="highlight-layer" class="highlight-box" style="display:none; width: 200px; height: 150px; left: 510px; top: 60px;"></div>
+    </div>
+    <div id="msg">点击按钮开始探索</div>
+</div>
+
+<script>
+    const btnChat = document.getElementById('btn-chat');
+    const btnConv = document.getElementById('btn-convenience');
+    const btnBound = document.getElementById('btn-boundary');
+    const bubble = document.getElementById('bubble');
+    const light = document.getElementById('light');
+    const line = document.getElementById('line');
+    const cloudData = document.getElementById('cloud-data');
+    const highlight = document.getElementById('highlight-layer');
+    const msg = document.getElementById('msg');
+
+    let isChatting = false;
+
+    btnChat.addEventListener('click', () => {
+        isChatting = true;
+        bubble.style.display = 'block';
+        light.setAttribute('fill', '#ff0');
+        line.style.display = 'block';
+        cloudData.style.display = 'block';
+        msg.innerText = "音箱正在处理语音信息...";
+    });
+
+    btnConv.addEventListener('click', () => {
+        if(!isChatting) return;
+        highlight.className = 'highlight-box highlight-convenience';
+        highlight.style.display = 'block';
+        msg.innerText = "便利视角：AI通过分析需求，主动提供优惠，节省了搜索时间。";
+        btnConv.classList.add('active');
+        btnBound.classList.remove('active');
+    });
+
+    btnBound.addEventListener('click', () => {
+        if(!isChatting) return;
+        highlight.className = 'highlight-box highlight-boundary';
+        highlight.style.display = 'block';
+        msg.innerText = "越界视角：AI在未被询问时监听私人对话，是否侵犯了隐私？";
+        btnBound.classList.add('active');
+        btnConv.classList.remove('active');
+    });
+</script>
+</body>
+</html>

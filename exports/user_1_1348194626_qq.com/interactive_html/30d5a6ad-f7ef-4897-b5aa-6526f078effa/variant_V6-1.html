@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>玩笑与伤害边界仪</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #333; }
+        .gauge-box { position: relative; height: 150px; margin: 40px 0; border-bottom: 4px solid #333; }
+        .slider {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: #ff9800;
+            border-radius: 50%;
+            transition: left 0.5s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .labels { display: flex; justify-content: space-between; padding: 0 10px; font-weight: bold; }
+        .controls { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .btn {
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .btn:hover { background: #357abd; }
+        #warning {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .active-warning { border-color: #ffd700 !important; background: #fffdf0; opacity: 1 !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>玩笑与伤害边界仪</h2>
+    <div class="gauge-box" id="track">
+        <div class="slider" id="slider">小明</div>
+    </div>
+    <div class="labels">
+        <span>善意搞笑</span>
+        <span>人格贬损</span>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" id="btn1">添加：同桌的感受</button>
+        <button class="btn" id="btn2">添加：肖像权法律</button>
+    </div>
+
+    <div id="warning">
+        ⚠️ 自律公约警示：尊重他人，拒绝恶搞！
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('slider');
+    const warning = document.getElementById('warning');
+    const btn1 = document.getElementById('btn1');
+    const btn2 = document.getElementById('btn2');
+    
+    let state = 50; // 0-100
+    let count = 0;
+
+    function updateGauge() {
+        slider.style.left = state + '%';
+        if (state > 70) {
+            warning.classList.add('active-warning');
+        }
+    }
+
+    btn1.addEventListener('click', () => {
+        if (state < 85) {
+            state += 15;
+            updateGauge();
+            btn1.disabled = true;
+            btn1.style.background = '#ccc';
+        }
+    });
+
+    btn2.addEventListener('click', () => {
+        if (state < 85) {
+            state += 20;
+            updateGauge();
+            btn2.disabled = true;
+            btn2.style.background = '#ccc';
+        }
+    });
+</script>
+
+</body>
+</html>

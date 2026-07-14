@@ -1,0 +1,412 @@
+{
+  "id": "57d330c3-9dd9-4ebc-8ed7-4a619ac54848",
+  "user_id": 1,
+  "user_display_name": "吕磊",
+  "subject": "数学",
+  "grade": "六年级",
+  "teaching_goals": "教学目标1、经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”，会用“鸽巢原理”解决简单的实际问题。2、通过操作发展学生的类推能力，形成比较抽象的数学思维。3、通过“鸽巢原理”的灵活应用感受数学的魅力。\r\n",
+  "student_profile": "学习者分析为了更准确的了解学情，我做了课前问卷调查，设计的问题是：你知道什么是鸽巢原理吗？若知道，请举例说明。调查人数 41人，41.4%学生能正确举例。34.5%学生理解模糊，24.1%学生完全不知道。也就是说很多同学课前接触过鸽巢问题，基本都可以用平均分的方法解决问题，但知其然，不知其所以然。基于以上调查，我认为六年级的学生对于总结规律的方法研究比较少，尤其对于“数学证明”。因此，教学过程中教师要耐心细致的引导，重在让学生经历知识的发生、发展过程，而不是生搬硬套，只求结论，要让学生知其然，更要知其所以然。\r\n",
+  "difficulty_analysis": "\r\n教学重难点分析及解决措施重点：使学生经历“鸽巢原理”的探究过程，初步了解“鸽巢原理”。新课标提倡“做数学”。学生只有亲历知识形成的过程，才能真正理解知识，灵活运用知识。本节课主要采用了游戏激趣法、活动体验法、讲授法、实践操作法。通过猜测、验证、观察、分析等活动，建立数学模型，渗透数学思想。激发学生参与学习的积极性，让学生在求知的学习状态中展示个性。促进学生思考，引导学生自己进行探索，丰富数学活动经验。难点：“对鸽巢原理的认识，尤其是对“总有”“至少”的意义，和“至少数=商数十1”的理解”。学生通过动手实践、自主探索、合作交流等活动，体验知识的形成过程，掌握基本知识和技能，建立数学模型，发展数学思考和解决问题的能力，形成良好的情感、态度和价值观。",
+  "language_style": "启发引导",
+  "model_id": "Pro/zai-org/GLM-5",
+  "duration_seconds": null,
+  "result_json": "{\"nodes\": [{\"id\": \"M1\", \"content\": \"同学们，把4支笔放进3个笔筒里，请大家动手摆一摆。观察一下，不管怎么放，总有一个笔筒里笔的数量有什么共同的特点？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家看，老师手里有4支笔和3个笔筒。这是一个简单的操作，但里面藏着有趣的数学规律。请大家在小组内动手摆一摆，或者画一画，把所有可能的放法都找出来，不要遗漏。摆完之后，仔细观察这些不同的放法，看看在每一种放法里，总有一个笔筒里笔的数量是比较多的，这个数量最少会是几支？\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.6, \"design_intent\": \"通过穷举操作建立直观表象，精准理解“总有”和“至少”的含义，为逻辑推理提供事实依据。\", \"design_rationale\": \"\"}, {\"id\": \"M2\", \"content\": \"刚才我们发现总有一个笔筒至少有2支笔。如果笔的数量变得很大，比如100支，还要一种一种列出来吗？有没有一种更巧妙的方法，不用全列出来，也能断定这个结果？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们通过列举发现，不管怎么放，总有一个笔筒至少有2支。但是，如果笔变多了，一种一种列出来太麻烦，甚至不可能。大家试着换个角度想一想：为了让每个笔筒里的笔尽可能少，我们应该怎么分？对，就是“平均分”。假设每个笔筒先放1支，剩下的1支无论放进哪个笔筒，那个笔筒是不是就变成了2支？谁能试着用这种思路来解释一下？\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"design_intent\": \"突破核心难点，从直观操作上升到逻辑推理，理解“平均分”是保证“至少”的最有效手段。\", \"design_rationale\": \"\"}, {\"id\": \"M3\", \"content\": \"我们用“平均分”的方法找到了规律。观察这些算式，你发现“至少数”跟商、余数有什么关系？为什么不管余数是几，算“至少数”时都只加1呢？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"刚才我们用“平均分”解决了问题。现在看黑板上的算式：4÷3=1……1，5÷3=1……2，7÷4=1……3。大家观察，算出来的“至少数”是几？它和商、余数有什么关系？对，是商加1。那为什么余数明明是2或3，我们只加1呢？这和“平均分”时剩下的笔怎么放有关系吗？请大家结合分的过程想一想。\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"design_intent\": \"实现从算术思维到代数建模的跨越，形成解决此类问题的通用工具。\", \"design_rationale\": \"\"}, {\"id\": \"M4\", \"content\": \"来看这个扑克牌问题：一副牌去掉大小王有52张，从中任意抽5张。在这个情境里，什么相当于“物体”，什么相当于“抽屉”？你能算出至少有几张牌是同花色的吗？\", \"question_type\": \"main\", \"lesson_presentation_script\": \"大家想一想，我们要找的是“同花色”的牌。一副牌里有几种花色？对，4种。如果我们把这4种花色看作4个“抽屉”，那抽出的5张牌是什么？对，是“物体”。把5个物体放进4个抽屉，大家能不能套用刚才总结的公式来算一算，至少有几张牌是同花色的？算出来后，请说说算式中每个数代表什么。\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"评价\", \"difficulty\": 0.85, \"design_intent\": \"在变式中深化对模型本质的理解，提升模型识别能力，感受数学与生活的联系。\", \"design_rationale\": \"\"}, {\"id\": \"V1-1\", \"content\": \"把4支笔放进3个笔筒，总有一个笔筒至少有2支。如果把5支笔放进4个笔筒，结果会变吗？请推理证明。为什么笔和笔筒数量变了，‘至少数’却没变？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.62, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过变换数据引导学生观察‘物体数=抽屉数+1’时的共性，从关注具体数值转向关注数量关系，深化对规律本质的理解。\", \"design_rationale\": \"\"}, {\"id\": \"V1-2\", \"content\": \"我们发现了4支笔放3个笔筒的规律。如果笔减少到3支放入3个笔筒，你还能断定‘总有一个笔筒至少有2支’吗？如果不能，是‘平均分’的方法失效了，还是什么条件变了？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP1\", \"KP2\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.65, \"parent_id\": \"M1\", \"variation_type\": \"\", \"design_intent\": \"通过反例制造认知冲突，引导学生反思规律成立的特定前提条件（物体数>抽屉数），培养严谨的逻辑思维。\", \"design_rationale\": \"\"}, {\"id\": \"V2-1\", \"content\": \"挑战升级：把100支笔放进99个笔筒，不动笔列举，你能用“平均分”的思路推理出，总有一个笔筒至少放进了几支笔吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.75, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"通过大数据让枚举法失效，逼迫学生主动运用假设法进行逻辑推理，体会平均分的优越性。\", \"design_rationale\": \"\"}, {\"id\": \"V2-2\", \"content\": \"有人随便放就得出结论，有人用“平均分”来推导。这两种方法，哪一种能直接证明“至少”是多少？为什么“平均分”才是最保险的讲理方式？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"分析\", \"difficulty\": 0.72, \"parent_id\": \"M2\", \"variation_type\": \"\", \"design_intent\": \"在思维对比中厘清逻辑，让学生明白“平均分”是为了寻找最小值的极限思想。\", \"design_rationale\": \"\"}, {\"id\": \"V3-1\", \"content\": \"计算“7支笔放3个笔筒”时，小明认为至少数是“商+余数”等于4支，小刚认为是“商+1”等于3支。谁对谁错？请用分的过程辩一辩。\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.8, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过典型错例的对比辨析，纠正“商+余数”的错误认知，深刻理解“商+1”的算理。\", \"design_rationale\": \"\"}, {\"id\": \"V3-2\", \"content\": \"已知“至少数”是3，笔筒有4个，笔的数量最少是多少支？写出算式，并想想为什么不能更少？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.85, \"parent_id\": \"M3\", \"variation_type\": \"\", \"design_intent\": \"通过逆向推导，打破正向思维定势，让学生灵活掌握物体数、商与余数之间的逻辑关系。\", \"design_rationale\": \"\"}, {\"id\": \"V4-1\", \"content\": \"换个情境：13只鸽子飞进4个鸽笼，总有一个鸽笼里至少有几只鸽子？这里的“鸽子”和“鸽笼”分别对应模型中的什么？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.82, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"在相似情境中迁移模型，帮助学生快速识别“物体”与“抽屉”的对应关系。\", \"design_rationale\": \"\"}, {\"id\": \"V4-2\", \"content\": \"走进生活：某班有32名学生，至少有几人是同一个月出生的？这里隐藏的“抽屉”是什么？你能找出物体数和抽屉数吗？\", \"question_type\": \"variant\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"应用\", \"difficulty\": 0.85, \"parent_id\": \"M4\", \"variation_type\": \"\", \"design_intent\": \"从显性模型过渡到隐性模型，引导学生发现生活中隐藏的“抽屉”（月份），提升模型识别能力。\", \"design_rationale\": \"\"}, {\"id\": \"S1-1\", \"content\": \"看黑板上的四种摆法：(4,0,0)、(3,1,0)、(2,2,0)、(2,1,1)。每种摆法里，笔最多的那个笔筒，分别有几支笔？这些“最多”的数量里，最小的一个是几？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP2\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.4, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"利用具体的数字结果，让学生直观看到“总有”和“至少”的事实，从关注具体的摆法转向理解结论的确定性。\", \"design_intent\": \"从依赖抽象词汇选择转向基于具体操作结果的视觉化辨析。\", \"design_rationale\": \"\"}, {\"id\": \"S1-2\", \"content\": \"请拿出4支笔和3个笔筒。如果先在每个笔筒里放1支，手里还剩几支？把剩下的这支放进任意一个笔筒，那个笔筒现在有几支？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.45, \"from_main_id\": \"M1\", \"to_main_id\": \"M2\", \"bridge_function\": \"将抽象的假设法转化为具体的动作指令，让学生直观感受“平均分”后剩余物体的必然归宿。\", \"design_intent\": \"将指令拆解为无需理解目标也能执行的纯动作性步骤。\", \"design_rationale\": \"\"}, {\"id\": \"S2-1\", \"content\": \"4支笔平均分给3个笔筒，每个笔筒分1支，还剩1支。把这个过程写成除法算式是什么？算式里的两个“1”分别代表什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP3\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.5, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"建立操作过程与数学算式之间的静态对应关系，为从直观动作过渡到符号计算搭建桥梁。\", \"design_intent\": \"聚焦当前操作步骤与除法算式的静态对应，避免回顾性语言。\", \"design_rationale\": \"\"}, {\"id\": \"S2-2\", \"content\": \"如果有5支笔，平均分后剩2支。试一试：把剩下的2支全放进同一个笔筒，最多的笔筒有几支？如果把剩下的2支分开两个笔筒放，最多的笔筒又有几支？哪种放法得到的“最多数量”更小？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP4\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M2\", \"to_main_id\": \"M3\", \"bridge_function\": \"通过两种具体放法的对比实验，让学生理解“分开放”能保证“至少数”最小，突破余数处理难点。\", \"design_intent\": \"从要求脑内推理转向提供明确的动手操作方案进行对比。\", \"design_rationale\": \"\"}, {\"id\": \"S3-1\", \"content\": \"扑克牌有红桃、黑桃、方块、梅花4种花色。要把抽出的5张牌按花色分类，一共可以分成几类？这里的“抽屉”是指什么？“物体”又是指什么？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.55, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"直接指向情境中的分类要素，帮助学生建立扑克牌情境与“抽屉”模型的映射关系。\", \"design_intent\": \"将问题转化为对扑克牌情境中分类标准、抽屉、物体的识别任务。\", \"design_rationale\": \"\"}, {\"id\": \"S3-2\", \"content\": \"这里的“笔筒”变成了看不见的“花色”，说明“抽屉”必须是真实的盒子吗？想一想，还有哪些分类标准也可以当作“抽屉”？\", \"question_type\": \"scaffold\", \"lesson_presentation_script\": \"\", \"knowledge_points\": [\"KP5\"], \"cognitive_level\": \"理解\", \"difficulty\": 0.6, \"from_main_id\": \"M3\", \"to_main_id\": \"M4\", \"bridge_function\": \"引导学生从具体物体抽象出数学本质，深化对模型的理解。\", \"design_intent\": \"明确“抽屉”可以是位置、时间、颜色等抽象分类标准。\", \"design_rationale\": \"\"}], \"edges\": [{\"source\": \"M1\", \"target\": \"M2\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M2\", \"target\": \"M3\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M3\", \"target\": \"M4\", \"relation\": \"sequence\", \"weight\": 1.0}, {\"source\": \"M1\", \"target\": \"V1-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"V1-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M2\", \"target\": \"V2-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M3\", \"target\": \"V3-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-1\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M4\", \"target\": \"V4-2\", \"relation\": \"variant_of\", \"weight\": 0.8}, {\"source\": \"M1\", \"target\": \"S1-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S1-1\", \"target\": \"S1-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S1-2\", \"target\": \"M2\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M2\", \"target\": \"S2-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S2-1\", \"target\": \"S2-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S2-2\", \"target\": \"M3\", \"relation\": \"scaffold_to\", \"weight\": 0.7}, {\"source\": \"M3\", \"target\": \"S3-1\", \"relation\": \"scaffold_from\", \"weight\": 0.7}, {\"source\": \"S3-1\", \"target\": \"S3-2\", \"relation\": \"scaffold_sequence\", \"weight\": 0.7}, {\"source\": \"S3-2\", \"target\": \"M4\", \"relation\": \"scaffold_to\", \"weight\": 0.7}]}",
+  "created_at": "2026-04-05 11:23:36",
+  "result_json_parsed": {
+    "nodes": [
+      {
+        "id": "M1",
+        "content": "同学们，把4支笔放进3个笔筒里，请大家动手摆一摆。观察一下，不管怎么放，总有一个笔筒里笔的数量有什么共同的特点？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家看，老师手里有4支笔和3个笔筒。这是一个简单的操作，但里面藏着有趣的数学规律。请大家在小组内动手摆一摆，或者画一画，把所有可能的放法都找出来，不要遗漏。摆完之后，仔细观察这些不同的放法，看看在每一种放法里，总有一个笔筒里笔的数量是比较多的，这个数量最少会是几支？",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.6,
+        "design_intent": "通过穷举操作建立直观表象，精准理解“总有”和“至少”的含义，为逻辑推理提供事实依据。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M2",
+        "content": "刚才我们发现总有一个笔筒至少有2支笔。如果笔的数量变得很大，比如100支，还要一种一种列出来吗？有没有一种更巧妙的方法，不用全列出来，也能断定这个结果？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们通过列举发现，不管怎么放，总有一个笔筒至少有2支。但是，如果笔变多了，一种一种列出来太麻烦，甚至不可能。大家试着换个角度想一想：为了让每个笔筒里的笔尽可能少，我们应该怎么分？对，就是“平均分”。假设每个笔筒先放1支，剩下的1支无论放进哪个笔筒，那个笔筒是不是就变成了2支？谁能试着用这种思路来解释一下？",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "design_intent": "突破核心难点，从直观操作上升到逻辑推理，理解“平均分”是保证“至少”的最有效手段。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M3",
+        "content": "我们用“平均分”的方法找到了规律。观察这些算式，你发现“至少数”跟商、余数有什么关系？为什么不管余数是几，算“至少数”时都只加1呢？",
+        "question_type": "main",
+        "lesson_presentation_script": "刚才我们用“平均分”解决了问题。现在看黑板上的算式：4÷3=1……1，5÷3=1……2，7÷4=1……3。大家观察，算出来的“至少数”是几？它和商、余数有什么关系？对，是商加1。那为什么余数明明是2或3，我们只加1呢？这和“平均分”时剩下的笔怎么放有关系吗？请大家结合分的过程想一想。",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "design_intent": "实现从算术思维到代数建模的跨越，形成解决此类问题的通用工具。",
+        "design_rationale": ""
+      },
+      {
+        "id": "M4",
+        "content": "来看这个扑克牌问题：一副牌去掉大小王有52张，从中任意抽5张。在这个情境里，什么相当于“物体”，什么相当于“抽屉”？你能算出至少有几张牌是同花色的吗？",
+        "question_type": "main",
+        "lesson_presentation_script": "大家想一想，我们要找的是“同花色”的牌。一副牌里有几种花色？对，4种。如果我们把这4种花色看作4个“抽屉”，那抽出的5张牌是什么？对，是“物体”。把5个物体放进4个抽屉，大家能不能套用刚才总结的公式来算一算，至少有几张牌是同花色的？算出来后，请说说算式中每个数代表什么。",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "评价",
+        "difficulty": 0.85,
+        "design_intent": "在变式中深化对模型本质的理解，提升模型识别能力，感受数学与生活的联系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-1",
+        "content": "把4支笔放进3个笔筒，总有一个笔筒至少有2支。如果把5支笔放进4个笔筒，结果会变吗？请推理证明。为什么笔和笔筒数量变了，‘至少数’却没变？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.62,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过变换数据引导学生观察‘物体数=抽屉数+1’时的共性，从关注具体数值转向关注数量关系，深化对规律本质的理解。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V1-2",
+        "content": "我们发现了4支笔放3个笔筒的规律。如果笔减少到3支放入3个笔筒，你还能断定‘总有一个笔筒至少有2支’吗？如果不能，是‘平均分’的方法失效了，还是什么条件变了？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP1",
+          "KP2"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.65,
+        "parent_id": "M1",
+        "variation_type": "",
+        "design_intent": "通过反例制造认知冲突，引导学生反思规律成立的特定前提条件（物体数>抽屉数），培养严谨的逻辑思维。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-1",
+        "content": "挑战升级：把100支笔放进99个笔筒，不动笔列举，你能用“平均分”的思路推理出，总有一个笔筒至少放进了几支笔吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.75,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "通过大数据让枚举法失效，逼迫学生主动运用假设法进行逻辑推理，体会平均分的优越性。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V2-2",
+        "content": "有人随便放就得出结论，有人用“平均分”来推导。这两种方法，哪一种能直接证明“至少”是多少？为什么“平均分”才是最保险的讲理方式？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "分析",
+        "difficulty": 0.72,
+        "parent_id": "M2",
+        "variation_type": "",
+        "design_intent": "在思维对比中厘清逻辑，让学生明白“平均分”是为了寻找最小值的极限思想。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-1",
+        "content": "计算“7支笔放3个笔筒”时，小明认为至少数是“商+余数”等于4支，小刚认为是“商+1”等于3支。谁对谁错？请用分的过程辩一辩。",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.8,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过典型错例的对比辨析，纠正“商+余数”的错误认知，深刻理解“商+1”的算理。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V3-2",
+        "content": "已知“至少数”是3，笔筒有4个，笔的数量最少是多少支？写出算式，并想想为什么不能更少？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.85,
+        "parent_id": "M3",
+        "variation_type": "",
+        "design_intent": "通过逆向推导，打破正向思维定势，让学生灵活掌握物体数、商与余数之间的逻辑关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-1",
+        "content": "换个情境：13只鸽子飞进4个鸽笼，总有一个鸽笼里至少有几只鸽子？这里的“鸽子”和“鸽笼”分别对应模型中的什么？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.82,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "在相似情境中迁移模型，帮助学生快速识别“物体”与“抽屉”的对应关系。",
+        "design_rationale": ""
+      },
+      {
+        "id": "V4-2",
+        "content": "走进生活：某班有32名学生，至少有几人是同一个月出生的？这里隐藏的“抽屉”是什么？你能找出物体数和抽屉数吗？",
+        "question_type": "variant",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "应用",
+        "difficulty": 0.85,
+        "parent_id": "M4",
+        "variation_type": "",
+        "design_intent": "从显性模型过渡到隐性模型，引导学生发现生活中隐藏的“抽屉”（月份），提升模型识别能力。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-1",
+        "content": "看黑板上的四种摆法：(4,0,0)、(3,1,0)、(2,2,0)、(2,1,1)。每种摆法里，笔最多的那个笔筒，分别有几支笔？这些“最多”的数量里，最小的一个是几？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP2"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.4,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "利用具体的数字结果，让学生直观看到“总有”和“至少”的事实，从关注具体的摆法转向理解结论的确定性。",
+        "design_intent": "从依赖抽象词汇选择转向基于具体操作结果的视觉化辨析。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S1-2",
+        "content": "请拿出4支笔和3个笔筒。如果先在每个笔筒里放1支，手里还剩几支？把剩下的这支放进任意一个笔筒，那个笔筒现在有几支？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.45,
+        "from_main_id": "M1",
+        "to_main_id": "M2",
+        "bridge_function": "将抽象的假设法转化为具体的动作指令，让学生直观感受“平均分”后剩余物体的必然归宿。",
+        "design_intent": "将指令拆解为无需理解目标也能执行的纯动作性步骤。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-1",
+        "content": "4支笔平均分给3个笔筒，每个笔筒分1支，还剩1支。把这个过程写成除法算式是什么？算式里的两个“1”分别代表什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP3"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.5,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "建立操作过程与数学算式之间的静态对应关系，为从直观动作过渡到符号计算搭建桥梁。",
+        "design_intent": "聚焦当前操作步骤与除法算式的静态对应，避免回顾性语言。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S2-2",
+        "content": "如果有5支笔，平均分后剩2支。试一试：把剩下的2支全放进同一个笔筒，最多的笔筒有几支？如果把剩下的2支分开两个笔筒放，最多的笔筒又有几支？哪种放法得到的“最多数量”更小？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP4"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M2",
+        "to_main_id": "M3",
+        "bridge_function": "通过两种具体放法的对比实验，让学生理解“分开放”能保证“至少数”最小，突破余数处理难点。",
+        "design_intent": "从要求脑内推理转向提供明确的动手操作方案进行对比。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-1",
+        "content": "扑克牌有红桃、黑桃、方块、梅花4种花色。要把抽出的5张牌按花色分类，一共可以分成几类？这里的“抽屉”是指什么？“物体”又是指什么？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.55,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "直接指向情境中的分类要素，帮助学生建立扑克牌情境与“抽屉”模型的映射关系。",
+        "design_intent": "将问题转化为对扑克牌情境中分类标准、抽屉、物体的识别任务。",
+        "design_rationale": ""
+      },
+      {
+        "id": "S3-2",
+        "content": "这里的“笔筒”变成了看不见的“花色”，说明“抽屉”必须是真实的盒子吗？想一想，还有哪些分类标准也可以当作“抽屉”？",
+        "question_type": "scaffold",
+        "lesson_presentation_script": "",
+        "knowledge_points": [
+          "KP5"
+        ],
+        "cognitive_level": "理解",
+        "difficulty": 0.6,
+        "from_main_id": "M3",
+        "to_main_id": "M4",
+        "bridge_function": "引导学生从具体物体抽象出数学本质，深化对模型的理解。",
+        "design_intent": "明确“抽屉”可以是位置、时间、颜色等抽象分类标准。",
+        "design_rationale": ""
+      }
+    ],
+    "edges": [
+      {
+        "source": "M1",
+        "target": "M2",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M2",
+        "target": "M3",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M3",
+        "target": "M4",
+        "relation": "sequence",
+        "weight": 1.0
+      },
+      {
+        "source": "M1",
+        "target": "V1-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "V1-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M2",
+        "target": "V2-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M3",
+        "target": "V3-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-1",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M4",
+        "target": "V4-2",
+        "relation": "variant_of",
+        "weight": 0.8
+      },
+      {
+        "source": "M1",
+        "target": "S1-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-1",
+        "target": "S1-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S1-2",
+        "target": "M2",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M2",
+        "target": "S2-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-1",
+        "target": "S2-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S2-2",
+        "target": "M3",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      },
+      {
+        "source": "M3",
+        "target": "S3-1",
+        "relation": "scaffold_from",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-1",
+        "target": "S3-2",
+        "relation": "scaffold_sequence",
+        "weight": 0.7
+      },
+      {
+        "source": "S3-2",
+        "target": "M4",
+        "relation": "scaffold_to",
+        "weight": 0.7
+      }
+    ]
+  }
+}

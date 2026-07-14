@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数“槽谷”临界状态交互可视化</title>
+    <style>
+        /* 基础样式重置与课堂投屏优化 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #242424;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 头部区域 */
+        .header {
+            background-color: #2d2d2d;
+            padding: 15px 20px;
+            border-bottom: 1px solid #3d3d3d;
+        }
+        .title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .question {
+            font-size: 1rem;
+            color: #e0e0e0;
+            line-height: 1.4;
+        }
+
+        /* 画布区域 */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            background-color: #1e1e1e;
+            cursor: crosshair;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background-color: #2d2d2d;
+            padding: 15px 20px;
+            border-top: 1px solid #3d3d3d;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f59e0b;
+            min-width: 120px;
+        }
+        .slider-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #4b5563;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f59e0b;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .value-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f59e0b;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* 交互提示与按钮 */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tip {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        .btn-highlight {
+            background-color: #10b981;
+        }
+        .btn-highlight:hover {
+            background-color: #059669;
+        }
+
+        /* 呼吸灯动画效果 */
+        @keyframes pulse {
+            0% { stroke-width: 4px; filter: drop-shadow(0 0 2px #10b981); }
+            50% { stroke-width: 8px; filter: drop-shadow(0 0 12px #10b981); }
+            100% { stroke-width: 4px; filter: drop-shadow(0 0 2px #10b981); }
+        }
+        .pulse-line {
+            animation: pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部：展示问题引导 -->
+    <div class="header">
+        <div class="title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+            探究：重合边界与自变量区间
+        </div>
+        <div class="question">
+            当 <strong>a = 2</strong> 时，水平直线 <strong>y = 2</strong> 刚好压在了“槽谷”的平底上。观察它们重合的部分，在数轴上对应的自变量 x 的取值是在哪两个数之间？
+        </div>
+    </div>
+
+    <!-- 核心可视化区域 -->
+    <div class="canvas-container">
+        <svg id="plot" viewBox="0 0 800 450">
+            <!-- 定义网格和箭头 -->
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2d2d2d" stroke-width="1"/>
+                </pattern>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#888"/>
+                </marker>
+                <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#10b981"/>
+                </marker>
+            </defs>
+
+            <!-- 背景网格 -->
+            <rect width="100%" height="100%" fill="#1e1e1e"/>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+
+            <!-- 坐标轴 -->
+            <!-- X轴 (y=0 对应画布 y=300) -->
+            <line x1="50" y1="300" x2="750" y2="300" stroke="#888" stroke-width="2" marker-end="url(#arrow)"/>
+            <text x="745" y="325" fill="#888" font-size="16" font-weight="bold">x</text>
+            
+            <!-- Y轴 (x=0 对应画布 x=400) -->
+            <line x1="400" y1="400" x2="400" y2="40" stroke="#888" stroke-width="2" marker-end="url(#arrow)"/>
+            <text x="415" y="55" fill="#888" font-size="16" font-weight="bold">y</text>
+
+            <!-- 刻度与标注 -->
+            <!-- 原点 -->
+            <text x="385" y="320" fill="#888" font-size="14">O</text>
+            <!-- X轴刻度 (-2, -1, 1, 2) 每单位 100px -->
+            <line x1="200" y1="295" x2="200" y2="305" stroke="#888" stroke-width="1.5"/>
+            <text x="190" y="325" fill="#888" font-size="14">-2</text>
+
+            <line x1="300" y1="295" x2="300" y2="305" stroke="#888" stroke-width="1.5"/>
+            <text x="290" y="325" fill="#888" font-size="14">-1</text>
+
+            <line x1="500" y1="295" x2="500" y2="305" stroke="#888" stroke-width="1.5"/>
+            <text x="495" y="325" fill="#888" font-size="14">1</text>
+
+            <line x1="600" y1="295" x2="600" y2="305" stroke="#888" stroke-width="1.5"/>
+            <text x="595" y="325" fill="#888" font-size="14">2</text>
+
+            <!-- Y轴刻度 (1, 2, 3) 每单位 60px -->
+            <line x1="395" y1="240" x2="405" y2="240" stroke="#888" stroke-width="1.5"/>
+            <text x="375" y="245" fill="#888" font-size="14">1</text>
+
+            <line x1="395" y1="180" x2="405" y2="180" stroke="#888" stroke-width="1.5"/>
+            <text x="375" y="185" fill="#888" font-size="14">2</text>
+
+            <line x1="395" y1="120" x2="405" y2="120" stroke="#888" stroke-width="1.5"/>
+            <text x="375" y="125" fill="#888" font-size="14">3</text>
+
+            <!-- 动态辅助投影线与区间高亮 (仅在 a=2 临界状态显示) -->
+            <g id="projection-group" opacity="0">
+                <!-- 左边界投影虚线 -->
+                <line x1="300" y1="180" x2="300" y2="300" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5"/>
+                <!-- 右边界投影虚线 -->
+                <line x1="500" y1="180" x2="500" y2="300" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5"/>
+                
+                <!-- X轴上的高亮投影区间 -->
+                <line x1="300" y1="300" x2="500" y2="300" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                <!-- 端点实心圆 -->
+                <circle cx="300" cy="300" r="5" fill="#10b981"/>
+                <circle cx="500" cy="300" r="5" fill="#10b981"/>
+                
+                <!-- 投影区间文字标签 -->
+                <rect x="330" y="340" width="140" height="28" rx="4" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1"/>
+                <text x="400" y="359" fill="#10b981" font-size="14" font-weight="bold" text-anchor="middle">x 轴投影区间: [-1, 1]</text>
+            </g>
+
+            <!-- 动态函数曲线 y = |x+1| + |x-1| (槽谷函数) -->
+            <!-- 槽谷左侧段: y = -2x (x < -1) -->
+            <!-- 槽谷底部段: y = 2 (-1 <= x <= 1) -->
+            <!-- 槽谷右侧段: y = 2x (x > 1) -->
+            <path id="valley-function" d="M 100 400 L 300 180 L 500 180 L 700 400" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="630" y="380" fill="#3b82f6" font-size="15" font-weight="bold">y = |x+1| + |x-1|</text>
+
+            <!-- 动态水平直线 y = a -->
+            <line id="horizontal-line" x1="80" y1="180" x2="720" y2="180" stroke="#f59e0b" stroke-width="3" stroke-dasharray="8,4"/>
+            <text id="line-label" x="90" y="170" fill="#f59e0b" font-size="16" font-weight="bold">y = 2.0</text>
+
+            <!-- 临界重合高亮线段 (仅在 a=2 时激活闪烁) -->
+            <line id="overlap-segment" x1="300" y1="180" x2="500" y2="180" stroke="#10b981" stroke-width="0" stroke-linecap="round" class=""/>
+
+        </svg>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="slider-group">
+            <span class="slider-label">调整常数 a 的值:</span>
+            <div class="slider-wrapper">
+                <input type="range" id="a-slider" min="0.5" max="3.5" step="0.05" value="1.2">
+                <span class="value-display" id="a-value">1.20</span>
+            </div>
+        </div>
+        <div class="button-group">
+            <span class="tip">💡 拖动滑块使 a = 2.0，观察重合状态及投影区间。</span>
+            <button class="btn" id="btn-critical">设为临界值 a = 2.0</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取DOM元素
+    const slider = document.getElementById('a-slider');
+    const aValueDisplay = document.getElementById('a-value');
+    const horizontalLine = document.getElementById('horizontal-line');
+    const lineLabel = document.getElementById('line-label');
+    const overlapSegment = document.getElementById('overlap-segment');
+    const projectionGroup = document.getElementById('projection-group');
+    const btnCritical = document.getElementById('btn-critical');
+
+    // 坐标映射常量
+    // y 轴物理映射: y_pixel = 300 - y_math * 60
+    const Y_ZERO = 300;
+    const Y_SCALE = 60;
+
+    // 更新视图函数
+    function updateVisualization(a) {
+        // 1. 更新数值显示
+        aValueDisplay.textContent = a.toFixed(2);
+
+        // 2. 计算并更新水平直线的 Y 坐标
+        const yPixel = Y_ZERO - a * Y_SCALE;
+        horizontalLine.setAttribute('y1', yPixel);
+        horizontalLine.setAttribute('y2', yPixel);
+        
+        // 更新直线文本标签位置和内容
+        lineLabel.setAttribute('y', yPixel - 10);
+        lineLabel.textContent = `y = ${a.toFixed(2)}`;
+
+        // 3. 判断是否达到临界状态 a = 2
+        // 引入微小误差容许范围以保证滑块易用性
+        const isCritical = Math.abs(a - 2.0) < 0.02;
+
+        if (isCritical) {
+            // 强制对齐到精确的 2.0
+            aValueDisplay.textContent = "2.00";
+            lineLabel.textContent = "y = 2.00 (刚好压在平底)";
+            
+            // 激活重合线段高亮与闪烁动画
+            overlapSegment.setAttribute('stroke-width', '6');
+            overlapSegment.setAttribute('y1', Y_ZERO - 2 * Y_SCALE);
+            overlapSegment.setAttribute('y2', Y_ZERO - 2 * Y_SCALE);
+            overlapSegment.classList.add('pulse-line');
+
+            // 显示向下投影和X轴区间
+            projectionGroup.setAttribute('opacity', '1');
+            
+            // 按钮样式切换
+            btnCritical.classList.add('btn-highlight');
+            btnCritical.textContent = "已锁定临界状态";
+        } else {
+            // 恢复非临界状态
+            overlapSegment.setAttribute('stroke-width', '0');
+            overlapSegment.classList.remove('pulse-line');
+            projectionGroup.setAttribute('opacity', '0');
+            
+            btnCritical.classList.remove('btn-highlight');
+            btnCritical.textContent = "设为临界值 a = 2.0";
+        }
+    }
+
+    // 监听滑块输入
+    slider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        updateVisualization(val);
+    });
+
+    // 监听一键定位临界值按钮
+    btnCritical.addEventListener('click', () => {
+        slider.value = 2.0;
+        updateVisualization(2.0);
+    });
+
+    // 初始化渲染
+    updateVisualization(parseFloat(slider.value));
+</script>
+
+</body>
+</html>

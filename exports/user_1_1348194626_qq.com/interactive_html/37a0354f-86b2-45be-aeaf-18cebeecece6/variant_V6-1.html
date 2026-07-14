@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书稿费纳税“两步法”探索</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --text-color: #2c3e50;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d0d7de;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 95vw;
+            max-width: 1024px;
+            height: 71.25vw; /* 1024:768 = 4:3 */
+            max-height: 768px;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid #ffffff;
+        }
+
+        /* 头部区域 */
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ffffff;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1::before {
+            content: "📚";
+            font-size: 28px;
+        }
+
+        .badge {
+            background-color: var(--warning-color);
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 主工作区 */
+        .main-layout {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100% - 70px);
+            position: relative;
+        }
+
+        /* 左侧：书本与稿费结构可视化 */
+        .left-panel {
+            flex: 4;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            align-self: flex-start;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        /* 书本与资金拆分图 */
+        .book-visualization {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .book-container {
+            width: 160px;
+            height: 200px;
+            perspective: 1000px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform: rotateY(-15deg);
+            transition: transform 0.5s ease;
+        }
+
+        .book-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8e44ad, #2c3e50);
+            border-radius: 4px 12px 12px 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            color: white;
+            border-left: 8px solid #3d1d4f;
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.4;
+            text-align: center;
+            margin-top: 20px;
+            border-bottom: 2px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .book-author {
+            font-size: 12px;
+            text-align: right;
+            opacity: 0.8;
+        }
+
+        /* 稿费拆分柱状图 */
+        .money-split-bar {
+            width: 80%;
+            height: 120px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .split-part {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tax-free-part {
+            height: 25%; /* 800 / 8000 = 10% but make it 25% for readability */
+            background-color: #2ecc71;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .taxable-part {
+            height: 75%;
+            background-color: #e74c3c;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tax-rate-badge {
+            background-color: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* 右侧：两步法流程图 */
+        .right-panel {
+            flex: 6;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 步骤槽 */
+        .steps-container {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .step-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 15px;
+            min-height: 85px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-box.active-hover {
+            border-color: var(--primary-color);
+            background-color: #ebf5fb;
+        }
+
+        .step-box.correct {
+            border-style: solid;
+            border-color: var(--success-color);
+            background-color: #f0fff4;
+        }
+
+        .step-header {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 6px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-header .status-icon {
+            font-size: 16px;
+        }
+
+        .step-placeholder {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* 步骤间连接箭头 */
+        .step-connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20px;
+            color: #cbd5e1;
+            font-size: 20px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .step-connector.active {
+            color: var(--success-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 算式卡片区 */
+        .cards-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .cards-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .formula-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .formula-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+        }
+
+        .formula-card:active {
+            cursor: grabbing;
+        }
+
+        .formula-card.selected {
+            border-color: var(--primary-color);
+            background-color: #e0f2fe;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .formula-card.placed {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border-color: #e2e8f0;
+            background-color: #f8fafc;
+        }
+
+        /* 成功印章 */
+        .stamp {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border: 4px double var(--danger-color);
+            border-radius: 50%;
+            color: var(--danger-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transform: rotate(-20deg) scale(3);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+            left: 25%;
+            top: 25%;
+        }
+
+        .stamp.stamped {
+            opacity: 0.85;
+            transform: rotate(-15deg) scale(1);
+        }
+
+        .stamp-text-top {
+            font-size: 14px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--danger-color);
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+        }
+
+        .stamp-text-bottom {
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* 底部控制栏 */
+        .control-bar {
+            padding: 12px 24px;
+            background-color: #ffffff;
+            border-top: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .instruction {
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* 成功弹窗 */
+        .success-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(46, 204, 113, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 5;
+        }
+
+        .success-overlay.show {
+            opacity: 1;
+        }
+
+        /* 提示框 */
+        .toast {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 0.9;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="aspect-ratio-container">
+    <!-- 头部 -->
+    <header>
+        <h1>图书稿费纳税“两步法”</h1>
+        <div class="badge">稿费总额：8000元 | 免税额：800元 | 税率：14%</div>
+    </header>
+
+    <!-- 主工作区 -->
+    <div class="main-layout">
+        <!-- 成功背景光效 -->
+        <div class="success-overlay" id="successOverlay"></div>
+
+        <!-- 左侧：可视化分析 -->
+        <div class="left-panel">
+            <div class="panel-title">稿费结构直观图</div>
+            
+            <div class="book-visualization">
+                <!-- 书本 -->
+                <div class="book-container">
+                    <div class="book" id="book">
+                        <div class="book-cover">
+                            <div class="book-title">《我的数学探索》</div>
+                            <div class="book-author">作家 著</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 印章 -->
+                <div class="stamp" id="stamp">
+                    <span class="stamp-text-top">依法纳税</span>
+                    <span class="stamp-text-bottom">稿酬已发</span>
+                </div>
+
+                <!-- 资金拆分柱状图 -->
+                <div class="money-split-bar">
+                    <div class="split-part taxable-part" id="taxablePart">
+                        <span>应纳税部分 (7200元)</span>
+                        <span class="tax-rate-badge">税率 14%</span>
+                    </div>
+                    <div class="split-part tax-free-part" id="taxFreePart">
+                        <span>免税部分 (800元)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：交互流程 -->
+        <div class="right-panel">
+            <!-- 步骤槽 -->
+            <div class="steps-container">
+                <!-- 步骤 1 -->
+                <div class="step-box" id="step1" data-step="1">
+                    <div class="step-header">
+                        <span class="status-icon" id="status-icon-1">⚪</span>
+                        <span>第一步：确定计税基数（应纳税所得额）</span>
+                    </div>
+                    <div class="step-placeholder" id="placeholder-1">请将正确的算式卡片拖拽或点击放入此处</div>
+                </div>
+
+                <!-- 连接箭头 -->
+                <div class="step-connector" id="connector">⬇</div>
+
+                <!-- 步骤 2 -->
+                <div class="step-box" id="step2" data-step="2">
+                    <div class="step-header">
+                        <span class="status-icon" id="status-icon-2">⚪</span>
+                        <span>第二步：计算应纳税额</span>
+                    </div>
+                    <div class="step-placeholder" id="placeholder-2">请将正确的算式卡片拖拽或点击放入此处</div>
+                </div>
+            </div>
+
+            <!-- 算式卡片区 -->
+            <div class="cards-container">
+                <div class="cards-title">
+                    <span>算式卡片候选区</span>
+                    <span style="font-size: 12px; color: #94a3b8; font-weight: normal;">提示：支持拖拽或“先选卡片再选步骤框”</span>
+                </div>
+                <div class="cards-grid" id="cardsGrid">
+                    <div class="formula-card" draggable="true" id="card-correct-1" data-target="1">
+                        8000 - 800 = 7200 (元)
+                    </div>
+                    <div class="formula-card" draggable="true" id="card-correct-2" data-target="2">
+                        7200 × 14% = 1008 (元)
+                    </div>
+                    <div class="formula-card" draggable="true" id="card-wrong-1" data-target="0">
+                        8000 × 14% = 1120 (元)
+                    </div>
+                    <div class="formula-card" draggable="true" id="card-wrong-2" data-target="0">
+                        8000 - 800 × 14% = 7888 (元)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="control-bar">
+        <div class="instruction" id="instructionText">
+            💡 <strong>探究任务：</strong>请通过拖拽或点击，将正确的“两步法”算式放入对应的步骤框中。
+        </div>
+        <button class="btn btn-secondary" id="resetBtn">重置挑战</button>
+    </div>
+
+    <!-- 提示消息 -->
+    <div class="toast" id="toast">提示信息</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.formula-card');
+        const steps = document.querySelectorAll('.step-box');
+        const connector = document.getElementById('connector');
+        const stamp = document.getElementById('stamp');
+        const book = document.getElementById('book');
+        const resetBtn = document.getElementById('resetBtn');
+        const successOverlay = document.getElementById('successOverlay');
+        const instructionText = document.getElementById('instructionText');
+        const toast = document.getElementById('toast');
+
+        let selectedCard = null;
+        let step1Correct = false;
+        let step2Correct = false;
+
+        // 打乱卡片顺序
+        function shuffleCards() {
+            const grid = document.getElementById('cardsGrid');
+            const cardArray = Array.from(cards);
+            cardArray.sort(() => Math.random() - 0.5);
+            grid.innerHTML = '';
+            cardArray.forEach(card => grid.appendChild(card));
+        }
+
+        shuffleCards();
+
+        // 提示框显示
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 拖拽开始
+        cards.forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                if (card.classList.contains('placed')) {
+                    e.preventDefault();
+                    return;
+                }
+                selectedCard = card;
+                card.classList.add('selected');
+                e.dataTransfer.setData('text/plain', card.id);
+            });
+
+            card.addEventListener('dragend', () => {
+                card.classList.remove('selected');
+            });
+
+            // 点击选择（适配移动端/触摸屏）
+            card.addEventListener('click', () => {
+                if (card.classList.contains('placed')) return;
+                
+                if (selectedCard === card) {
+                    card.classList.remove('selected');
+                    selectedCard = null;
+                } else {
+                    cards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedCard = card;
+                }
+            });
+        });
+
+        // 步骤槽事件
+        steps.forEach(step => {
+            step.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const stepNum = step.getAttribute('data-step');
+                if ((stepNum === '1' && step1Correct) || (stepNum === '2' && step2Correct)) return;
+                step.classList.add('active-hover');
+            });
+
+            step.addEventListener('dragleave', () => {
+                step.classList.remove('active-hover');
+            });
+
+            step.addEventListener('drop', (e) => {
+                e.preventDefault();
+                step.classList.remove('active-hover');
+                const cardId = e.dataTransfer.getData('text/plain');
+                const draggedCard = document.getElementById(cardId);
+                if (draggedCard) {
+                    checkAndPlace(draggedCard, step);
+                }
+            });
+
+            // 点击步骤槽放入
+            step.addEventListener('click', () => {
+                if (selectedCard) {
+                    checkAndPlace(selectedCard, step);
+                } else {
+                    const stepNum = step.getAttribute('data-step');
+                    if ((stepNum === '1' && step1Correct) || (stepNum === '2' && step2Correct)) return;
+                    showToast('请先在下方选择一张算式卡片');
+                }
+            });
+        });
+
+        // 核心校验逻辑
+        function checkAndPlace(card, step) {
+            const stepNum = step.getAttribute('data-step');
+            const cardTarget = card.getAttribute('data-target');
+
+            // 如果该步骤已经正确，不再接受
+            if ((stepNum === '1' && step1Correct) || (stepNum === '2' && step2Correct)) {
+                return;
+            }
+
+            if (cardTarget === stepNum) {
+                // 正确放入
+                placeCard(card, step, stepNum);
+            } else {
+                // 错误反馈
+                step.classList.add('shake');
+                setTimeout(() => step.classList.remove('shake'), 400);
+                showToast('算式不匹配，请重新思考纳税步骤！');
+                if (selectedCard) {
+                    selectedCard.classList.remove('selected');
+                    selectedCard = null;
+                }
+            }
+        }
+
+        // 放置卡片
+        function placeCard(card, step, stepNum) {
+            const placeholder = document.getElementById(`placeholder-${stepNum}`);
+            placeholder.style.display = 'none';
+
+            // 创建展示在步骤框内的卡片样式
+            const displayCard = document.createElement('div');
+            displayCard.className = 'formula-card';
+            displayCard.style.border = 'none';
+            displayCard.style.background = 'transparent';
+            displayCard.style.boxShadow = 'none';
+            displayCard.style.padding = '0';
+            displayCard.style.cursor = 'default';
+            displayCard.textContent = card.textContent;
+
+            step.appendChild(displayCard);
+            step.classList.add('correct');
+            document.getElementById(`status-icon-${stepNum}`).textContent = '✅';
+
+            card.classList.add('placed');
+            card.classList.remove('selected');
+            card.setAttribute('draggable', 'false');
+
+            if (stepNum === '1') {
+                step1Correct = true;
+                connector.classList.add('active');
+            } else if (stepNum === '2') {
+                step2Correct = true;
+            }
+
+            selectedCard = null;
+            checkWinCondition();
+        }
+
+        // 检查是否全部完成
+        function checkWinCondition() {
+            if (step1Correct && step2Correct) {
+                // 触发成功动效
+                stamp.classList.add('stamped');
+                book.style.transform = 'rotateY(-10deg) scale(1.05)';
+                successOverlay.classList.add('show');
+                instructionText.innerHTML = '🎉 <strong>太棒了！</strong>你成功完成了“两步法”纳税计算。应纳税额为 <strong>1008元</strong>。';
+                showToast('恭喜！两步法通关成功！');
+            }
+        }
+
+        // 重置功能
+        resetBtn.addEventListener('click', () => {
+            step1Correct = false;
+            step2Correct = false;
+            selectedCard = null;
+
+            // 恢复步骤槽
+            steps.forEach(step => {
+                step.classList.remove('correct', 'active-hover');
+                const stepNum = step.getAttribute('data-step');
+                document.getElementById(`status-icon-${stepNum}`).textContent = '⚪';
+                const placeholder = document.getElementById(`placeholder-${stepNum}`);
+                placeholder.style.display = 'block';
+                
+                // 移除已放入的卡片元素
+                const extraCards = step.querySelectorAll('.formula-card');
+                extraCards.forEach(ec => ec.remove());
+            });
+
+            // 恢复卡片区
+            cards.forEach(card => {
+                card.classList.remove('placed', 'selected');
+                card.setAttribute('draggable', 'true');
+            });
+
+            // 恢复视觉效果
+            connector.classList.remove('active');
+            stamp.classList.remove('stamped');
+            book.style.transform = 'rotateY(-15deg)';
+            successOverlay.classList.remove('show');
+            instructionText.innerHTML = '💡 <strong>探究任务：</strong>请通过拖拽或点击，将正确的“两步法”算式放入对应的步骤框中。';
+
+            shuffleCards();
+            showToast('已重置，重新开始挑战吧！');
+        });
+    });
+</script>
+
+</body>
+</html>

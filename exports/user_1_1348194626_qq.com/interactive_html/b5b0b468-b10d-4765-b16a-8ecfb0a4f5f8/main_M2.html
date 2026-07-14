@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分段函数去绝对值交互教学课件</title>
+    <style>
+        /* 基础样式与4:3比例自适应 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #app-container {
+            width: 1000px;
+            height: 750px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e4e7ed;
+        }
+        /* 头部导航与标题 */
+        header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+            justify-content: space-between;
+        }
+        /* 题干展示 */
+        .question-box {
+            background-color: #ecf0f1;
+            border-left: 6px solid #3498db;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        /* 交互区域 */
+        .interactive-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 20px;
+            min-height: 0; /* 允许子元素在flex中缩放 */
+        }
+        /* 左侧：数轴与区间选择 */
+        .left-panel {
+            border: 1px solid #e4e7ed;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #fafafa;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: #3498db;
+            border-radius: 2px;
+        }
+        .axis-container {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin: 10px 0;
+        }
+        /* 区间按钮组 */
+        .interval-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .interval-btn {
+            padding: 12px;
+            border: 2px solid #dcdfe6;
+            background-color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .interval-btn:hover {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+        }
+        .interval-btn.active-0 {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+            color: #e74c3c;
+        }
+        .interval-btn.active-1 {
+            border-color: #f39c12;
+            background-color: #fef9f1;
+            color: #f39c12;
+        }
+        .interval-btn.active-2 {
+            border-color: #2ecc71;
+            background-color: #f4fcf7;
+            color: #2ecc71;
+        }
+
+        /* 右侧：推导公式与最终结果 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .card {
+            border: 1px solid #e4e7ed;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fff;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .formula-card {
+            flex: 1.3;
+        }
+        .result-card {
+            flex: 1;
+            background-color: #fcfcfc;
+        }
+        
+        /* 公式推导样式 */
+        .formula-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+        }
+        .formula-row {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+        .math-expr {
+            background-color: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px dashed #bdc3c7;
+        }
+        select {
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 2px solid #bdc3c7;
+            background-color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        select:focus {
+            border-color: #3498db;
+        }
+        select.correct {
+            border-color: #2ecc71;
+            background-color: #f4fcf7;
+            color: #2ecc71;
+        }
+        select.wrong {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+            color: #e74c3c;
+        }
+        .step-arrow {
+            color: #7f8c8d;
+            font-size: 22px;
+            margin: 5px 0;
+        }
+        .step-result {
+            font-size: 22px;
+            color: #2c3e50;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 最终分段函数大括号样式 */
+        .piecewise-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .function-left {
+            margin-right: 5px;
+        }
+        .brace {
+            font-size: 80px;
+            font-weight: 100;
+            font-family: sans-serif;
+            margin-right: 10px;
+            color: #34495e;
+            user-select: none;
+        }
+        .branches {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .branch {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+        .branch.active {
+            opacity: 1;
+        }
+        .branch-0 { color: #e74c3c; }
+        .branch-1 { color: #f39c12; }
+        .branch-2 { color: #2ecc71; }
+        
+        .branch-expr {
+            min-width: 100px;
+        }
+        .branch-cond {
+            font-size: 18px;
+            color: #555;
+            background-color: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .branch.active .branch-cond {
+            background-color: rgba(0,0,0,0.05);
+            color: inherit;
+        }
+
+        /* 提示信息 */
+        .tip-box {
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <header>
+        <h1>零点分段法化简绝对值</h1>
+        <div class="subtitle">高一数学 · 集合与常用逻辑用语/函数概念</div>
+    </header>
+
+    <div class="main-content">
+        <!-- 题干 -->
+        <div class="question-box">
+            <div class="question-text">
+                要将 $y = |x-1| + |x+1|$ 写成严谨的分段函数：我们需要在数轴的哪些地方切刀？切开后的每一个区间，函数解析式又该怎么去掉绝对值符号呢？
+            </div>
+        </div>
+
+        <!-- 交互主体 -->
+        <div class="interactive-area">
+            
+            <!-- 左侧：数轴与区间选择 -->
+            <div class="left-panel">
+                <div>
+                    <div class="panel-title">第一步：观察数轴，选择研究的区间</div>
+                    <div class="tip-box" style="text-align: left; margin-bottom: 10px;">点击下方区间按钮，或直接点击数轴上的对应区域：</div>
+                </div>
+
+                <!-- SVG 数轴 -->
+                <div class="axis-container">
+                    <svg width="100%" height="100%" viewBox="0 0 500 140" id="axis-svg" style="overflow: visible;">
+                        <!-- 轴线 -->
+                        <line x1="20" y1="70" x2="480" y2="70" stroke="#7f8c8d" stroke-width="3" marker-end="url(#arrow)" />
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1 L 10 5 L 0 9 z" fill="#7f8c8d" />
+                            </marker>
+                        </defs>
+
+                        <!-- 刻度与零点 -->
+                        <!-- -1 处 -->
+                        <line x1="170" y1="60" x2="170" y2="80" stroke="#2c3e50" stroke-width="2" />
+                        <circle cx="170" cy="70" r="5" fill="#e74c3c" />
+                        <text x="170" y="105" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">-1</text>
+                        <text x="170" y="45" text-anchor="middle" font-size="12" fill="#e74c3c" font-weight="bold">x + 1 = 0</text>
+
+                        <!-- 1 处 -->
+                        <line x1="330" y1="60" x2="330" y2="80" stroke="#2c3e50" stroke-width="2" />
+                        <circle cx="330" cy="70" r="5" fill="#2ecc71" />
+                        <text x="330" y="105" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">1</text>
+                        <text x="330" y="45" text-anchor="middle" font-size="12" fill="#2ecc71" font-weight="bold">x - 1 = 0</text>
+
+                        <!-- 区间高亮背景（交互响应） -->
+                        <!-- 区间1: x < -1 -->
+                        <rect id="region-0" x="20" y="20" width="150" height="100" fill="rgba(231, 76, 60, 0.08)" stroke="transparent" stroke-width="2" style="cursor: pointer; transition: all 0.3s;" />
+                        <text x="95" y="25" text-anchor="middle" font-size="14" fill="#e74c3c" font-weight="bold">区间 ①</text>
+
+                        <!-- 区间2: -1 <= x <= 1 -->
+                        <rect id="region-1" x="170" y="20" width="160" height="100" fill="rgba(243, 156, 18, 0.08)" stroke="transparent" stroke-width="2" style="cursor: pointer; transition: all 0.3s;" />
+                        <text x="250" y="25" text-anchor="middle" font-size="14" fill="#f39c12" font-weight="bold">区间 ②</text>
+
+                        <!-- 区间3: x > 1 -->
+                        <rect id="region-2" x="330" y="20" width="150" height="100" fill="rgba(46, 204, 113, 0.08)" stroke="transparent" stroke-width="2" style="cursor: pointer; transition: all 0.3s;" />
+                        <text x="405" y="25" text-anchor="middle" font-size="14" fill="#2ecc71" font-weight="bold">区间 ③</text>
+                    </svg>
+                </div>
+
+                <!-- 区间选择按钮 -->
+                <div class="interval-buttons">
+                    <div class="interval-btn" id="btn-0" data-index="0">① x < -1</div>
+                    <div class="interval-btn" id="btn-1" data-index="1">② -1 ≤ x ≤ 1</div>
+                    <div class="interval-btn" id="btn-2" data-index="2">③ x > 1</div>
+                </div>
+            </div>
+
+            <!-- 右侧：推导与结果 -->
+            <div class="right-panel">
+                <!-- 动态推导卡片 -->
+                <div class="card formula-card">
+                    <div class="panel-title" id="formula-title">第二步：判断绝对值内部正负</div>
+                    
+                    <div class="formula-box" id="formula-content">
+                        <!-- 默认未选择提示 -->
+                        <div id="placeholder-text" style="color: #95a5a6; font-size: 16px; text-align: center;">
+                            👈 请先在左侧选择一个区间开始推导
+                        </div>
+
+                        <!-- 动态交互表单（初始隐藏） -->
+                        <div id="interactive-formula" style="display: none; width: 100%;">
+                            <div class="formula-row" style="margin-bottom: 15px;">
+                                当 <span id="cond-display" style="color: #2980b9; margin: 0 5px;"></span> 时：
+                            </div>
+                            
+                            <!-- 绝对值1判断 -->
+                            <div class="formula-row">
+                                <span>|x - 1| 中，因为 x - 1</span>
+                                <select id="select-1">
+                                    <option value="" disabled selected>请选择正负</option>
+                                    <option value="negative"> &lt; 0 (负)</option>
+                                    <option value="positive"> &gt; 0 (正)</option>
+                                </select>
+                                <span>，所以 |x - 1| = </span>
+                                <span id="expr-1-res" class="math-expr">?</span>
+                            </div>
+
+                            <!-- 绝对值2判断 -->
+                            <div class="formula-row" style="margin-top: 10px;">
+                                <span>|x + 1| 中，因为 x + 1</span>
+                                <select id="select-2">
+                                    <option value="" disabled selected>请选择正负</option>
+                                    <option value="negative"> &lt; 0 (负)</option>
+                                    <option value="positive"> &gt; 0 (正)</option>
+                                </select>
+                                <span>，所以 |x + 1| = </span>
+                                <span id="expr-2-res" class="math-expr">?</span>
+                            </div>
+
+                            <div class="step-arrow">↓ 整体代入化简</div>
+
+                            <div class="step-result" id="final-step-expr">
+                                y = ( ? ) + ( ? ) = ?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最终分段函数卡片 -->
+                <div class="card result-card">
+                    <div class="panel-title">第三步：组合成完整分段函数</div>
+                    <div class="piecewise-container">
+                        <div class="function-left">y =</div>
+                        <div class="brace">{</div>
+                        <div class="branches">
+                            <!-- 分支 1 -->
+                            <div class="branch branch-0" id="branch-0">
+                                <div class="branch-expr" id="b-expr-0">-2x</div>
+                                <div class="branch-cond">, x < -1</div>
+                            </div>
+                            <!-- 分支 2 -->
+                            <div class="branch branch-1" id="branch-1">
+                                <div class="branch-expr" id="b-expr-1">2</div>
+                                <div class="branch-cond">, -1 ≤ x ≤ 1</div>
+                            </div>
+                            <!-- 分支 3 -->
+                            <div class="branch branch-2" id="branch-2">
+                                <div class="branch-expr" id="b-expr-2">2x</div>
+                                <div class="branch-cond">, x > 1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tip-box">完成上方区间的正确推导，对应分支将会高亮激活</div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // 数据定义
+    const config = [
+        {
+            condText: "x < -1",
+            correct1: "negative", // x-1 < 0
+            correct2: "negative", // x+1 < 0
+            expr1: "-(x - 1)",
+            expr2: "-(x + 1)",
+            simplified: "y = -(x - 1) - (x + 1) = -2x"
+        },
+        {
+            condText: "-1 ≤ x ≤ 1",
+            correct1: "negative", // x-1 <= 0
+            correct2: "positive", // x+1 >= 0
+            expr1: "-(x - 1)",
+            expr2: "x + 1",
+            simplified: "y = -(x - 1) + (x + 1) = 2"
+        },
+        {
+            condText: "x > 1",
+            correct1: "positive", // x-1 > 0
+            correct2: "positive", // x+1 > 0
+            expr1: "x - 1",
+            expr2: "x + 1",
+            simplified: "y = (x - 1) + (x + 1) = 2x"
+        }
+    ];
+
+    let currentIdx = null;
+    // 记录每个区间的通关状态
+    let completed = [false, false, false];
+
+    // DOM 元素获取
+    const regions = [
+        document.getElementById('region-0'),
+        document.getElementById('region-1'),
+        document.getElementById('region-2')
+    ];
+    const buttons = [
+        document.getElementById('btn-0'),
+        document.getElementById('btn-1'),
+        document.getElementById('btn-2')
+    ];
+    const branches = [
+        document.getElementById('branch-0'),
+        document.getElementById('branch-1'),
+        document.getElementById('branch-2')
+    ];
+
+    const placeholderText = document.getElementById('placeholder-text');
+    const interactiveFormula = document.getElementById('interactive-formula');
+    const condDisplay = document.getElementById('cond-display');
+    const select1 = document.getElementById('select-1');
+    const select2 = document.getElementById('select-2');
+    const expr1Res = document.getElementById('expr-1-res');
+    const expr2Res = document.getElementById('expr-2-res');
+    const finalStepExpr = document.getElementById('final-step-expr');
+    const formulaTitle = document.getElementById('formula-title');
+
+    // 初始化事件监听
+    regions.forEach((reg, idx) => {
+        reg.addEventListener('click', () => selectInterval(idx));
+        // 悬停效果
+        reg.addEventListener('mouseenter', () => {
+            if (currentIdx !== idx) reg.style.fill = getHoverColor(idx);
+        });
+        reg.addEventListener('mouseleave', () => {
+            if (currentIdx !== idx) reg.style.fill = getNormalColor(idx);
+        });
+    });
+
+    buttons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => selectInterval(idx));
+    });
+
+    select1.addEventListener('change', checkAnswers);
+    select2.addEventListener('change', checkAnswers);
+
+    // 颜色辅助函数
+    function getNormalColor(idx) {
+        if (idx === 0) return "rgba(231, 76, 60, 0.08)";
+        if (idx === 1) return "rgba(243, 156, 18, 0.08)";
+        return "rgba(46, 204, 113, 0.08)";
+    }
+    function getHoverColor(idx) {
+        if (idx === 0) return "rgba(231, 76, 60, 0.18)";
+        if (idx === 1) return "rgba(243, 156, 18, 0.18)";
+        return "rgba(46, 204, 113, 0.18)";
+    }
+    function getActiveColor(idx) {
+        if (idx === 0) return "rgba(231, 76, 60, 0.3)";
+        if (idx === 1) return "rgba(243, 156, 18, 0.3)";
+        return "rgba(46, 204, 113, 0.3)";
+    }
+    function getStrokeColor(idx) {
+        if (idx === 0) return "#e74c3c";
+        if (idx === 1) return "#f39c12";
+        return "#2ecc71";
+    }
+
+    // 切换区间选择
+    function selectInterval(idx) {
+        currentIdx = idx;
+
+        // 更新数轴和按钮状态
+        regions.forEach((reg, i) => {
+            if (i === idx) {
+                reg.style.fill = getActiveColor(i);
+                reg.style.stroke = getStrokeColor(i);
+            } else {
+                reg.style.fill = getNormalColor(i);
+                reg.style.stroke = "transparent";
+            }
+        });
+
+        buttons.forEach((btn, i) => {
+            btn.className = "interval-btn";
+            if (i === idx) {
+                btn.classList.add(`active-${idx}`);
+            }
+        });
+
+        // 展现推导面板
+        placeholderText.style.display = 'none';
+        interactiveFormula.style.display = 'block';
+        formulaTitle.textContent = `第二步：推导区间 ${idx + 1} 的解析式`;
+        condDisplay.textContent = config[idx].condText;
+
+        // 重置下拉框和推导结果
+        select1.value = "";
+        select2.value = "";
+        select1.className = "";
+        select2.className = "";
+        expr1Res.textContent = "?";
+        expr2Res.textContent = "?";
+        finalStepExpr.textContent = "y = ( ? ) + ( ? ) = ?";
+        finalStepExpr.style.color = "#2c3e50";
+    }
+
+    // 检查用户选择
+    function checkAnswers() {
+        if (currentIdx === null) return;
+
+        const currentConfig = config[currentIdx];
+        const val1 = select1.value;
+        const val2 = select2.value;
+
+        // 判定第一个绝对值
+        if (val1) {
+            if (val1 === currentConfig.correct1) {
+                select1.className = "correct";
+                expr1Res.textContent = currentConfig.expr1;
+                expr1Res.style.color = "#2ecc71";
+            } else {
+                select1.className = "wrong";
+                expr1Res.textContent = "?";
+                expr1Res.style.color = "#e74c3c";
+            }
+        }
+
+        // 判定第二个绝对值
+        if (val2) {
+            if (val2 === currentConfig.correct2) {
+                select2.className = "correct";
+                expr2Res.textContent = currentConfig.expr2;
+                expr2Res.style.color = "#2ecc71";
+            } else {
+                select2.className = "wrong";
+                expr2Res.textContent = "?";
+                expr2Res.style.color = "#e74c3c";
+            }
+        }
+
+        // 两个都答对，展示最终化简并激活右下角分段函数对应分支
+        if (val1 === currentConfig.correct1 && val2 === currentConfig.correct2) {
+            finalStepExpr.textContent = currentConfig.simplified;
+            finalStepExpr.style.color = getStrokeColor(currentIdx);
+            
+            // 激活分段函数分支
+            completed[currentIdx] = true;
+            branches[currentIdx].classList.add('active');
+        } else {
+            completed[currentIdx] = false;
+            branches[currentIdx].classList.remove('active');
+        }
+    }
+</script>
+
+</body>
+</html>

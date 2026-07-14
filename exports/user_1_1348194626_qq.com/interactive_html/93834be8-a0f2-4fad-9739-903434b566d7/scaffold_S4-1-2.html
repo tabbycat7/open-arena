@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程图与控制积木的奇妙组合</title>
+    <style>
+        /* 全局样式设计：适合课堂投屏，高对比度，清爽现代 */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #43A047;
+            --reset-color: #757575;
+            --reset-hover: #616161;
+            --bg-color: #F5F7FB;
+            --card-bg: #FFFFFF;
+            --text-main: #2C3E50;
+            --text-muted: #7F8C8D;
+            --scratch-control: #FFAB19;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 4:3 宽高比自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            aspect-ratio: 4 / 3;
+            justify-content: space-between;
+        }
+
+        /* 头部标题区 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            background-color: #E3F2FD;
+            color: #1E88E5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* 可视化画布区 */
+        .canvas-area {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            background-color: #FCFDFE;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 控制面板区 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: var(--reset-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--reset-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(117, 117, 117, 0.3);
+        }
+
+        .btn:disabled {
+            background-color: #BDC3C7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 概念解析卡片 */
+        .info-card {
+            background-color: #E8F5E9;
+            border-left: 5px solid var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-top: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .info-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 呼吸灯动画效果 */
+        @keyframes pulse {
+            0% { stroke-width: 3px; filter: drop-shadow(0 0 2px rgba(0,172,193,0.4)); }
+            50% { stroke-width: 5px; filter: drop-shadow(0 0 8px rgba(0,172,193,0.8)); }
+            100% { stroke-width: 3px; filter: drop-shadow(0 0 2px rgba(0,172,193,0.4)); }
+        }
+
+        .pulse-active {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部信息 -->
+    <div class="header">
+        <span class="badge">五年级 · 信息技术</span>
+        <h1 class="title">流程图与控制积木的奇妙组合</h1>
+        <p class="subtitle">点击“开始配对”按钮，观察流程图中的“判断框”如何转化为编程积木！</p>
+    </div>
+
+    <!-- 交互可视化画布 -->
+    <div class="canvas-area">
+        <svg id="visual-svg" viewBox="0 0 800 420">
+            <!-- 定义网格背景与滤镜 -->
+            <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#F0F3F6" stroke-width="1" />
+                </pattern>
+                <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                    <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.1" />
+                </filter>
+                <filter id="green-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.8"/>
+                    </feComponentTransfer>
+                    <feMerge>
+                        <feMergeNode/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <!-- 箭头定义 -->
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#90A4AE" />
+                </marker>
+            </defs>
+
+            <!-- 背景网格 -->
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <!-- ==================== 左侧：流程图区域 ==================== -->
+            <g id="flowchart-group">
+                <!-- 区域标题 -->
+                <text x="200" y="35" font-size="18" font-weight="bold" fill="#37474F" text-anchor="middle">🔍 流程图中的“判断”</text>
+
+                <!-- 开始节点 -->
+                <rect x="150" y="60" width="100" height="36" rx="18" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="2" filter="url(#shadow)" />
+                <text x="200" y="83" font-size="14" font-weight="bold" fill="#546E7A" text-anchor="middle">开始</text>
+
+                <!-- 连接线：开始 -> 判断框 -->
+                <path d="M 200,96 L 200,145" fill="none" stroke="#90A4AE" stroke-width="3" marker-end="url(#arrow)" />
+
+                <!-- 虚线占位框（当判断框飞走后显现） -->
+                <polygon points="200,150 280,200 200,250 120,200" fill="none" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4" />
+                <text x="200" y="205" font-size="14" fill="#90A4AE" text-anchor="middle" font-style="italic">判断条件</text>
+
+                <!-- 连接线：判断框 -> 步骤A (是) -->
+                <path d="M 200,250 L 200,315" fill="none" stroke="#90A4AE" stroke-width="3" marker-end="url(#arrow)" />
+                <text x="215" y="280" font-size="14" font-weight="bold" fill="#2E7D32">是 (True)</text>
+
+                <!-- 连接线：判断框 -> 步骤B (否) -->
+                <path d="M 280,200 L 350,200 L 350,315" fill="none" stroke="#90A4AE" stroke-width="3" marker-end="url(#arrow)" />
+                <text x="300" y="190" font-size="14" font-weight="bold" fill="#C62828">否 (False)</text>
+
+                <!-- 执行步骤 A 框 -->
+                <rect x="130" y="320" width="140" height="45" rx="6" fill="#E8F5E9" stroke="#81C784" stroke-width="2" filter="url(#shadow)" />
+                <text x="200" y="348" font-size="14" font-weight="bold" fill="#2E7D32" text-anchor="middle">执行步骤 A</text>
+
+                <!-- 执行步骤 B 框 -->
+                <rect x="280" y="320" width="140" height="45" rx="6" fill="#FFEBEE" stroke="#E57373" stroke-width="2" filter="url(#shadow)" />
+                <text x="350" y="348" font-size="14" font-weight="bold" fill="#C62828" text-anchor="middle">执行步骤 B</text>
+            </g>
+
+            <!-- ==================== 右侧：图形化编程积木区域 ==================== -->
+            <g id="scratch-group">
+                <!-- 区域标题 -->
+                <text x="580" y="35" font-size="18" font-weight="bold" fill="#37474F" text-anchor="middle">💻 编程中的“分支控制”</text>
+
+                <!-- 状态指示灯面板 -->
+                <rect x="650" y="60" width="110" height="34" rx="17" fill="#ECEFF1" stroke="#CFD8DC" stroke-width="1.5" />
+                <circle id="status-led" cx="668" cy="77" r="7" fill="#90A4AE" />
+                <text id="status-text" x="685" y="82" font-size="13" font-weight="bold" fill="#546E7A">未配对</text>
+
+                <!-- Scratch "如果...那么" 积木外形 -->
+                <!-- 经典的 C 形控制积木 -->
+                <path d="M 460,150 
+                         h 20 l 4,4 h 8 l 4,-4 
+                         h 204 
+                         v 50 
+                         h -150 
+                         v 70 
+                         h 110 
+                         v 40 
+                         h -190 
+                         Z" 
+                      fill="#FFAB19" stroke="#E69500" stroke-width="2" filter="url(#shadow)" />
+                
+                <!-- 积木文本标签 -->
+                <text x="480" y="182" font-size="18" font-weight="bold" fill="#FFFFFF">如果</text>
+                <text x="625" y="182" font-size="18" font-weight="bold" fill="#FFFFFF">那么</text>
+
+                <!-- 积木内部的六角形空白插槽 (暗色背景) -->
+                <polygon points="525,175 585,175 595,182 585,189 525,189 515,182" fill="#CF8B17" stroke="#B37814" stroke-width="1.5" />
+
+                <!-- 积木内部包裹的执行积木 (示意) -->
+                <path d="M 510,210 h 10 l 3,3 h 6 l 3,-3 h 98 v 32 h -120 Z" fill="#4C97FF" stroke="#337ECC" stroke-width="1.5" />
+                <text x="570" y="231" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">执行步骤 A 积木</text>
+            </g>
+
+            <!-- ==================== 动态交互元素：可变形的判断框 ==================== -->
+            <!-- 初始状态：完美重合在流程图判断框位置 -->
+            <!-- 采用 6 个顶点的多边形，以便平滑过渡为六角形 -->
+            <polygon id="morphing-shape" class="pulse-active"
+                     points="200,150 200,150 280,200 200,250 200,250 120,200" 
+                     fill="#E0F7FA" stroke="#00ACC1" stroke-width="3" style="cursor: pointer;" />
+            <text id="morphing-text" x="200" y="206" font-size="16" font-weight="bold" fill="#006064" text-anchor="middle" pointer-events="none">符合条件？</text>
+
+        </svg>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="control-panel">
+        <button id="btn-pair" class="btn btn-primary">开始配对 ➔</button>
+        <button id="btn-reset" class="btn btn-secondary" disabled>重置</button>
+    </div>
+
+    <!-- 概念解析卡片 -->
+    <div id="info-card" class="info-card">
+        <strong>💡 教学发现：</strong>
+        流程图中的<strong>菱形判断框</strong>在图形化编程中，对应金黄色的<strong>“如果...那么”</strong>控制积木。
+        菱形框内的“判断条件”会完美嵌入到积木中间的<strong>六角形空白槽</strong>中，决定程序接下来往哪条路径执行！
+    </div>
+</div>
+
+<script>
+    // 获取 DOM 元素
+    const morphingShape = document.getElementById('morphing-shape');
+    const morphingText = document.getElementById('morphing-text');
+    const btnPair = document.getElementById('btn-pair');
+    const btnReset = document.getElementById('btn-reset');
+    const infoCard = document.getElementById('info-card');
+    const statusLed = document.getElementById('status-led');
+    const statusText = document.getElementById('status-text');
+
+    // 动画状态变量
+    let isAnimating = false;
+    let isPaired = false;
+    const duration = 1200; // 动画持续时间 (毫秒)
+
+    // 关键帧顶点数据
+    // 初始状态：菱形 (用 6 个点表示，其中上下顶点重复)
+    const startPoints = [
+        [200, 150], // 顶点1 (上左)
+        [200, 150], // 顶点2 (上右)
+        [280, 200], // 顶点3 (右)
+        [200, 250], // 顶点4 (下右)
+        [200, 250], // 顶点5 (下左)
+        [120, 200]  // 顶点6 (左)
+    ];
+
+    // 目标状态：六角形 (完美契合 Scratch 积木的插槽)
+    const endPoints = [
+        [525, 175], // 顶点1 (上左)
+        [585, 175], // 顶点2 (上右)
+        [595, 182], // 顶点3 (右)
+        [585, 189], // 顶点4 (下右)
+        [525, 189], // 顶点5 (下左)
+        [515, 182]  // 顶点6 (左)
+    ];
+
+    // 文本属性过渡数据
+    const startTextAttr = { x: 200, y: 206, size: 16, r: 0, g: 96, b: 100 };
+    const endTextAttr = { x: 555, y: 186, size: 10, r: 255, g: 255, b: 255 };
+
+    // 颜色过渡数据
+    const startFill = { r: 224, g: 247, b: 250 }; // #E0F7FA (浅蓝)
+    const endFill = { r: 92, g: 184, b: 92 };     // #5CB85C (Scratch 条件绿)
+
+    const startStroke = { r: 0, g: 172, b: 193 };  // #00ACC1
+    const endStroke = { r: 255, g: 255, b: 255 };  // 白色
+
+    // 缓动函数：InOutQuad
+    function easeInOutQuad(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    // 线性插值
+    function lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+    }
+
+    // 执行动画
+    function runAnimation(reverse = false) {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        // 移除呼吸灯效果
+        morphingShape.classList.remove('pulse-active');
+
+        const startTime = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            let progress = Math.min(elapsed / duration, 1);
+            
+            // 如果是反向动画 (重置)
+            const t = reverse ? 1 - progress : progress;
+            const ease = easeInOutQuad(t);
+
+            // 1. 插值计算多边形顶点
+            const currentPoints = startPoints.map((startPt, i) => {
+                const endPt = endPoints[i];
+                const x = lerp(startPt[0], endPt[0], ease);
+                const y = lerp(startPt[1], endPt[1], ease);
+                return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+            
+            morphingShape.setAttribute('points', currentPoints);
+
+            // 2. 插值计算文本位置与大小
+            const textX = lerp(startTextAttr.x, endTextAttr.x, ease);
+            const textY = lerp(startTextAttr.y, endTextAttr.y, ease);
+            const textSize = lerp(startTextAttr.size, endTextAttr.size, ease);
+            
+            morphingText.setAttribute('x', textX);
+            morphingText.setAttribute('y', textY);
+            morphingText.style.fontSize = `${textSize}px`;
+
+            // 3. 插值计算文本颜色
+            const tr = Math.round(lerp(startTextAttr.r, endTextAttr.r, ease));
+            const tg = Math.round(lerp(startTextAttr.g, endTextAttr.g, ease));
+            const tb = Math.round(lerp(startTextAttr.b, endTextAttr.b, ease));
+            morphingText.setAttribute('fill', `rgb(${tr},${tg},${tb})`);
+
+            // 4. 插值计算填充颜色与边框颜色
+            const fr = Math.round(lerp(startFill.r, endFill.r, ease));
+            const fg = Math.round(lerp(startFill.g, endFill.g, ease));
+            const fb = Math.round(lerp(startFill.b, endFill.b, ease));
+            morphingShape.setAttribute('fill', `rgb(${fr},${fg},${fb})`);
+
+            const sr = Math.round(lerp(startStroke.r, endStroke.r, ease));
+            const sg = Math.round(lerp(startStroke.g, endStroke.g, ease));
+            const sb = Math.round(lerp(startStroke.b, endStroke.b, ease));
+            morphingShape.setAttribute('stroke', `rgb(${sr},${sg},${sb})`);
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                isAnimating = false;
+                isPaired = !reverse;
+                
+                // 动画结束后的状态更新
+                if (isPaired) {
+                    // 成功配对状态
+                    statusLed.setAttribute('fill', '#00E676');
+                    statusLed.setAttribute('filter', 'url(#green-glow)');
+                    statusText.textContent = '已配对';
+                    statusText.setAttribute('fill', '#2E7D32');
+                    infoCard.classList.add('show');
+                    btnPair.disabled = true;
+                    btnReset.disabled = false;
+                } else {
+                    // 重置回初始状态
+                    statusLed.setAttribute('fill', '#90A4AE');
+                    statusLed.removeAttribute('filter');
+                    statusText.textContent = '未配对';
+                    statusText.setAttribute('fill', '#546E7A');
+                    infoCard.classList.remove('show');
+                    morphingShape.classList.add('pulse-active');
+                    btnPair.disabled = false;
+                    btnReset.disabled = true;
+                }
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    // 绑定事件监听器
+    btnPair.addEventListener('click', () => {
+        if (!isPaired) runAnimation(false);
+    });
+
+    btnReset.addEventListener('click', () => {
+        if (isPaired) runAnimation(true);
+    });
+
+    // 点击图形本身也可以触发配对
+    morphingShape.addEventListener('click', () => {
+        if (!isPaired && !isAnimating) {
+            runAnimation(false);
+        }
+    });
+</script>
+
+</body>
+</html>

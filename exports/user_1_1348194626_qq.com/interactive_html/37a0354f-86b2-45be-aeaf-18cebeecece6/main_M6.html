@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复杂纳税问题解题思维路线图</title>
+    <style>
+        :root {
+            --primary-color: #2b579a;
+            --primary-light: #e8eef8;
+            --accent-color: #e0a800;
+            --success-color: #28a745;
+            --success-light: #d4edda;
+            --danger-color: #dc3545;
+            --gray-dark: #333333;
+            --gray-light: #f8f9fa;
+            --border-color: #cccccc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+            background-color: #f0f2f5;
+            color: var(--gray-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* 4:3 比例自适应容器 */
+        .aspect-ratio-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 头部区域 */
+        header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 14px;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* 主体交互区域 */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background-color: #fcfcfc;
+            overflow: hidden;
+        }
+
+        /* 左侧：解题路线图与验证区 */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        /* 路线图卡片槽 */
+        .roadmap-container {
+            background-color: var(--gray-light);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .roadmap-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slots-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        /* 流程箭头 */
+        .slots-group::before {
+            content: "↓";
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .slot-box {
+            background-color: #ffffff;
+            border: 2px dashed #999;
+            border-radius: 8px;
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .slot-box.hovered {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            transform: scale(1.01);
+        }
+
+        .slot-box.correct {
+            background-color: var(--success-light);
+            border-color: var(--success-color);
+            border-style: solid;
+        }
+
+        .slot-label {
+            font-weight: bold;
+            color: #666;
+            margin-right: 15px;
+            font-size: 14px;
+            background: #eee;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .slot-box.correct .slot-label {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .slot-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* 动态演示区 */
+        .demo-container {
+            flex: 1;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 锁定遮罩 */
+        .demo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: all 0.5s ease;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .demo-overlay.unlocked {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-100%);
+        }
+
+        .lock-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        .lock-text {
+            font-size: 16px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* 演示区内部布局 */
+        .demo-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .demo-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: var(--gray-light);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .demo-controls label {
+            font-weight: bold;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .demo-controls input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .income-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 70px;
+            text-align: right;
+        }
+
+        /* 动态直观图表 */
+        .visual-chart {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* 资金条形图 */
+        .bar-container {
+            position: relative;
+            height: 45px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .bar-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            transition: width 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .bar-exempt {
+            background-color: #6c757d; /* 免税部分灰色 */
+        }
+
+        .bar-taxable {
+            background-color: #007bff; /* 计税部分蓝色 */
+        }
+
+        /* 箭头与计算公式展示 */
+        .formula-flow {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 10px;
+            background: #fdfffe;
+            border: 1px solid #d4edda;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .formula-box {
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .formula-box.step1-calc {
+            background-color: #e8f4fd;
+            border: 1px solid #b8daff;
+        }
+
+        .formula-box.step2-calc {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+
+        .formula-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #444;
+        }
+
+        .formula-detail {
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        /* 右侧：待选卡片区 */
+        .right-panel {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--gray-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* 步骤卡片样式 */
+        .step-card {
+            background-color: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .step-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .step-card:active {
+            cursor: grabbing;
+        }
+
+        .step-card.dragging {
+            opacity: 0.5;
+            border-style: dashed;
+        }
+
+        .step-card.selected {
+            border-color: var(--accent-color);
+            background-color: #fffdf5;
+            box-shadow: 0 0 8px rgba(224, 168, 0, 0.5);
+        }
+
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .card-text {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* 底部控制栏 */
+        footer {
+            background-color: var(--gray-light);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-message {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e3f72;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: #666;
+        }
+
+        .btn-outline:hover {
+            background-color: #eee;
+        }
+
+        /* 辅助提示高亮 */
+        .highlight-text {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .success-text {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aspect-ratio-container">
+        <!-- 头部 -->
+        <header>
+            <h1>复杂纳税问题解题思维路线图</h1>
+            <p>请将右侧正确的解题步骤卡片，拖拽或点击放入左侧对应的步骤框中，解锁动态验证工具！</p>
+        </header>
+
+        <!-- 主体 -->
+        <div class="main-content">
+            <!-- 左侧：路线图与验证 -->
+            <div class="left-panel">
+                <!-- 路线图卡片槽 -->
+                <div class="roadmap-container">
+                    <div class="roadmap-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                        通用解题步骤
+                    </div>
+                    <div class="slots-group">
+                        <!-- 步骤一槽 -->
+                        <div class="slot-box" id="slot-1" data-expected="card-1">
+                            <div class="slot-label">Step 1</div>
+                            <div class="slot-content" id="slot-1-content">请在此处放置第一步</div>
+                        </div>
+                        <!-- 步骤二槽 -->
+                        <div class="slot-box" id="slot-2" data-expected="card-2">
+                            <div class="slot-label">Step 2</div>
+                            <div class="slot-content" id="slot-2-content">请在此处放置第二步</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 动态演示区 -->
+                <div class="demo-container" id="demo-panel">
+                    <!-- 锁定遮罩 -->
+                    <div class="demo-overlay" id="demo-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div class="lock-text">请正确完成左侧的解题步骤，解锁“个税动态验证工具”</div>
+                    </div>
+
+                    <!-- 演示内容 -->
+                    <div class="demo-title">
+                        <span>🎉 验证成功！个税动态演示（免税额：5000元，税率：3%）</span>
+                    </div>
+                    
+                    <!-- 滑块控制 -->
+                    <div class="demo-controls">
+                        <label for="income-slider">调整总收入：</label>
+                        <input type="range" id="income-slider" min="3000" max="15000" step="500" value="8000">
+                        <span class="income-value" id="income-val-display">8000 元</span>
+                    </div>
+
+                    <!-- 动态直观图表 -->
+                    <div class="visual-chart">
+                        <!-- 条形图 -->
+                        <div class="bar-container">
+                            <div class="bar-segment bar-exempt" id="bar-exempt" style="width: 62.5%;">免税额 5000元</div>
+                            <div class="bar-segment bar-taxable" id="bar-taxable" style="width: 37.5%;">计税基数 3000元</div>
+                        </div>
+
+                        <!-- 实时公式计算展示 -->
+                        <div class="formula-flow">
+                            <div class="formula-box step1-calc">
+                                <div class="formula-title">Step 1: 确定计税基数</div>
+                                <div class="formula-detail" id="formula-step1">8000 - 5000 = 3000元</div>
+                            </div>
+                            <div style="font-size: 20px; color: var(--success-color); text-align: center;">➔</div>
+                            <div class="formula-box step2-calc">
+                                <div class="formula-title">Step 2: 计算应纳税额</div>
+                                <div class="formula-detail" id="formula-step2">3000 × 3% = 90元</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：待选卡片区 -->
+            <div class="right-panel">
+                <div class="panel-title">备选步骤卡片</div>
+                <div class="cards-container" id="cards-pool">
+                    <!-- 卡片 1 (正确 Step 1) -->
+                    <div class="step-card" draggable="true" id="card-1">
+                        <div class="card-icon">A</div>
+                        <div class="card-text">确定计税基数 = 总收入 - 免税额</div>
+                    </div>
+                    <!-- 卡片 2 (正确 Step 2) -->
+                    <div class="step-card" draggable="true" id="card-2">
+                        <div class="card-icon">B</div>
+                        <div class="card-text">计算应纳税额 = 计税基数 × 税率</div>
+                    </div>
+                    <!-- 干扰项 1 -->
+                    <div class="step-card" draggable="true" id="card-dist1">
+                        <div class="card-icon">C</div>
+                        <div class="card-text">寻找题目中的税率</div>
+                    </div>
+                    <!-- 干扰项 2 -->
+                    <div class="step-card" draggable="true" id="card-dist2">
+                        <div class="card-icon">D</div>
+                        <div class="card-text">直接用总收入 × 税率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部控制栏 -->
+        <footer>
+            <div class="status-message" id="status-msg">
+                💡 提示：请将正确的步骤卡片拖入对应的槽位中。
+            </div>
+            <div>
+                <button class="btn btn-outline" id="btn-reset">重置挑战</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.step-card');
+            const slots = document.querySelectorAll('.slot-box');
+            const cardsPool = document.getElementById('cards-pool');
+            const statusMsg = document.getElementById('status-msg');
+            const btnReset = document.getElementById('btn-reset');
+            const demoOverlay = document.getElementById('demo-overlay');
+            
+            // 动态演示元素
+            const incomeSlider = document.getElementById('income-slider');
+            const incomeValDisplay = document.getElementById('income-val-display');
+            const barExempt = document.getElementById('bar-exempt');
+            const barTaxable = document.getElementById('bar-taxable');
+            const formulaStep1 = document.getElementById('formula-step1');
+            const formulaStep2 = document.getElementById('formula-step2');
+
+            let selectedCard = null; // 用于点击选择交互
+
+            // 初始化卡片顺序随机化
+            function shuffleCards() {
+                const cardsArray = Array.from(cards);
+                cardsArray.sort(() => Math.random() - 0.5);
+                cardsArray.forEach(card => cardsPool.appendChild(card));
+            }
+            shuffleCards();
+
+            // --- 拖拽交互实现 ---
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    card.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', card.id);
+                });
+
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+
+                // 点击选择交互（兼容移动端/触屏白板）
+                card.addEventListener('click', () => {
+                    if (selectedCard) {
+                        selectedCard.classList.remove('selected');
+                    }
+                    if (selectedCard === card) {
+                        selectedCard = null; // 再次点击取消选择
+                    } else {
+                        selectedCard = card;
+                        card.classList.add('selected');
+                        statusMsg.innerHTML = `👉 已选择卡片，请点击左侧的 <strong>Step 1</strong> 或 <strong>Step 2</strong> 放入。`;
+                    }
+                });
+            });
+
+            slots.forEach(slot => {
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (!slot.classList.contains('correct')) {
+                        slot.classList.add('hovered');
+                    }
+                });
+
+                slot.addEventListener('dragleave', () => {
+                    slot.classList.remove('hovered');
+                });
+
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slot.classList.remove('hovered');
+                    const cardId = e.dataTransfer.getData('text/plain');
+                    const card = document.getElementById(cardId);
+                    handlePlacement(card, slot);
+                });
+
+                // 点击槽位放入
+                slot.addEventListener('click', () => {
+                    if (selectedCard) {
+                        handlePlacement(selectedCard, slot);
+                        selectedCard.classList.remove('selected');
+                        selectedCard = null;
+                    }
+                });
+            });
+
+            // 处理卡片放置逻辑
+            function handlePlacement(card, slot) {
+                if (!card || !slot) return;
+                
+                const expectedId = slot.getAttribute('data-expected');
+                const slotContent = slot.querySelector('.slot-content');
+
+                if (card.id === expectedId) {
+                    // 放置正确
+                    slot.classList.add('correct');
+                    slotContent.innerHTML = card.querySelector('.card-text').innerText;
+                    card.style.display = 'none'; // 隐藏已被正确放置的卡片
+                    statusMsg.innerHTML = `<span class="success-text">💚 步骤正确！做得好！</span>`;
+                    checkCompletion();
+                } else {
+                    // 放置错误
+                    slot.style.borderColor = 'var(--danger-color)';
+                    statusMsg.innerHTML = `<span class="highlight-text">❌ 步骤不匹配，请再思考一下！</span>`;
+                    setTimeout(() => {
+                        if (!slot.classList.contains('correct')) {
+                            slot.style.borderColor = '';
+                        }
+                    }, 1000);
+                }
+            }
+
+            // 检查是否全部完成
+            function checkCompletion() {
+                const slot1Correct = document.getElementById('slot-1').classList.contains('correct');
+                const slot2Correct = document.getElementById('slot-2').classList.contains('correct');
+
+                if (slot1Correct && slot2Correct) {
+                    statusMsg.innerHTML = `<span class="success-text">🎉 恭喜！你已成功总结出复杂纳税问题的通用解题步骤！</span>`;
+                    unlockDemo();
+                }
+            }
+
+            // 解锁动态演示
+            function unlockDemo() {
+                demoOverlay.classList.add('unlocked');
+                updateDemoVisuals();
+            }
+
+            // --- 动态演示计算逻辑 ---
+            const EXEMPT_AMOUNT = 5000;
+            const TAX_RATE = 0.03;
+
+            function updateDemoVisuals() {
+                const totalIncome = parseInt(incomeSlider.value);
+                incomeValDisplay.innerText = `${totalIncome} 元`;
+
+                let taxableIncome = totalIncome - EXEMPT_AMOUNT;
+                if (taxableIncome < 0) taxableIncome = 0;
+
+                const tax = taxableIncome * TAX_RATE;
+
+                // 计算条形图比例
+                const exemptPercent = (EXEMPT_AMOUNT / totalIncome) * 100;
+                const taxablePercent = 100 - exemptPercent;
+
+                if (totalIncome <= EXEMPT_AMOUNT) {
+                    barExempt.style.width = '100%';
+                    barExempt.innerText = `总收入 ${totalIncome}元 ≤ 免税额 ${EXEMPT_AMOUNT}元 (无需纳税)`;
+                    barTaxable.style.width = '0%';
+                    barTaxable.innerText = '';
+                    
+                    formulaStep1.innerHTML = `${totalIncome} - ${EXEMPT_AMOUNT} ≤ 0<br><strong class="highlight-text">计税基数 = 0元</strong>`;
+                    formulaStep2.innerHTML = `0 × 3% = <strong class="highlight-text">0元</strong>`;
+                } else {
+                    barExempt.style.width = `${exemptPercent}%`;
+                    barExempt.innerText = `免税额 ${EXEMPT_AMOUNT}元`;
+                    barTaxable.style.width = `${taxablePercent}%`;
+                    barTaxable.innerText = `计税基数 ${taxableIncome}元`;
+
+                    formulaStep1.innerHTML = `${totalIncome} - ${EXEMPT_AMOUNT} = <strong class="success-text">${taxableIncome}元</strong>`;
+                    formulaStep2.innerHTML = `${taxableIncome} × 3% = <strong class="highlight-text">${tax.toFixed(1)}元</strong>`;
+                }
+            }
+
+            incomeSlider.addEventListener('input', updateDemoVisuals);
+
+            // 重置功能
+            btnReset.addEventListener('click', () => {
+                // 重置槽位
+                slots.forEach(slot => {
+                    slot.classList.remove('correct', 'hovered');
+                    slot.style.borderColor = '';
+                    const stepNum = slot.id.split('-')[1];
+                    slot.querySelector('.slot-content').innerText = `请在此处放置第${stepNum === '1' ? '一' : '二'}步`;
+                });
+
+                // 重置卡片
+                cards.forEach(card => {
+                    card.style.display = 'flex';
+                    card.classList.remove('selected');
+                });
+                selectedCard = null;
+
+                // 重新打乱卡片
+                shuffleCards();
+
+                // 锁定演示区
+                demoOverlay.classList.remove('unlocked');
+                incomeSlider.value = 8000;
+
+                statusMsg.innerHTML = `💡 提示：请将正确的步骤卡片拖入对应的槽位中。`;
+            });
+        });
+    </script>
+</body>
+</html>

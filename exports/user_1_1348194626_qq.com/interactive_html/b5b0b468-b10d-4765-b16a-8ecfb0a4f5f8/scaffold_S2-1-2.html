@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分段函数边界与射线绘制探索</title>
+    <style>
+        /* 全局样式，适合课堂投屏 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* 4:3 比例自适应容器 */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        /* 头部区域 */
+        .header {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .header .badge {
+            background-color: #3b82f6;
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        /* 左侧控制面板 */
+        .control-panel {
+            width: 280px;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #fafafa;
+        }
+        .question-box {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            margin-bottom: 15px;
+        }
+        .question-box strong {
+            color: #0f172a;
+        }
+        .formula-highlight {
+            background-color: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 8px 0;
+            border-left: 4px solid #3b82f6;
+            display: inline-block;
+        }
+        .interactive-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: auto;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        /* 状态指示灯 */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .light.success {
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        /* 右侧画布区域 */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+        /* 闪烁动画 */
+        @keyframes pulse {
+            0% { r: 4px; opacity: 1; }
+            50% { r: 10px; opacity: 0.4; }
+            100% { r: 4px; opacity: 1; }
+        }
+        .pulse-point {
+            animation: pulse 2s infinite;
+            fill: #ef4444;
+        }
+        /* 辅助提示文本 */
+        .tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            opacity: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>分段函数边界探索</h1>
+        <span class="badge">高一数学 · 函数的表示法</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <div class="question-box">
+                <strong>思考与操作：</strong><br>
+                当 <span style="font-family:serif; font-style:italic;">x > 1</span> 时，解析式为：
+                <div class="formula-highlight">y = 2x</div>
+                若将边界点 <span style="font-family:serif; font-style:italic;">x = 1</span> 代入该解析式：
+                <br>得到端点坐标为 <strong>(1, 2)</strong>。<br><br>
+                请拖动下方滑块，调整直尺的<strong>斜率 (k)</strong>，尝试寻找正确的射线方向。
+            </div>
+
+            <div class="interactive-section">
+                <div class="slider-label">
+                    <span>调整直尺斜率 (k)</span>
+                    <span id="slope-val">0.0</span>
+                </div>
+                <input type="range" id="slope-slider" class="slider" min="-3" max="4" step="0.1" value="0">
+                
+                <div class="status-indicator">
+                    <div id="status-light" class="light"></div>
+                    <span id="status-text" style="color: #64748b;">请调整斜率至 y = 2x</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧可视化画布 -->
+        <div class="canvas-container">
+            <div id="tooltip" class="tooltip"></div>
+            <svg id="plot" viewBox="0 0 500 500">
+                <!-- 网格线 -->
+                <g stroke="#e2e8f0" stroke-width="1" id="grid"></g>
+                
+                <!-- 坐标轴 -->
+                <g stroke="#475569" stroke-width="1.5">
+                    <!-- X轴 -->
+                    <line x1="30" y1="250" x2="470" y2="250" />
+                    <!-- Y轴 -->
+                    <line x1="250" y1="30" x2="250" y2="470" />
+                </g>
+                <!-- 轴箭头 -->
+                <path d="M 470 246 L 478 250 L 470 254 Z" fill="#475569" />
+                <path d="M 246 30 L 250 22 L 254 30 Z" fill="#475569" />
+                
+                <!-- 轴标签 -->
+                <text x="465" y="270" font-size="14" font-weight="bold" fill="#475569">x</text>
+                <text x="230" y="35" font-size="14" font-weight="bold" fill="#475569">y</text>
+                <text x="235" y="265" font-size="12" fill="#475569">O</text>
+
+                <!-- 刻度值标记 -->
+                <!-- X轴刻度 -->
+                <line x1="170" y1="246" x2="170" y2="254" stroke="#475569" stroke-width="1.5" />
+                <text x="162" y="270" font-size="12" fill="#64748b">-1</text>
+                
+                <line x1="330" y1="246" x2="330" y2="254" stroke="#475569" stroke-width="1.5" />
+                <text x="325" y="270" font-size="12" fill="#64748b">1</text>
+
+                <line x1="410" y1="246" x2="410" y2="254" stroke="#475569" stroke-width="1.5" />
+                <text x="405" y="270" font-size="12" fill="#64748b">2</text>
+
+                <!-- Y轴刻度 -->
+                <line x1="246" y1="170" x2="254" y2="170" stroke="#475569" stroke-width="1.5" />
+                <text x="225" y="174" font-size="12" fill="#64748b">1</text>
+
+                <line x1="246" y1="90" x2="254" y2="90" stroke="#475569" stroke-width="1.5" />
+                <text x="225" y="94" font-size="12" fill="#64748b">2</text>
+
+                <!-- 已知函数图像：线段 [(-1,2), (1,2)] -->
+                <line x1="170" y1="90" x2="330" y2="90" stroke="#64748b" stroke-width="3" stroke-dasharray="4 2" />
+                <line x1="170" y1="90" x2="330" y2="90" stroke="#0f172a" stroke-width="3" />
+                <!-- 实心端点 -->
+                <circle cx="170" cy="90" r="5" fill="#0f172a" />
+                <circle cx="330" cy="90" r="5" fill="#0f172a" />
+                
+                <!-- 目标射线（正确时完全显现） -->
+                <path id="correct-ray" d="M 330 90 L 450 -30" stroke="#10b981" stroke-width="4" stroke-linecap="round" opacity="0" transition="opacity 0.3s" />
+
+                <!-- 动态直尺/旋转射线 -->
+                <line id="ruler-line" x1="330" y1="90" x2="450" y2="90" stroke="#3b82f6" stroke-width="3" stroke-dasharray="5 5" />
+                <circle id="ruler-pointer" cx="450" cy="90" r="6" fill="#3b82f6" cursor="pointer" />
+
+                <!-- 闪烁提示点 (1, 2) -->
+                <circle id="target-pulse" cx="330" cy="90" r="6" class="pulse-point" />
+                <circle cx="330" cy="90" r="4" fill="#ef4444" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 坐标转换常量 (中心点 250, 250, 1单位 = 80像素)
+    const CX = 250;
+    const CY = 250;
+    const SCALE = 80;
+
+    // DOM 元素
+    const grid = document.getElementById('grid');
+    const slopeSlider = document.getElementById('slope-slider');
+    const slopeVal = document.getElementById('slope-val');
+    const rulerLine = document.getElementById('ruler-line');
+    const rulerPointer = document.getElementById('ruler-pointer');
+    const correctRay = document.getElementById('correct-ray');
+    const statusLight = document.getElementById('status-light');
+    const statusText = document.getElementById('status-text');
+    const tooltip = document.getElementById('tooltip');
+    const container = document.querySelector('.canvas-container');
+
+    // 初始化网格
+    function drawGrid() {
+        let gridHTML = '';
+        for (let i = 10; i < 500; i += 40) {
+            if (i === 250) continue;
+            gridHTML += `<line x1="${i}" y1="0" x2="${i}" y2="500" />`;
+            gridHTML += `<line x1="0" y1="${i}" x2="500" y2="${i}" />`;
+        }
+        grid.innerHTML = gridHTML;
+    }
+    drawGrid();
+
+    // 核心逻辑：根据斜率更新直尺位置
+    function updateRuler(slope) {
+        slopeVal.textContent = slope.toFixed(1);
+
+        // 起点是 (1, 2) 对应 SVG 坐标 (330, 90)
+        const startX = 330;
+        const startY = 90;
+
+        // 射线在 X 方向延伸到边界 (x = 2.5 对应 SVG 450)
+        const endX = 450;
+        const deltaX = (endX - startX) / SCALE; // 1.5 个单位
+        const deltaY = -slope * deltaX * SCALE; // SVG 坐标系 Y 轴向下，所以取负
+        const endY = startY + deltaY;
+
+        // 更新直尺线段和端点
+        rulerLine.setAttribute('x2', endX);
+        rulerLine.setAttribute('y2', endY);
+        rulerPointer.setAttribute('cx', endX);
+        rulerPointer.setAttribute('cy', endY);
+
+        // 判定是否接近目标斜率 k = 2
+        const targetSlope = 2.0;
+        const tolerance = 0.15;
+
+        if (Math.abs(slope - targetSlope) < tolerance) {
+            // 成功匹配
+            correctRay.setAttribute('opacity', '1');
+            rulerLine.setAttribute('stroke', '#10b981');
+            rulerPointer.setAttribute('fill', '#10b981');
+            statusLight.className = 'light success';
+            statusText.textContent = '匹配成功！斜率 k = 2';
+            statusText.style.color = '#10b981';
+        } else {
+            // 未匹配
+            correctRay.setAttribute('opacity', '0');
+            rulerLine.setAttribute('stroke', '#3b82f6');
+            rulerPointer.setAttribute('fill', '#3b82f6');
+            statusLight.className = 'light';
+            statusText.textContent = '请调整斜率至 y = 2x';
+            statusText.style.color = '#64748b';
+        }
+    }
+
+    // 监听滑块输入
+    slopeSlider.addEventListener('input', (e) => {
+        const slope = parseFloat(e.target.value);
+        updateRuler(slope);
+    });
+
+    // 鼠标悬停在关键点上显示坐标提示
+    const pointsOfInterest = [
+        { cx: 330, cy: 90, label: "起点 (1, 2)" },
+        { cx: 170, cy: 90, label: "端点 (-1, 2)" }
+    ];
+
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // 转换鼠标坐标到 SVG 视口坐标
+        const svgX = (mouseX / rect.width) * 500;
+        const svgY = (mouseY / rect.height) * 500;
+
+        let activeLabel = null;
+        for (const pt of pointsOfInterest) {
+            const dist = Math.hypot(svgX - pt.cx, svgY - pt.cy);
+            if (dist < 15) {
+                activeLabel = pt.label;
+                break;
+            }
+        }
+
+        if (activeLabel) {
+            tooltip.style.opacity = '1';
+            tooltip.style.left = `${mouseX + 15}px`;
+            tooltip.style.top = `${mouseY - 15}px`;
+            tooltip.textContent = activeLabel;
+        } else {
+            tooltip.style.opacity = '0';
+        }
+    });
+
+    container.addEventListener('mouseleave', () => {
+        tooltip.style.opacity = '0';
+    });
+
+    // 初始化
+    updateRuler(0);
+</script>
+
+</body>
+</html>

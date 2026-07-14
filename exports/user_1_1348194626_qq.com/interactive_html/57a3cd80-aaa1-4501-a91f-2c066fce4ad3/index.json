@@ -1,0 +1,302 @@
+{
+  "task_id": "57a3cd80-aaa1-4501-a91f-2c066fce4ad3",
+  "nodes": [
+    {
+      "node_id": "M1",
+      "question_type": "main",
+      "content": "看这几样东西：斗笠、漏斗、纸杯、吊灯……它们形状各不一样，但为什么都可以算作圆锥呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M2",
+      "question_type": "main",
+      "content": "圆锥的高到底藏在哪里，为什么不是外面这条斜斜的边，而是从顶点到底面圆心的距离呢？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M3",
+      "question_type": "main",
+      "content": "看这个倒沙实验，等底等高的圆锥和圆柱，体积之间到底是什么关系，为什么“等底等高”这几个字不能漏掉？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M4",
+      "question_type": "main",
+      "content": "既然等底等高的圆锥体积是圆柱的三分之一，那圆锥的体积公式应该怎么写，这个三分之一又是从哪儿来的？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M5",
+      "question_type": "main",
+      "content": "如果要求一个圆锥的体积，遇到底面积直接告诉你的，和只告诉你半径或直径的，你觉得该从哪里下手最稳当？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "M6",
+      "question_type": "main",
+      "content": "像沙堆、铅锤这样的实际问题，圆锥体积往往不是最后答案，那这类题你准备按怎样的顺序一步一步解决？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-1",
+      "question_type": "variant",
+      "content": "换一组更容易看错的物体：金字塔形屋顶、尖铅笔头、圣诞帽，哪些不能算圆锥？你准备抓住哪一个最关键的标准来解释？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V1-2",
+      "question_type": "variant",
+      "content": "如果不看实物照片，只看几个立体图的轮廓，你还能认出哪个是圆锥吗？这时哪些外表信息不重要，什么特征才最有用？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-1",
+      "question_type": "variant",
+      "content": "同一个圆锥上，一条线从顶点连到底面边上一点，另一条线从顶点直到底面中心，你认为哪条才是高？为什么另一条看起来更长却不是？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V2-2",
+      "question_type": "variant",
+      "content": "如果把一个圆锥斜着放在桌上，它的高是不是也跟着“斜了”？你会怎样向同学说明，高为什么不能按外面那条边去量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-1",
+      "question_type": "variant",
+      "content": "如果圆锥和圆柱底面一样大，但高不一样，还能直接说圆锥体积是圆柱的三分之一吗？你觉得是哪一个条件被改掉后，结论就不稳了？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V3-2",
+      "question_type": "variant",
+      "content": "有同学说：“等底等高时，圆柱的体积是圆锥的三分之一。”这句话哪里出了问题？如果用倒沙现象来解释，你会怎么说得更准确？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-1",
+      "question_type": "variant",
+      "content": "如果只给你两句话：“圆柱体积是Sh”“等底等高时圆锥体积是圆柱的三分之一”，你能把圆锥体积公式完整地连出来吗？每一部分各表示什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V4-2",
+      "question_type": "variant",
+      "content": "有人写圆锥体积是Sh÷3，有人写成S÷3+h。你觉得哪一个还能和实验结论对得上，哪一个一看就不合理？理由是什么？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-1",
+      "question_type": "variant",
+      "content": "如果一道题不直接给底面积，只告诉你底面直径和高，你下手时第一步为什么不能急着把数字往公式里放，而要先处理哪个量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V5-2",
+      "question_type": "variant",
+      "content": "同学算圆锥体积时，先用直径当半径求底面积，最后还漏掉了前面的三分之一。你觉得这道题他最先错在什么地方？为什么后面会越算越偏？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-1",
+      "question_type": "variant",
+      "content": "把问题换成“一个圆锥形冰淇淋筒能装多少奶油”，如果最后问的不是体积而是奶油的质量，你觉得解题顺序应该怎样走才不容易乱？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "V6-2",
+      "question_type": "variant",
+      "content": "同样是圆锥题，一道最后问体积，另一道最后问重量。前半段做法看起来差不多，为什么后半段不能停在同一步？你会怎么提醒自己不漏最后一转？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-1",
+      "question_type": "scaffold",
+      "content": "盯住一个圆锥看一看，最容易先找到的是哪两个地方：上面的尖点，还是下面的圆面？你把这两个地方指出来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-2",
+      "question_type": "scaffold",
+      "content": "如果要在圆锥上找一条“把上面和下面连起来”的线，你觉得这条线更可能贴着外面走，还是从里面连下去？说说你的想法。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S1-3",
+      "question_type": "scaffold",
+      "content": "圆锥的下面不是一个点，而是整个圆面。要从顶点往下连，你觉得底面上哪个位置最适合做这个“对准点”？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-1",
+      "question_type": "scaffold",
+      "content": "要把一个圆锥和一个圆柱放在一起比一比，你觉得先要看哪两样最重要：下面的面大小，还是竖着的高短？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-2",
+      "question_type": "scaffold",
+      "content": "如果圆柱量的是竖直高度，圆锥这边也该拿哪一段去比才公平？是外面斜斜的一段，还是顶点到底面圆心的那一段？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S2-3",
+      "question_type": "scaffold",
+      "content": "要是两个容器一个底大一个底小，或者一个高一个矮，你觉得倒出来的结果还能直接比吗？为什么得先把条件放公平？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-1",
+      "question_type": "scaffold",
+      "content": "看到“三次正好倒满”时，你先别急着写式子，只说这句话在体积上告诉了我们什么：谁比较大，谁比较小？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-2",
+      "question_type": "scaffold",
+      "content": "如果要用“是……的三分之一”来说这组关系，应该把圆锥放在前面，还是把圆柱放在前面？你试着说完整。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S3-3",
+      "question_type": "scaffold",
+      "content": "圆柱的体积可以写成Sh。要是圆锥只有它的三分之一，你觉得这个Sh要整体变，还是只是在前面添上一个数？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-1",
+      "question_type": "scaffold",
+      "content": "看到圆锥体积公式后，你会先盯住题目里的哪两类信息：底面积和高，还是半径和斜边？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-2",
+      "question_type": "scaffold",
+      "content": "题目如果没有直接写底面积，只给了底面半径或直径，这两个数据能直接放进V＝1/3Sh里吗，还是要先变成别的量？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S4-3",
+      "question_type": "scaffold",
+      "content": "动笔前，你最想先确认哪一件事：底面积有没有找对，高是不是垂直的，还是前面的三分之一有没有忘？选一个你最容易错的说说。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-1",
+      "question_type": "scaffold",
+      "content": "像沙堆、铅锤这类题，题目最后常常问的是体积本身，还是重量、用料这些别的结果？你先把最后要找的量说出来。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-2",
+      "question_type": "scaffold",
+      "content": "要是题里还告诉你“每立方米沙重多少”或“每立方厘米钢重多少”，这个信息是跟哪个量连在一起用的：半径，高，还是体积？",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    },
+    {
+      "node_id": "S5-3",
+      "question_type": "scaffold",
+      "content": "如果最后要算重量，你觉得“先把圆锥的体积找出来”这件事应该放在前面，还是可以等到最后再做？说说理由。",
+      "visual_aid_type": null,
+      "has_html": false,
+      "html_file": null,
+      "image_files": []
+    }
+  ]
+}

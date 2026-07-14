@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税务发言人 - 规范表达训练</title>
+  <style>
+    :root {
+      --primary-color: #2b5c8f;
+      --primary-light: #eef5fc;
+      --accent-term: #3498db;
+      --accent-term-bg: #e8f4fd;
+      --accent-value: #e67e22;
+      --accent-value-bg: #fdf5ee;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --text-color: #2c3e50;
+      --bg-color: #f5f7fa;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+      background-color: #d0dbe5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 4:3 比例容器 */
+    .app-container {
+      width: 1024px;
+      height: 768px;
+      background: var(--bg-color);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 头部导航 */
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* 主交互区 */
+    .main-content {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      height: calc(100% - 160px);
+    }
+
+    /* 左侧：发言人与气泡 */
+    .left-panel {
+      flex: 1.3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+      position: relative;
+    }
+
+    /* 气泡样式 */
+    .speech-bubble-container {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .speech-bubble {
+      background: var(--primary-light);
+      border: 3px solid var(--primary-color);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 6px 15px rgba(43, 92, 143, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 100px;
+      border-width: 20px 20px 0;
+      border-style: solid;
+      border-color: var(--primary-color) transparent;
+      display: block;
+      width: 0;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 102px;
+      border-width: 18px 18px 0;
+      border-style: solid;
+      border-color: var(--primary-light) transparent;
+      display: block;
+      width: 0;
+      z-index: 1;
+    }
+
+    /* 句子流式排版 */
+    .sentence-flow {
+      font-size: 22px;
+      line-height: 2.2;
+      color: var(--text-color);
+      font-weight: bold;
+    }
+
+    /* 填空槽 */
+    .slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 42px;
+      margin: 0 6px;
+      vertical-align: middle;
+      border-radius: 8px;
+      border: 2px dashed #bdc3c7;
+      background: white;
+      transition: all 0.2s ease;
+      position: relative;
+      top: -2px;
+    }
+
+    .slot.term-slot {
+      border-color: var(--accent-term);
+      background-color: rgba(52, 152, 219, 0.03);
+    }
+
+    .slot.value-slot {
+      border-color: var(--accent-value);
+      background-color: rgba(230, 126, 34, 0.03);
+    }
+
+    .slot.hovered {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    .slot.term-slot.hovered {
+      background-color: rgba(52, 152, 219, 0.15);
+      border-style: solid;
+    }
+
+    .slot.value-slot.hovered {
+      background-color: rgba(230, 126, 34, 0.15);
+      border-style: solid;
+    }
+
+    /* 槽内放置卡片后的样式 */
+    .slot .card {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      box-shadow: none;
+      border: none;
+    }
+
+    /* 发言人形象区 */
+    .character-area {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      width: 100%;
+      padding-left: 40px;
+      height: 150px;
+    }
+
+    .character-svg {
+      width: 120px;
+      height: 140px;
+      transition: transform 0.3s ease;
+    }
+
+    .character-svg.talking {
+      animation: talk-bounce 0.5s infinite alternate;
+    }
+
+    @keyframes talk-bounce {
+      0% { transform: translateY(0) scaleY(1); }
+      100% { transform: translateY(-8px) scaleY(1.02); }
+    }
+
+    /* 右侧：词条库 */
+    .right-panel {
+      flex: 0.9;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .bank-section {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bank-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-color);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--bg-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bank-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .term-title::before { background-color: var(--accent-term); }
+    .value-title::before { background-color: var(--accent-value); }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+      flex: 1;
+      min-height: 100px;
+    }
+
+    /* 可拖拽卡片 */
+    .card {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      border: 1px solid transparent;
+    }
+
+    .card:active {
+      cursor: grabbing;
+    }
+
+    .card.term-card {
+      background-color: var(--accent-term-bg);
+      color: var(--accent-term);
+      border-color: rgba(52, 152, 219, 0.2);
+    }
+
+    .card.term-card:hover {
+      background-color: var(--accent-term);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .card.value-card {
+      background-color: var(--accent-value-bg);
+      color: var(--accent-value);
+      border-color: rgba(230, 126, 34, 0.2);
+    }
+
+    .card.value-card:hover {
+      background-color: var(--accent-value);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* 选中状态（用于点击交互） */
+    .card.selected {
+      outline: 3px solid #2c3e50;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* 底部控制栏 */
+    .footer-controls {
+      height: 80px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+    }
+
+    .tips-text {
+      font-size: 15px;
+      color: #7f8c8d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary {
+      background-color: #ecf0f1;
+      color: #7f8c8d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #bdc3c7;
+      color: #2c3e50;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1f446c;
+      box-shadow: 0 4px 10px rgba(43, 92, 143, 0.3);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #27ae60;
+      box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    }
+
+    /* 结果反馈弹窗 */
+    .feedback-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(44, 62, 80, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .feedback-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .feedback-card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px 40px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: scale(0.8);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 450px;
+      width: 90%;
+    }
+
+    .feedback-overlay.show .feedback-card {
+      transform: scale(1);
+    }
+
+    .feedback-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+    }
+
+    .feedback-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .feedback-title.success { color: var(--success-color); }
+    .feedback-title.fail { color: var(--danger-color); }
+
+    .feedback-desc {
+      font-size: 16px;
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* 辅助高亮提示 */
+    .highlight-hint {
+      animation: pulse-border 1.5s infinite;
+    }
+
+    @keyframes pulse-border {
+      0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 头部 -->
+    <div class="header">
+      <h1>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        税务发言人：规范表达训练
+      </h1>
+      <div class="subtitle">六年级数学 · 百分数的应用</div>
+    </div>
+
+    <!-- 主交互区 -->
+    <div class="main-content">
+      <!-- 左侧：发言人与气泡 -->
+      <div class="left-panel">
+        <div class="speech-bubble-container">
+          <div class="speech-bubble" id="speechBubble">
+            <div class="sentence-flow">
+              因为 <div class="slot term-slot" id="slot-t1" data-type="term" data-index="1"></div> 
+              是 <div class="slot value-slot" id="slot-v1" data-type="value" data-index="1"></div>，<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="slot term-slot" id="slot-t2" data-type="term" data-index="2"></div> 
+              是 <div class="slot value-slot" id="slot-v2" data-type="value" data-index="2"></div>，<br>
+              所以根据关系式，<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="slot term-slot" id="slot-t3" data-type="term" data-index="3"></div> 
+              是 <div class="slot value-slot" id="slot-v3" data-type="value" data-index="3"></div>。
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡通小税务官 SVG -->
+        <div class="character-area">
+          <svg class="character-svg" id="taxOfficer" viewBox="0 0 120 140">
+            <!-- 身体/制服 -->
+            <path d="M20 140 C20 100, 100 100, 100 140 Z" fill="#2b5c8f" />
+            <path d="M45 105 L60 125 L75 105 Z" fill="#fff" />
+            <path d="M55 115 L60 135 L65 115 Z" fill="#e74c3c" /> <!-- 领带 -->
+            <!-- 肩章 -->
+            <rect x="22" y="108" width="16" height="6" rx="2" fill="#f1c40f" transform="rotate(-15 22 108)" />
+            <rect x="82" y="104" width="16" height="6" rx="2" fill="#f1c40f" transform="rotate(15 82 104)" />
+            <!-- 头部 -->
+            <circle cx="60" cy="65" r="35" fill="#fddbb0" />
+            <!-- 头发 -->
+            <path d="M25 60 C25 30, 95 30, 95 60 C90 40, 30 40, 25 60 Z" fill="#2c3e50" />
+            <!-- 帽子 -->
+            <path d="M22 42 C22 15, 98 15, 98 42 Z" fill="#1f446c" />
+            <ellipse cx="60" cy="42" rx="38" ry="6" fill="#2c3e50" />
+            <!-- 帽徽 -->
+            <circle cx="60" cy="28" r="8" fill="#f1c40f" />
+            <path d="M60 23 L62 27 L67 27 L63 30 L65 34 L60 31 L55 34 L57 30 L53 27 L58 27 Z" fill="#fff" />
+            <!-- 眼睛 -->
+            <circle cx="48" cy="68" r="4" fill="#2c3e50" />
+            <circle cx="72" cy="68" r="4" fill="#2c3e50" />
+            <circle cx="49" cy="67" r="1.5" fill="#fff" />
+            <circle cx="73" cy="67" r="1.5" fill="#fff" />
+            <!-- 腮红 -->
+            <circle cx="40" cy="76" r="5" fill="#f19066" opacity="0.5" />
+            <circle cx="80" cy="76" r="5" fill="#f19066" opacity="0.5" />
+            <!-- 嘴巴 (默认微笑) -->
+            <path id="mouth" d="M54 78 Q60 84, 66 78" fill="none" stroke="#2c3e50" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- 右侧：词条库 -->
+      <div class="right-panel">
+        <!-- 专业术语库 -->
+        <div class="bank-section">
+          <div class="bank-title term-title">专业术语（拖拽或点击）</div>
+          <div class="card-container" id="termBank">
+            <div class="card term-card" draggable="true" id="card-t1" data-type="term" data-val="计税收入">计税收入</div>
+            <div class="card term-card" draggable="true" id="card-t2" data-type="term" data-val="税率">税率</div>
+            <div class="card term-card" draggable="true" id="card-t3" data-type="term" data-val="应纳税额">应纳税额</div>
+            <div class="card term-card" draggable="true" id="card-t4" data-type="term" data-val="本金">本金</div>
+            <div class="card term-card" draggable="true" id="card-t5" data-type="term" data-val="利息">利息</div>
+          </div>
+        </div>
+
+        <!-- 具体数据库 -->
+        <div class="bank-section">
+          <div class="bank-title value-title">具体数据（拖拽或点击）</div>
+          <div class="card-container" id="valueBank">
+            <div class="card value-card" draggable="true" id="card-v1" data-type="value" data-val="5000元">5000元</div>
+            <div class="card value-card" draggable="true" id="card-v2" data-type="value" data-val="3%">3%</div>
+            <div class="card value-card" draggable="true" id="card-v3" data-type="value" data-val="150元">150元</div>
+            <div class="card value-card" draggable="true" id="card-v4" data-type="value" data-val="1000元">1000元</div>
+            <div class="card value-card" draggable="true" id="card-v5" data-type="value" data-val="5%">5%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部控制栏 -->
+    <div class="footer-controls">
+      <div class="tips-text">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        提示：请将卡片拖入对应的虚线框中，或先点击卡片再点击虚线框。
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" id="btnReset">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          重置
+        </button>
+        <button class="btn btn-primary" id="btnCheck">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          检查发言
+        </button>
+      </div>
+    </div>
+
+    <!-- 反馈遮罩层 -->
+    <div class="feedback-overlay" id="feedbackOverlay">
+      <div class="feedback-card">
+        <div class="feedback-icon" id="feedbackIcon"></div>
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="feedback-desc" id="feedbackDesc"></div>
+        <button class="btn btn-primary" style="margin: 0 auto;" id="btnCloseFeedback">继续尝试</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.card');
+      const slots = document.querySelectorAll('.slot');
+      const termBank = document.getElementById('termBank');
+      const valueBank = document.getElementById('valueBank');
+      const btnReset = document.getElementById('btnReset');
+      const btnCheck = document.getElementById('btnCheck');
+      const feedbackOverlay = document.getElementById('feedbackOverlay');
+      const feedbackTitle = document.getElementById('feedbackTitle');
+      const feedbackDesc = document.getElementById('feedbackDesc');
+      const feedbackIcon = document.getElementById('feedbackIcon');
+      const btnCloseFeedback = document.getElementById('btnCloseFeedback');
+      const taxOfficer = document.getElementById('taxOfficer');
+      const mouth = document.getElementById('mouth');
+
+      let selectedCard = null;
+
+      // --- 声音合成器 (Web Audio API) ---
+      function playSound(type) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          if (type === 'success') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            osc.start();
+            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.15); // E5
+            gain.gain.setValueAtTime(0.1, ctx.currentTime + 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+            osc.stop(ctx.currentTime + 0.4);
+          } else if (type === 'fail') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          }
+        } catch (e) {
+          console.log("AudioContext blocked or not supported");
+        }
+      }
+
+      // --- 语音朗读 (Web Speech API) ---
+      function speakSentence(text) {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel(); // 停止之前的朗读
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'zh-CN';
+          utterance.rate = 0.9; // 稍微慢一点，适合教学
+
+          // 朗读时让小税务官动嘴巴
+          utterance.onstart = () => {
+            taxOfficer.classList.add('talking');
+            mouth.setAttribute('d', 'M52 80 Q60 70, 68 80 Q60 90, 52 80'); // 变成张开的嘴
+            mouth.setAttribute('fill', '#e74c3c');
+          };
+
+          utterance.onend = () => {
+            taxOfficer.classList.remove('talking');
+            mouth.setAttribute('d', 'M54 78 Q60 84, 66 78'); // 恢复微笑
+            mouth.setAttribute('fill', 'none');
+          };
+
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+
+      // --- 拖拽交互逻辑 ---
+      cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', card.id);
+          card.classList.add('selected');
+          selectedCard = null; // 拖拽时清除点击选择
+          clearCardHighlights();
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('selected');
+        });
+
+        // 点击选择逻辑 (适配触摸屏)
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (selectedCard === card) {
+            card.classList.remove('selected');
+            selectedCard = null;
+          } else {
+            clearCardHighlights();
+            selectedCard = card;
+            card.classList.add('selected');
+          }
+        });
+      });
+
+      function clearCardHighlights() {
+        cards.forEach(c => c.classList.remove('selected'));
+      }
+
+      slots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          const draggedId = e.dataTransfer.getData('text/plain') || document.querySelector('.card.selected')?.id;
+          if (!draggedId) return;
+          const draggedCard = document.getElementById(draggedId);
+          
+          // 类型匹配检查
+          if (draggedCard.dataset.type === slot.dataset.type) {
+            slot.classList.add('hovered');
+          }
+        });
+
+        slot.addEventListener('dragleave', () => {
+          slot.classList.remove('hovered');
+        });
+
+        slot.addEventListener('drop', (e) => {
+          e.preventDefault();
+          slot.classList.remove('hovered');
+          const draggedId = e.dataTransfer.getData('text/plain');
+          const draggedCard = document.getElementById(draggedId);
+          
+          if (draggedCard) {
+            placeCardInSlot(draggedCard, slot);
+          }
+        });
+
+        // 点击槽位放置逻辑
+        slot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (selectedCard) {
+            placeCardInSlot(selectedCard, slot);
+            clearCardHighlights();
+            selectedCard = null;
+          } else {
+            // 如果槽内已有卡片，点击它将其送回原库
+            const childCard = slot.querySelector('.card');
+            if (childCard) {
+              returnCardToBank(childCard);
+            }
+          }
+        });
+      });
+
+      // 点击空白处取消选择
+      document.addEventListener('click', () => {
+        clearCardHighlights();
+        selectedCard = null;
+      });
+
+      // 放置卡片核心逻辑
+      function placeCardInSlot(card, slot) {
+        // 检查类型是否匹配
+        if (card.dataset.type !== slot.dataset.type) {
+          playSound('fail');
+          // 抖动提示
+          slot.classList.add('highlight-hint');
+          setTimeout(() => slot.classList.remove('highlight-hint'), 500);
+          return;
+        }
+
+        // 如果槽内已有卡片，先将旧卡片送回
+        const existingCard = slot.querySelector('.card');
+        if (existingCard) {
+          returnCardToBank(existingCard);
+        }
+
+        // 放入新卡片
+        slot.appendChild(card);
+        slot.style.borderStyle = 'solid';
+      }
+
+      // 将卡片送回原库
+      function returnCardToBank(card) {
+        if (card.dataset.type === 'term') {
+          termBank.appendChild(card);
+        } else {
+          valueBank.appendChild(card);
+        }
+        // 恢复槽的虚线样式
+        const parentSlot = card.parentElement;
+        if (parentSlot && parentSlot.classList.contains('slot')) {
+          parentSlot.style.borderStyle = 'dashed';
+        }
+      }
+
+      // --- 重置功能 ---
+      btnReset.addEventListener('click', () => {
+        const slottedCards = document.querySelectorAll('.slot .card');
+        slottedCards.forEach(card => {
+          returnCardToBank(card);
+        });
+        slots.forEach(slot => {
+          slot.style.borderStyle = 'dashed';
+        });
+        clearCardHighlights();
+        selectedCard = null;
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        taxOfficer.classList.remove('talking');
+        mouth.setAttribute('d', 'M54 78 Q60 84, 66 78');
+        mouth.setAttribute('fill', 'none');
+      });
+
+      // --- 检查答案逻辑 ---
+      btnCheck.addEventListener('click', () => {
+        const t1 = document.getElementById('slot-t1').querySelector('.card')?.dataset.val;
+        const v1 = document.getElementById('slot-v1').querySelector('.card')?.dataset.val;
+        const t2 = document.getElementById('slot-t2').querySelector('.card')?.dataset.val;
+        const v2 = document.getElementById('slot-v2').querySelector('.card')?.dataset.val;
+        const t3 = document.getElementById('slot-t3').querySelector('.card')?.dataset.val;
+        const v3 = document.getElementById('slot-v3').querySelector('.card')?.dataset.val;
+
+        // 检查是否填满
+        if (!t1 || !v1 || !t2 || !v2 || !t3 || !v3) {
+          showFeedback(
+            'warning',
+            '发言还没准备好哦！',
+            '请将所有的专业术语和对应的数据卡片都填入发言气泡中，再进行检查。'
+          );
+          return;
+        }
+
+        // 验证逻辑：
+        // 关系式：应纳税额 = 计税收入 * 税率
+        // 允许两种正确组合：
+        // 组合A: 计税收入是5000元，税率是3%，应纳税额是150元。
+        // 组合B: 税率是3%，计税收入是5000元，应纳税额是150元。
+        const isComboA = (t1 === '计税收入' && v1 === '5000元' && t2 === '税率' && v2 === '3%');
+        const isComboB = (t1 === '税率' && v1 === '3%' && t2 === '计税收入' && v2 === '5000元');
+        const isResultCorrect = (t3 === '应纳税额' && v3 === '150元');
+
+        if ((isComboA || isComboB) && isResultCorrect) {
+          // 成功反馈
+          playSound('success');
+          showFeedback(
+            'success',
+            '太棒了！发言非常专业！',
+            '你准确地运用了数学语言，清晰地表达了“计税收入”、“税率”与“应纳税额”之间的数量关系。'
+          );
+          
+          // 延迟播放语音，让学生先看到成功提示
+          setTimeout(() => {
+            const speechText = `因为${t1}是${v1 === '3%' ? '百分之三' : v1}，${t2}是${v2 === '3%' ? '百分之三' : v2}，所以根据关系式，${t3}是${v3}。`;
+            speakSentence(speechText);
+          }, 800);
+
+        } else {
+          // 失败反馈
+          playSound('fail');
+          
+          // 针对性教学引导
+          let errorMsg = '请仔细检查专业术语和具体数据的对应关系，以及最后的计算结果是否符合数量关系式。';
+          if (t3 !== '应纳税额') {
+            errorMsg = '想一想：我们最终求出来的结果，在税收中专业名称叫什么？应该放在最后的结论处。';
+          } else if (v3 !== '150元') {
+            errorMsg = '结论的数据不对哦。请根据“应纳税额 = 计税收入 × 税率”计算一下正确的结果。';
+          } else if ((t1 === '计税收入' && v1 !== '5000元') || (t1 === '税率' && v1 !== '3%')) {
+            errorMsg = '术语和数据没有对应上。例如：“计税收入”对应的数据应该是多少？';
+          }
+
+          showFeedback('fail', '表达关系不够准确哦', errorMsg);
+        }
+      });
+
+      // --- 弹窗控制 ---
+      function showFeedback(type, title, desc) {
+        feedbackTitle.innerText = title;
+        feedbackDesc.innerText = desc;
+        feedbackTitle.className = 'feedback-title ' + (type === 'success' ? 'success' : 'fail');
+        
+        // 设置图标
+        if (type === 'success') {
+          feedbackIcon.innerHTML = `
+            <svg viewBox="0 0 80 80" width="80" height="80">
+              <circle cx="40" cy="40" r="36" fill="#2ecc71" />
+              <path d="M25 40 L35 50 L55 30" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          `;
+          btnCloseFeedback.innerText = '太棒了';
+          btnCloseFeedback.className = 'btn btn-success';
+        } else if (type === 'fail') {
+          feedbackIcon.innerHTML = `
+            <svg viewBox="0 0 80 80" width="80" height="80">
+              <circle cx="40" cy="40" r="36" fill="#e74c3c" />
+              <path d="M28 28 L52 52 M52 28 L28 52" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+            </svg>
+          `;
+          btnCloseFeedback.innerText = '重新思考';
+          btnCloseFeedback.className = 'btn btn-primary';
+        } else {
+          feedbackIcon.innerHTML = `
+            <svg viewBox="0 0 80 80" width="80" height="80">
+              <circle cx="40" cy="40" r="36" fill="#f1c40f" />
+              <path d="M40 20 V48 M40 56 H40.01" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+            </svg>
+          `;
+          btnCloseFeedback.innerText = '去填空';
+          btnCloseFeedback.className = 'btn btn-primary';
+        }
+
+        feedbackOverlay.classList.add('show');
+      }
+
+      btnCloseFeedback.addEventListener('click', () => {
+        feedbackOverlay.classList.remove('show');
+      });
+    });
+  </script>
+</body>
+</html>

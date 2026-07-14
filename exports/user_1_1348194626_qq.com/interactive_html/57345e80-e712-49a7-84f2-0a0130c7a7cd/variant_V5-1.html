@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; object-src 'none'">
+    <meta charset="UTF-8">
+    <title>算法检测仪 - 跑步机器人</title>
+    <style>
+        :root { --bg: #f0f4f8; --primary: #2c3e50; --green: #27ae60; --red: #e74c3c; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 80vw; height: 60vh; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .options { display: flex; gap: 20px; margin-bottom: 20px; }
+        .card { padding: 15px 25px; background: #3498db; color: white; border-radius: 10px; cursor: grab; user-select: none; font-weight: bold; }
+        .detector { width: 400px; height: 200px; border: 4px dashed #bdc3c7; border-radius: 20px; display: flex; align-items: center; justify-content: space-around; position: relative; }
+        .light { width: 60px; height: 60px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; transition: 0.3s; }
+        #robot { width: 50px; height: 50px; background: #f1c40f; border-radius: 50%; position: absolute; bottom: 20px; left: 50px; transition: 0.5s; }
+        .msg { margin-top: 20px; font-weight: bold; color: var(--primary); height: 20px; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+        .blink { animation: blink 0.5s infinite; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>算法检测仪：请将方案拖入检测框</h3>
+    <div class="options">
+        <div class="card" id="planA" draggable="true">方案A：累了就停</div>
+        <div class="card" id="planB" draggable="true">方案B：跑完400米停</div>
+    </div>
+
+    <div class="detector" id="dropZone">
+        <div class="light" id="light1">明确性</div>
+        <div class="light" id="light2">有穷性</div>
+        <div id="robot"></div>
+    </div>
+    <div class="msg" id="feedback"></div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const light1 = document.getElementById('light1');
+    const light2 = document.getElementById('light2');
+    const robot = document.getElementById('robot');
+    const feedback = document.getElementById('feedback');
+
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.id));
+    });
+
+    dropZone.addEventListener('dragover', e => e.preventDefault());
+
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text');
+        reset();
+        if (id === 'planA') {
+            light1.style.backgroundColor = 'var(--red)';
+            light2.style.backgroundColor = 'var(--red)';
+            light2.classList.add('blink');
+            feedback.innerText = "错误：机器无法理解“累”，且循环无法确定终点！";
+            robot.style.transform = "rotate(3600deg)";
+        } else {
+            light1.style.backgroundColor = 'var(--green)';
+            light2.style.backgroundColor = 'var(--green)';
+            feedback.innerText = "检测通过：条件明确，且有明确的终点。";
+            robot.style.left = "300px";
+        }
+    });
+
+    function reset() {
+        light1.style.backgroundColor = '#ddd';
+        light2.style.backgroundColor = '#ddd';
+        light2.classList.remove('blink');
+        robot.style.transform = "rotate(0deg)";
+        robot.style.left = "50px";
+        feedback.innerText = "";
+    }
+</script>
+
+</body>
+</html>
